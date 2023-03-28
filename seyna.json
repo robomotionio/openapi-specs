@@ -1,0 +1,3111 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v2",
+    "title": "Seyna API",
+    "license": {
+      "name": "PROPRIETARY"
+    },
+    "x-logo": {
+      "url": "https://seyna.eu/docs/logo_api.svg"
+    },
+    "description": "# Introduction\nThis is the documentation of the Seyna API\n\n# Authentication\nIn order to make a request you will need to provide an API key id and an API key secret. It must be provided in the standard HTTP `Authentication` header in the format `Basic ${api_key_id}:${api_key_secret}`\n\n# Data versioning\nThis API does not allow for data deletion : you can only create and update objects.\n\n# Date, time and date range\nWhen a time is not defined for a date it defaults to `T00:00:00Z`. Keep this in mind when specifying date ranges (for example the `start` and `end` properties).\nFor example if you want to specify a one year range :\n```\n  {\n    \"start_cover_date\": \"2019-01-01\", // Short for \"2019-01-01T00:00:00.000Z\"\n    \"end_cover_date\": \"2020-01-01\", // Short for \"2020-01-01T00:00:00.000Z\"\n  }\n```\n\n# Pagination\nWhen retrieving a list of objects the list will provide a one-way pagination mechanism to iterate over the result.\nYou can use the `next` response parameter to query the next (in a `from` query parameter).\nIf there is no more page to retrieve, it will not be provided.\n\nPage size is controlled by the `limit` parameter. It is an integer that can be comprised between `1` and `100` (default value is `10`)\n\nThe order the items are returned can be controlled via the parameter `sort`, which can take the values `asc` or `desc` (default value is `asc`)\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.seyna.eu/v2",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "portfolios"
+    },
+    {
+      "name": "contracts"
+    },
+    {
+      "name": "receipts"
+    },
+    {
+      "name": "claims"
+    },
+    {
+      "name": "settlements"
+    },
+    {
+      "name": "complaints"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Portfolio",
+      "tags": [
+        "portfolios"
+      ]
+    },
+    {
+      "name": "Subscription",
+      "tags": [
+        "contracts",
+        "receipts"
+      ]
+    },
+    {
+      "name": "Claim management",
+      "tags": [
+        "claims",
+        "settlements"
+      ]
+    },
+    {
+      "name": "Complaint management",
+      "tags": [
+        "complaints"
+      ]
+    }
+  ],
+  "paths": {
+    "/portfolios/{portfolio_id}": {
+      "get": {
+        "summary": "Get portfolio information",
+        "description": "Access all the information relative to the portfolio id",
+        "operationId": "portfolio_get",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Portfolio information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Portfolio"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/portfolios/{portfolio_id}/contracts": {
+      "get": {
+        "summary": "List portfolio contracts",
+        "operationId": "portfolio_list_contracts",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/contract-versions": {
+      "get": {
+        "summary": "List portfolio contract versions",
+        "operationId": "portfolio_list_contract_versions",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/receipts": {
+      "get": {
+        "summary": "List portfolio receipts",
+        "operationId": "portfolio_list_receipts",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of receipts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/receipt-versions": {
+      "get": {
+        "summary": "List portfolio receipt versions",
+        "operationId": "portfolio_list_receipt_versions",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of receipts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/claims": {
+      "get": {
+        "summary": "List portfolio claims",
+        "operationId": "portfolio_list_claims",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/claim-versions": {
+      "get": {
+        "summary": "List portfolio claim versions",
+        "operationId": "portfolio_list_claim_versions",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/settlements": {
+      "get": {
+        "summary": "List portfolio settlements",
+        "operationId": "portfolio_list_settlements",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of settlements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/settlement-versions": {
+      "get": {
+        "summary": "List portfolio settlement versions",
+        "operationId": "portfolio_list_settlements_versions",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of settlements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/complaints": {
+      "get": {
+        "summary": "List portfolio complaints",
+        "operationId": "portfolio_list_complaints",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of complaints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplaintList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/complaint-versions": {
+      "get": {
+        "summary": "List portfolio complaint versions",
+        "operationId": "portfolio_list_complaint_versions",
+        "tags": [
+          "portfolios"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The portfolio id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of complaints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplaintList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/contracts/{id}": {
+      "put": {
+        "summary": "Create or update a contract",
+        "operationId": "contract_put",
+        "tags": [
+          "contracts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contract"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this contract.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contract"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get contract information",
+        "operationId": "contract_get",
+        "tags": [
+          "contracts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this contract.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contract"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/contracts/{id}/versions": {
+      "get": {
+        "summary": "Retrieve contract history",
+        "operationId": "contract_version_list",
+        "tags": [
+          "contracts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of the portfolio",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the contract",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/contracts/{id}/receipts": {
+      "get": {
+        "summary": "List contract receipts",
+        "operationId": "contract_receipt_list",
+        "tags": [
+          "contracts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this contract.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of receipts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/contracts/{id}/claims": {
+      "get": {
+        "summary": "List contract claims",
+        "operationId": "contract_claim_list",
+        "tags": [
+          "contracts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "Ths id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Ths id of this contract.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/complaints/{id}": {
+      "put": {
+        "summary": "Create or update a complaint",
+        "operationId": "complaint_put",
+        "tags": [
+          "complaints"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Complaint"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this complaint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complaint updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Complaint"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get complaint information",
+        "operationId": "complaint_get",
+        "tags": [
+          "complaints"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this complaint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complaint information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Complaint"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/complaints/{id}/versions": {
+      "get": {
+        "summary": "Retrieve complaint history",
+        "operationId": "complaint_version_list",
+        "tags": [
+          "complaints"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of the portfolio",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the complaint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complaint history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplaintList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/receipts/{id}": {
+      "put": {
+        "summary": "Create or update a receipt",
+        "operationId": "receipt_put",
+        "tags": [
+          "receipts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this receipt.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Receipt"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Receipt updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get receipt information",
+        "operationId": "receipt_get",
+        "tags": [
+          "receipts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this receipt.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receipt information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/receipts/{id}/versions": {
+      "get": {
+        "summary": "Get receipt versions",
+        "operationId": "receipt_list_versions",
+        "tags": [
+          "receipts"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this receipt.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receipt history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/claims/{id}": {
+      "put": {
+        "summary": "Create or update a claim",
+        "operationId": "claim_put",
+        "tags": [
+          "claims"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of the portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the claim.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Claim"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Claim"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get claim information",
+        "operationId": "claim_get",
+        "tags": [
+          "claims"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of the portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the claim.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Claim"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/claims/{id}/versions": {
+      "get": {
+        "summary": "List claim versions",
+        "operationId": "claim_get_version",
+        "tags": [
+          "claims"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this claim.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/claims/{id}/settlements": {
+      "get": {
+        "summary": "List claim settlements",
+        "operationId": "claim_settlement_get",
+        "tags": [
+          "claims"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this claim.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Pagination of the response, `next` returned from a previous call.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of the page returned.",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Order of the result.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of settlments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settlement"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/portfolios/{portfolio_id}/settlements/{id}": {
+      "put": {
+        "summary": "Create or update a settlement",
+        "operationId": "settlments_put",
+        "tags": [
+          "settlements"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this settlement.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Settlement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settlment updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settlement"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get settlement information",
+        "operationId": "settlement_get",
+        "tags": [
+          "settlements"
+        ],
+        "parameters": [
+          {
+            "name": "portfolio_id",
+            "in": "path",
+            "description": "The id of this portfolio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of this settlement.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settlement information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settlement"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Portfolio": {
+        "type": "object",
+        "required": [
+          "object",
+          "id"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "portfolio",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The identifier of the portfolio",
+            "readOnly": true
+          }
+        }
+      },
+      "PortfolioResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Portfolio"
+          }
+        }
+      },
+      "Contract": {
+        "type": "object",
+        "required": [
+          "object",
+          "id",
+          "url",
+          "portfolio_id",
+          "product_id",
+          "timestamp",
+          "creation_date",
+          "last_update",
+          "customer_id",
+          "reference",
+          "subscriber",
+          "insured",
+          "beneficiary",
+          "subscription_date",
+          "issuance_date",
+          "start_cover_date",
+          "end_cover_date",
+          "guarantees",
+          "product_data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "contract",
+            "readOnly": true,
+            "description": "The type of object, should always be `\"contract\"`."
+          },
+          "portfolio_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The id of the portfolio."
+          },
+          "product_id": {
+            "type": "string",
+            "description": "The product for this portfolio.",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of this contract.",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this contract",
+            "readOnly": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The update date and time in the partner system."
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of creation of the object",
+            "readOnly": true
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last update of the object",
+            "readOnly": true
+          },
+          "reference": {
+            "type": "string",
+            "description": "The legal reference of this contract, as seen by the insured."
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "An identifier that links contracts to a unique customer."
+          },
+          "subscriber": {
+            "type": "array",
+            "description": "A list of the subscribers",
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            }
+          },
+          "insured": {
+            "type": "array",
+            "description": "A list of insured persons",
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            }
+          },
+          "beneficiary": {
+            "type": "array",
+            "description": "A list of beneficiaries",
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            }
+          },
+          "splitting_type": {
+            "type": "string",
+            "description": "Splitting type",
+            "enum": [
+              "monthly"
+            ]
+          },
+          "splitting_fee": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Splitting fee, if any"
+          },
+          "subscription_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date of subscription"
+          },
+          "issuance_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date of issuance"
+          },
+          "start_cover_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start of the cover period"
+          },
+          "end_cover_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end of the cover period"
+          },
+          "coinsurance": {
+            "type": "number",
+            "description": "The coinsurance coefficient for this contract, if applicable",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "extra_broker_fee": {
+            "type": "number",
+            "minimum": 0
+          },
+          "guarantees": {
+            "type": "object",
+            "description": "Information split per guarantee",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ContractGuarantee"
+            }
+          },
+          "cancel_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The cancellation date"
+          },
+          "cancel_reason": {
+            "type": "string",
+            "enum": [
+              "request",
+              "payment",
+              "fraud"
+            ]
+          },
+          "cancel_guarantees": {
+            "type": "object",
+            "description": "Cancel information split per guarantee",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ContractGuarantee"
+            }
+          },
+          "product_data": {
+            "type": "object",
+            "description": "Data relative to the product"
+          }
+        }
+      },
+      "ContractGuarantee": {
+        "type": "object",
+        "required": [
+          "premium",
+          "tax"
+        ],
+        "properties": {
+          "premium": {
+            "description": "Premium without tax, fees, commissions...",
+            "type": "number",
+            "minimum": 0
+          },
+          "tax": {
+            "description": "Tax paid",
+            "type": "number",
+            "minimum": 0
+          },
+          "discount": {
+            "description": "Discount given on this contract",
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "broker_fee": {
+            "description": "Broker fee",
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "cost_acquisition": {
+            "description": "Cost of acquisition given to the distributor",
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "ContractList": {
+        "type": "object",
+        "required": [
+          "object",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "The object type (always `\"list\"`)"
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contract"
+            },
+            "description": "The list of contracts for this page"
+          },
+          "next": {
+            "type": "string",
+            "description": "Start of the next page, if available"
+          }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "required": [
+          "type",
+          "name",
+          "email",
+          "phone",
+          "address",
+          "birthday",
+          "birthplace"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "individual",
+              "company",
+              "nonprofit"
+            ],
+            "description": "The type of the entity"
+          },
+          "name": {
+            "type": "string",
+            "description": "The full name of the person or corporation"
+          },
+          "registration": {
+            "type": "string",
+            "description": "The registration name of the corporation"
+          },
+          "representative": {
+            "type": "string",
+            "description": "The name of the legal representative of the corporation"
+          },
+          "address": {
+            "type": "string",
+            "description": "Full physical address of the entity"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the person or representative"
+          },
+          "phone": {
+            "type": "string",
+            "format": "phone",
+            "description": "Phone number of the person or reprensetative"
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "description": "Birthday of the person or representative"
+          },
+          "birthplace": {
+            "type": "string",
+            "description": "Birthplace of the person or representative"
+          }
+        }
+      },
+      "Receipt": {
+        "type": "object",
+        "required": [
+          "object",
+          "id",
+          "url",
+          "portfolio_id",
+          "product_id",
+          "timestamp",
+          "contract_id",
+          "creation_date",
+          "last_update",
+          "reference",
+          "issuance_date",
+          "due_date",
+          "start_cover_date",
+          "end_cover_date",
+          "guarantees",
+          "product_data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "The object type (\"receipt\")",
+            "default": "receipt",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of this receipt.",
+            "readOnly": true
+          },
+          "portfolio_id": {
+            "type": "string",
+            "description": "The id of the portfolio.",
+            "readOnly": true
+          },
+          "product_id": {
+            "type": "string",
+            "description": "The product for this portfolio.",
+            "readOnly": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The update time in the partner system."
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of creation of the object",
+            "readOnly": true
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last update of the object",
+            "readOnly": true
+          },
+          "reference": {
+            "type": "string",
+            "description": "The reference of this receipt, as seen by the insured."
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "The id of the contract this receipt is attached to."
+          },
+          "issuance_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date of issuance of the receipt"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The due date of the receipt"
+          },
+          "payment_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date of payment (if available)."
+          },
+          "start_cover_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start of the cover period of the receipt"
+          },
+          "end_cover_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end of the cover period of the receipt"
+          },
+          "extra_broker_fee": {
+            "type": "number",
+            "minimum": 0
+          },
+          "guarantees": {
+            "type": "object",
+            "description": "Information per guarantee",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ReceiptGuarantee"
+            }
+          },
+          "product_data": {
+            "type": "object",
+            "description": "Information relative to the portfolio product"
+          }
+        }
+      },
+      "ReceiptGuarantee": {
+        "type": "object",
+        "required": [
+          "premium",
+          "tax"
+        ],
+        "properties": {
+          "premium": {
+            "description": "Premium without tax, fees, commissions...",
+            "type": "number"
+          },
+          "tax": {
+            "description": "Tax paid",
+            "type": "number"
+          },
+          "discount": {
+            "description": "Discount given on this contract",
+            "type": "number",
+            "default": 0
+          },
+          "broker_fee": {
+            "description": "Broker fee",
+            "type": "number",
+            "default": 0
+          },
+          "cost_acquisition": {
+            "description": "Cost of acquisition given to the distributor",
+            "type": "number",
+            "default": 0
+          }
+        }
+      },
+      "ReceiptList": {
+        "type": "object",
+        "required": [
+          "object",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "The object type (must be `\"list\"`)"
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Receipt"
+            },
+            "description": "List of receipts for this page."
+          },
+          "next": {
+            "type": "string",
+            "description": "Start of the next page, if available"
+          }
+        }
+      },
+      "Claim": {
+        "type": "object",
+        "required": [
+          "object",
+          "id",
+          "url",
+          "status",
+          "portfolio_id",
+          "product_id",
+          "contract_id",
+          "timestamp",
+          "creation_date",
+          "last_update",
+          "reference",
+          "occurence_date",
+          "occurence_location",
+          "notification_date",
+          "claim_type",
+          "guarantees",
+          "product_data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "claim",
+            "description": "The object type (always \"claim\")",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of this claim.",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "description": "The url for this claim.",
+            "readOnly": true
+          },
+          "portfolio_id": {
+            "type": "string",
+            "description": "The id of the portfolio.",
+            "readOnly": true
+          },
+          "product_id": {
+            "type": "string",
+            "description": "The product for this portfolio.",
+            "readOnly": true
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "Id of the contract is attached to."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The update date and time in the partner system."
+          },
+          "creationt_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of creation the object",
+            "readOnly": true
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last update of the object",
+            "readOnly": true
+          },
+          "reference": {
+            "type": "string",
+            "description": "The legal reference of this claim, as seen by the insured."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ],
+            "description": "Status of the claim."
+          },
+          "occurence_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of occurence of the claim"
+          },
+          "occurence_location": {
+            "type": "string",
+            "description": "Location of the occurence of the claim"
+          },
+          "notification_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of notification of the claim"
+          },
+          "claim_type": {
+            "type": "string",
+            "description": "Type of the claim (product-specific)"
+          },
+          "revaluation_reason": {
+            "type": "string",
+            "description": "Reason for the revaluation of the claim"
+          },
+          "guarantees": {
+            "type": "object",
+            "description": "Information per guarantee",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ClaimGuarantee"
+            }
+          },
+          "product_data": {
+            "type": "object",
+            "description": "Information relative to the portfolio product"
+          }
+        }
+      },
+      "ClaimGuarantee": {
+        "type": "object",
+        "required": [
+          "fgu_claim",
+          "paid",
+          "outstanding"
+        ],
+        "properties": {
+          "fgu_claim": {
+            "type": "number",
+            "minimum": 0,
+            "description": "The claim value from the ground up (deductible, paid, outstanding, etc.)"
+          },
+          "paid": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Cumul of the amount paid to date"
+          },
+          "outstanding": {
+            "type": "number",
+            "minimum": 0,
+            "description": "The outstanding amount letf to pay"
+          },
+          "management_paid": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Management fee paid so far, if any"
+          },
+          "management_outstanding": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Management fee left to be paid, if any"
+          },
+          "subrogation_paid": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Cumul of the subrogation amount paid to date"
+          },
+          "subrogation_outstanding": {
+            "type": "number",
+            "minimum": 0,
+            "description": "The subrogation amount left to be paid"
+          }
+        }
+      },
+      "ClaimList": {
+        "type": "object",
+        "required": [
+          "object",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "The object type (always `\"list\"`)"
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url for this list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "description": "The list of claims for this page"
+          },
+          "next": {
+            "type": "string",
+            "description": "Start of the next page, if available"
+          }
+        }
+      },
+      "Settlement": {
+        "type": "object",
+        "required": [
+          "object",
+          "id",
+          "timestamp",
+          "reference",
+          "url",
+          "creation_date",
+          "last_update",
+          "payment_date",
+          "contract_id",
+          "portfolio_id",
+          "product_id",
+          "claim_id",
+          "guarantees",
+          "product_data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "settlement",
+            "description": "The object type (always \"settlement\")",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of this settlement.",
+            "readOnly": true
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "The id of the contract this settlement linked to",
+            "readOnly": true
+          },
+          "portfolio_id": {
+            "type": "string",
+            "description": "The id of the portfolio.",
+            "readOnly": true
+          },
+          "product_id": {
+            "type": "string",
+            "description": "The product for this portfolio.",
+            "readOnly": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The update date and time in the partner system."
+          },
+          "reference": {
+            "type": "string",
+            "description": "The legal reference of this settlement, as seen by the insured."
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url for this object",
+            "readOnly": true
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of creation of the object",
+            "readOnly": true
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last update of the object",
+            "readOnly": true
+          },
+          "payment_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date of payment"
+          },
+          "claim_id": {
+            "type": "string",
+            "description": "Id of the claim this settlement is attached to"
+          },
+          "guarantees": {
+            "type": "object",
+            "description": "Information per guarantee",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SettlementGuarantee"
+            }
+          },
+          "product_data": {
+            "type": "object",
+            "description": "Information relative to the portfolio product"
+          }
+        }
+      },
+      "SettlementGuarantee": {
+        "type": "object",
+        "properties": {
+          "paid": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "Amount paid in this settlement"
+          },
+          "management_paid": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "Management fees in this settlement"
+          },
+          "subrogation_paid": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "Amount of subrogation paid in this settlement"
+          }
+        }
+      },
+      "SettlementList": {
+        "type": "object",
+        "required": [
+          "object",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "The object type (always `\"list\"`)"
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Settlement"
+            },
+            "description": "List of settlements for this page."
+          },
+          "next": {
+            "type": "string",
+            "description": "Start of the next page, if available"
+          }
+        }
+      },
+      "Complaint": {
+        "type": "object",
+        "required": [
+          "object",
+          "id",
+          "url",
+          "portfolio_id",
+          "timestamp",
+          "creation_date",
+          "last_update",
+          "contract_reference",
+          "plaintiff_name",
+          "plaintiff_role",
+          "complaint_level",
+          "complaint_object",
+          "complaint_status",
+          "contact_type",
+          "notification_date"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "complaint",
+            "readOnly": true,
+            "description": "The type of object, should always be `\"complaint\"`."
+          },
+          "portfolio_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The id of the portfolio."
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of this complaint.",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this complaint",
+            "readOnly": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The update date and time in the partner system."
+          },
+          "creation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of creation of the object",
+            "readOnly": true
+          },
+          "last_update": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last update of the object",
+            "readOnly": true
+          },
+          "reference": {
+            "type": "string",
+            "description": "The legal reference of this complaint, as seen by the insured."
+          },
+          "contract_reference": {
+            "type": "string",
+            "description": "A reference to the contract this complaint is about."
+          },
+          "claim_reference": {
+            "type": "string",
+            "description": "A reference to the claim this complaint is about."
+          },
+          "plaintiff_name": {
+            "type": "string",
+            "description": "The name of the plaintiff"
+          },
+          "plaintiff_role": {
+            "type": "string",
+            "description": "The role of the plaintiff in relation to the contract."
+          },
+          "plaintiff_address": {
+            "type": "string",
+            "description": "The address of the plaintiff, if different from the insured."
+          },
+          "plaintiff_email": {
+            "type": "string",
+            "description": "The email of the plaintiff, if different from the insured."
+          },
+          "plaintiff_phone": {
+            "type": "string",
+            "description": "The phone of the plaintiff, if different from the insured."
+          },
+          "plaintiff_birthday": {
+            "type": "string",
+            "description": "The birthday of the plaintiff, if different from the insured."
+          },
+          "plaintiff_birthplace": {
+            "type": "string",
+            "description": "The birthplace of the plaintiff, if difference from the insured."
+          },
+          "complaint_level": {
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ],
+            "description": "The level of the complaint."
+          },
+          "complaint_object": {
+            "type": "string",
+            "description": "The object of the complaint."
+          },
+          "complaint_status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ],
+            "description": "The status of the complaint (`open` or `closed`)"
+          },
+          "contact_type": {
+            "type": "string",
+            "enum": [
+              "email",
+              "mail",
+              "phone",
+              "other"
+            ],
+            "description": "The complaint contact type"
+          },
+          "notification_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the complaint was received."
+          },
+          "response_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "the date and time the complaint was answered."
+          },
+          "response_content": {
+            "type": "string",
+            "description": "The response that was made to the complaint."
+          },
+          "response_nature": {
+            "type": "string",
+            "description": "The nature of the response."
+          }
+        }
+      },
+      "ComplaintList": {
+        "type": "object",
+        "required": [
+          "object",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "The object type (always `\"list\"`)"
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The url of this list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Complaint"
+            },
+            "description": "The list of complaints for this page"
+          },
+          "next": {
+            "type": "string",
+            "description": "Start of the next page, if available"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "object",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "default": "error",
+            "description": "The type of the object, must be `\"error\"`"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "API Key": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ]
+}

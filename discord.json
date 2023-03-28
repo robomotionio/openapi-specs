@@ -1,0 +1,449 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Discord",
+    "version": "1.0",
+    "description": "## Introduction\n\nYou’ve found the Discord Developer Documentation! These pages are dedicated to showing you all the ways that you can use Discord to make cool stuff. Whether you’re looking to create awesome bots for your community, empower your applications with our API, or hook us right into your game with Rich Presence or the GameSDK, Discord has something for you.\n\nAll of our documentation is on GitHub and we <3 corrections and improvements!\n\n### Bugs\nIf you believe you're experiencing a bug with our API or want to report incorrect documentation, open an issue on our issue tracker.\n#### Bots and Apps\nBots and apps are the lifeblood of the Discord development community. They come in all shapes and sizes, from small hobby projects for your server with friends, to huge projects that live in hundreds of thousands of servers. \n\nWe love seeing the unique, fun, and sometimes downright strange (in a good way) creations that come from our community.Discord offers an open API to serve requests for both bots and OAuth2 integrations. So whether you’re making your own /wumpus commands or looking to Log In With Discord, we’ve got you covered.\n\nSo go do it! Go! Go make an app and create something awesome.\n\n### Games\nWe love games, and we love helping game developers. If YOU have a game that you want to supercharge with Discord, then we have just the thing for you.\n\n#### Your Game On Discord\nIf you haven’t yet noticed, Discord allows you to sell your game right from Discord servers! We’ve got a whole suite of tools to help bring your game to life on Discord. Need networking? Have networking! Want a friends list? Take relationships too!\n#### Rich Presence\nNo matter where your game lives, it should have a first-class experience in Discord. Rich Presence is the way to make that a reality! We got tired of exchanging usernames, friend codes, and lobby passwords, so we created Rich Presence, an easy-to-use, easy-to-integrate way to get people playing games together that lets you:\n\n- Display rich game data on your players’ profiles\n- Empower them to send game invites to each other\n- Ask to Join and Spectate their friends' games\n- Spend more time playing together and less time setting up\n\nIt’s free, easy, and self-serve, so check out the GameSDK Activity Manager and get started!\n### Still need some help?\nJoin the Official Discord Developers server for support and discussion regarding Discord's APIs.\n### Go Make Cool Stuff!\nWe love our developers, and we plan to keep making practical tools so that YOU can keep making cool stuff. Build a bot, integrate our account system, or put us right in your game; whatever you do, do it with Discord.We can’t wait to see what you make.",
+    "termsOfService": "https://discord.com/developers/docs/legal",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/discord.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://discord.com/api"
+    }
+  ],
+  "paths": {
+    "/guilds/{guild.id}/audit-logs": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/guild.id"
+        }
+      ],
+      "get": {
+        "summary": "Get Guild Audit Log",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "target_id": {
+                        "type": "string"
+                      },
+                      "changes": {
+                        "type": "object"
+                      },
+                      "user_id": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "action_type": {
+                        "type": "string"
+                      },
+                      "options": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "action_type"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-guilds-guild.id-audit-logs",
+        "description": "Returns an audit log object for the guild. Requires the 'VIEW_AUDIT_LOG' permission.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user_id"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 42
+            },
+            "in": "query",
+            "name": "action_type",
+            "description": "the type of [audit log event](https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events)"
+          },
+          {
+            "$ref": "#/components/parameters/before"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "security": [
+          {
+            "BotToken": []
+          }
+        ]
+      }
+    },
+    "/channels/{channel.id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/channel.id"
+        }
+      ],
+      "get": {
+        "summary": "Get channel",
+        "tags": [],
+        "operationId": "get-channels-channel.id",
+        "description": "Get a channel by ID. Returns a channel object. If the channel is a thread, a thread member object is included in the returned result."
+      },
+      "patch": {
+        "summary": "Modify Channel",
+        "operationId": "patch-channels-channel.id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "channel"
+        ],
+        "description": "Update a channel's settings. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. All JSON parameters are optional."
+      },
+      "delete": {
+        "summary": "Close Channel",
+        "operationId": "delete-channels-channel.id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": ""
+      }
+    },
+    "/oauth2/@me": {
+      "get": {
+        "summary": "Get Current Authorization Information",
+        "tags": [
+          "bot"
+        ],
+        "operationId": "get-oauth2-@me",
+        "description": "Returns info about the current authorization. Requires authentication with a bearer token."
+      }
+    },
+    "/oauth2/applications/@me": {
+      "get": {
+        "summary": "Get Current Bot Application Information",
+        "tags": [
+          "bot"
+        ],
+        "operationId": "get-oauth2-applications-@me",
+        "description": "Returns the bot's application object without flags."
+      }
+    },
+    "/channels/{channel.id}/messages": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "channel.id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Channel Messages",
+        "tags": [],
+        "operationId": "get-channels-channel.id-messages",
+        "description": "Returns the messages for a channel. If operating on a guild channel, this endpoint requires the VIEW_CHANNEL permission to be present on the current user. If the current user is missing the 'READ_MESSAGE_HISTORY' permission in the channel then this will return no messages (since they cannot read the message history). Returns an array of message objects on success."
+      },
+      "post": {
+        "summary": "Create message",
+        "operationId": "post-channels-channel.id-messages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "tts": {
+                      "type": "boolean"
+                    },
+                    "embeds": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "title",
+                          "description"
+                        ],
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "description": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "content",
+                    "tts",
+                    "embeds"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "content": "Hello, World!",
+                      "tts": false,
+                      "embeds": [
+                        {
+                          "title": "Hello, Embed!",
+                          "description": "This is an embedded message."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Post a message to a guild text or DM channel. Returns a message object. Fires a Message Create Gateway event. See message formatting for more information on how to properly format messages.\nLimitations\n\n    When operating on a guild channel, the current user must have the SEND_MESSAGES permission.\n    When sending a message with tts (text-to-speech) set to true, the current user must have the SEND_TTS_MESSAGES permission.\n    When creating a message as a reply to another message, the current user must have the READ_MESSAGE_HISTORY permission.\n        The referenced message must exist and cannot be a system message.\n    The maximum request size when sending a message is 8MB\n    For the embed object, you can set every field except type (it will be rich regardless of if you try to set it), provider, video, and any height, width, or proxy_url values for images.\n    Files can only be uploaded when using the multipart/form-data content type.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "The message contents (2000 characters)",
+                    "example": "Your text message",
+                    "maxLength": 2000
+                  },
+                  "tts": {
+                    "type": "boolean"
+                  },
+                  "embeds": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Embed-Structure"
+                    }
+                  },
+                  "allowed_mentions": {
+                    "type": "string"
+                  },
+                  "message_reference": {
+                    "type": "string"
+                  },
+                  "components": {
+                    "type": "string"
+                  },
+                  "sticker_ids": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "title": "User",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Embed-Structure": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "color": "0x0099ff",
+            "title": "Some title",
+            "url": "https://discord.js.org",
+            "description": "Some description here",
+            "timestamp": "string",
+            "type": "rich"
+          }
+        },
+        "properties": {
+          "color": {
+            "type": "number",
+            "description": "color code of the embed"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Title of embed"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "\turl of embed"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "description of embed"
+          },
+          "timestamp": {
+            "type": "string",
+            "minLength": 1,
+            "format": "time",
+            "description": "timestamp of embed content"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "rich",
+              "image",
+              "video",
+              "gifv",
+              "article",
+              "link"
+            ],
+            "default": "rich",
+            "description": "Type of embed"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Embed-Author"
+          }
+        }
+      },
+      "Embed-Author": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "name": "Some name",
+            "icon_url": "https://i.imgur.com/AfFp7pu.png",
+            "url": "https://discord.js.org"
+          }
+        },
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon_url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "title": "Embed Author"
+      }
+    },
+    "securitySchemes": {
+      "BotToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Bot",
+        "description": ""
+      }
+    },
+    "parameters": {
+      "guild.id": {
+        "name": "guild.id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Guild Identifier"
+      },
+      "user_id": {
+        "name": "user_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "175928847299117063"
+        },
+        "description": "User identifier"
+      },
+      "before": {
+        "name": "before",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "175928847299117063"
+        },
+        "description": "filter before a certain entry id"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "example": 50
+        },
+        "description": "how many entries are returned (default 50, minimum 1, maximum 100)"
+      },
+      "after": {
+        "name": "after",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "175928847299117063"
+        },
+        "description": "filter after a certain entry id"
+      },
+      "channel.id": {
+        "name": "channel.id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "290926798999357250"
+        },
+        "description": "ID of a channel"
+      }
+    }
+  },
+  "security": [
+    {
+      "BotToken": []
+    }
+  ]
+}

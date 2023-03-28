@@ -1,0 +1,374 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Salesforce Knowledge API",
+    "version": "1.0",
+    "description": "You can manage articles and get support information with REST APIs."
+  },
+  "servers": [
+    {
+      "url": "https://{subdomain}.my.salesforce.com",
+      "variables": {
+        "subdomain": {
+          "default": "mydomain",
+          "description": "You own instance of your salesfoce access"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/services/data/v54.0/​async/​specifications/​oas3/​{oasRef}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "oasRef",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve OpenAPI spec",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v55.0-async-specifications-oas3-oasRef"
+      }
+    },
+    "/services/data/v54.0/async/specifications/oas3": {
+      "get": {
+        "summary": "Generate OpenAPI 3 spec file",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-async-specifications-oas3"
+      }
+    },
+    "/services/data/v54.0/sobjects": {
+      "get": {
+        "summary": "List available sobjects",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects"
+      }
+    },
+    "/services/data/v54.0/sobjects/{sObject}/": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sObject",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List Object",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects-sObject"
+      }
+    },
+    "/services/data/v54.0/sobjects/{sObject}/updated": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sObject",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "start",
+          "in": "query",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "end",
+          "in": "query",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get updated (added/modified) records in a given period of time",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects-sObject-updated"
+      }
+    },
+    "/services/data/v54.0/sobjects/{sObject}/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sObject",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Object",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects-sObject-id"
+      }
+    },
+    "/services/data/v54.0/sobjects/Attachment/{id}/body": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Object",
+        "tags": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            }
+          }
+        },
+        "operationId": "get-services-data-v54.0-sobjects-sObject-id"
+      }
+    },
+    "/services/data/v54.0/query": {
+      "get": {
+        "summary": "SOQL Query",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "done": true,
+                      "totalSize": 14,
+                      "records": [
+                        {
+                          "attributes": {
+                            "type": "Account",
+                            "url": "/services/data/v55.0/sobjects/Account/001D000000IRFmaIAH"
+                          },
+                          "Name": "Test 1"
+                        },
+                        {
+                          "attributes": {
+                            "type": "Account",
+                            "url": "/services/data/v55.0/sobjects/Account/001D000000IomazIAB"
+                          },
+                          "Name": "Test 2"
+                        }
+                      ]
+                    }
+                  },
+                  "properties": {
+                    "done": {
+                      "type": "boolean"
+                    },
+                    "totalSize": {
+                      "type": "integer"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "nextRecordsUrl": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-services-data-v54.0-query",
+        "description": "Use the Query resource to execute a SOQL query that returns all the results in a single response, or if needed, returns part of the results and a locator used to retrieve the remaining results.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "q",
+            "description": "Your SOQL Query"
+          }
+        ]
+      }
+    },
+    "/services/data/v54.0/query/{nextResultsId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "nextResultsId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieving the Remaining SOQL Query Results",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-query-nextResultsId",
+        "description": "If the initial query returns only part of the results, the end of the response contains a field called nextRecordsUrl\nIn such cases, request the next batch of records and repeat until all records have been retrieved. These requests use nextRecordsUrl, and do not include any parameters.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "done": {
+                    "type": "boolean"
+                  },
+                  "totalSize": {
+                    "type": "integer"
+                  },
+                  "records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                },
+                "x-examples": {
+                  "example-1": {
+                    "done": true,
+                    "totalSize": 3214,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/data/v54.0/sobjects/{sObject}/{id}/{relationship_field_name}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sObject",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "relationship_field_name",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve Records Using sObject Relationships",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects-sObject-id-relationship_field_name",
+        "description": "Retrieves a record based on the specified object, record ID, and relationship field. The fields and field values of the record are returned in the response body. If there are multiple related records, you can retrieve the complete set of associated records",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "fields",
+            "description": "Optional for GET. A comma-delimited list of fields in the associated relationship record returned in the response body. For example: /services/data/v56.0/sobjects/sObject/id/relationship field?fields=field1,field2"
+          }
+        ]
+      }
+    },
+    "/services/data/v54.0/sobjects/{sObject}/describe": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sObject",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "sObject Describe",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-services-data-v54.0-sobjects-sObject-describe",
+        "description": "Completely describes the individual metadata at all levels for the specified object. For example, this can be used to retrieve the fields, URLs, and child relationships for the Account object.\n\nFor more information about the metadata that is retrieved, see DescribesObjectResult in the SOAP API Developers Guide.\n\nYou can use the If-Modified-Since or If-Unmodified-Since header with this resource. When using the If-Modified-Since header, if no available object’s metadata has changed since the provided date, a 304 Not Modified status code is returned with no response body."
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.salesforce.com/services/oauth2/authorize",
+            "tokenUrl": "https://login.salesforce.com/services/oauth2/token",
+            "scopes": {
+              "offline_access": "To get a refresh token",
+              "full": "Full Access to any APIs",
+              "openid": "Allows access to the current, logged in user’s unique identifier for OpenID Connect apps. In the OAuth 2.0 user-agent flow and the OAuth 2.0 web server flow, use the openid scope. In addition to the access token, this scope enables you to receive a signed ID token that conforms to the OpenID Connect specifications.",
+              "lightning": "Allows hybrid apps to directly obtain Lightning child sessions through the OAuth 2.0 hybrid app token flow and hybrid app refresh token flow.",
+              "content": "Access content ressources",
+              "api": "Manage user data via API"
+            },
+            "refreshUrl": "https://login.salesforce.com/services/oauth2/token",
+            "X-Refresh-Settings": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "defaultExpireSec": 120
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": [
+        "offline_access",
+        "openid",
+        "lightning"
+      ]
+    }
+  ]
+}

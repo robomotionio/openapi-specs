@@ -1,0 +1,1276 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "digidip API",
+    "contact": {
+      "name": "API Support",
+      "email": "support@digidip.net"
+    },
+    "version": "1.5.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.digidip.net",
+      "description": "digidip API v1 server"
+    },
+    {
+      "url": "https://repository-api.digidip.net",
+      "description": "digidip API v1 server (F&F)"
+    }
+  ],
+  "paths": {
+    "/clickstats": {
+      "get": {
+        "tags": [
+          "Clicks"
+        ],
+        "summary": "Retrieve a list of clicks count per day, project and merchant",
+        "operationId": "ef33f1df8db19cf4fc962af71b77ad5a",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "date_iso_start",
+            "in": "query",
+            "description": "Start date",
+            "required": false,
+            "schema": {
+              "type": "date"
+            }
+          },
+          {
+            "name": "date_iso_end",
+            "in": "query",
+            "description": "End date",
+            "required": false,
+            "schema": {
+              "type": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/merchants/{merchant_id}": {
+      "get": {
+        "tags": [
+          "Deprecated"
+        ],
+        "summary": "Retrieve the core data of a single merchant.",
+        "operationId": "c42f46aadaf5b63e86fcbc033ecee273",
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "description": "Merchant ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/disbursements": {
+      "get": {
+        "tags": [
+          "Disbursements"
+        ],
+        "summary": "Retrieve a list of disbursements.",
+        "parameters": [
+          {
+            "name": "timestamp_start",
+            "in": "query",
+            "description": "Start unix timestamp",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end",
+            "in": "query",
+            "description": "End unix timestamp",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/disbursements/{disbursement_id}": {
+      "get": {
+        "tags": [
+          "Disbursements"
+        ],
+        "summary": "Retrieve the data of a single disbursement.",
+        "operationId": "e13024ed1ce7f11c27a93b772d54353d",
+        "parameters": [
+          {
+            "name": "disbursement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Disbursement"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/merchants": {
+      "get": {
+        "tags": [
+          "Merchants"
+        ],
+        "summary": "Retrieve a list of active merchants (contains detailed data).",
+        "parameters": [
+          {
+            "name": "pattern",
+            "in": "query",
+            "description": "URL",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Merchant"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/merchants/report/sales": {
+      "get": {
+        "tags": [
+          "Merchants"
+        ],
+        "summary": "Performance report aggregating transactions, clicks, commissions, sales amount, etc. for all\n     *     advertisers.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project Id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_start",
+            "in": "query",
+            "description": "Start unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end",
+            "in": "query",
+            "description": "End unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pattern",
+            "in": "query",
+            "description": "domain",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Advertiser"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/merchants/report/sales/{merchant_id}": {
+      "get": {
+        "tags": [
+          "Merchants"
+        ],
+        "summary": "Performance report aggregating transactions, clicks, commissions, sales amount, etc. for a single\n     *     advertiser.",
+        "operationId": "968079b59e7b39d48d105c3b3fd6eb37",
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project Id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_start",
+            "in": "query",
+            "description": "Start unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end",
+            "in": "query",
+            "description": "End unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Advertiser"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieve a list of projects.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieve the data of a single project.",
+        "operationId": "53519c89d0a2cb38647f5f6e0ceaf376",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/detailed-transactions": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Retrieve a list of transactions (contains extended data). Max request time frame is 7 days",
+        "operationId": "63e334e6dd5ff41c114ee0c6ac05bead",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project Id",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_start",
+            "in": "query",
+            "description": "Start unix timestamp (Mandatory field if timestamp_start_modified_date is NOT filled)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end",
+            "in": "query",
+            "description": "End unix timestamp (Mandatory field if timestamp_start is filled)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_start_modified_date",
+            "in": "query",
+            "description": "Start unix timestamp (Mandatory field if timestamp_start is NOT filled)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end_modified_date",
+            "in": "query",
+            "description": "End unix timestamp (Mandatory field if timestamp_start_modified_date is filled)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/transactions": {
+      "get": {
+        "tags": [
+          "Deprecated"
+        ],
+        "summary": "Retrieve a list of transactions. The output contains only the basic data.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_start",
+            "in": "query",
+            "description": "Start time in unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timestamp_end",
+            "in": "query",
+            "description": "End time in unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/transactions/{transaction_id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Retrieve the data of a single transaction.",
+        "operationId": "d3deb38146c471f3d5193396f2a6c35a",
+        "parameters": [
+          {
+            "name": "transaction_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Calculates when the next valid request can be performed",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Date": {
+        "properties": {
+          "iso8601": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Money": {
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "URL": {
+        "properties": {
+          "rel": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Advertiser": {
+        "properties": {
+          "merchant_id": {
+            "type": "integer"
+          },
+          "merchant_name": {
+            "type": "string"
+          },
+          "click_amount": {
+            "type": "integer"
+          },
+          "transaction_amount": {
+            "type": "integer"
+          },
+          "conversion_ratio": {
+            "type": "number"
+          },
+          "pending_commission": {
+            "type": "number"
+          },
+          "validated_commission": {
+            "type": "number"
+          },
+          "denied_commission": {
+            "type": "number"
+          },
+          "ecpc": {
+            "type": "number"
+          },
+          "pending_revenue": {
+            "type": "number"
+          },
+          "validated_revenue": {
+            "type": "number"
+          },
+          "denied_revenue": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Click": {
+        "properties": {
+          "reference": {
+            "properties": {
+              "content": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "custom_subid": {
+            "properties": {
+              "content": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/URL"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "Disbursement": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "unconfirmed",
+              "confirmed",
+              "failed",
+              "ongoing"
+            ]
+          },
+          "credit_note": {
+            "type": "string"
+          },
+          "currency_rate": {
+            "type": "number"
+          },
+          "confirmed_date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "period_start_date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "period_end_date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "amount": {
+            "properties": {
+              "currency": {
+                "type": "string"
+              },
+              "amount_net": {
+                "type": "number"
+              },
+              "amount_gross": {
+                "type": "number"
+              },
+              "amount_tax": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "financial": {
+            "properties": {
+              "bank_account_holder": {
+                "type": "string"
+              },
+              "bank_code": {
+                "type": "string"
+              },
+              "bank_account_number": {
+                "type": "string"
+              },
+              "paypal_email": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "position": {
+                  "type": "integer"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "amount_net": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "transaction_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "Merchant": {
+        "properties": {
+          "merchant_id": {
+            "type": "integer"
+          },
+          "merchant_name": {
+            "type": "string"
+          },
+          "homepage": {
+            "type": "string"
+          },
+          "cpa": {
+            "type": "string"
+          },
+          "cpl": {
+            "type": "string"
+          },
+          "cpc": {
+            "type": "string"
+          },
+          "custom_rate": {
+            "type": "string"
+          },
+          "hosts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocked_projects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "Network": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "account": {
+            "type": "string"
+          },
+          "acronym": {
+            "type": "string"
+          },
+          "acronym_network": {
+            "type": "string"
+          },
+          "acronym_account": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Project": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Transaction": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "price": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "network": {
+            "$ref": "#/components/schemas/Network"
+          },
+          "commission": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "last_modified_date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "added",
+              "pending",
+              "validated",
+              "denied",
+              "received",
+              "payment processing",
+              "paid"
+            ]
+          },
+          "project": {
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "merchant": {
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "disbursement": {
+            "properties": {
+              "credit_note_id": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "click": {
+            "properties": {
+              "reference": {
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "custom_subid": {
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "urls": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/URL"
+                }
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "login": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Merchants"
+    },
+    {
+      "name": "Transactions"
+    },
+    {
+      "name": "Disbursements"
+    },
+    {
+      "name": "Projects"
+    },
+    {
+      "name": "Clicks"
+    },
+    {
+      "name": "Deprecated"
+    }
+  ]
+}

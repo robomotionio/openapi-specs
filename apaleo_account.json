@@ -1,0 +1,1017 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "apaleo Account API",
+    "description": "Manage accounts, subscriptions and more.",
+    "contact": {
+      "url": "https://apaleo.dev/",
+      "name": "Apaleo"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.apaleo.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/account/v1/accounts/current": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "AccountAccountsCurrentGet",
+        "description": "Retrieves information about the current account.<br>You need to be authorized (no particular scope required)",
+        "operationId": "AccountAccountsCurrentGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "AccountAccountsCurrentPut",
+        "description": "Completely replaces an account with the new definition passed in. The old data will be lost.<br>You must have this scope: 'account.manage'.",
+        "operationId": "AccountAccountsCurrentPut",
+        "parameters": [],
+        "requestBody": {
+          "description": "The definition of the account.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceAccountModel"
+              },
+              "example": {
+                "name": "Demo Account",
+                "description": "This is the demo account",
+                "logoUrl": "logo.png",
+                "location": {
+                  "addressLine1": "My Street 1",
+                  "postalCode": "12345",
+                  "city": "MyCity",
+                  "countryCode": "GB"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "204": {
+            "description": "The account has been replaced.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "account.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/v1/accounts": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "AccountAccountsGet",
+        "description": "Get the list of accounts.<br>You must have this scope: 'accounts.read'.",
+        "operationId": "AccountAccountsGet",
+        "parameters": [
+          {
+            "name": "accountCodes",
+            "in": "query",
+            "description": "Filter result by requested codes",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all accounts.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no accounts found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "accounts.read"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "AccountAccountsPost",
+        "description": "Use this call to create a new account.<br>You must have this scope: 'account.create'.",
+        "operationId": "AccountAccountsPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the account.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountModel"
+              },
+              "example": {
+                "code": "DEMO",
+                "name": "Demo Account",
+                "description": "This is the demo account",
+                "defaultLanguage": "en",
+                "logoUrl": "logo.png",
+                "type": "Trial",
+                "location": {
+                  "addressLine1": "My Street 1",
+                  "postalCode": "12345",
+                  "city": "MyCity",
+                  "countryCode": "GB"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new account was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "account.create"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/v1/account-actions/current/suspend": {
+      "put": {
+        "tags": [
+          "AccountActions"
+        ],
+        "summary": "AccountAccount-actionsCurrentSuspendPut",
+        "description": "Suspends the current account.\r\nThis changes the account type to 'Suspended'.<br>You must have this scope: 'account.manage'.",
+        "operationId": "AccountAccount-actionsCurrentSuspendPut",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Suspension of the account was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "account.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/v1/account-actions/current/set-live": {
+      "put": {
+        "tags": [
+          "AccountActions"
+        ],
+        "summary": "AccountAccount-actionsCurrentSet-livePut",
+        "description": "Move the current account to live.\r\nThis changes the account type to 'Live'.<br>You must have this scope: 'account.manage'.",
+        "operationId": "AccountAccount-actionsCurrentSet-livePut",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Moving account to live was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "account.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountCreatedModel": {
+        "title": "AccountCreatedModel",
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Account code"
+          }
+        },
+        "example": {
+          "code": "DEMO"
+        }
+      },
+      "AccountItemModel": {
+        "title": "AccountItemModel",
+        "required": [
+          "code",
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The code for the account that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the account, which usually should be the company name"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the account"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          }
+        }
+      },
+      "AccountListModel": {
+        "title": "AccountListModel",
+        "required": [
+          "accounts",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountItemModel"
+            },
+            "description": "List of accounts"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "accounts": [
+            {
+              "code": "DEMO",
+              "name": "Demo Account",
+              "description": "This is the demo account",
+              "type": "Trial"
+            }
+          ],
+          "count": 0
+        }
+      },
+      "AccountModel": {
+        "title": "AccountModel",
+        "required": [
+          "code",
+          "name",
+          "defaultLanguage",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The code for the account that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the account, which usually should be the company name"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the account"
+          },
+          "defaultLanguage": {
+            "type": "string",
+            "description": "The default language two-letter language code (ISO Alpha-2) for the account"
+          },
+          "logoUrl": {
+            "type": "string",
+            "description": "The URL of the account logo"
+          },
+          "location": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          },
+          "additionallySupportedCountries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of supported countries"
+          }
+        },
+        "example": {
+          "code": "DEMO",
+          "name": "Demo Account",
+          "description": "This is the demo account",
+          "defaultLanguage": "en",
+          "logoUrl": "logo.png",
+          "location": {
+            "addressLine1": "My Street 1",
+            "postalCode": "12345",
+            "city": "MyCity",
+            "countryCode": "GB"
+          },
+          "type": "Trial",
+          "additionallySupportedCountries": [
+            "ES",
+            "FR"
+          ]
+        }
+      },
+      "AddressModel": {
+        "title": "AddressModel",
+        "required": [
+          "addressLine1",
+          "postalCode",
+          "city",
+          "countryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateAccountModel": {
+        "title": "CreateAccountModel",
+        "required": [
+          "name",
+          "defaultLanguage",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "maxLength": 10,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_]*$",
+            "type": "string",
+            "description": "The code for the account that can be shown in reports and table views. If not set, random one will be generated"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the account, which usually should be the company name"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the account"
+          },
+          "defaultLanguage": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "The default language code for the account"
+          },
+          "logoUrl": {
+            "type": "string",
+            "description": "The URL of the account logo"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type2"
+          },
+          "location": {
+            "$ref": "#/components/schemas/CreateAddressModel"
+          }
+        },
+        "example": {
+          "code": "DEMO",
+          "name": "Demo Account",
+          "description": "This is the demo account",
+          "defaultLanguage": "en",
+          "logoUrl": "logo.png",
+          "type": "Trial",
+          "location": {
+            "addressLine1": "My Street 1",
+            "postalCode": "12345",
+            "city": "MyCity",
+            "countryCode": "GB"
+          }
+        }
+      },
+      "CreateAddressModel": {
+        "title": "CreateAddressModel",
+        "required": [
+          "addressLine1",
+          "postalCode",
+          "city",
+          "countryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "regionCode": {
+            "maxLength": 6,
+            "minLength": 2,
+            "type": "string",
+            "description": "The ISO 3166-2 code"
+          },
+          "countryCode": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "The country code, in ISO 3166-1 alpha-2 code"
+          }
+        }
+      },
+      "MessageItemCollection": {
+        "title": "MessageItemCollection",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ReplaceAccountModel": {
+        "title": "ReplaceAccountModel",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name for the account, which usually should be the company name"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the account"
+          },
+          "logoUrl": {
+            "type": "string",
+            "description": "The URL of the account logo"
+          },
+          "location": {
+            "$ref": "#/components/schemas/CreateAddressModel"
+          },
+          "additionallySupportedCountries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of supported countries"
+          }
+        },
+        "description": "With this request you can modify an account",
+        "example": {
+          "name": "Demo Account",
+          "description": "This is the demo account",
+          "logoUrl": "logo.png",
+          "location": {
+            "addressLine1": "My Street 1",
+            "postalCode": "12345",
+            "city": "MyCity",
+            "countryCode": "GB"
+          }
+        }
+      },
+      "Type": {
+        "title": "Type",
+        "enum": [
+          "Trial",
+          "Live",
+          "Suspended",
+          "Development"
+        ],
+        "type": "string",
+        "description": "Type of the account",
+        "example": "Trial"
+      },
+      "Type2": {
+        "title": "Type2",
+        "enum": [
+          "Trial",
+          "Live",
+          "Suspended",
+          "Development"
+        ],
+        "type": "string",
+        "description": "Set the type of the account",
+        "example": "Trial"
+      }
+    },
+    "securitySchemes": {
+      "Client credentials grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "",
+            "scopes": {
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      },
+      "Authorization code grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://identity.apaleo.com/connect/authorize",
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "https://identity.apaleo.com/connect/token",
+            "scopes": {
+              "offline_access": "This scope is active by default for connect clients.",
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Client credentials grant flow": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Account",
+      "description": ""
+    },
+    {
+      "name": "AccountActions",
+      "description": ""
+    }
+  ]
+}

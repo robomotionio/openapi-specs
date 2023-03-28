@@ -1,0 +1,769 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.1",
+    "x-server-version": "${project.version}",
+    "title": "DIGITAL COMMERCE ADDRESS API",
+    "description": "Digital Commerce Swiss Post web REST API for the management of the delivery addresses owned by a Swiss Post registered user. The public API is protected by the OAUTH authorization protocol so that only registered and granted clients (shops) are authorized to consume its methods with the consent of the resource owners (end users).\n\nPublic API for querying and validating delivery addresses, searching zips and streets with auto-completion\nAPI documentation https://developer.post.ch/en/digital-commerce-api",
+    "contact": {
+      "name": "Digital Commerce API",
+      "email": "digitalintegration@post.ch",
+      "url": "https://www.post.ch/digital-commerce/api"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/address/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Address",
+      "description": "Everything about user Addresses"
+    },
+    {
+      "name": "Autocompletion",
+      "description": "All about Swiss cities, streets and postal codes"
+    }
+  ],
+  "security": [
+    {
+      "oauth2ClientCredentials": [
+        "WEDEC_AUTOCOMPLETE_ADDRESS",
+        "WEDEC_VALIDATE_ADDRESS"
+      ]
+    }
+  ],
+  "paths": {
+    "/users/current/addresses": {
+      "get": {
+        "description": "Return all the addresses owned by the currently authenticated Swiss Post user.",
+        "tags": [
+          "Address"
+        ],
+        "security": [
+          {
+            "oauth2AuthorizationCode": [
+              "WEDEC_READ_ADDRESS",
+              "WEDEC_READ_MAIN_ADDRESS"
+            ]
+          }
+        ],
+        "operationId": "getCurrentUserAddresses",
+        "responses": {
+          "200": {
+            "description": "List of addresses certified by the Swiss Post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/current/addresses/main": {
+      "get": {
+        "description": "Return the main address of the currently authenticated Swiss Post user",
+        "tags": [
+          "Address"
+        ],
+        "security": [
+          {
+            "oauth2AuthorizationCode": [
+              "WEDEC_READ_ADDRESS",
+              "WEDEC_READ_MAIN_ADDRESS"
+            ]
+          }
+        ],
+        "operationId": "getCurrentUserMainAddress",
+        "responses": {
+          "200": {
+            "description": "Main and validated address for current user. It is a verified and certified address, the verification includes the fields of the location, first and last names.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "type"
+                  ],
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Address"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/current/addresses/{id}": {
+      "get": {
+        "description": "Return the attributes of an address owned by the currently authenticated SwissPost user",
+        "tags": [
+          "Address"
+        ],
+        "security": [
+          {
+            "oauth2AuthorizationCode": [
+              "WEDEC_READ_ADDRESS",
+              "WEDEC_READ_MAIN_ADDRESS"
+            ]
+          }
+        ],
+        "operationId": "getAddressDetail",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unique identifier of the addressee",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail of the Address, if type is PICK_POST, address is completed by the PickPost identifier of the currently authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/addresses/validation": {
+      "post": {
+        "description": "Validate and return the attributes of a given address extended by a unique id as validation certificate",
+        "tags": [
+          "Address"
+        ],
+        "operationId": "validate",
+        "requestBody": {
+          "description": "Address where the parcel has to be delivered. The address structure has to be mapped into a JSON object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressValidationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "May already be certified. Does not require the authentication of the end user. Fails if address is certified and not owned by the currently authenticated end user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "403": {
+            "description": "No valid access token"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/zips": {
+      "get": {
+        "tags": [
+          "Autocompletion"
+        ],
+        "description": "Search zip codes with city which match a given example",
+        "parameters": [
+          {
+            "name": "zipCity",
+            "in": "query",
+            "description": "Zip or city as example",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of zip",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DOMICILE",
+                "POSTBOX",
+                "PICK_POST",
+                "MY_POST_24",
+                "POST_OFFICE"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max search results returned. Cannot be greater than 60. DefaultValue = 10",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The zip code and the city are separated by a space in both result and query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZipSearchSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/streets": {
+      "get": {
+        "tags": [
+          "Autocompletion"
+        ],
+        "description": "Search street names which match a given example",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name as example",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zip",
+            "in": "query",
+            "description": "zip code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max search results returned. Cannot be greater than 60. DefaultValue = 10",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The zip code and the city are separated by a space in both result and query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreetSearchSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/houses": {
+      "get": {
+        "tags": [
+          "Autocompletion"
+        ],
+        "description": "Search house numbers for the given street and zip code",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "query",
+            "description": "number as example",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zip",
+            "in": "query",
+            "description": "zip code",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "streetname",
+            "in": "query",
+            "description": "streetname as example",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Max search results returned. Cannot be greater than 60. DefaultValue = 10",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The zip code and the city are separated by a space in both result and query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseSearchSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressValidationRequest": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Address"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fullValidation": {
+                "type": "boolean",
+                "default": false,
+                "description": "if true the validation will include also the name of the person and the additional quality CERTIFIED_DOMICILE will be possible"
+              }
+            }
+          }
+        ]
+      },
+      "ValidationResponse": {
+        "type": "object",
+        "required": [
+          "address",
+          "quality",
+          "expires"
+        ],
+        "properties": {
+          "address": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ]
+          },
+          "quality": {
+            "type": "string",
+            "enum": [
+              "DOMICILE_CERTIFIED",
+              "CERTIFIED",
+              "USABLE",
+              "FIXED",
+              "UNUSABLE",
+              "COMPROMISED"
+            ],
+            "description": "[DOMICILE_CERTIFIED] The address, including the full name of the person, is certified by SwissPost\n[CERTIFIED] The address is certified by the Swiss Post\n[USABLE] Parts of the address have been recognized and the address is considered as reusable in other contexts\n[FIXED] The returned address is USABLE, but some minor typos have been corrected (e.g. you sent only the zip and the SwissPost service add the city name)\n[UNUSABLE] The system was not able to recognize an acceptable address in any field provided\n[COMPROMISED] The address may have been modified by a man in the middle"
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time",
+            "description": "date-time until when is the validated address certified: 2001-10-26T21:32:52"
+          },
+          "personAddressValidity": {
+            "type": "object",
+            "description": "In case of DOMICILE_CERTIFIED, the validity of the full address",
+            "properties": {
+              "validFrom": {
+                "type": "string",
+                "format": "date",
+                "description": "The start of validity"
+              },
+              "validTo": {
+                "type": "string",
+                "format": "date",
+                "description": "The end of validity"
+              }
+            }
+          }
+        }
+      },
+      "AddressList": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "description": "List of addresses certified by the Swiss Post",
+            "items": {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Address"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "required": [
+          "addressee"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "MAIN",
+              "DOMICILE",
+              "POSTBOX",
+              "PICK_POST",
+              "MY_POST_24",
+              "POST_OFFICE"
+            ],
+            "description": "the type of the address ([MAIN] The verified address registered inside the Swiss Post identity, [DOMICILE] Any domicile address, [POSTBOX] Any postbox address, [PICK_POST] Any PickPost point address, [MY_POST_24] Any MyPost24 automate address, [POST_OFFICE] Any post office address)"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "nickname unique by user id"
+          },
+          "addressee": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "logisticLocation": {
+            "$ref": "#/components/schemas/LogisticLocation"
+          },
+          "geographicLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "id": {
+            "type": "string",
+            "description": "unique identifier and certificate of authenticity by the Swiss Post"
+          }
+        }
+      },
+      "AddressDetail": {
+        "type": "object",
+        "required": [
+          "address"
+        ],
+        "properties": {
+          "address": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ]
+          },
+          "pickpostId": {
+            "type": "string",
+            "description": "PickPost unique identifier of the owner user when the type of address is PICK_POST or MY_POST_24"
+          }
+        }
+      },
+      "Person": {
+        "type": "object",
+        "required": [
+          "title",
+          "firstName",
+          "lastName"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Mr., Miss or Mrs."
+          },
+          "firstName": {
+            "type": "string",
+            "description": "first name of the person"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "family name of the person"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyAdditionalInformation": {
+            "type": "string"
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": [
+          "house",
+          "zip"
+        ],
+        "properties": {
+          "house": {
+            "$ref": "#/components/schemas/House"
+          },
+          "zip": {
+            "$ref": "#/components/schemas/Zip"
+          }
+        }
+      },
+      "LogisticLocation": {
+        "type": "object",
+        "required": [
+          "house",
+          "zip"
+        ],
+        "properties": {
+          "postBoxNumber": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "house": {
+            "$ref": "#/components/schemas/House"
+          },
+          "zip": {
+            "$ref": "#/components/schemas/Zip"
+          }
+        }
+      },
+      "House": {
+        "type": "object",
+        "required": [
+          "street"
+        ],
+        "properties": {
+          "additionalAddress": {
+            "type": "string",
+            "description": "for use with \"in care of\""
+          },
+          "street": {
+            "type": "string",
+            "description": "Street name. Example, Via della Posta"
+          },
+          "houseNumber": {
+            "type": "string",
+            "description": "House number. Example 12, 12a"
+          },
+          "houseKey": {
+            "type": "string",
+            "description": "unique identifier of the house"
+          }
+        }
+      },
+      "Zip": {
+        "type": "object",
+        "required": [
+          "zip",
+          "city"
+        ],
+        "properties": {
+          "zip": {
+            "type": "string",
+            "description": "a generic alphanumeric zip"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name. Example Bern"
+          }
+        }
+      },
+      "ZipSearchSummary": {
+        "type": "object",
+        "required": [
+          "zips"
+        ],
+        "properties": {
+          "zips": {
+            "type": "array",
+            "description": "List of zip results",
+            "items": {
+              "$ref": "#/components/schemas/ZipSummary"
+            }
+          }
+        }
+      },
+      "ZipSummary": {
+        "type": "object",
+        "required": [
+          "zip"
+        ],
+        "properties": {
+          "zip": {
+            "type": "string"
+          },
+          "city18": {
+            "type": "string"
+          },
+          "city27": {
+            "type": "string"
+          },
+          "city39": {
+            "type": "string"
+          }
+        }
+      },
+      "StreetSearchSummary": {
+        "type": "array",
+        "description": "List of street name results",
+        "items": {
+          "type": "string"
+        }
+      },
+      "HouseSearchSummary": {
+        "type": "array",
+        "description": "List of house number results",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth2AuthorizationCode": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "/OAuth/authorization",
+            "tokenUrl": "/OAuth/token",
+            "refreshUrl": "/OAuth/token",
+            "scopes": {
+              "WEDEC_READ_ADDRESS": "Read user's addresses",
+              "WEDEC_READ_MAIN_ADDRESS": "Read user's main addresses"
+            }
+          }
+        }
+      },
+      "oauth2ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/OAuth/token",
+            "scopes": {
+              "WEDEC_VALIDATE_ADDRESS": "Validate address",
+              "WEDEC_AUTOCOMPLETE_ADDRESS": "Autocomplete address (zip, city, street, house number)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

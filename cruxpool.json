@@ -1,0 +1,979 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Welcome to Cruxpool public API documentation",
+    "version": "1.0.1",
+    "title": "Public API",
+    "contact": {
+      "email": "support@cruxpool.com"
+    },
+    "x-logo": {
+      "url": "https://www.cruxpool.com/favicon.ico"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://www.cruxpool.com/api/eth",
+      "description": "Ethereum Pool API"
+    },
+    {
+      "url": "https://www.cruxpool.com/api/etc",
+      "description": "Ethereum Classic Pool API"
+    },
+    {
+      "url": "https://www.cruxpool.com/api/btc",
+      "description": "Bitcoin Pool API"
+    },
+    {
+      "url": "https://www.cruxpool.com/api/beam",
+      "description": "Beam Pool API"
+    },
+    {
+      "url": "https://www.cruxpool.com/api/rvn",
+      "description": "Ravencoin Pool API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "pool",
+      "description": "Get global pool informations"
+    },
+    {
+      "name": "tools",
+      "description": ""
+    },
+    {
+      "name": "miner",
+      "description": "Access to Miner informations"
+    },
+    {
+      "name": "worker",
+      "description": "Access to Worker informations"
+    }
+  ],
+  "paths": {
+    "/pool/stats": {
+      "get": {
+        "tags": [
+          "pool"
+        ],
+        "summary": "Get pool stats",
+        "description": "",
+        "operationId": "poolStats",
+        "responses": {
+          "200": {
+            "description": "Pool stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "hashrate": {
+                          "type": "integer"
+                        },
+                        "minersTotal": {
+                          "type": "integer"
+                        },
+                        "nodes": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Node"
+                          }
+                        },
+                        "workersTotal": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/estimatedEarnings/{hashrate}": {
+      "get": {
+        "tags": [
+          "tools"
+        ],
+        "summary": "Estimate earnings for a given hashrate",
+        "description": "Return estimate earnings for one hour, one day, one week and one month",
+        "operationId": "estimatedEarnings",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "estEarningsPerHour": {
+                          "type": "number"
+                        },
+                        "estEarningsPerDay": {
+                          "type": "number"
+                        },
+                        "estEarningsPerWek": {
+                          "type": "number"
+                        },
+                        "estEarningsPerMonth": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid input value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "hashrate",
+          "in": "path",
+          "description": "hashrate to estimate in MH/s",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ]
+    },
+    "/miner/{minerId}": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner by ID",
+        "description": "Returns a single miner info",
+        "operationId": "getMiner",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Miner"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/balance": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner balance by ID",
+        "description": "Returns miner's balance",
+        "operationId": "getMinerBalance",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "balance": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/hashrate": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner hashrate by ID",
+        "description": "Returns miner's hashrate",
+        "operationId": "getMinerHashrate",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "avgHashrate": {
+                          "type": "integer"
+                        },
+                        "hashrate": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/reportedHashrate": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner reported hashrate by ID",
+        "description": "Returns miner's reported hashrate",
+        "operationId": "getMinerReportedHashrate",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reported": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/history/{type}": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner history by ID",
+        "description": "Returns miner's history hashrate. You can either pick type day or month",
+        "operationId": "getMinerHistory",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "description": "type of history, day or month",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "month"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "history": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/History"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/payments": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner last payments by ID",
+        "description": "Returns miner's last payments",
+        "operationId": "getMinerPayments",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payments": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Payments"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/workers": {
+      "get": {
+        "tags": [
+          "miner"
+        ],
+        "summary": "Find Miner's workers list by ID",
+        "description": "Returns workers list",
+        "operationId": "getMinerWorkers",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "workers": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "$ref": "#/components/schemas/Worker"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/worker/{name}": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Find worker by name",
+        "description": "Returns a single worker info",
+        "operationId": "getWorker",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "description": "ID of Miner to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Worker"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner or worker not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miner/{minerId}/worker/{name}/history": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Find Worker history by ID",
+        "description": "Returns worker's history. 24h data history",
+        "operationId": "getWorkerHistory",
+        "parameters": [
+          {
+            "name": "minerId",
+            "in": "path",
+            "description": "ID of Miner",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "description": "ID of worker to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "history": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/HistoryWorker"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Miner or worker not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal api error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Miner": {
+        "type": "object",
+        "properties": {
+          "avgHashrate": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "coinPerMins": {
+            "type": "string",
+            "example": "doggie"
+          },
+          "hashrate": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "workers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Worker"
+            }
+          },
+          "workersOffline": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workersOnline": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workersTotal": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Worker": {
+        "type": "object",
+        "properties": {
+          "lastBeat": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "hr": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "offline": {
+            "type": "boolean"
+          },
+          "shares": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reported": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "hr2": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shares2": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "staleShares": {
+            "type": "integer",
+            "format": "int32",
+            "description": "User Status"
+          },
+          "invalidShares": {
+            "type": "integer",
+            "format": "int32",
+            "description": "User Status"
+          }
+        }
+      },
+      "Node": {
+        "type": "object",
+        "properties": {
+          "difficulty": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "lastBeat": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "History": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "avg": {
+            "type": "integer"
+          },
+          "hashes": {
+            "type": "integer"
+          },
+          "reported": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          }
+        }
+      },
+      "HistoryWorker": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "avg": {
+            "type": "integer"
+          },
+          "reported": {
+            "type": "integer"
+          },
+          "shares": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          }
+        }
+      },
+      "Payments": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "tx": {
+            "type": "string"
+          }
+        }
+      },
+      "GeneralError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "default": false
+          },
+          "data": {
+            "type": "string",
+            "default": "Error message"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Cruxpool and our mining pools",
+    "url": "http://cruxpool.com"
+  }
+}

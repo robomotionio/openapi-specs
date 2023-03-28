@@ -1,0 +1,436 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Timely Time Tracking API",
+    "description": "Includes the client and the project endpoints",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.timelyapp.com/1.1"
+    }
+  ],
+  "paths": {
+    "/{account_id}/clients": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "account_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the account"
+        }
+      ],
+      "get": {
+        "summary": "List all clients",
+        "description": "List all clients",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a client",
+        "description": "Create a client",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "active": {
+                        "type": "boolean"
+                      },
+                      "external_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "0": {
+                  "value": "{\"client\":{\"name\":\"API test client\",\"active\":true,\"external_id\":\"test ID\"}}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{account_id}/clients/{client_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "account_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the account"
+        },
+        {
+          "in": "path",
+          "name": "client_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the client"
+        }
+      ],
+      "get": {
+        "summary": "Show a client",
+        "description": "Show a client",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a client",
+        "description": "Update a client",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "active": {
+                        "type": "boolean"
+                      },
+                      "external_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "0": {
+                  "value": "{\"client\":{\"name\":\"API test client updated\",\"active\":true,\"external_id\":\"test ID updated\"}}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{account_id}/projects": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "account_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the account"
+        }
+      ],
+      "get": {
+        "summary": "List all projects",
+        "description": "List all projects",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a project",
+        "description": "Create a project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project": {
+                    "type": "object",
+                    "properties": {
+                      "rate_type": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "active": {
+                        "type": "boolean"
+                      },
+                      "hour_rate": {
+                        "type": "integer"
+                      },
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "billable": {
+                        "type": "boolean"
+                      },
+                      "budget_type": {
+                        "type": "string"
+                      },
+                      "client_id": {
+                        "type": "string"
+                      },
+                      "users": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "user_id": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "budget": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "0": {
+                  "value": "{\"project\": {\n    \"name\": \"NewProject20220318a\",\n    \"budget\": \"300\",\n    \"budget_type\":\"H\",\n    \"rate_type\": \"project\",\n    \"active\": true,\n    \"deleted\": false,\n    \"color\": \"67a3bc\",\n    \"client_id\": \"1648178\",\n    \"users\": [\n        {\n            \"user_id\": \"2056588\"\n        }\n    ],\n    \"billable\": true,\n    \"hour_rate\": 100,\n    \"external_id\": \"test-ID\"\n}}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{account_id}/projects/{project_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "account_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the account"
+        },
+        {
+          "in": "path",
+          "name": "project_id",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Numeric ID of the project"
+        }
+      ],
+      "get": {
+        "summary": "Show a project",
+        "description": "Show a project",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a project",
+        "description": "Update a project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project": {
+                    "type": "object",
+                    "properties": {
+                      "color": {
+                        "type": "string"
+                      },
+                      "active": {
+                        "type": "boolean"
+                      },
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "billable": {
+                        "type": "boolean"
+                      },
+                      "client_id": {
+                        "type": "string"
+                      },
+                      "users": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "user_id": {
+                              "type": "string"
+                            },
+                            "hour_rate": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "labels": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label_id": {
+                              "type": "integer"
+                            },
+                            "required": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      },
+                      "rate_type": {
+                        "type": "string"
+                      },
+                      "deleted": {
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "hour_rate": {
+                        "type": "integer"
+                      },
+                      "enable_labels": {
+                        "type": "string"
+                      },
+                      "budget_type": {
+                        "type": "string"
+                      },
+                      "budget": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "0": {
+                  "value": "{\"project\": {\n    \"name\": \"Test Project 1654869536405 updated\",\n    \"active\": true,\n    \"color\": \"34ebe8\",\n    \"budget\": \"300\",\n    \"budget_type\":\"H\",\n    \"rate_type\": \"project\",\n    \"deleted\": false,\n    \"client_id\": \"1632443\",\n    \"users\": [\n        {\n            \"user_id\": \"2056588\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066166\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066201\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066202\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066204\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066203\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066205\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066337\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066338\", \"hour_rate\": 66\n        },\n        {\n            \"user_id\": \"2066339\", \"hour_rate\": 66\n        }\n    ],\n    \"billable\": true,\n    \"hour_rate\": 66,\n    \"external_id\": \"test-ID\",\n    \"enable_labels\": \"custom\",\n    \"labels\": [\n        {\n            \"label_id\": 2521614,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521615,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521616,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521617,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521618,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521619,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521620,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521621,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521622,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521623,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2521624,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590725,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590726,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590727,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590728,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590729,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590730,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590731,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590732,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590733,\n            \"required\": false\n        },\n        {\n            \"label_id\": 2590734,\n            \"required\": false\n        }\n    ]\n}}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a project",
+        "description": "Delete a project",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "JWT Authorization header using the Bearer scheme.",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

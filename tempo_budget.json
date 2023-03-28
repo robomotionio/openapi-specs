@@ -1,0 +1,5226 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Tempo Budget",
+    "description": "Tempo Budgets REST API documentation * **Warning!** The REST API is a work in progress and is subject to changes. Product updates may cause significant changes in function without advance warning. Note that Tempo Budgets is completely based on REST but not all of its methods are intended for external usage. You should use only methods that are listed in this API documentation.",
+    "termsOfService": "https://www.tempo.io/terms-of-use",
+    "version": "1.0",
+    "x-logo": {
+      "url": "https://cdn2.hubspot.net/hubfs/2814970/openApi/TEMPO_OpenAPI.png",
+      "altText": "Tempo Software",
+      "href": "https://www.tempo.io/server-api-documentation/"
+    }
+  },
+  "externalDocs": {
+    "description": "Contact Tempo Customer Support.",
+    "url": "https://tempo-io.atlassian.net/servicedesk/customer/portal/6"
+  },
+  "servers": [
+    {
+      "url": "https://{JIRA_BASE_URL}/rest/tempo-planning/1/api",
+      "variables": {
+        "JIRA_BASE_URL": {
+          "default": "JIRA_BASE_URL"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "basic": []
+    }
+  ],
+  "paths": {
+    "/allocation/{allocationId}": {
+      "put": {
+        "tags": [
+          "Allocations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "endDate": "The start date must be before or equal to the end date"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing allocation (cost or consulting revenue).",
+        "operationId": "Update an allocation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2017-02-11",
+                "endDate": "2017-03-01",
+                "percentage": 50
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Allocation"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "delete": {
+        "tags": [
+          "Allocations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "A staff member must have at least one availability period"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes an existing allocation (cost or consulting revenue).",
+        "operationId": "Delete an allocation"
+      },
+      "parameters": [
+        {
+          "name": "allocationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/billableHours//{billableHoursId}": {
+      "put": {
+        "tags": [
+          "Allocations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "startDate": "Periods conflicting: 13/Nov/16 to 23/Nov/16 (50.00h)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing consultant revenue billable hours.",
+        "operationId": "Update billable hours",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2016-11-15",
+                "endDate": "2017-05-30",
+                "effort": 2,
+                "otEffort": 1,
+                "id": 1270
+              },
+              "schema": {
+                "$ref": "#/components/schemas/BillableHour"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "delete": {
+        "tags": [
+          "Allocations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes billable hours. Note that this will have no effect on worked hours that synchronized from the JIRA worklog or that are automatically calculated from the resource's allocation percentage. This method deletes only billable hours overrides entered either manually or programmatically.",
+        "operationId": "Delete billable hours"
+      },
+      "parameters": [
+        {
+          "name": "billableHoursId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/expense": {
+      "put": {
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 35282,
+                    "kind": ".ActualExpense",
+                    "folioId": 9275,
+                    "name": "def",
+                    "reporter": "admin",
+                    "description": "A New Desc",
+                    "customFields": {
+                      "values": {}
+                    },
+                    "type": "A New Type",
+                    "amount": 40,
+                    "convertedAmount": 40,
+                    "currencyCode": "CAD",
+                    "recurrence": {
+                      "kind": ".Daily",
+                      "startDate": "2013-01-10",
+                      "occurrences": 0,
+                      "interval": 1
+                    },
+                    "amortized": true,
+                    "labels": [],
+                    "category": "CAPEX"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Unable to unmarshal (to type [simple type, class java.lang.String]): Illegal date format: must be yyyy-MM-dd (through reference chain: com.tempoplugin.folio.web.rest.api.model.expense.PlannedRevenue[\"recurrence\"]->com.tempoplugin.folio.web.rest.api.model.recurrence.Once[\"startDate\"])",
+                  "errors": {
+                    "name": "Name is required",
+                    "type": "Expense type is required",
+                    "amount": "Amount is required"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing expense (cost or non-consulting revenue).",
+        "operationId": "Update an expense",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "def",
+                "type": "A New Type",
+                "category": "CAPEX",
+                "amount": 40,
+                "customFields": {
+                  "values": {
+                    "123": "abc"
+                  }
+                },
+                "description": "A New Desc",
+                "currencyCode": "CAD",
+                "folioId": 9275,
+                "kind": ".ActualExpense",
+                "recurrence": {
+                  "startDate": "2013-01-10",
+                  "kind": ".Daily"
+                },
+                "id": 35282,
+                "amortized": true
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Expense"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "post": {
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Unable to unmarshal (to type [simple type, class java.lang.String]): Illegal date format: must be yyyy-MM-dd (through reference chain: com.tempoplugin.folio.web.rest.api.model.expense.PlannedRevenue[\"recurrence\"]->com.tempoplugin.folio.web.rest.api.model.recurrence.Once[\"startDate\"])",
+                  "errors": {
+                    "name": "Name is required",
+                    "type": "Expense type is required",
+                    "amount": "Amount is required"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds an expense (cost or non-consulting revenue) to a Folio.",
+        "operationId": "Add an expense",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "Once": {
+                  "value": {
+                    "name": "An Expense",
+                    "type": "Equipment",
+                    "category": "OPERATING",
+                    "amount": 543.21,
+                    "description": "My Description",
+                    "currencyCode": "CAD",
+                    "folioId": 9252,
+                    "kind": ".PlannedRevenue",
+                    "recurrence": {
+                      "startDate": "2014-01-21",
+                      "kind": ".Once"
+                    }
+                  }
+                },
+                "Weekly": {
+                  "value": {
+                    "name": "An Expense",
+                    "type": "Equipment",
+                    "category": "OPEX",
+                    "amount": 123.45,
+                    "description": "My Description",
+                    "currencyCode": "CAD",
+                    "folioId": 9263,
+                    "kind": ".PlannedExpense",
+                    "recurrence": {
+                      "startDate": "2013-01-01",
+                      "kind": ".Weekly",
+                      "endDate": "2013-01-20",
+                      "recurrenceOn": [
+                        1,
+                        5
+                      ]
+                    }
+                  }
+                },
+                "Monthly": {
+                  "value": {
+                    "name": "An Expense",
+                    "type": "Equipment",
+                    "category": "OPEX",
+                    "amount": 123.45,
+                    "description": "My Description",
+                    "currencyCode": "CAD",
+                    "folioId": 9264,
+                    "kind": ".PlannedExpense",
+                    "recurrence": {
+                      "startDate": "2013-01-20",
+                      "kind": ".Monthly",
+                      "occurrences": 3,
+                      "recurrenceBy": "DAY_OF_MONTH"
+                    }
+                  }
+                },
+                "Yearly": {
+                  "value": {
+                    "name": "An Expense",
+                    "type": "Equipment",
+                    "category": "OPEX",
+                    "amount": 123.45,
+                    "description": "My Description",
+                    "currencyCode": "CAD",
+                    "folioId": 9265,
+                    "kind": ".PlannedExpense",
+                    "customFields": {
+                      "values": {
+                        "3482": "abc",
+                        "3483": "def"
+                      }
+                    },
+                    "recurrence": {
+                      "startDate": "2013-01-20",
+                      "kind": ".Yearly",
+                      "interval": 2,
+                      "occurrences": 3,
+                      "endDate": "2013-01-25"
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Expense"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/expense/{expenseId}": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 35267,
+                    "kind": ".PlannedRevenue",
+                    "folioId": 9252,
+                    "name": "An Expense",
+                    "reporter": "admin",
+                    "description": "My Description",
+                    "customFields": {
+                      "values": {}
+                    },
+                    "type": "Equipment",
+                    "amount": 543.21,
+                    "convertedAmount": 543.21,
+                    "currencyCode": "CAD",
+                    "recurrence": {
+                      "kind": ".Once",
+                      "startDate": "2014-01-21"
+                    },
+                    "amortized": false,
+                    "labels": [],
+                    "category": "OPERATING"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpense"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The requested folio cannot be viewed because it either does not exist or you do not have permission to view it."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves an expense (cost or non-consulting revenue) by its ID",
+        "operationId": "Retrieve an expense"
+      },
+      "delete": {
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The requested folio cannot be viewed because it either does not exist or you do not have permission to view it."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes an expense (cost or non-consulting revenue).",
+        "operationId": "Delete an expense"
+      },
+      "parameters": [
+        {
+          "name": "expenseId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/expense/{expenseId}/payments": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": [
+                    {
+                      "date": "2013-01-01",
+                      "amount": 1000
+                    },
+                    {
+                      "date": "2013-02-01",
+                      "amount": 1000
+                    },
+                    {
+                      "date": "2013-03-01",
+                      "amount": 1000
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpensePayments"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves an expenses' payments (planned expense or revenue).",
+        "operationId": "Retrieve payments of an Expense"
+      },
+      "parameters": [
+        {
+          "name": "expenseId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/folio": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": [
+                    {
+                      "id": 9076,
+                      "name": "All issues",
+                      "startDate": "2016-01-01",
+                      "endDate": "2017-12-31",
+                      "owner": "admin",
+                      "status": "executing",
+                      "withRevenue": false,
+                      "withEarned": false
+                    },
+                    {
+                      "id": 7639,
+                      "name": "Folio under test [ST]",
+                      "startDate": "2016-01-23",
+                      "endDate": "2016-08-10",
+                      "closedDate": "2016-07-31",
+                      "owner": "admin",
+                      "status": "closed",
+                      "withRevenue": false,
+                      "withEarned": false
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseFolios"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves summary information of all Folios that are visible to the user performing the request.",
+        "operationId": "Retrieve all Folios",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "set the maximum number of items returned. To be used in conjunction with offset for paginating results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skips the number of records defined in the value. Offset will only be taken into account if the limit parameter is also informed",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          }
+        },
+        "description": "Creates and configures a new Folio",
+        "operationId": "Create a Folio",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": 0,
+                "name": "Folio under test [TEST]",
+                "description": "description",
+                "owner": "admin",
+                "startDate": "2016-11-13",
+                "endDate": "2017-06-01",
+                "closedDate": "2017-05-22",
+                "withRevenue": true,
+                "withEarned": true,
+                "hoursPerDay": 8,
+                "tolerance": 15,
+                "contingency": 20,
+                "reserve": 25,
+                "currencyCode": "CAD",
+                "usesUserRates": false,
+                "isSynchronizedWithWorkLogs": true,
+                "revenuesAsClientCosts": false,
+                "isSynchronizedWithTempoBilledHours": true,
+                "savedFilterId": 16800,
+                "holidaySchemeId": 90,
+                "workloadSchemeId": 92
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Folio"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/folio/{folioId}": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 9326,
+                    "name": "Folio under test [TEST]",
+                    "startDate": "2016-11-13",
+                    "endDate": "2017-06-01",
+                    "closedDate": "2017-05-22",
+                    "owner": "admin",
+                    "status": "closed",
+                    "reserve": 25,
+                    "contingency": 20,
+                    "tolerance": 15,
+                    "savedFilterId": 16800,
+                    "withRevenue": true,
+                    "withEarned": true,
+                    "revenuesAsClientCosts": false,
+                    "description": "description",
+                    "currencyCode": "CAD",
+                    "hoursPerDay": 7,
+                    "isSynchronizedWithTempoBilledHours": true,
+                    "isSynchronizedWithWorkLogs": true,
+                    "isSynchronizedWithAccounts": false,
+                    "usesUserRates": false,
+                    "holidaySchemeId": 89,
+                    "workloadSchemeId": 91,
+                    "customFields": {
+                      "values": {}
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseFolio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The requested folio cannot be viewed because it either does not exist or you do not have permission to view it."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves summary information of a Folio.",
+        "operationId": "Retrieve a Folio"
+      },
+      "parameters": [
+        {
+          "name": "folioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/folio/{folioId}/baselines": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "Costs": {
+                    "success": [
+                      {
+                        "id": 709,
+                        "approvedBy": "admin",
+                        "created": "2016-11-18",
+                        "expenditureType": "BUDGET",
+                        "folioId": 9346,
+                        "name": "B2"
+                      },
+                      {
+                        "id": 708,
+                        "approvedBy": "admin",
+                        "created": "2016-11-13",
+                        "expenditureType": "BUDGET",
+                        "folioId": 9346,
+                        "name": "B1"
+                      }
+                    ]
+                  },
+                  "Revenues": {
+                    "success": [
+                      {
+                        "id": 712,
+                        "approvedBy": "admin",
+                        "created": "2016-11-18",
+                        "expenditureType": "PLANNED",
+                        "folioId": 9347,
+                        "name": "B2"
+                      },
+                      {
+                        "id": 711,
+                        "approvedBy": "admin",
+                        "created": "2016-11-13",
+                        "expenditureType": "PLANNED",
+                        "folioId": 9347,
+                        "name": "B1"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBaselines"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves the baselines of a Folio. This allows you to retrieve either planned costs or planned revenues baselines, or both.",
+        "operationId": "Retrieve the baselines of a Folio",
+        "parameters": [
+          {
+            "name": "costs",
+            "in": "query",
+            "required": true,
+            "description": "Should return the planned costs baselines?",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "revenues",
+            "in": "query",
+            "required": true,
+            "description": "Should return the planned revenues baselines?",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "folioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/folio/{folioId}/customFields": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "customFields": {
+                      "ACTUAL": [
+                        {
+                          "id": 3535,
+                          "name": "cf_actual",
+                          "style": "SELECT",
+                          "options": [
+                            "option1",
+                            "option2"
+                          ],
+                          "type": "ACTUAL",
+                          "required": false
+                        }
+                      ],
+                      "FOLIO": [
+                        {
+                          "id": 104,
+                          "name": "Version",
+                          "style": "TEXT",
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 106,
+                          "name": "Select one",
+                          "style": "SELECT",
+                          "options": [
+                            "one"
+                          ],
+                          "type": "FOLIO",
+                          "required": true
+                        },
+                        {
+                          "id": 107,
+                          "name": "text_cf_ST_",
+                          "style": "TEXT",
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 108,
+                          "name": "user_cf_ST_",
+                          "style": "USER",
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 109,
+                          "name": "date_cf_ST_",
+                          "style": "DATE",
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 110,
+                          "name": "number_cf_ST_",
+                          "style": "NUMBER",
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 112,
+                          "name": "select_cf_ST_",
+                          "style": "SELECT",
+                          "options": [
+                            "a",
+                            "b",
+                            "c"
+                          ],
+                          "type": "FOLIO",
+                          "required": false
+                        },
+                        {
+                          "id": 111,
+                          "name": "amount_cf_ST_",
+                          "style": "AMOUNT",
+                          "type": "FOLIO",
+                          "required": false
+                        }
+                      ],
+                      "TEAM": [
+                        {
+                          "id": 3533,
+                          "name": "cf_team",
+                          "style": "TEXT",
+                          "type": "TEAM",
+                          "required": true
+                        }
+                      ],
+                      "REVENUE": [
+                        {
+                          "id": 3534,
+                          "name": "cf_revenue",
+                          "style": "DATE",
+                          "type": "REVENUE",
+                          "required": false
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCustomFields"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves the custom fields definitions of a Folio. This allows you to retrieve the unique ID of each custom field.",
+        "operationId": "Retrieve the custom fields of a Folio"
+      },
+      "parameters": [
+        {
+          "name": "folioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/folio/{folioId}/expenditures": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpenditures"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves expenditures of a Folio. Expenditures include both expenses and positions and both costs and revenues (client costs) that are not deleted. Query parameters allows you to select between costs or revenues and between planned or actuals. You can also specify the baseline ID of the expenses to retrieve. If no baseline ID is specified, then the latest version of the expenditures is returned.",
+        "operationId": "Retrieve expenditures of a Folio",
+        "parameters": [
+          {
+            "name": "baselineId",
+            "in": "query",
+            "required": true,
+            "description": "ID of the baseline.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "actual",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve actual costs or revenues, false for planned.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "revenue",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve revenues, false for costs.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "set the maximum number of items returned. To be used in conjunction with offset for paginating results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skips the number of records defined in the value. Offset will only be taken into account if the limit parameter is also informed",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "folioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/folio/{folioId}/expenditures/expenses": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpendituresExpenses"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves expenses of a Folio. Expenses can include both costs and revenues (client costs) that are not deleted. Query parameters allows you to select between costs or revenues and between planned or actuals. You can also specify the baseline ID of the expenses to retrieve. If no baseline ID is specified, then the latest version of the expenses is returned.",
+        "operationId": "Retrieve expenses of a Folio",
+        "parameters": [
+          {
+            "name": "baselineId",
+            "in": "query",
+            "required": true,
+            "description": "ID of the baseline.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "actual",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve actual costs or revenues, false for planned.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "revenue",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve revenues, false for costs.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "set the maximum number of items returned. To be used in conjunction with offset for paginating results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skips the number of records defined in the value. Offset will only be taken into account if the limit parameter is also informed",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "folioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/folio/{folioId}/expenditures/positions": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpendituresPositions"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves positions of a Folio. Positions can include both costs and revenues (client costs) that are not deleted. Query parameters allows you to select between costs or revenues and between planned or actuals. You can also specify the baseline ID of the positions to retrieve. If no baseline ID is specified, then the latest version of the positions is returned.",
+        "operationId": "Retrieve positions of a Folio",
+        "parameters": [
+          {
+            "name": "baselineId",
+            "in": "query",
+            "required": true,
+            "description": "ID of the baseline.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "actual",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve actual costs or revenues, false for planned.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "revenue",
+            "in": "query",
+            "required": true,
+            "description": "set to true to retrieve revenues, false for costs.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "set the maximum number of items returned. To be used in conjunction with offset for paginating results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skips the number of records defined in the value. Offset will only be taken into account if the limit parameter is also informed",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "folioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/folio/{folioId}/team": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "members": [
+                      {
+                        "kind": ".TeamMember",
+                        "id": 25761,
+                        "folioId": 9343,
+                        "name": "erika_test",
+                        "reporter": "admin",
+                        "description": "Java Dev",
+                        "customFields": {
+                          "values": {}
+                        },
+                        "title": "developer_st",
+                        "teamRoleId": 14,
+                        "member": "erika_test",
+                        "synchedWithJIRA": false,
+                        "holidaySchemeId": -1,
+                        "workloadSchemeId": -1,
+                        "rates": [
+                          {
+                            "id": 26524,
+                            "startDate": "2016-11-13",
+                            "rate": 10
+                          }
+                        ],
+                        "allocations": [],
+                        "usesUserRates": false,
+                        "workedHours": []
+                      },
+                      {
+                        "kind": ".TeamMember",
+                        "id": 25760,
+                        "folioId": 9343,
+                        "name": "j.smith_test",
+                        "reporter": "admin",
+                        "description": "Java Dev",
+                        "customFields": {
+                          "values": {}
+                        },
+                        "title": "developer_st",
+                        "teamRoleId": 14,
+                        "member": "j.smith_test",
+                        "synchedWithJIRA": false,
+                        "holidaySchemeId": -1,
+                        "workloadSchemeId": -1,
+                        "rates": [
+                          {
+                            "id": 26523,
+                            "startDate": "2016-11-13",
+                            "rate": 10
+                          }
+                        ],
+                        "allocations": [],
+                        "usesUserRates": false,
+                        "workedHours": []
+                      },
+                      {
+                        "kind": ".TeamMember",
+                        "id": 25759,
+                        "folioId": 9343,
+                        "name": "Edgar Allan Poe",
+                        "reporter": "admin",
+                        "description": "Java Dev",
+                        "customFields": {
+                          "values": {}
+                        },
+                        "title": "developer_st",
+                        "teamRoleId": 14,
+                        "member": "admin",
+                        "synchedWithJIRA": false,
+                        "holidaySchemeId": -1,
+                        "workloadSchemeId": -1,
+                        "rates": [
+                          {
+                            "id": 26522,
+                            "startDate": "2016-11-13",
+                            "rate": 10
+                          }
+                        ],
+                        "allocations": [],
+                        "usesUserRates": false,
+                        "workedHours": []
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseMembers"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves the team of a Folio. The team of a folio is a list of team members or in other words, actual cost positions. The team potentially includes unassigned positions, if any.",
+        "operationId": "Retrieve the team of a Folio"
+      },
+      "parameters": [
+        {
+          "name": "folioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/folio/{folioId}/reports/expenses": {
+      "get": {
+        "summary": "Retrieves the expense report data.",
+        "description": "Retrieves the expense report data, allowing the user to group the data in serveral frequency formats.",
+        "operationId": "Retrieve folio expense report",
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpenseReport"
+                },
+                "example": {
+                  "success": {
+                    "expenditureType": "ACTUAL",
+                    "frequency": "MONTHLY",
+                    "otEffort": 0,
+                    "totalCost": 173095.3233333333,
+                    "effort": 176,
+                    "totalEffort": 176,
+                    "baselineId": 16,
+                    "startDate": "2021-08-01T00:00:00.000Z",
+                    "endDate": "2021-11-20T00:00:00.000Z",
+                    "folioId": 30,
+                    "folioName": "Example (Sample)",
+                    "today": "2021-11-11T00:00:00.000Z",
+                    "expenditures": [
+                      {
+                        "id": 147,
+                        "name": "Bank loan",
+                        "startDate": "2021-08-01",
+                        "endDate": "2021-08-31",
+                        "description": "Expected loan for initial cash flow",
+                        "effort": 0,
+                        "otEffort": 0,
+                        "totalEffort": 0,
+                        "totalCost": 166935.3233333333,
+                        "category": "FINEX",
+                        "type": "Loans & Credits",
+                        "kind": "EXPENSE"
+                      },
+                      {
+                        "id": 123,
+                        "effort": "176.0000000000å",
+                        "otEffort": 0,
+                        "totalEffort": 176,
+                        "totalCost": 6160,
+                        "startDate": "2021-08-01",
+                        "endDate": "2021-08-31",
+                        "wage": 35,
+                        "name": "Alena Connelly",
+                        "description": "Junior J2EE developer",
+                        "type": "Business Analyst",
+                        "category": "OPEX",
+                        "kind": "POSITION"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "endDate": "Invalid date format"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Folio does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "5XX": {
+            "description": "Internal Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Internal Error"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "default": "Folio start date",
+              "example": "2021-01-01T00:00:00.000Z"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "default": "Folio end date",
+              "example": "2021-01-31T00:00:00.000Z"
+            }
+          },
+          {
+            "name": "frequency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "WEEKLY",
+              "enum": [
+                "WEEKLY",
+                "MONTHLY",
+                "QUARTERLY",
+                "YEARLY",
+                "TOTAL"
+              ]
+            }
+          },
+          {
+            "name": "expenditureType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "ACTUAL",
+              "type": "string",
+              "description": "ACTUAL: Actual Cost\nBUDGET: Planned Cost\nPLANNED: Planned Revenue\nREVENUE: Actual Revenue\n",
+              "enum": [
+                "ACTUAL",
+                "BUDGET",
+                "PLANNED",
+                "REVENUE"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "folioId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ]
+    },
+    "/overtimeRules": {
+      "get": {
+        "tags": [
+          "Folios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": [
+                    {
+                      "id": 179,
+                      "name": "35 hours / week",
+                      "regularHours": 35,
+                      "frequency": "WEEKLY",
+                      "coefficient": 2
+                    },
+                    {
+                      "id": 180,
+                      "name": "7h / day",
+                      "regularHours": 7,
+                      "frequency": "DAILY",
+                      "coefficient": 1.5
+                    },
+                    {
+                      "id": 336,
+                      "name": "OT1[TEST]",
+                      "regularHours": 7.5,
+                      "frequency": "DAILY",
+                      "coefficient": 1
+                    },
+                    {
+                      "id": 337,
+                      "name": "OT2[TEST]",
+                      "regularHours": 40,
+                      "frequency": "WEEKLY",
+                      "coefficient": 2
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseOvertimeRules"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves all overtime rules defined in FOLIO.",
+        "operationId": "Retrieve overtime rules"
+      }
+    },
+    "/position": {
+      "put": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 25838,
+                    "folioId": 9450,
+                    "name": "Java Guru",
+                    "description": "Java Dev",
+                    "accountKey": "capex_account_st",
+                    "title": "developer_st",
+                    "teamRoleId": 14,
+                    "revenue": false,
+                    "category": "CAPEX",
+                    "rate": {
+                      "startDate": "2016-11-13",
+                      "rate": 23.45
+                    },
+                    "allocation": {
+                      "startDate": "2016-11-13",
+                      "endDate": "2017-06-01",
+                      "percentage": 80
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePosition"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing position (cost or consulting revenue). Planned positions can be either planned costs or revenues (distinguished by the boolean value in the \"revenue\" field. For actual positions (team members or actual consulting revenues), the member specified is the user key of the JIRA user to bind to the position. Set member to 'unassigned' for unassigned positions.",
+        "operationId": "Update a position",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "folioId": 9450,
+                "name": "Java Guru",
+                "title": "developer_st",
+                "description": "Java Dev",
+                "teamRoleId": 14,
+                "kind": ".PlannedPositionByTimeFrame",
+                "category": "CAPEX",
+                "id": 25838,
+                "rate": {
+                  "rate": 23.45,
+                  "startDate": "2016-11-13"
+                },
+                "allocation": {
+                  "startDate": "2016-11-13",
+                  "endDate": "2017-06-01",
+                  "percentage": 80
+                },
+                "accountKey": "capex_account_st"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Position"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "post": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMesssages": [
+                    "The staff member must have at least one cost rate",
+                    "The percentage or capacity is required"
+                  ],
+                  "errors": {
+                    "member": "Please select a valid option",
+                    "wage": "Cost rate is required",
+                    "startDate": "Start date is required",
+                    "endDate": "The period end is required",
+                    "name": "Name is required",
+                    "weight": "The percentage of the availability period is required",
+                    "effort": "Worked hours must be a numeric value equals or greater than 0"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds a position (planned position, consulting revenue or team member) to a Folio. Planned positions can be either planned costs or revenues (distinguished by the boolean value in the \"revenue\" field. For actual positions (team members or actual consulting revenues), the member specified is the user key of the JIRA user to bind to the position. Set member to 'unassigned' for unassigned positions.",
+        "operationId": "Create a position",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "folioId": 9437,
+                "name": "admin",
+                "title": "developer_st",
+                "description": "Java Dev",
+                "teamRoleId": 14,
+                "kind": ".ConsultingRevenue",
+                "member": "admin",
+                "rate": {
+                  "rate": 23.45,
+                  "startDate": "2016-11-13"
+                },
+                "allocation": {
+                  "startDate": "2016-11-13",
+                  "endDate": "2017-06-01",
+                  "percentage": 80
+                },
+                "otRuleId": 342,
+                "synchedWithJIRA": false,
+                "billableHours": [
+                  {
+                    "startDate": "2016-11-14",
+                    "endDate": "2017-05-31",
+                    "effort": 20,
+                    "otEffort": 10,
+                    "reporter": "dummy"
+                  }
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Position"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/position/{positionId}": {
+      "get": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 25830,
+                    "kind": ".ConsultingRevenue",
+                    "folioId": 9437,
+                    "name": "Edgar Allan Poe",
+                    "reporter": "admin",
+                    "description": "Java Dev",
+                    "customFields": {
+                      "values": {}
+                    },
+                    "title": "developer_st",
+                    "teamRoleId": 14,
+                    "member": "admin",
+                    "synchedWithJIRA": false,
+                    "otRuleId": 342,
+                    "rate": {
+                      "id": 26600,
+                      "startDate": "2016-11-13",
+                      "rate": 23.45
+                    },
+                    "allocation": {
+                      "id": 32692,
+                      "startDate": "2016-11-13",
+                      "endDate": "2017-06-01",
+                      "percentage": 80
+                    },
+                    "billableHours": [
+                      {
+                        "id": 1253,
+                        "startDate": "2016-11-14",
+                        "endDate": "2017-05-31",
+                        "effort": 20,
+                        "otEffort": 10,
+                        "reporter": "admin"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePosition"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The requested folio cannot be viewed because it either does not exist or you do not have permission to view it."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves a position (planned position, team member or consulting revenue) by its ID.",
+        "operationId": "Retrieve a position"
+      },
+      "delete": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The requested folio cannot be viewed because it either does not exist or you do not have permission to view it."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes a position (planned cost, team member or consulting revenue).",
+        "operationId": "Delete a position"
+      },
+      "parameters": [
+        {
+          "name": "positionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/position/{positionId}/allocation": {
+      "post": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Availability can only be added to staff members."
+                  ],
+                  "errors": {
+                    "endDate": "The start date must be before or equal to the end date"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds an allocation to a team position.",
+        "operationId": "Add an allocation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Allocation"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "parameters": [
+        {
+          "name": "positionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/position/{positionId}/billableHours": {
+      "post": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds billable hours to a consulting revenue.",
+        "operationId": "Add billable hours",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2016-11-23",
+                "endDate": "2016-12-03",
+                "effort": 30,
+                "otEffort": 10
+              },
+              "schema": {
+                "$ref": "#/components/schemas/BillableHour"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "parameters": [
+        {
+          "name": "positionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/position/{positionId}/payments": {
+      "get": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": [
+                    {
+                      "date": "2013-01-10",
+                      "amount": 80,
+                      "effort": 8,
+                      "overtimeAmount": 0,
+                      "overtimeEffort": 0,
+                      "rate": 10,
+                      "totalAmount": 80,
+                      "totalEffort": 8
+                    },
+                    {
+                      "date": "2013-01-11",
+                      "amount": 80,
+                      "effort": 8,
+                      "overtimeAmount": 0,
+                      "overtimeEffort": 0,
+                      "rate": 10,
+                      "totalAmount": 80,
+                      "totalEffort": 8
+                    },
+                    {
+                      "date": "2013-01-12",
+                      "amount": 80,
+                      "effort": 8,
+                      "overtimeAmount": 0,
+                      "overtimeEffort": 0,
+                      "rate": 10,
+                      "totalAmount": 80,
+                      "totalEffort": 8
+                    },
+                    {
+                      "date": "2013-01-13",
+                      "amount": 80,
+                      "effort": 8,
+                      "overtimeAmount": 0,
+                      "overtimeEffort": 0,
+                      "rate": 10,
+                      "totalAmount": 80,
+                      "totalEffort": 8
+                    },
+                    {
+                      "date": "2013-01-14",
+                      "amount": 80,
+                      "effort": 8,
+                      "overtimeAmount": 0,
+                      "overtimeEffort": 0,
+                      "rate": 10,
+                      "totalAmount": 80,
+                      "totalEffort": 8
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseExpensePayments"
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves a position's payments (planned position, team member or consulting revenue).",
+        "operationId": "Retrieve payments of a Position"
+      },
+      "parameters": [
+        {
+          "name": "startDate",
+          "description": "Filters the payments by period. Must be used in conjunction with endDate. If it's before the folio period, uses the folio start date.",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "date",
+            "default": "Folio start date"
+          }
+        },
+        {
+          "name": "endDate",
+          "description": "Filters the payments by period. Must be used in conjunction with startDate. If it's after the folio period, uses the folio end date.",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "date",
+            "default": "Folio end date"
+          }
+        },
+        {
+          "name": "positionId",
+          "description": "ID of the Position to retrieve",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/position/{positionId}/rate": {
+      "post": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "startDate": "A cost rate already exists with effective date (13/Nov/16)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds a rate/wage to a team position.",
+        "operationId": "Add a rate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "rate": 10,
+                "startDate": "2016-11-14"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Rate"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "parameters": [
+        {
+          "name": "positionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/position/{positionId}/workedHours": {
+      "post": {
+        "tags": [
+          "Positions"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": 2322
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "startDate": "Periods conflicting: 13/Nov/16 to 1/Jun/17 (20.00h)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Adds worked hours to a team member.",
+        "operationId": "Add worked hours",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2016-11-23",
+                "endDate": "2016-12-02",
+                "effort": 13,
+                "otEffort": 10
+              },
+              "schema": {
+                "$ref": "#/components/schemas/BillableHour"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "parameters": [
+        {
+          "name": "positionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/rate/{rateId}": {
+      "put": {
+        "tags": [
+          "Rates"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": {
+                    "id": 26633,
+                    "startDate": "2016-11-12",
+                    "rate": 12
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseRate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The staff member must have at least one cost rate"
+                  ],
+                  "errors": {
+                    "startDate": "A cost rate already exists with effective date (14/Nov/16)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing rate (cost or consulting revenue).",
+        "operationId": "Update a rate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "rate": 12,
+                "startDate": "2016-11-12",
+                "id": 26633
+              },
+              "schema": {
+                "$ref": "#/components/schemas/Rate"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "delete": {
+        "tags": [
+          "Rates"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "The staff member must have at least one cost rate"
+                  ],
+                  "errors": {
+                    "startDate": "A cost rate already exists with effective date (14/Nov/16)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes a rate/wage.",
+        "operationId": "Delete a rate"
+      },
+      "parameters": [
+        {
+          "name": "rateId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/workedHours/{workedHoursId}": {
+      "put": {
+        "tags": [
+          "Worked Hours"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Updates an existing team member worked hours.",
+        "operationId": "Update worked hours",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2016-11-15",
+                "endDate": "2017-05-30",
+                "effort": 2,
+                "otEffort": 1,
+                "id": 1273
+              },
+              "schema": {
+                "$ref": "#/components/schemas/BillableHour"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "delete": {
+        "tags": [
+          "Worked Hours"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBool"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Position does not exist"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes worked hours. Note that this will have no effect on worked hours that synchronized from the JIRA worklog or that are automatically calculated from the resource's allocation percentage. This method deletes only worked hours overrides entered either manually or programmatically.",
+        "operationId": "Delete worked hours"
+      },
+      "parameters": [
+        {
+          "name": "workedHoursId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/portfolio/": {
+      "get": {
+        "tags": [
+          "Portfolios"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": [
+                    {
+                      "id": 316,
+                      "name": "A [TEST]",
+                      "owner": "admin",
+                      "currencyCode": "USD",
+                      "color": "red",
+                      "isPrivate": false,
+                      "ordering": {
+                        "ascendingOrder": false
+                      },
+                      "admins": [],
+                      "folios": [],
+                      "portfolios": []
+                    },
+                    {
+                      "id": 122,
+                      "name": "ABC",
+                      "owner": "admin",
+                      "description": "DESC",
+                      "currencyCode": "EUR",
+                      "color": "#666666",
+                      "isPrivate": false,
+                      "ordering": {
+                        "rankingFieldId": -1,
+                        "ascendingOrder": false
+                      },
+                      "admins": [],
+                      "folios": [
+                        {
+                          "id": 221,
+                          "name": "Cupcake",
+                          "startDate": "2016-01-01",
+                          "endDate": "2016-12-30",
+                          "owner": "jane",
+                          "status": "expired"
+                        },
+                        {
+                          "id": 7454,
+                          "name": "Gingerbread",
+                          "startDate": "2016-10-04",
+                          "endDate": "2017-08-31",
+                          "owner": "jane",
+                          "status": "executing"
+                        },
+                        {
+                          "id": 6318,
+                          "name": "Lollipop",
+                          "startDate": "2014-12-03",
+                          "endDate": "2018-01-31",
+                          "owner": "admin",
+                          "status": "executing"
+                        }
+                      ],
+                      "portfolios": [],
+                      "parentId": 10
+                    },
+                    {
+                      "id": 10,
+                      "name": "Android",
+                      "owner": "admin",
+                      "currencyCode": "NOK",
+                      "color": "#8EB021",
+                      "isPrivate": false,
+                      "ordering": {
+                        "ascendingOrder": false
+                      },
+                      "admins": [
+                        {
+                          "id": 1,
+                          "user": "amelie"
+                        }
+                      ],
+                      "folios": [
+                        {
+                          "id": 1860,
+                          "name": "Ice Cream Sandwich",
+                          "startDate": "2015-04-01",
+                          "endDate": "2015-08-28",
+                          "owner": "admin",
+                          "status": "expired"
+                        },
+                        {
+                          "id": 6317,
+                          "name": "Donut",
+                          "startDate": "2015-04-14",
+                          "endDate": "2015-09-30",
+                          "owner": "admin",
+                          "status": "expired"
+                        },
+                        {
+                          "id": 6502,
+                          "name": "Honeycomb",
+                          "startDate": "2015-02-02",
+                          "endDate": "2015-10-29",
+                          "owner": "admin",
+                          "status": "expired"
+                        },
+                        {
+                          "id": 6503,
+                          "name": "Jelly Bean",
+                          "startDate": "2015-02-02",
+                          "endDate": "2015-10-29",
+                          "owner": "admin",
+                          "status": "expired"
+                        },
+                        {
+                          "id": 6501,
+                          "name": "KitKat",
+                          "startDate": "2015-02-02",
+                          "endDate": "2015-10-29",
+                          "owner": "admin",
+                          "status": "expired"
+                        }
+                      ],
+                      "portfolios": [
+                        122
+                      ],
+                      "parentId": 117
+                    },
+                    {
+                      "id": 317,
+                      "name": "B [TEST]",
+                      "owner": "admin",
+                      "currencyCode": "USD",
+                      "color": "red",
+                      "isPrivate": false,
+                      "ordering": {
+                        "ascendingOrder": false
+                      },
+                      "admins": [],
+                      "folios": [],
+                      "portfolios": []
+                    },
+                    {
+                      "id": 318,
+                      "name": "C [TEST]",
+                      "owner": "admin",
+                      "currencyCode": "USD",
+                      "color": "red",
+                      "isPrivate": false,
+                      "ordering": {
+                        "ascendingOrder": false
+                      },
+                      "admins": [],
+                      "folios": [],
+                      "portfolios": []
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePortfolios"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errorMessages": [
+                    "Portfolio not found."
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Will return all portfolios",
+        "operationId": "Retrieve portfolios"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Allocation": {
+        "title": "Allocation",
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "percentage": {
+            "minimum": 0,
+            "maximum": 100,
+            "type": "number"
+          },
+          "id": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate",
+          "percentage"
+        ]
+      },
+      "BillableHour": {
+        "title": "BillableHour",
+        "type": "object",
+        "properties": {
+          "otEffort": {
+            "description": "Number of overtime hours worked in period (format :####.##)",
+            "type": "number"
+          },
+          "startDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "reporter": {
+            "type": "string"
+          },
+          "effort": {
+            "description": "Number of regular hours worked in period (format :####.##)",
+            "type": "number"
+          },
+          "id": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "otEffort",
+          "startDate",
+          "endDate",
+          "effort"
+        ]
+      },
+      "Expense": {
+        "title": "Expense",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "reporter": {
+            "type": "string"
+          },
+          "amortized": {
+            "type": "boolean"
+          },
+          "folioId": {
+            "type": "number"
+          },
+          "type": {
+            "type": "string"
+          },
+          "baselineId": {
+            "type": "number"
+          },
+          "convertedAmount": {
+            "type": "number"
+          },
+          "kind": {
+            "enum": [
+              ".ActualExpense",
+              ".PlannedRevenue",
+              ".ActualRevenue",
+              ".PlannedExpense"
+            ],
+            "type": "string"
+          },
+          "recurrence": {
+            "type": "object"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "enum": [
+              "OPEX",
+              "CAPEX",
+              "FINEX",
+              "OPERATING",
+              "NON_OPERATING"
+            ],
+            "type": "string"
+          },
+          "customFields": {
+            "title": "Custom Field Values",
+            "type": "object",
+            "properties": {
+              "values": {
+                "description": "Custom Field value pair.",
+                "type": "object"
+              }
+            },
+            "required": [
+              "values"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "amount",
+          "description",
+          "currencyCode",
+          "folioId",
+          "type",
+          "kind",
+          "recurrence",
+          "category"
+        ]
+      },
+      "Folio": {
+        "title": "Folio",
+        "type": "object",
+        "properties": {
+          "holidaySchemeId": {
+            "description": "ID of a default Tempo Holiday Scheme determining the non-working days of the team members of this Folio.",
+            "type": "number"
+          },
+          "owner": {
+            "description": "JIRA user key",
+            "type": "string"
+          },
+          "isSynchronizedWithAccounts": {
+            "type": "boolean"
+          },
+          "isSynchronizedWithWorkLogs": {
+            "description": "Does this Folio use JIRA work logs by default for calculating the actual effort of its team members?",
+            "type": "boolean"
+          },
+          "endDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "withRevenue": {
+            "description": "Does this folio include revenues or not?",
+            "type": "boolean"
+          },
+          "description": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "usesUserRates": {
+            "description": "Does this Folio use global user rates by default to calculate actual hourly cost of its team members?",
+            "type": "boolean"
+          },
+          "withEarned": {
+            "description": "Does this folio use evm technique or not?",
+            "type": "boolean"
+          },
+          "hoursPerDay": {
+            "description": "This parameter is not used anymore and will be empty for all Folios created since version 7.3.",
+            "type": "number"
+          },
+          "revenuesAsClientCosts": {
+            "description": "ndicates if revenues included in this Folio should be considered as client costs. This implies a different status for revenue related performance indices. This is applicable only if withRevenue is true.",
+            "type": "boolean"
+          },
+          "savedFilterId": {
+            "description": "ID of a valid JIRA saved filter associated with this Folio.",
+            "type": "number"
+          },
+          "closedDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "contingency": {
+            "description": "A positive number indicating the percentage of contingency, applied to the planned value to date of the Folio.",
+            "type": "number"
+          },
+          "reserve": {
+            "description": "A positive number indicating the percentage of reserve, applied to the total budget of the Folio.",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "number"
+          },
+          "isSynchronizedWithTempoBilledHours": {
+            "description": "Does this Folio use Tempo billed hours by default for consulting revenues it contains? This is applicable only if withRevenue is true.",
+            "type": "boolean"
+          },
+          "currencyCode": {
+            "description": "ISO 4217 Three letters currency code specifying the currency used for all amounts in this Folio.",
+            "type": "string"
+          },
+          "tolerance": {
+            "description": "A positive number representing a percentage that provides a range of values for which performance indices turn amber, instead of red.",
+            "type": "number"
+          },
+          "startDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "workloadSchemeId": {
+            "description": "ID of a default Tempo Workload Scheme determining the weekly work schedule of the team members of this Folio.",
+            "type": "number"
+          },
+          "status": {
+            "description": "Read-only. determined by start date, end date and today's date.",
+            "type": "string"
+          },
+          "customFields": {
+            "title": "Custom Field Values",
+            "type": "object",
+            "properties": {
+              "values": {
+                "description": "Custom Field value pair.",
+                "type": "object"
+              }
+            },
+            "required": [
+              "values"
+            ]
+          }
+        },
+        "required": [
+          "holidaySchemeId",
+          "owner",
+          "isSynchronizedWithWorkLogs",
+          "endDate",
+          "withRevenue",
+          "description",
+          "usesUserRates",
+          "withEarned",
+          "hoursPerDay",
+          "revenuesAsClientCosts",
+          "savedFilterId",
+          "closedDate",
+          "contingency",
+          "reserve",
+          "name",
+          "id",
+          "isSynchronizedWithTempoBilledHours",
+          "currencyCode",
+          "tolerance",
+          "startDate",
+          "workloadSchemeId"
+        ]
+      },
+      "Rate": {
+        "title": "Rate",
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "id": {
+            "type": "number"
+          },
+          "startDate": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rate",
+          "startDate"
+        ]
+      },
+      "Position": {
+        "title": "Position",
+        "type": "object",
+        "properties": {
+          "teamRoleId": {
+            "description": "Tempo team role ID. This id has precedence over title and will override the title specified for this Position on PUT and POST operations, if any. If neither teamRoleId and title are specified, then the default Tempo Team Role will be assigned to this Position.",
+            "type": "number"
+          },
+          "deletedOn": {
+            "description": "yyyy-MM-dd",
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "accountKey": {
+            "type": "string"
+          },
+          "revenue": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "reporter": {
+            "description": "Ignored on POST and PUT",
+            "type": "string"
+          },
+          "id": {
+            "type": "number"
+          },
+          "folioId": {
+            "type": "number"
+          },
+          "title": {
+            "description": "Position role. e.g. Developer, Quality Assurance, etc.",
+            "type": "string"
+          },
+          "baselineId": {
+            "type": "number"
+          },
+          "holidaySchemeId": {
+            "description": "ID of an associated Tempo Holiday Scheme, defining the position's holidays.",
+            "type": "number"
+          },
+          "synchedWithJIRA": {
+            "type": "boolean"
+          },
+          "rate": {
+            "title": "Rate",
+            "type": "object",
+            "properties": {
+              "rate": {
+                "type": "number"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "id": {
+                "type": "number"
+              },
+              "startDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              }
+            },
+            "required": [
+              "rate",
+              "startDate"
+            ]
+          },
+          "teamMemberId": {
+            "type": "number"
+          },
+          "userRates": {
+            "type": "boolean"
+          },
+          "teamId": {
+            "type": "number"
+          },
+          "member": {
+            "description": "JIRA user key (or 'unassigned' if an unassigned team position)",
+            "type": "string"
+          },
+          "otRuleId": {
+            "type": "number"
+          },
+          "workloadSchemeId": {
+            "description": "ID of an associated Tempo Workload Scheme, defining the position's weekly work schedule.",
+            "type": "number"
+          },
+          "customFields": {
+            "title": "Custom Field Values",
+            "type": "object",
+            "properties": {
+              "values": {
+                "description": "Custom Field value pair.",
+                "type": "object"
+              }
+            },
+            "required": [
+              "values"
+            ]
+          },
+          "allocation": {
+            "title": "Allocation",
+            "type": "object",
+            "properties": {
+              "startDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "endDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "percentage": {
+                "minimum": 0,
+                "maximum": 100,
+                "type": "number"
+              },
+              "id": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "startDate",
+              "endDate",
+              "percentage"
+            ]
+          },
+          "billableHours": {
+            "type": "array",
+            "items": {
+              "title": "BillableHour",
+              "type": "object",
+              "properties": {
+                "otEffort": {
+                  "description": "Number of overtime hours worked in period (format :####.##)",
+                  "type": "number"
+                },
+                "startDate": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "endDate": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "deletedOn": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "reporter": {
+                  "type": "string"
+                },
+                "effort": {
+                  "description": "Number of regular hours worked in period (format :####.##)",
+                  "type": "number"
+                },
+                "id": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "otEffort",
+                "startDate",
+                "endDate",
+                "effort"
+              ]
+            }
+          }
+        },
+        "required": [
+          "teamRoleId",
+          "name",
+          "description",
+          "folioId",
+          "title",
+          "rate",
+          "allocation"
+        ]
+      },
+      "ErrorResponse": {
+        "title": "Error Response",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "errorMessages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "object"
+          }
+        }
+      },
+      "ResponseBool": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseNumber": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpense": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Expense",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "currencyCode": {
+                "type": "string"
+              },
+              "reporter": {
+                "type": "string"
+              },
+              "amortized": {
+                "type": "boolean"
+              },
+              "folioId": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string"
+              },
+              "baselineId": {
+                "type": "number"
+              },
+              "convertedAmount": {
+                "type": "number"
+              },
+              "kind": {
+                "enum": [
+                  ".ActualExpense",
+                  ".PlannedRevenue",
+                  ".ActualRevenue",
+                  ".PlannedExpense"
+                ],
+                "type": "string"
+              },
+              "recurrence": {
+                "type": "object"
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "category": {
+                "enum": [
+                  "OPEX",
+                  "CAPEX",
+                  "FINEX",
+                  "OPERATING",
+                  "NON_OPERATING"
+                ],
+                "type": "string"
+              },
+              "customFields": {
+                "title": "Custom Field Values",
+                "type": "object",
+                "properties": {
+                  "values": {
+                    "description": "Custom Field value pair.",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "values"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "amount",
+              "description",
+              "currencyCode",
+              "folioId",
+              "type",
+              "kind",
+              "recurrence",
+              "category"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpensePayments": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "title": "Expense Payment",
+              "type": "object",
+              "properties": {
+                "date": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "totalAmount": {
+                  "description": "Total amount of this payment, adding up amount and overtimeAmount, if any.",
+                  "type": "number"
+                },
+                "amount": {
+                  "description": "The amount of this payment. If it is a payment for a Position, then it includes only the payment for regular hours.",
+                  "type": "number"
+                },
+                "overtimeAmount": {
+                  "description": "Amount for overtime hours included in this payment.",
+                  "type": "number"
+                },
+                "rate": {
+                  "description": "Cost rate used to calculate the payment.",
+                  "type": "number"
+                },
+                "totalEffort": {
+                  "description": "Total effort included in this payment, adding up effort and overtimeEffort, if any.",
+                  "type": "number"
+                },
+                "overtimeEffort": {
+                  "description": "Effort in overtime hours included in this payment.",
+                  "type": "number"
+                },
+                "effort": {
+                  "description": "Effort in regular (non-overtime) hours included in this payment.",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "date",
+                "amount"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseFolio": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Folio",
+            "type": "object",
+            "properties": {
+              "holidaySchemeId": {
+                "description": "ID of a default Tempo Holiday Scheme determining the non-working days of the team members of this Folio.",
+                "type": "number"
+              },
+              "owner": {
+                "description": "JIRA user key",
+                "type": "string"
+              },
+              "isSynchronizedWithAccounts": {
+                "type": "boolean"
+              },
+              "isSynchronizedWithWorkLogs": {
+                "description": "Does this Folio use JIRA work logs by default for calculating the actual effort of its team members?",
+                "type": "boolean"
+              },
+              "endDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "withRevenue": {
+                "description": "Does this folio include revenues or not?",
+                "type": "boolean"
+              },
+              "description": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "usesUserRates": {
+                "description": "Does this Folio use global user rates by default to calculate actual hourly cost of its team members?",
+                "type": "boolean"
+              },
+              "withEarned": {
+                "description": "Does this folio use evm technique or not?",
+                "type": "boolean"
+              },
+              "hoursPerDay": {
+                "description": "This parameter is not used anymore and will be empty for all Folios created since version 7.3.",
+                "type": "number"
+              },
+              "revenuesAsClientCosts": {
+                "description": "ndicates if revenues included in this Folio should be considered as client costs. This implies a different status for revenue related performance indices. This is applicable only if withRevenue is true.",
+                "type": "boolean"
+              },
+              "savedFilterId": {
+                "description": "ID of a valid JIRA saved filter associated with this Folio.",
+                "type": "number"
+              },
+              "closedDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "contingency": {
+                "description": "A positive number indicating the percentage of contingency, applied to the planned value to date of the Folio.",
+                "type": "number"
+              },
+              "reserve": {
+                "description": "A positive number indicating the percentage of reserve, applied to the total budget of the Folio.",
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "number"
+              },
+              "isSynchronizedWithTempoBilledHours": {
+                "description": "Does this Folio use Tempo billed hours by default for consulting revenues it contains? This is applicable only if withRevenue is true.",
+                "type": "boolean"
+              },
+              "currencyCode": {
+                "description": "ISO 4217 Three letters currency code specifying the currency used for all amounts in this Folio.",
+                "type": "string"
+              },
+              "tolerance": {
+                "description": "A positive number representing a percentage that provides a range of values for which performance indices turn amber, instead of red.",
+                "type": "number"
+              },
+              "startDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "workloadSchemeId": {
+                "description": "ID of a default Tempo Workload Scheme determining the weekly work schedule of the team members of this Folio.",
+                "type": "number"
+              },
+              "status": {
+                "description": "Read-only. determined by start date, end date and today's date.",
+                "type": "string"
+              },
+              "customFields": {
+                "title": "Custom Field Values",
+                "type": "object",
+                "properties": {
+                  "values": {
+                    "description": "Custom Field value pair.",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "values"
+                ]
+              }
+            },
+            "required": [
+              "holidaySchemeId",
+              "owner",
+              "isSynchronizedWithWorkLogs",
+              "endDate",
+              "withRevenue",
+              "description",
+              "usesUserRates",
+              "withEarned",
+              "hoursPerDay",
+              "revenuesAsClientCosts",
+              "savedFilterId",
+              "closedDate",
+              "contingency",
+              "reserve",
+              "name",
+              "id",
+              "isSynchronizedWithTempoBilledHours",
+              "currencyCode",
+              "tolerance",
+              "startDate",
+              "workloadSchemeId"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseFolios": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "title": "Portfolio child Folio",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "startDate": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "closedDate": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "endDate": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "owner": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "withRevenue": {
+                  "type": "boolean"
+                },
+                "withEarned": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "startDate",
+                "endDate",
+                "owner",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponsePortfolios": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "title": "Position",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "currencyCode": {
+                  "type": "string"
+                },
+                "isPrivate": {
+                  "type": "boolean"
+                },
+                "owner": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "ordering": {
+                  "type": "object",
+                  "properties": {
+                    "rankingFieldId": {
+                      "type": "number"
+                    },
+                    "ascendingOrder": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "admins": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "folios": {
+                  "type": "array",
+                  "items": {
+                    "title": "Portfolio child Folio",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "startDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "closedDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "endDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "withRevenue": {
+                        "type": "boolean"
+                      },
+                      "withEarned": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "startDate",
+                      "endDate",
+                      "owner",
+                      "status"
+                    ]
+                  }
+                },
+                "portfolios": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "parentId": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "currencyCode",
+                "isPrivate",
+                "owner",
+                "color",
+                "admins",
+                "folios",
+                "portfolios"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseBaselines": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "title": "Baseline",
+              "type": "object",
+              "properties": {
+                "expenditureType": {
+                  "enum": [
+                    "ACTUAL",
+                    "BUDGET",
+                    "PLANNED",
+                    "REVENUE"
+                  ],
+                  "type": "string"
+                },
+                "deletedOn": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "created": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "approvedBy": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                },
+                "folioId": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "expenditureType",
+                "created",
+                "name",
+                "approvedBy",
+                "id",
+                "folioId"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseCustomFields": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "object",
+            "properties": {
+              "customFields": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "title": "Custom Field",
+                    "type": "object",
+                    "properties": {
+                      "style": {
+                        "enum": [
+                          "TEXT",
+                          "SELECT",
+                          "DATE",
+                          "NUMBER",
+                          "AMOUNT",
+                          "USER"
+                        ],
+                        "type": "string"
+                      },
+                      "deletedOn": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "number"
+                      },
+                      "type": {
+                        "enum": [
+                          "ACTUAL",
+                          "TEAM",
+                          "REVENUE",
+                          "FOLIO"
+                        ],
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "style",
+                      "name",
+                      "id",
+                      "type",
+                      "required"
+                    ]
+                  }
+                }
+              }
+            },
+            "required": [
+              "customFields"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpenditures": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Expenditure",
+            "type": "object",
+            "properties": {
+              "positions": {
+                "type": "array",
+                "items": {
+                  "title": "Position",
+                  "type": "object",
+                  "properties": {
+                    "teamRoleId": {
+                      "description": "Tempo team role ID. This id has precedence over title and will override the title specified for this Position on PUT and POST operations, if any. If neither teamRoleId and title are specified, then the default Tempo Team Role will be assigned to this Position.",
+                      "type": "number"
+                    },
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "accountKey": {
+                      "type": "string"
+                    },
+                    "revenue": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "reporter": {
+                      "description": "Ignored on POST and PUT",
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "folioId": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "description": "Position role. e.g. Developer, Quality Assurance, etc.",
+                      "type": "string"
+                    },
+                    "baselineId": {
+                      "type": "number"
+                    },
+                    "holidaySchemeId": {
+                      "description": "ID of an associated Tempo Holiday Scheme, defining the position's holidays.",
+                      "type": "number"
+                    },
+                    "synchedWithJIRA": {
+                      "type": "boolean"
+                    },
+                    "rate": {
+                      "title": "Rate",
+                      "type": "object",
+                      "properties": {
+                        "rate": {
+                          "type": "number"
+                        },
+                        "deletedOn": {
+                          "description": "yyyy-MM-dd",
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "number"
+                        },
+                        "startDate": {
+                          "description": "yyyy-MM-dd",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "rate",
+                        "startDate"
+                      ]
+                    },
+                    "teamMemberId": {
+                      "type": "number"
+                    },
+                    "userRates": {
+                      "type": "boolean"
+                    },
+                    "teamId": {
+                      "type": "number"
+                    },
+                    "member": {
+                      "description": "JIRA user key (or 'unassigned' if an unassigned team position)",
+                      "type": "string"
+                    },
+                    "otRuleId": {
+                      "type": "number"
+                    },
+                    "workloadSchemeId": {
+                      "description": "ID of an associated Tempo Workload Scheme, defining the position's weekly work schedule.",
+                      "type": "number"
+                    },
+                    "customFields": {
+                      "title": "Custom Field Values",
+                      "type": "object",
+                      "properties": {
+                        "values": {
+                          "description": "Custom Field value pair.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "values"
+                      ]
+                    },
+                    "allocation": {
+                      "title": "Allocation",
+                      "type": "object",
+                      "properties": {
+                        "startDate": {
+                          "description": "yyyy-MM-dd",
+                          "type": "string"
+                        },
+                        "endDate": {
+                          "description": "yyyy-MM-dd",
+                          "type": "string"
+                        },
+                        "deletedOn": {
+                          "description": "yyyy-MM-dd",
+                          "type": "string"
+                        },
+                        "percentage": {
+                          "minimum": 0,
+                          "maximum": 100,
+                          "type": "number"
+                        },
+                        "id": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "startDate",
+                        "endDate",
+                        "percentage"
+                      ]
+                    },
+                    "workedHours": {
+                      "type": "array",
+                      "items": {
+                        "title": "workedHour",
+                        "type": "object",
+                        "properties": {
+                          "startDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "endDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "effort": {
+                            "description": "Number of regular hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "otEffort": {
+                            "description": "Number of overtime hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "reporter": {
+                            "description": "Reporter",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "billableHours": {
+                      "type": "array",
+                      "items": {
+                        "title": "BillableHour",
+                        "type": "object",
+                        "properties": {
+                          "otEffort": {
+                            "description": "Number of overtime hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "startDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "endDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "deletedOn": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "reporter": {
+                            "type": "string"
+                          },
+                          "effort": {
+                            "description": "Number of regular hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "otEffort",
+                          "startDate",
+                          "endDate",
+                          "effort"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "teamRoleId",
+                    "name",
+                    "description",
+                    "folioId",
+                    "title",
+                    "rate",
+                    "allocation"
+                  ]
+                }
+              },
+              "expenses": {
+                "type": "array",
+                "items": {
+                  "title": "Expense",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    },
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "currencyCode": {
+                      "type": "string"
+                    },
+                    "reporter": {
+                      "type": "string"
+                    },
+                    "amortized": {
+                      "type": "boolean"
+                    },
+                    "folioId": {
+                      "type": "number"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "baselineId": {
+                      "type": "number"
+                    },
+                    "convertedAmount": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "enum": [
+                        ".ActualExpense",
+                        ".PlannedRevenue",
+                        ".ActualRevenue",
+                        ".PlannedExpense"
+                      ],
+                      "type": "string"
+                    },
+                    "recurrence": {
+                      "type": "object"
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "category": {
+                      "enum": [
+                        "OPEX",
+                        "CAPEX",
+                        "FINEX",
+                        "OPERATING",
+                        "NON_OPERATING"
+                      ],
+                      "type": "string"
+                    },
+                    "customFields": {
+                      "title": "Custom Field Values",
+                      "type": "object",
+                      "properties": {
+                        "values": {
+                          "description": "Custom Field value pair.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "values"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "amount",
+                    "description",
+                    "currencyCode",
+                    "folioId",
+                    "type",
+                    "kind",
+                    "recurrence",
+                    "category"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "positions",
+              "expenses"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpendituresPositions": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Position",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "teamRoleId": {
+                  "description": "Tempo team role ID. This id has precedence over title and will override the title specified for this Position on PUT and POST operations, if any. If neither teamRoleId and title are specified, then the default Tempo Team Role will be assigned to this Position.",
+                  "type": "number"
+                },
+                "deletedOn": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "accountKey": {
+                  "type": "string"
+                },
+                "revenue": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "reporter": {
+                  "description": "Ignored on POST and PUT",
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                },
+                "folioId": {
+                  "type": "number"
+                },
+                "title": {
+                  "description": "Position role. e.g. Developer, Quality Assurance, etc.",
+                  "type": "string"
+                },
+                "baselineId": {
+                  "type": "number"
+                },
+                "holidaySchemeId": {
+                  "description": "ID of an associated Tempo Holiday Scheme, defining the position's holidays.",
+                  "type": "number"
+                },
+                "synchedWithJIRA": {
+                  "type": "boolean"
+                },
+                "rate": {
+                  "title": "Rate",
+                  "type": "object",
+                  "properties": {
+                    "rate": {
+                      "type": "number"
+                    },
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "startDate": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "rate",
+                    "startDate"
+                  ]
+                },
+                "teamMemberId": {
+                  "type": "number"
+                },
+                "userRates": {
+                  "type": "boolean"
+                },
+                "teamId": {
+                  "type": "number"
+                },
+                "member": {
+                  "description": "JIRA user key (or 'unassigned' if an unassigned team position)",
+                  "type": "string"
+                },
+                "otRuleId": {
+                  "type": "number"
+                },
+                "workloadSchemeId": {
+                  "description": "ID of an associated Tempo Workload Scheme, defining the position's weekly work schedule.",
+                  "type": "number"
+                },
+                "customFields": {
+                  "title": "Custom Field Values",
+                  "type": "object",
+                  "properties": {
+                    "values": {
+                      "description": "Custom Field value pair.",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "values"
+                  ]
+                },
+                "allocation": {
+                  "title": "Allocation",
+                  "type": "object",
+                  "properties": {
+                    "startDate": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "endDate": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "percentage": {
+                      "minimum": 0,
+                      "maximum": 100,
+                      "type": "number"
+                    },
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "startDate",
+                    "endDate",
+                    "percentage"
+                  ]
+                },
+                "workedHours": {
+                  "type": "array",
+                  "items": {
+                    "title": "workedHour",
+                    "type": "object",
+                    "properties": {
+                      "startDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "endDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "effort": {
+                        "description": "Number of regular hours worked in period (format :####.##)",
+                        "type": "number"
+                      },
+                      "otEffort": {
+                        "description": "Number of overtime hours worked in period (format :####.##)",
+                        "type": "number"
+                      },
+                      "reporter": {
+                        "description": "Reporter",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "billableHours": {
+                  "type": "array",
+                  "items": {
+                    "title": "BillableHour",
+                    "type": "object",
+                    "properties": {
+                      "otEffort": {
+                        "description": "Number of overtime hours worked in period (format :####.##)",
+                        "type": "number"
+                      },
+                      "startDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "endDate": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "deletedOn": {
+                        "description": "yyyy-MM-dd",
+                        "type": "string"
+                      },
+                      "reporter": {
+                        "type": "string"
+                      },
+                      "effort": {
+                        "description": "Number of regular hours worked in period (format :####.##)",
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "otEffort",
+                      "startDate",
+                      "endDate",
+                      "effort"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "teamRoleId",
+                "name",
+                "description",
+                "folioId",
+                "title",
+                "rate",
+                "allocation"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpendituresExpenses": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Expenses",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "deletedOn": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "currencyCode": {
+                  "type": "string"
+                },
+                "reporter": {
+                  "type": "string"
+                },
+                "amortized": {
+                  "type": "boolean"
+                },
+                "folioId": {
+                  "type": "number"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "baselineId": {
+                  "type": "number"
+                },
+                "convertedAmount": {
+                  "type": "number"
+                },
+                "kind": {
+                  "enum": [
+                    ".ActualExpense",
+                    ".PlannedRevenue",
+                    ".ActualRevenue",
+                    ".PlannedExpense"
+                  ],
+                  "type": "string"
+                },
+                "recurrence": {
+                  "type": "object"
+                },
+                "labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "category": {
+                  "enum": [
+                    "OPEX",
+                    "CAPEX",
+                    "FINEX",
+                    "OPERATING",
+                    "NON_OPERATING"
+                  ],
+                  "type": "string"
+                },
+                "customFields": {
+                  "title": "Custom Field Values",
+                  "type": "object",
+                  "properties": {
+                    "values": {
+                      "description": "Custom Field value pair.",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "values"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "amount",
+                "description",
+                "currencyCode",
+                "folioId",
+                "type",
+                "kind",
+                "recurrence",
+                "category"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseMembers": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "object",
+            "properties": {
+              "members": {
+                "type": "array",
+                "items": {
+                  "title": "Member",
+                  "type": "object",
+                  "properties": {
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "holidaySchemeId": {
+                      "description": "ID of an associated Tempo Holiday Scheme, defining the position's holidays.",
+                      "type": "number"
+                    },
+                    "synchedWithJIRA": {
+                      "type": "boolean"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "title": "Rate",
+                        "type": "object",
+                        "properties": {
+                          "rate": {
+                            "type": "number"
+                          },
+                          "deletedOn": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "number"
+                          },
+                          "startDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "rate",
+                          "startDate"
+                        ]
+                      }
+                    },
+                    "teamMemberId": {
+                      "type": "number"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "reporter": {
+                      "type": "string"
+                    },
+                    "usesUserRates": {
+                      "type": "boolean"
+                    },
+                    "folioId": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "description": "Position role. e.g. Developer, Quality Assurance, etc.",
+                      "type": "string"
+                    },
+                    "baselineId": {
+                      "type": "number"
+                    },
+                    "teamRoleId": {
+                      "description": "Tempo team role ID. This id has precedence over title and will override the title specified for this Position on PUT and POST operations, if any. If neither teamRoleId and title are specified, then the default Tempo Team Role will be assigned to this Position.",
+                      "type": "number"
+                    },
+                    "allocations": {
+                      "type": "array",
+                      "items": {
+                        "title": "Allocation",
+                        "type": "object",
+                        "properties": {
+                          "startDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "endDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "deletedOn": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "percentage": {
+                            "minimum": 0,
+                            "maximum": 100,
+                            "type": "number"
+                          },
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "startDate",
+                          "endDate",
+                          "percentage"
+                        ]
+                      }
+                    },
+                    "teamId": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "member": {
+                      "description": "JIRA user key (or 'unassigned' if an unassigned team position)",
+                      "type": "string"
+                    },
+                    "otRuleId": {
+                      "type": "number"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "workedHours": {
+                      "type": "array",
+                      "items": {
+                        "title": "BillableHour",
+                        "type": "object",
+                        "properties": {
+                          "otEffort": {
+                            "description": "Number of overtime hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "startDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "endDate": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "deletedOn": {
+                            "description": "yyyy-MM-dd",
+                            "type": "string"
+                          },
+                          "reporter": {
+                            "type": "string"
+                          },
+                          "effort": {
+                            "description": "Number of regular hours worked in period (format :####.##)",
+                            "type": "number"
+                          },
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "otEffort",
+                          "startDate",
+                          "endDate",
+                          "effort"
+                        ]
+                      }
+                    },
+                    "workloadSchemeId": {
+                      "description": "ID of an associated Tempo Workload Scheme, defining the position's weekly work schedule.",
+                      "type": "number"
+                    },
+                    "customFields": {
+                      "title": "Custom Field Values",
+                      "type": "object",
+                      "properties": {
+                        "values": {
+                          "description": "Custom Field value pair.",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "values"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "holidaySchemeId",
+                    "synchedWithJIRA",
+                    "kind",
+                    "rates",
+                    "description",
+                    "reporter",
+                    "usesUserRates",
+                    "folioId",
+                    "title",
+                    "teamRoleId",
+                    "allocations",
+                    "name",
+                    "member",
+                    "id",
+                    "workedHours",
+                    "workloadSchemeId",
+                    "customFields"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "members"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseOvertimeRules": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "title": "Overtime Rule",
+              "type": "object",
+              "properties": {
+                "deletedOn": {
+                  "description": "yyyy-MM-dd",
+                  "type": "string"
+                },
+                "coefficient": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                },
+                "regularHours": {
+                  "type": "number"
+                },
+                "frequency": {
+                  "description": "The frequency of the overtime rule",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "coefficient",
+                "name",
+                "id",
+                "regularHours",
+                "frequency"
+              ]
+            }
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseRate": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Rate",
+            "type": "object",
+            "properties": {
+              "rate": {
+                "type": "number"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "id": {
+                "type": "number"
+              },
+              "startDate": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              }
+            },
+            "required": [
+              "rate",
+              "startDate"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponsePosition": {
+        "title": "Response",
+        "description": "Success or error messages if any.",
+        "type": "object",
+        "properties": {
+          "success": {
+            "title": "Position",
+            "type": "object",
+            "properties": {
+              "teamRoleId": {
+                "description": "Tempo team role ID. This id has precedence over title and will override the title specified for this Position on PUT and POST operations, if any. If neither teamRoleId and title are specified, then the default Tempo Team Role will be assigned to this Position.",
+                "type": "number"
+              },
+              "deletedOn": {
+                "description": "yyyy-MM-dd",
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              },
+              "accountKey": {
+                "type": "string"
+              },
+              "revenue": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "reporter": {
+                "description": "Ignored on POST and PUT",
+                "type": "string"
+              },
+              "id": {
+                "type": "number"
+              },
+              "folioId": {
+                "type": "number"
+              },
+              "title": {
+                "description": "Position role. e.g. Developer, Quality Assurance, etc.",
+                "type": "string"
+              },
+              "baselineId": {
+                "type": "number"
+              },
+              "holidaySchemeId": {
+                "description": "ID of an associated Tempo Holiday Scheme, defining the position's holidays.",
+                "type": "number"
+              },
+              "synchedWithJIRA": {
+                "type": "boolean"
+              },
+              "rate": {
+                "title": "Rate",
+                "type": "object",
+                "properties": {
+                  "rate": {
+                    "type": "number"
+                  },
+                  "deletedOn": {
+                    "description": "yyyy-MM-dd",
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "number"
+                  },
+                  "startDate": {
+                    "description": "yyyy-MM-dd",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "rate",
+                  "startDate"
+                ]
+              },
+              "teamMemberId": {
+                "type": "number"
+              },
+              "userRates": {
+                "type": "boolean"
+              },
+              "teamId": {
+                "type": "number"
+              },
+              "member": {
+                "description": "JIRA user key (or 'unassigned' if an unassigned team position)",
+                "type": "string"
+              },
+              "otRuleId": {
+                "type": "number"
+              },
+              "workloadSchemeId": {
+                "description": "ID of an associated Tempo Workload Scheme, defining the position's weekly work schedule.",
+                "type": "number"
+              },
+              "customFields": {
+                "title": "Custom Field Values",
+                "type": "object",
+                "properties": {
+                  "values": {
+                    "description": "Custom Field value pair.",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "values"
+                ]
+              },
+              "allocation": {
+                "title": "Allocation",
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "description": "yyyy-MM-dd",
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "description": "yyyy-MM-dd",
+                    "type": "string"
+                  },
+                  "deletedOn": {
+                    "description": "yyyy-MM-dd",
+                    "type": "string"
+                  },
+                  "percentage": {
+                    "minimum": 0,
+                    "maximum": 100,
+                    "type": "number"
+                  },
+                  "id": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "startDate",
+                  "endDate",
+                  "percentage"
+                ]
+              },
+              "billableHours": {
+                "type": "array",
+                "items": {
+                  "title": "BillableHour",
+                  "type": "object",
+                  "properties": {
+                    "otEffort": {
+                      "description": "Number of overtime hours worked in period (format :####.##)",
+                      "type": "number"
+                    },
+                    "startDate": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "endDate": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "deletedOn": {
+                      "description": "yyyy-MM-dd",
+                      "type": "string"
+                    },
+                    "reporter": {
+                      "type": "string"
+                    },
+                    "effort": {
+                      "description": "Number of regular hours worked in period (format :####.##)",
+                      "type": "number"
+                    },
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "otEffort",
+                    "startDate",
+                    "endDate",
+                    "effort"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "teamRoleId",
+              "name",
+              "description",
+              "folioId",
+              "title",
+              "rate",
+              "allocation"
+            ]
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseExpenseReport": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "success": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExpenseReportCost"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "expenditureType": {
+                    "type": "string"
+                  },
+                  "baselineId": {
+                    "type": "integer",
+                    "description": "Only available when the expenseType BUDGET or PLANNED"
+                  },
+                  "folioId": {
+                    "type": "integer"
+                  },
+                  "folioName": {
+                    "type": "string"
+                  },
+                  "today": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "expenditures": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ExpenseReportExpenditure"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "ExpenseReportExpenditure": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ExpenseReportCost"
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "description",
+              "category",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "CAPEX",
+                  "OPEX",
+                  "FINEX"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "description": "Position role or expense type"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "POSITION",
+                  "EXPENSE"
+                ]
+              },
+              "wage": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        ]
+      },
+      "ExpenseReportCost": {
+        "type": "object",
+        "required": [
+          "totalCost",
+          "startDate",
+          "endDate",
+          "effort",
+          "otEffort",
+          "totalEffort"
+        ],
+        "properties": {
+          "totalCost": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "effort": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "otEffort": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          },
+          "totalEffort": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "responses": {},
+    "parameters": {},
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {
+      "basic": {
+        "description": "Each request must contain the headers necessary for basic authentication",
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  }
+}

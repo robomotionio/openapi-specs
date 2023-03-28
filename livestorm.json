@@ -1,0 +1,3676 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Livestorm - Public API",
+    "description": "Welcome to Livestorm's Public API documentation.\nThe Livestorm API is organized around REST principles.\nIn addition, all request and response bodies, including errors, are encoded in JSON format.\n",
+    "termsOfService": "https://livestorm.co/terms/",
+    "contact": {
+      "name": "Contact",
+      "url": "https://support.livestorm.co",
+      "email": "help@livestorm.co"
+    },
+    "version": "1",
+    "x-logo": {
+      "backgroundColor": "#24292e",
+      "url": "https://assets.brandfetch.io/ce914b0275a149d.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{defaultHost}",
+      "variables": {
+        "defaultHost": {
+          "default": "api.livestorm.co/v1"
+        }
+      }
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "BaseResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "record_count": {
+            "type": "integer",
+            "description": "Total Record Count"
+          },
+          "page_count": {
+            "type": "integer",
+            "description": "Page Count"
+          },
+          "items_per_page": {
+            "type": "integer",
+            "description": "Items per page"
+          }
+        }
+      },
+      "Errors": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "$ref": "#/components/schemas/ErrorsDetail"
+          }
+        }
+      },
+      "ErrorsDetail": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "detail": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Ping",
+      "description": "Test Authorization"
+    },
+    {
+      "name": "Events",
+      "description": "Webinars and Scheduled Meeting"
+    },
+    {
+      "name": "Sessions",
+      "description": "Webinar Session and Meeting"
+    },
+    {
+      "name": "People",
+      "description": "Participant and Team Member"
+    }
+  ],
+  "paths": {
+    "/ping": {
+      "get": {
+        "summary": "Test authorization",
+        "tags": [
+          "Ping"
+        ],
+        "description": "Use the /ping endpoint to check if your API token works as expected. If you receive a 200 HTTP response code, it means that you've successfully authenticated!",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication success"
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "summary": "List Events",
+        "tags": [
+          "Events"
+        ],
+        "description": "List all your organization's events.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[kind]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Events by kind : 'webinar', 'meet'",
+            "required": false
+          },
+          {
+            "name": "filter[title]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Events by title",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Data",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BaseResponse"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "attributes": {
+                                "type": "object",
+                                "description": "Attributes",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "slug": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "registration_link": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "estimated_duration": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "registration_page_enabled": {
+                                    "type": "boolean",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "language": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "published_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "created_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "updated_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "owner": {
+                                    "type": "object",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "sessions_count": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": "",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "type": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "attributes": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      }
+                                    }
+                                  },
+                                  "fields": {
+                                    "type": "array",
+                                    "x-nullable": false,
+                                    "description": "",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "order": {
+                                          "type": "integer",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "required": {
+                                          "type": "boolean",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "3d7c740d-a022-41dc-9992-0e5152941805",
+                          "type": "events",
+                          "attributes": {
+                            "kind": "webinar",
+                            "title": "mr-goldenfold1",
+                            "slug": "tiny-rick1",
+                            "registration_link": "http://app.localhost:5213/p/3d7c740d-a022-41dc-9992-0e5152941805",
+                            "estimated_duration": 30,
+                            "registration_page_enabled": true,
+                            "description": "Qui id temporibus. Omnis est quasi. Est dolor et.1",
+                            "language": "en",
+                            "published_at": 0,
+                            "created_at": 1633046400,
+                            "updated_at": 1633046400,
+                            "owner": {
+                              "id": "85874dba-3724-4cda-ad0f-31d0c5550634",
+                              "type": "people",
+                              "attributes": {
+                                "role": "team_member",
+                                "created_at": 1611844432,
+                                "updated_at": 1611844432,
+                                "timezone": "Europe/Paris",
+                                "first_name": "Timberly-3",
+                                "last_name": "Scheck-3",
+                                "email": "3-xavier@blanda.net",
+                                "avatar_link": null
+                              }
+                            },
+                            "sessions_count": 1,
+                            "fields": [
+                              {
+                                "id": "email",
+                                "type": "text",
+                                "order": 0,
+                                "required": true
+                              },
+                              {
+                                "id": "first_name",
+                                "type": "text",
+                                "order": 1,
+                                "required": true
+                              },
+                              {
+                                "id": "last_name",
+                                "type": "text",
+                                "order": 2,
+                                "required": true
+                              },
+                              {
+                                "id": "avatar",
+                                "type": "file",
+                                "order": 3,
+                                "required": false
+                              },
+                              {
+                                "id": "input_text",
+                                "type": "text",
+                                "order": 4,
+                                "custom": true,
+                                "required": true
+                              },
+                              {
+                                "id": "select_radio",
+                                "type": "multiple",
+                                "order": 5,
+                                "custom": true,
+                                "options": {
+                                  "items": [
+                                    {
+                                      "value": "Choice A"
+                                    },
+                                    {
+                                      "value": "Choice B"
+                                    },
+                                    {
+                                      "value": "Choice C"
+                                    }
+                                  ],
+                                  "multiple_answers": false
+                                },
+                                "required": true
+                              },
+                              {
+                                "id": "select_checkbox",
+                                "type": "multiple",
+                                "order": 6,
+                                "custom": true,
+                                "options": {
+                                  "items": [
+                                    {
+                                      "value": "Choice A"
+                                    },
+                                    {
+                                      "value": "Choice B"
+                                    },
+                                    {
+                                      "value": "Choice C"
+                                    }
+                                  ],
+                                  "multiple_answers": true
+                                },
+                                "required": true
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 1,
+                        "page_count": 1,
+                        "items_per_page": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "summary": "Retrieve an Event",
+        "tags": [
+          "Events"
+        ],
+        "description": "Get the details of an Event.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Event ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "title": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "slug": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "registration_link": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "estimated_duration": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "registration_page_enabled": {
+                                  "type": "boolean",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "language": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "published_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "owner": {
+                                  "type": "object",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "sessions_count": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": "",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "x-nullable": false,
+                                      "description": ""
+                                    },
+                                    "type": {
+                                      "type": "string",
+                                      "x-nullable": false,
+                                      "description": ""
+                                    },
+                                    "attributes": {
+                                      "type": "string",
+                                      "x-nullable": false,
+                                      "description": ""
+                                    }
+                                  }
+                                },
+                                "fields": {
+                                  "type": "array",
+                                  "x-nullable": false,
+                                  "description": "",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "type": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "order": {
+                                        "type": "integer",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "required": {
+                                        "type": "boolean",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "8fb02078-9258-4381-ba9f-84b5c08c3c17",
+                        "type": "events",
+                        "attributes": {
+                          "kind": "webinar",
+                          "title": "fart3",
+                          "slug": "mr-needful3",
+                          "registration_link": "http://app.localhost:5213/p/8fb02078-9258-4381-ba9f-84b5c08c3c17",
+                          "estimated_duration": 30,
+                          "registration_page_enabled": true,
+                          "description": "Voluptate qui neque. Sed fugit explicabo. Est sit ut.3",
+                          "language": "en",
+                          "published_at": 0,
+                          "created_at": 1633046400,
+                          "updated_at": 1633046400,
+                          "owner": {
+                            "id": "ee9f478d-64d4-4217-8d23-5a4bbe15fdd6",
+                            "type": "people",
+                            "attributes": {
+                              "role": "team_member",
+                              "created_at": 1611844434,
+                              "updated_at": 1611844434,
+                              "timezone": "Europe/Paris",
+                              "first_name": "Big-7",
+                              "last_name": "Curly-7",
+                              "email": "7-rodrick.homenick@littelshields.io",
+                              "avatar_link": null
+                            }
+                          },
+                          "sessions_count": 1,
+                          "fields": [
+                            {
+                              "id": "email",
+                              "type": "text",
+                              "order": 0,
+                              "required": true
+                            },
+                            {
+                              "id": "first_name",
+                              "type": "text",
+                              "order": 1,
+                              "required": true
+                            },
+                            {
+                              "id": "last_name",
+                              "type": "text",
+                              "order": 2,
+                              "required": true
+                            },
+                            {
+                              "id": "avatar",
+                              "type": "file",
+                              "order": 3,
+                              "required": false
+                            },
+                            {
+                              "id": "input_text",
+                              "type": "text",
+                              "order": 4,
+                              "custom": true,
+                              "required": true
+                            },
+                            {
+                              "id": "select_radio",
+                              "type": "multiple",
+                              "order": 5,
+                              "custom": true,
+                              "options": {
+                                "items": [
+                                  {
+                                    "value": "Choice A"
+                                  },
+                                  {
+                                    "value": "Choice B"
+                                  },
+                                  {
+                                    "value": "Choice C"
+                                  }
+                                ],
+                                "multiple_answers": false
+                              },
+                              "required": true
+                            },
+                            {
+                              "id": "select_checkbox",
+                              "type": "multiple",
+                              "order": 6,
+                              "custom": true,
+                              "options": {
+                                "items": [
+                                  {
+                                    "value": "Choice A"
+                                  },
+                                  {
+                                    "value": "Choice B"
+                                  },
+                                  {
+                                    "value": "Choice C"
+                                  }
+                                ],
+                                "multiple_answers": true
+                              },
+                              "required": true
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/people": {
+      "get": {
+        "summary": "List People",
+        "tags": [
+          "People"
+        ],
+        "description": "List all the People (participants and team members) associated to your organization.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[role]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by role : 'participant', 'team_member'",
+            "required": false
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by their email (exact match)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Data",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BaseResponse"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "attributes": {
+                                "type": "object",
+                                "description": "Attributes",
+                                "properties": {
+                                  "role": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "created_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "updated_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "timezone": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "first_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "last_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "email": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "avatar_link": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "f895d717-cb68-444e-bc06-ee152d765c76",
+                          "type": "people",
+                          "attributes": {
+                            "role": "team_member",
+                            "created_at": 1611844435,
+                            "updated_at": 1611844435,
+                            "timezone": "Europe/Paris",
+                            "first_name": "Steely-12",
+                            "last_name": "Green-12",
+                            "email": "12-wally@rempelwatsica.io",
+                            "avatar_link": null
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 1,
+                        "page_count": 1,
+                        "items_per_page": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
+    "/people/{id}": {
+      "get": {
+        "summary": "Retrieve a person",
+        "tags": [
+          "People"
+        ],
+        "description": "Get the details of a People.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "People ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "first_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "last_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "avatar_link": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "3d6cb1a9-c5b5-485b-af09-e322d5534e04",
+                        "type": "people",
+                        "attributes": {
+                          "role": "team_member",
+                          "created_at": 1611844436,
+                          "updated_at": 1611844436,
+                          "timezone": "Europe/Paris",
+                          "first_name": "Oskar-14",
+                          "last_name": "Ed-14",
+                          "email": "14-norris@blockhaag.biz",
+                          "avatar_link": null
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "People Not found"
+          }
+        }
+      }
+    },
+    "/events/{id}/people": {
+      "get": {
+        "summary": "List People for an Event",
+        "tags": [
+          "Events"
+        ],
+        "description": "List all the People (participants and team members) who registered to a given Event.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Event ID",
+            "required": true
+          },
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[role]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by role : 'participant', 'team_member'",
+            "required": false
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by their email (exact match)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Data",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BaseResponse"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "attributes": {
+                                "type": "object",
+                                "description": "Attributes",
+                                "properties": {
+                                  "role": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "created_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "updated_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "timezone": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "first_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "last_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "email": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "avatar_link": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "registrant_detail": {
+                                    "type": "array",
+                                    "x-nullable": true,
+                                    "description": "",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "event_id": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "created_at": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "updated_at": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "fields": {
+                                          "type": "array",
+                                          "x-nullable": false,
+                                          "description": "",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "type": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "order": {
+                                                "type": "integer",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "required": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "27d1de1b-fa8c-424b-9318-e7b6a3bb20d3",
+                          "type": "people",
+                          "attributes": {
+                            "role": "participant",
+                            "created_at": 1609169637,
+                            "updated_at": 1609169637,
+                            "timezone": null,
+                            "first_name": "Phoebe Heyerdahl-16",
+                            "last_name": "Ronnie Matthews-16",
+                            "email": "16-lovie@okon.co",
+                            "avatar_link": null,
+                            "registrant_detail": {
+                              "event_id": "a847388e-078f-426d-b5ec-0f17bdc13e69",
+                              "created_at": 1609169637,
+                              "updated_at": 1609169637,
+                              "fields": [
+                                {
+                                  "id": "email",
+                                  "type": "text",
+                                  "value": null,
+                                  "required": true
+                                },
+                                {
+                                  "id": "first_name",
+                                  "type": "text",
+                                  "value": null,
+                                  "required": true
+                                },
+                                {
+                                  "id": "last_name",
+                                  "type": "text",
+                                  "value": null,
+                                  "required": true
+                                },
+                                {
+                                  "id": "avatar",
+                                  "type": "file",
+                                  "value": null,
+                                  "required": false
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": "4b892b69-e61a-477f-9e94-601584214351",
+                          "type": "people",
+                          "attributes": {
+                            "role": "team_member",
+                            "created_at": 1611844437,
+                            "updated_at": 1611844437,
+                            "timezone": "Europe/Paris",
+                            "first_name": "Mickey-19",
+                            "last_name": "Peterson-19",
+                            "email": "19-grisel.rippin@braun.net",
+                            "avatar_link": null,
+                            "registrant_detail": {
+                              "event_id": "a847388e-078f-426d-b5ec-0f17bdc13e69",
+                              "created_at": 1611844437,
+                              "updated_at": 1611844437,
+                              "fields": [
+                                {
+                                  "id": "email",
+                                  "type": "text",
+                                  "value": "19-grisel.rippin@braun.net",
+                                  "required": true
+                                },
+                                {
+                                  "id": "first_name",
+                                  "type": "text",
+                                  "value": "Mickey-19",
+                                  "required": true
+                                },
+                                {
+                                  "id": "last_name",
+                                  "type": "text",
+                                  "value": "Peterson-19",
+                                  "required": true
+                                },
+                                {
+                                  "id": "avatar",
+                                  "type": "file",
+                                  "value": null,
+                                  "required": false
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": "d8d9d5a6-61f2-4a92-a6ed-ad64111bdd1e",
+                          "type": "people",
+                          "attributes": {
+                            "role": "participant",
+                            "created_at": 1609169637,
+                            "updated_at": 1609169637,
+                            "timezone": null,
+                            "first_name": "Olga Pataki-15",
+                            "last_name": "Timberly-15",
+                            "email": "15-alva@ondricka.net",
+                            "avatar_link": null,
+                            "registrant_detail": {
+                              "event_id": "a847388e-078f-426d-b5ec-0f17bdc13e69",
+                              "created_at": 1609169637,
+                              "updated_at": 1609169637,
+                              "fields": [
+                                {
+                                  "id": "email",
+                                  "type": "text",
+                                  "value": "15-alva@ondricka.net",
+                                  "required": true
+                                },
+                                {
+                                  "id": "first_name",
+                                  "type": "text",
+                                  "value": "Olga Pataki-15",
+                                  "required": true
+                                },
+                                {
+                                  "id": "last_name",
+                                  "type": "text",
+                                  "value": "Timberly-15",
+                                  "required": true
+                                },
+                                {
+                                  "id": "avatar",
+                                  "type": "file",
+                                  "value": "https://fake-img.com/yes.png",
+                                  "required": false
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 3,
+                        "page_count": 1,
+                        "items_per_page": 3
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/events/{event_id}/people/{id}": {
+      "get": {
+        "summary": "Retreive a someone's details for an Event",
+        "tags": [
+          "Events"
+        ],
+        "description": "Get the details of a People who registered/attended one of the given Event's Sessions.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Event ID",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "People ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "first_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "last_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "avatar_link": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "registrant_detail": {
+                                  "type": "array",
+                                  "x-nullable": true,
+                                  "description": "",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "event_id": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "fields": {
+                                        "type": "array",
+                                        "x-nullable": false,
+                                        "description": "",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "type": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "order": {
+                                              "type": "integer",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "required": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "033c9851-1f43-4e36-8413-50555bcc1e56",
+                        "type": "people",
+                        "attributes": {
+                          "role": "team_member",
+                          "created_at": 1611844438,
+                          "updated_at": 1611844438,
+                          "timezone": "Europe/Paris",
+                          "first_name": "Phoebe-24",
+                          "last_name": "Scheck-24",
+                          "email": "24-tillie.schmeler@grant.biz",
+                          "avatar_link": null,
+                          "registrant_detail": {
+                            "event_id": "1966d8a1-87a4-4572-8b24-4f9a482e95cd",
+                            "created_at": 1611844438,
+                            "updated_at": 1611844438,
+                            "fields": [
+                              {
+                                "id": "email",
+                                "type": "text",
+                                "value": "24-tillie.schmeler@grant.biz",
+                                "required": true
+                              },
+                              {
+                                "id": "first_name",
+                                "type": "text",
+                                "value": "Phoebe-24",
+                                "required": true
+                              },
+                              {
+                                "id": "last_name",
+                                "type": "text",
+                                "value": "Scheck-24",
+                                "required": true
+                              },
+                              {
+                                "id": "avatar",
+                                "type": "file",
+                                "value": null,
+                                "required": false
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Event Not found"
+          }
+        }
+      }
+    },
+    "/sessions/{id}/people": {
+      "get": {
+        "summary": "List People for a Session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "List all the People (participants and team members) associated to a Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID",
+            "required": true
+          },
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[role]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by role : 'participant', 'team_member'",
+            "required": false
+          },
+          {
+            "name": "filter[attended]",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter People that attend or not the Session",
+            "required": false
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter People by their email (exact match)",
+            "required": false
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "event",
+                  "session"
+                ]
+              }
+            },
+            "description": "Include Related Data",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Data",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BaseResponse"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "attributes": {
+                                "type": "object",
+                                "description": "Attributes",
+                                "properties": {
+                                  "role": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "created_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "updated_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "timezone": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "first_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "last_name": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "email": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "avatar_link": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "registrant_detail": {
+                                    "type": "array",
+                                    "x-nullable": true,
+                                    "description": "",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "event_id": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "created_at": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "updated_at": {
+                                          "type": "string",
+                                          "x-nullable": false,
+                                          "description": ""
+                                        },
+                                        "fields": {
+                                          "type": "array",
+                                          "x-nullable": false,
+                                          "description": "",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "type": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "order": {
+                                                "type": "integer",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              },
+                                              "required": {
+                                                "type": "string",
+                                                "x-nullable": false,
+                                                "description": ""
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "messages_count": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "questions_count": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "votes_count": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "up_votes_count": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b9e1b873-2e99-4243-bcf7-982597a46c9c",
+                          "type": "people",
+                          "attributes": {
+                            "role": "team_member",
+                            "created_at": 1611844441,
+                            "updated_at": 1611844441,
+                            "timezone": "Europe/Paris",
+                            "first_name": "Nadine-32",
+                            "last_name": "Kid-32",
+                            "email": "32-basil@lind.io",
+                            "avatar_link": null,
+                            "registrant_detail": {
+                              "event_id": "dd79ee5f-ae08-4b7d-88b1-0fd000b38015",
+                              "session_id": "1082bd45-f3f0-476c-9bb6-d4a5235c34bd",
+                              "created_at": 1611844441,
+                              "updated_at": 1611844441,
+                              "fields": [
+                                {
+                                  "id": "email",
+                                  "type": "text",
+                                  "value": "32-basil@lind.io",
+                                  "required": true
+                                },
+                                {
+                                  "id": "first_name",
+                                  "type": "text",
+                                  "value": "Nadine-32",
+                                  "required": true
+                                },
+                                {
+                                  "id": "last_name",
+                                  "type": "text",
+                                  "value": "Kid-32",
+                                  "required": true
+                                },
+                                {
+                                  "id": "avatar",
+                                  "type": "file",
+                                  "value": null,
+                                  "required": false
+                                }
+                              ],
+                              "referrer": null,
+                              "utm_source": null,
+                              "utm_medium": null,
+                              "utm_term": null,
+                              "utm_content": null,
+                              "utm_campaign": null,
+                              "browser_version": "51.0.2704.64",
+                              "browser_name": "Chrome",
+                              "os_name": "Chrome OS",
+                              "os_version": "8172.45.0",
+                              "screen_height": null,
+                              "screen_width": null,
+                              "ip_city": null,
+                              "ip_country_code": null,
+                              "ip_country_name": null,
+                              "password_key": null,
+                              "connection_link": "https://app.localhost:5213/p/dd79ee5f-ae08-4b7d-88b1-0fd000b38015/live?email=32-basil%40lind.io&s=1082bd45-f3f0-476c-9bb6-d4a5235c34bd",
+                              "attended": false,
+                              "attendance_rate": null,
+                              "attendance_duration": 0,
+                              "is_highlighted": true,
+                              "is_guest_speaker": false
+                            },
+                            "messages_count": 0,
+                            "questions_count": 0,
+                            "votes_count": 0,
+                            "up_votes_count": 0
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 1,
+                        "page_count": 1,
+                        "items_per_page": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a participant to a Session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Register a participant to an Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "first_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "last_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "avatar_link": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "registrant_detail": {
+                                  "type": "array",
+                                  "x-nullable": true,
+                                  "description": "",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "event_id": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "fields": {
+                                        "type": "array",
+                                        "x-nullable": false,
+                                        "description": "",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "type": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "order": {
+                                              "type": "integer",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "required": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "16b8a208-bf96-4888-88b3-2983cd78193d",
+                        "type": "people",
+                        "attributes": {
+                          "role": "participant",
+                          "created_at": 1611844444,
+                          "updated_at": 1611844444,
+                          "timezone": null,
+                          "first_name": "Jean-Baptiste",
+                          "last_name": "Smith",
+                          "email": "jean-baptiste@mysite.co",
+                          "avatar_link": null,
+                          "registrant_detail": {
+                            "event_id": "73b9cd26-bec7-4f0d-a2f8-565f424ededc",
+                            "session_id": "6e6f51a3-36cd-4912-ae27-e6f312244e72",
+                            "created_at": 1611844444,
+                            "updated_at": 1611844444,
+                            "fields": [
+                              {
+                                "id": "email",
+                                "type": "text",
+                                "value": "jean-baptiste@mysite.co",
+                                "required": true
+                              },
+                              {
+                                "id": "first_name",
+                                "type": "text",
+                                "value": "Jean-Baptiste",
+                                "required": true
+                              },
+                              {
+                                "id": "last_name",
+                                "type": "text",
+                                "value": "Smith",
+                                "required": true
+                              },
+                              {
+                                "id": "avatar",
+                                "type": "file",
+                                "value": null,
+                                "required": false
+                              }
+                            ],
+                            "referrer": "referrer",
+                            "utm_source": "utm_source",
+                            "utm_medium": "utm_medium",
+                            "utm_term": "utm_term",
+                            "utm_content": "utm_content",
+                            "utm_campaign": "utm_campaign",
+                            "browser_version": null,
+                            "browser_name": null,
+                            "os_name": null,
+                            "os_version": null,
+                            "screen_height": null,
+                            "screen_width": null,
+                            "ip_city": null,
+                            "ip_country_code": null,
+                            "ip_country_name": null,
+                            "password_key": "7a29c7a65d6807c7ef11eb",
+                            "connection_link": "https://app.localhost:5213/p/73b9cd26-bec7-4f0d-a2f8-565f424ededc/live?email=jean-baptiste%40mysite.co&key=7a29c7a65d6807c7ef11eb&s=6e6f51a3-36cd-4912-ae27-e6f312244e72",
+                            "attended": false,
+                            "attendance_rate": null,
+                            "attendance_duration": 0,
+                            "is_highlighted": false,
+                            "is_guest_speaker": false
+                          },
+                          "messages_count": 0,
+                          "questions_count": 0,
+                          "votes_count": 0,
+                          "up_votes_count": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "default": "people",
+                        "example": "people"
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "fields": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "example": [
+                              {
+                                "id": "first_name",
+                                "value": "Jean-Baptiste"
+                              },
+                              {
+                                "id": "last_name",
+                                "value": "Smith"
+                              },
+                              {
+                                "id": "email",
+                                "value": "jean-baptiste@mysite.co"
+                              }
+                            ],
+                            "x-nullable": true,
+                            "description": ""
+                          },
+                          "referrer": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "referrer"
+                          },
+                          "utm_source": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "utm_source"
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "utm_medium"
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "utm_term"
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "utm_content"
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": ""
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/{session_id}/people/{id}": {
+      "get": {
+        "summary": "Retrieve a someone's details for a Session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Get someone's details (participant or team member) for a given Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "People ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "first_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "last_name": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "email": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "avatar_link": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "registrant_detail": {
+                                  "type": "array",
+                                  "x-nullable": true,
+                                  "description": "",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "event_id": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "created_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "updated_at": {
+                                        "type": "string",
+                                        "x-nullable": false,
+                                        "description": ""
+                                      },
+                                      "fields": {
+                                        "type": "array",
+                                        "x-nullable": false,
+                                        "description": "",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "type": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "order": {
+                                              "type": "integer",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            },
+                                            "required": {
+                                              "type": "string",
+                                              "x-nullable": false,
+                                              "description": ""
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "messages_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "questions_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "votes_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "up_votes_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "fd927632-2f1e-4756-a8b3-d150e7d0358c",
+                        "type": "people",
+                        "attributes": {
+                          "role": "team_member",
+                          "created_at": 1611844441,
+                          "updated_at": 1611844442,
+                          "timezone": "Europe/Paris",
+                          "first_name": "Earl-37",
+                          "last_name": "Pataki-37",
+                          "email": "37-inell_koepp@hagenes.info",
+                          "avatar_link": null,
+                          "registrant_detail": {
+                            "event_id": "e5d442a8-35a8-45dd-b00b-29dcbfeb1e4a",
+                            "session_id": "fc98a6ee-4159-4785-83fb-252681a2a496",
+                            "created_at": 1611844442,
+                            "updated_at": 1611844442,
+                            "fields": [
+                              {
+                                "id": "email",
+                                "type": "text",
+                                "value": "37-inell_koepp@hagenes.info",
+                                "required": true
+                              },
+                              {
+                                "id": "first_name",
+                                "type": "text",
+                                "value": "Earl-37",
+                                "required": true
+                              },
+                              {
+                                "id": "last_name",
+                                "type": "text",
+                                "value": "Pataki-37",
+                                "required": true
+                              },
+                              {
+                                "id": "avatar",
+                                "type": "file",
+                                "value": null,
+                                "required": false
+                              }
+                            ],
+                            "referrer": null,
+                            "utm_source": null,
+                            "utm_medium": null,
+                            "utm_term": null,
+                            "utm_content": null,
+                            "utm_campaign": null,
+                            "browser_version": "51.0.2704.64",
+                            "browser_name": "Chrome",
+                            "os_name": "Chrome OS",
+                            "os_version": "8172.45.0",
+                            "screen_height": null,
+                            "screen_width": null,
+                            "ip_city": null,
+                            "ip_country_code": null,
+                            "ip_country_name": null,
+                            "password_key": null,
+                            "connection_link": "https://app.localhost:5213/p/e5d442a8-35a8-45dd-b00b-29dcbfeb1e4a/live?email=37-inell_koepp%40hagenes.info&s=fc98a6ee-4159-4785-83fb-252681a2a496",
+                            "attended": false,
+                            "attendance_rate": null,
+                            "attendance_duration": 0,
+                            "is_highlighted": true,
+                            "is_guest_speaker": false
+                          },
+                          "messages_count": 0,
+                          "questions_count": 0,
+                          "votes_count": 0,
+                          "up_votes_count": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Event Not found"
+          }
+        }
+      }
+    },
+    "/sessions/{id}/people/{people_id}": {
+      "delete": {
+        "summary": "Remove session registrant",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Remove a registrant from the given Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID",
+            "required": true
+          },
+          {
+            "name": "people_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "People ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Session Canceled"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "403": {
+            "description": "Session Ended"
+          },
+          "404": {
+            "description": "Identity Not Found"
+          }
+        }
+      }
+    },
+    "/sessions/{id}": {
+      "get": {
+        "summary": "Retrieve a Session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Get the details of a Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session ID",
+            "required": true
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "event",
+                  "people"
+                ]
+              }
+            },
+            "description": "Include Related Data",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "event_type_id": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "room_link": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "attendees_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "duration": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "estimated_started_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "started_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "ended_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "canceled_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "registrants_count": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "f867c888-7267-459c-9b12-c3b7ceacc6f9",
+                        "type": "sessions",
+                        "attributes": {
+                          "event_id": "71819c59-0e5b-47c4-9811-b3f565c00869",
+                          "status": "draft",
+                          "timezone": "Europe/Paris",
+                          "room_link": "http://app.localhost:5213/p/71819c59-0e5b-47c4-9811-b3f565c00869/live?s=f867c888-7267-459c-9b12-c3b7ceacc6f9",
+                          "attendees_count": 0,
+                          "duration": null,
+                          "estimated_started_at": 1614124800,
+                          "started_at": 0,
+                          "ended_at": 0,
+                          "canceled_at": 0,
+                          "created_at": 1611844452,
+                          "updated_at": 1611844452,
+                          "registrants_count": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "get": {
+        "summary": "List Sessions",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Return the full list of Sessions associated to your organization.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page[number]",
+            "in": "query",
+            "description": "Page index to be returned",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "description": "Number of record to be returned by page",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter[status]",
+            "in": "query",
+            "description": "Filter Sessions by status : 'upcoming', 'live', 'on_demand', 'past', 'past_not_started', 'canceled', 'draft'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter[date_from]",
+            "in": "query",
+            "description": "Filter Sessions which ‘estimated_started_at’ attribute starts from the given date (expressed as a Unix timestamp or an ISO 8601 date).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter[date_to]",
+            "in": "query",
+            "description": "Filter Sessions which ‘estimated_started_at’ attribute ends with the given date (expressed as a Unix timestamp or an ISO 8601 date).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get detail",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "event_type_id": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "room_link": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "attendees_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "duration": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "estimated_started_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "started_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "ended_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "canceled_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "registrants_count": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "application/vnd.api+json": {
+                        "data": [
+                          {
+                            "id": "1a0eed4a-8149-496e-8891-df3918f18c83",
+                            "type": "sessions",
+                            "attributes": {
+                              "event_id": "af612c74-3b3f-4ed7-b281-d6b38485a1a0",
+                              "status": "draft",
+                              "timezone": "Europe/Paris",
+                              "room_link": "http://app.localhost:5213/p/af612c74-3b3f-4ed7-b281-d6b38485a1a0/live?s=1a0eed4a-8149-496e-8891-df3918f18c83",
+                              "attendees_count": 0,
+                              "duration": null,
+                              "estimated_started_at": 1632355200,
+                              "started_at": 0,
+                              "ended_at": 0,
+                              "canceled_at": 0,
+                              "created_at": 1611844453,
+                              "updated_at": 1611844453,
+                              "registrants_count": 1
+                            }
+                          }
+                        ],
+                        "meta": {
+                          "record_count": 1,
+                          "page_count": 1,
+                          "items_per_page": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/events/{id}/sessions": {
+      "get": {
+        "summary": "List Sessions for an Event",
+        "tags": [
+          "Events"
+        ],
+        "description": "List all the Sessions that belong to the given Event.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Event ID",
+            "required": true
+          },
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[status]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Sessions by status : 'upcoming', 'live', 'on_demand', 'past', 'past_not_started', 'canceled', 'draft'",
+            "required": false
+          },
+          {
+            "name": "filter[date_from]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Sessions which ‘estimated_started_at’ attribute starts from the given date (expressed as a Unix timestamp or an ISO 8601 date).",
+            "required": false
+          },
+          {
+            "name": "filter[date_to]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Sessions which ‘estimated_started_at’ attribute ends with the given date (expressed as a Unix timestamp or an ISO 8601 date).",
+            "required": false
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "event",
+                  "people"
+                ]
+              }
+            },
+            "description": "Include Related Data",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Data",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BaseResponse"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "attributes": {
+                                "type": "object",
+                                "description": "Attributes",
+                                "properties": {
+                                  "event_type_id": {
+                                    "type": "string",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "timezone": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "room_link": {
+                                    "type": "string",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "attendees_count": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "duration": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "estimated_started_at": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "started_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "ended_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "canceled_at": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  },
+                                  "created_at": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "updated_at": {
+                                    "type": "integer",
+                                    "x-nullable": false,
+                                    "description": ""
+                                  },
+                                  "registrants_count": {
+                                    "type": "integer",
+                                    "x-nullable": true,
+                                    "description": ""
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "900c1350-6467-48ec-87d6-63bc71dbfbd6",
+                          "type": "sessions",
+                          "attributes": {
+                            "event_id": "9044ad75-07a7-4b77-8f59-20e6d3428cf0",
+                            "status": "draft",
+                            "timezone": "Europe/Paris",
+                            "room_link": "http://app.localhost:5213/p/9044ad75-07a7-4b77-8f59-20e6d3428cf0/live?s=900c1350-6467-48ec-87d6-63bc71dbfbd6",
+                            "attendees_count": 0,
+                            "duration": null,
+                            "estimated_started_at": 1609169654,
+                            "started_at": 0,
+                            "ended_at": 0,
+                            "canceled_at": 0,
+                            "created_at": 1609169654,
+                            "updated_at": 1609169654,
+                            "registrants_count": 3
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 1,
+                        "page_count": 1,
+                        "items_per_page": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Event Not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new event session",
+        "tags": [
+          "Events"
+        ],
+        "description": "Create a new Event Session.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Event ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "event_type_id": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "timezone": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "room_link": {
+                                  "type": "string",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "attendees_count": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "duration": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "estimated_started_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "started_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "ended_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "canceled_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": false,
+                                  "description": ""
+                                },
+                                "registrants_count": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Event Not found"
+          },
+          "422": {
+            "description": "Team member not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "default": "sessions",
+                        "example": "sessions"
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "estimated_started_at": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "2020-11-28 10:30:00"
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "America/New_York"
+                          }
+                        }
+                      },
+                      "relationships": {
+                        "type": "object",
+                        "properties": {
+                          "people": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "data": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "role": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "example": [
+                              {
+                                "data": {
+                                  "type": "people",
+                                  "id": "52b0d41f-adbd-475d-8798-b0c1df097e4c",
+                                  "role": "team_member"
+                                }
+                              }
+                            ],
+                            "x-nullable": true,
+                            "description": ""
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks": {
+      "post": {
+        "summary": "Create a Webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "description": "Create a Webhook. The webhook events that you can subscribe to are the following ones:\n- **event.published** : when a new event is published\n- **people.registered** : when someone registers for an event session\n- **session.started** : when an event session starts\n- **session.ended** : when an event session ends\n- **people.attended** : when someone attended an event session, after it ends\n- **people.not_attended** : when someone didn’t attend an event session, after it ends",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BaseResponse"
+                        },
+                        {
+                          "type": "object",
+                          "description": "Data",
+                          "properties": {
+                            "attributes": {
+                              "type": "object",
+                              "description": "Attributes",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "event": {
+                                  "type": "string",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "created_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                },
+                                "updated_at": {
+                                  "type": "integer",
+                                  "x-nullable": true,
+                                  "description": ""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": {
+                        "id": "552bd123-ea76-485f-9c8c-f3610943bd00",
+                        "type": "webhooks",
+                        "attributes": {
+                          "created_at": 1611844461,
+                          "updated_at": 1611844461,
+                          "url": "https://my-awesome.site",
+                          "event": "event.published"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "default": "webhooks",
+                        "example": "webhooks"
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "https://my-awesome.site"
+                          },
+                          "event": {
+                            "type": "string",
+                            "x-nullable": true,
+                            "description": "",
+                            "example": "event.published"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Webhooks",
+        "tags": [
+          "Webhooks"
+        ],
+        "description": "List all the webhooks of a workspace.",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page[number]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page index to be returned",
+            "required": false
+          },
+          {
+            "name": "page[size]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of record to be returned by page",
+            "required": false
+          },
+          {
+            "name": "filter[event]",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter Webhooks by event : event.published, session.started, session.ended, people.registered, people.attended, people.not_attended",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch List",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "application/vnd.api+json": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "5dcf6af2-938c-484c-9c4f-7ae41517ae29",
+                          "type": "webhooks",
+                          "attributes": {
+                            "created_at": 1611844461,
+                            "updated_at": 1611844461,
+                            "url": "https://legrosmraz.info",
+                            "event": "people.not_attended"
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "record_count": 1,
+                        "page_count": 1,
+                        "items_per_page": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
+    "/webhooks/{id}": {
+      "delete": {
+        "summary": "Delete a Webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "description": "Delete a Webhook",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Webhook ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  }
+}

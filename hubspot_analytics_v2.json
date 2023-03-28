@@ -1,0 +1,728 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hubspot Analytics v2",
+    "version": "1.0",
+    "description": "Hubspot Analytics v2 API managed by Meta-API",
+    "contact": {
+      "name": "Meta API",
+      "url": "https://www.meta-api.io"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.hubapi.com"
+    }
+  ],
+  "paths": {
+    "/analytics/v2/reports/{breakdown_by}/{time_period}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "totals",
+              "sessions",
+              "sources",
+              "geolocation",
+              "utm-campaigns",
+              "utm-contents",
+              "utm-mediums",
+              "utm-sources",
+              "utm-terms"
+            ]
+          },
+          "name": "breakdown_by",
+          "in": "path",
+          "required": true,
+          "description": "The category used to break down the analytics data. Must be one of:      totals - Data will be the totals rolled up from      sessions - Data broken down by session details      sources - Data broken down by traffic source     geolocation - Data broken down by geographic location. Locations are formatted as ISO 3166-1 alpha-2 country codes.     utm-:utm_type - Data broken down by the standard UTM parameters. :utm_type must be one of campaigns, contents, mediums, sources, or terms (i.e. utm-campaigns)."
+        },
+        {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "total",
+              "daily",
+              "monthly",
+              "summarize/daily",
+              "summarize/weekly",
+              "summarize/monthly"
+            ]
+          },
+          "name": "time_period",
+          "in": "path",
+          "required": true,
+          "description": "The time period used to group the data. Must be one of:      total - Data is rolled up to totals covering the specified time.     daily - Grouped by day     weekly - Grouped by week     monthly - Grouped by month     summarize/daily - Grouped by day, data is rolled up across all breakdowns      summarize/weekly - Grouped by week, data is rolled up across all breakdowns      summarize/monthly - Grouped by month, data is rolled up across all breakdowns  NOTE: When using daily, weekly, or monthly for the time_period, you must include at least one filter (&f= parameter). See below for details."
+        }
+      ],
+      "get": {
+        "summary": "Get analytics data breakdowns",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "offset": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "totals": {
+                      "type": "object",
+                      "properties": {
+                        "rawViews": {
+                          "type": "number"
+                        },
+                        "visits": {
+                          "type": "number"
+                        },
+                        "visitors": {
+                          "type": "number"
+                        },
+                        "leads": {
+                          "type": "number"
+                        },
+                        "contacts": {
+                          "type": "number"
+                        },
+                        "subscribers": {
+                          "type": "number"
+                        },
+                        "marketingQualifiedLeads": {
+                          "type": "number"
+                        },
+                        "salesQualifiedLeads": {
+                          "type": "number"
+                        },
+                        "opportunities": {
+                          "type": "number"
+                        },
+                        "customers": {
+                          "type": "number"
+                        },
+                        "pageviewsPerSession": {
+                          "type": "number"
+                        },
+                        "bounceRate": {
+                          "type": "number"
+                        },
+                        "timePerSession": {
+                          "type": "number"
+                        },
+                        "newVisitorSessionRate": {
+                          "type": "number"
+                        },
+                        "sessionToContactRate": {
+                          "type": "number"
+                        },
+                        "contactToCustomerRate": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "rawViews",
+                        "visits",
+                        "visitors",
+                        "leads",
+                        "contacts",
+                        "subscribers",
+                        "marketingQualifiedLeads",
+                        "salesQualifiedLeads",
+                        "opportunities",
+                        "customers",
+                        "pageviewsPerSession",
+                        "bounceRate",
+                        "timePerSession",
+                        "newVisitorSessionRate",
+                        "sessionToContactRate",
+                        "contactToCustomerRate"
+                      ]
+                    },
+                    "breakdowns": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "breakdown",
+                          "rawViews",
+                          "visits",
+                          "visitors",
+                          "leads",
+                          "contacts",
+                          "subscribers",
+                          "opportunities",
+                          "customers",
+                          "pageviewsPerSession",
+                          "bounceRate",
+                          "timePerSession",
+                          "newVisitorSessionRate",
+                          "sessionToContactRate",
+                          "contactToCustomerRate"
+                        ],
+                        "properties": {
+                          "breakdown": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "rawViews": {
+                            "type": "number"
+                          },
+                          "visits": {
+                            "type": "number"
+                          },
+                          "visitors": {
+                            "type": "number"
+                          },
+                          "leads": {
+                            "type": "number"
+                          },
+                          "contacts": {
+                            "type": "number"
+                          },
+                          "subscribers": {
+                            "type": "number"
+                          },
+                          "opportunities": {
+                            "type": "number"
+                          },
+                          "customers": {
+                            "type": "number"
+                          },
+                          "pageviewsPerSession": {
+                            "type": "number"
+                          },
+                          "bounceRate": {
+                            "type": "number"
+                          },
+                          "timePerSession": {
+                            "type": "number"
+                          },
+                          "newVisitorSessionRate": {
+                            "type": "number"
+                          },
+                          "sessionToContactRate": {
+                            "type": "number"
+                          },
+                          "contactToCustomerRate": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "offset",
+                    "total",
+                    "totals",
+                    "breakdowns"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "offset": 6,
+                      "total": 6,
+                      "totals": {
+                        "rawViews": 10709,
+                        "visits": 4430,
+                        "visitors": 1779,
+                        "leads": 956,
+                        "contacts": 7328,
+                        "subscribers": 3779,
+                        "marketingQualifiedLeads": 6,
+                        "salesQualifiedLeads": 6,
+                        "opportunities": 1860,
+                        "customers": 53,
+                        "pageviewsPerSession": 2.4173814898419863,
+                        "bounceRate": 0.6419864559819413,
+                        "timePerSession": 245.64672686230247,
+                        "newVisitorSessionRate": 0.40158013544018056,
+                        "sessionToContactRate": 1.654176072234763,
+                        "contactToCustomerRate": 0.0072325327510917034
+                      },
+                      "breakdowns": [
+                        {
+                          "breakdown": "direct",
+                          "rawViews": 8142,
+                          "visits": 3179,
+                          "visitors": 1008,
+                          "leads": 498,
+                          "contacts": 543,
+                          "subscribers": 4,
+                          "opportunities": 39,
+                          "customers": 2,
+                          "pageviewsPerSession": 2.5611827618748033,
+                          "bounceRate": 0.6247247562126454,
+                          "timePerSession": 296.14878892733566,
+                          "newVisitorSessionRate": 0.31708084303240014,
+                          "sessionToContactRate": 0.17080843032400125,
+                          "contactToCustomerRate": 0.003683241252302026
+                        },
+                        {
+                          "breakdown": "paid",
+                          "rawViews": 1000,
+                          "visits": 648,
+                          "visitors": 604,
+                          "pageviewsPerSession": 1.5432098765432098,
+                          "bounceRate": 0.7947530864197531,
+                          "timePerSession": 45.53086419753087,
+                          "newVisitorSessionRate": 0.9320987654320988
+                        },
+                        {
+                          "breakdown": "referrals",
+                          "rawViews": 1526,
+                          "visits": 567,
+                          "visitors": 137,
+                          "contacts": 1,
+                          "subscribers": 1,
+                          "pageviewsPerSession": 2.691358024691358,
+                          "bounceRate": 0.5502645502645502,
+                          "timePerSession": 205.9241622574956,
+                          "newVisitorSessionRate": 0.24162257495590828,
+                          "sessionToContactRate": 0.001763668430335097
+                        },
+                        {
+                          "breakdown": "organic",
+                          "rawViews": 26,
+                          "visits": 25,
+                          "visitors": 21,
+                          "pageviewsPerSession": 1.04,
+                          "bounceRate": 0.96,
+                          "timePerSession": 18.8,
+                          "newVisitorSessionRate": 0.84
+                        },
+                        {
+                          "breakdown": "other",
+                          "rawViews": 15,
+                          "visits": 11,
+                          "visitors": 9,
+                          "pageviewsPerSession": 1.3636363636363635,
+                          "bounceRate": 0.6363636363636364,
+                          "timePerSession": 2.272727272727273,
+                          "newVisitorSessionRate": 0.8181818181818182
+                        },
+                        {
+                          "breakdown": "offline",
+                          "leads": 458,
+                          "contacts": 6784,
+                          "subscribers": 3774,
+                          "marketingQualifiedLeads": 6,
+                          "salesQualifiedLeads": 6,
+                          "opportunities": 1821,
+                          "customers": 51,
+                          "contactToCustomerRate": 0.007517688679245283
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-analytics-v2-reports-breakdown_by-time_period",
+        "description": "This endpoint is used to get analytics data for a specified category.\n\nUse case for this endpoint: This endpoint is designed to mimic how report data is shown in a sources report. You can use it to pass website traffic data tracked in HubSpot to external business intelligence (BI) tools.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "start",
+            "description": "The start date for the data you want. Must be included as ISO 8601 format, YYYYMMDD. Note: The date is inclusive, and will be treated as being in the time zone of the portal.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "end",
+            "description": "The end date for the data you want. Must be included as ISO 8601 format, YYYYMMDD. Note: The date is inclusive, and will be treated as being in the time zone of the portal.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "d1",
+            "description": "First drilldown - Used to drilldown into the data. This parameter is designed to reflect the functionality of the HubSpot sources reports. For example, when breaking down by sources, d1 could be organic to drill down into organic traffic data.  Note: Starter plans will not be able to use the &d1= or &d2= drilldown parameters."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "d2",
+            "description": "Second drilldown - Used to further drill down into the data. Similar to d1, this reflects the functionality of the sources report. For example, if you have d1=organic, d2=hubspot would drill down into data for organic search traffic for the keyword `hubspot`.  Note: Starter plans will not be able to use the &d1= or &d2= drilldown parameters."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "f",
+            "description": "Filter - Filter the returned data to include only the specified breakdown. This parameter can be included multiple times to filter for multiple breakdowns. For example, when breaking down by sources and using d1=organic to drill down into organic search traffic, you can get the data for the specific keywords `hubspot` and `marketing` using f=hubspot&f=marketing.  NOTE: You must include at least 1 filter when the :time_period is monthly, weekly, or daily."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "e",
+            "description": "Exclude - Exclude data for the specified breakdown. This parameter can be included multiple times to exclude multiple breakdowns.For example, when breaking down by sources and using d1=referrals to drill down into referral traffic, you can exclude data for referral traffic from 'www.hubspot.com' by using e=www.hubspot.com."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filterId",
+            "description": "Analytics View ID - The ID of an Analytics view. If included, the returned data will only include data that matches the view. See this page for details on getting the IDs for the views."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "Sort by - If included, the results are sorted by the specified field."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sortDir",
+            "description": "Sort direction - If a &sort= value is included in the request, this parameter will control the direction of sorted results. Must be one of ASC (ascending) or DESC (descending). Defaults to DESC if not included."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "Limit - Used to limit the number of results per request. If included, the response will include an offset value that can be used to get the next page or results. Defaults to 350 if not included.  NOTE: This parameter will be ignored if the :time_period is monthly, weekly, or daily."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "Offset - Used to get the next page of results if there are more results than the number specified in the limit parameter (or 350 if limit is not included). Each response will include an offset field, and you can use the response value in the offset parameter in the next request to get the next set of results."
+          }
+        ]
+      }
+    },
+    "/analytics/v2/reports/{object_type}/{time_period}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "event-completions",
+              "forms",
+              "pages",
+              "social-assists"
+            ]
+          },
+          "name": "object_type",
+          "in": "path",
+          "required": true,
+          "description": "The type of object that you want the analytics data for. Must be one of:      event-completions - Get data for analytics events. The results are broken down by the event ID. You can get the details for the events using this endpoint.     forms - Get data for your HubSpot forms. The results are broken down by form guids. You can get the details for the forms through the Forms API.      pages - Get data for all URLs with data collected by HubSpot tracking code. The results are broken down by URL.      social-assists - Get data for messages published through the social publishing tools. The results are broken down by the broadcastGuid of the messages. You can get the details of those messages through the Social Media API."
+        },
+        {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "total",
+              "daily",
+              "weekly",
+              "monthly",
+              "summarize/daily",
+              "summarize/weekly",
+              "summarize/monthly"
+            ]
+          },
+          "name": "time_period",
+          "in": "path",
+          "required": true,
+          "description": "The time period used to group the data. Must be one of:      total - Data is rolled up to totals covering the specified time.     daily - Grouped by day     weekly - Grouped by week     monthly - Grouped by month     summarize/daily - Grouped by day, data is rolled up across all breakdowns      summarize/weekly - Grouped by week, data is rolled up across all breakdowns      summarize/monthly - Grouped by month, data is rolled up across all breakdowns  NOTE: When using daily, weekly, or monthly for the time_period, you must include at least one filter (&f= parameter). See below for details."
+        }
+      ],
+      "get": {
+        "summary": "Get analytics data for specific objects",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "offset": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "totals": {
+                      "type": "object",
+                      "properties": {
+                        "rawViews": {
+                          "type": "integer"
+                        },
+                        "ctaViews": {
+                          "type": "integer"
+                        },
+                        "entrances": {
+                          "type": "integer"
+                        },
+                        "exits": {
+                          "type": "integer"
+                        },
+                        "timePerPageview": {
+                          "type": "number"
+                        },
+                        "pageBounceRate": {
+                          "type": "number"
+                        },
+                        "exitsPerPageview": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "breakdowns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "breakdown": {
+                            "type": "string"
+                          },
+                          "meta": {
+                            "type": "string"
+                          },
+                          "rawViews": {
+                            "type": "integer"
+                          },
+                          "timePerPageview": {
+                            "type": "integer"
+                          },
+                          "entrances": {
+                            "type": "integer"
+                          },
+                          "exits": {
+                            "type": "integer"
+                          },
+                          "pageBounceRate": {
+                            "type": "integer"
+                          },
+                          "exitsPerPageview": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "offset": 3,
+                      "total": 1964,
+                      "totals": {
+                        "rawViews": 10702,
+                        "ctaViews": 34,
+                        "entrances": 3259,
+                        "exits": 3259,
+                        "timePerPageview": 92.68912352831246,
+                        "pageBounceRate": 0.5581466707579011,
+                        "exitsPerPageview": 0.3045225191552981
+                      },
+                      "breakdowns": [
+                        {
+                          "breakdown": "www.example.com/",
+                          "meta": "Example | Home page",
+                          "rawViews": 1,
+                          "timePerPageview": 11
+                        },
+                        {
+                          "breakdown": "www.example.com/contact",
+                          "meta": "Example | Contact Us",
+                          "rawViews": 2,
+                          "entrances": 1,
+                          "exits": 1,
+                          "pageBounceRate": 1,
+                          "exitsPerPageview": 0.5
+                        },
+                        {
+                          "breakdown": "www.example.com/about",
+                          "meta": "Example | About us",
+                          "rawViews": 2,
+                          "timePerPageview": 388
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "offset": 3,
+                      "total": 1964,
+                      "totals": {
+                        "rawViews": 10702,
+                        "ctaViews": 34,
+                        "entrances": 3259,
+                        "exits": 3259,
+                        "timePerPageview": 92.68912352831246,
+                        "pageBounceRate": 0.5581466707579011,
+                        "exitsPerPageview": 0.3045225191552981
+                      },
+                      "breakdowns": [
+                        {
+                          "breakdown": "www.example.com/",
+                          "meta": "Example | Home page",
+                          "rawViews": 1,
+                          "timePerPageview": 11
+                        },
+                        {
+                          "breakdown": "www.example.com/contact",
+                          "meta": "Example | Contact Us",
+                          "rawViews": 2,
+                          "entrances": 1,
+                          "exits": 1,
+                          "pageBounceRate": 1,
+                          "exitsPerPageview": 0.5
+                        },
+                        {
+                          "breakdown": "www.example.com/about",
+                          "meta": "Example | About us",
+                          "rawViews": 2,
+                          "timePerPageview": 388
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-analytics-v2-reports-object_type-time_period",
+        "description": "Get analytics data for specific objects, based on the type of object.\n\nThis endpoint is designed around how report data would be shown in the sources report. For more details about how the sources report works, please see the article linked here.\n\nFor more details about how sessions are categorized, please see the article linked here.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "start",
+            "description": "The start date for the data you want. Must be included as ISO 8601 format, YYYYMMDD. Note: The date is inclusive, and will be treated as being in the time zone of the portal.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "end",
+            "description": "The end date for the data you want. Must be included as ISO 8601 format, YYYYMMDD. Note: The date is inclusive, and will be treated as being in the time zone of the portal.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "f",
+            "description": "Filter the returned data to include only the specified breakdown. This parameter can be included multiple times to filter for multiple breakdowns. For example, when breaking down by sources and using d1=organic to drill down into organic search traffic, you can get the data for the specific keywords `hubspot` and `marketing` using f=hubspot&f=marketing.  NOTE: You must include at least 1 filter when the :time_period is monthly, weekly, or daily."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "Exclude data for the specified breakdown. This parameter can be included multiple times to exclude multiple breakdowns. For example, when breaking down by sources and using d1=referrals to drill down into referral traffic, you can exclude data for referral traffic from 'www.hubspot.com' by using e=www.hubspot.com.",
+            "name": "e"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filterId",
+            "description": "The ID of an Analytics view. If included, the returned data will only include data that matches the view. See this page for details on getting the IDs for the views."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "If included, the results are sorted by the specified field."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sortDir",
+            "description": "If a &sort= value is included in the request, this parameter will control the direction of sorted results. Must be one of ASC (ascending) or DESC (descending). Defaults to DESC if not included."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "Used to limit the number of results per request. If included, the response will include an offset value that can be used to get the next page or results. Defaults to 350 if not included.  NOTE: This parameter will be ignored if the :time_period is monthly, weekly, or daily."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "Used to get the next page of results if there are more results than the number specified in the limit parameter (or 350 if limit is not included). Each response will include an offset field, and you can use the response value in the offset parameter in the next request to get the next set of results."
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://app.hubspot.com/oauth/authorize",
+            "tokenUrl": "https://api.hubapi.com/oauth/v1/token",
+            "refreshUrl": "https://api.hubapi.com/oauth/v1/token",
+            "scopes": {
+              "business-intelligence": "Analytics API"
+            },
+            "X-Refresh-Settings": {
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth2": [
+        "business-intelligence"
+      ]
+    }
+  ]
+}

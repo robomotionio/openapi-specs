@@ -1,0 +1,1772 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is an official api of shipnco.",
+    "title": "Ship&Co",
+    "version": "1.0",
+    "termsOfService": "https://www.shipnco.io/terms/",
+    "contact": {
+      "email": "dev@shipnco.io"
+    },
+    "x-logo": {
+      "url": "https://p5q7k4v2.rocketcdn.me/wp-content/uploads/2021/03/cropped-flavicon-png-192x192.png"
+    }
+  },
+  "paths": {
+    "/pricing": {
+      "post": {
+        "operationId": "calculatePrice",
+        "tags": [
+          "Pricing"
+        ],
+        "description": "Get prices estimates list for all available car types and providers",
+        "summary": "Get Prices",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Price"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- typeOfReservation: Type of desired reservation: (Transport, ..)\n- removalPlace: PickUp address: (Preferably a complete address)\n- removalPlaceLat: PickUp address latitude\n- removalPlaceLng: PickUp address longitude\n- depositPlace: DropOff address: (Preferably a complete address)\n- depositPlaceLat: DropOff address latitude\n- depositPlaceLng: DropOff address longitude\n- orderDate: Desired date format (yyyy-MM-dd HH:mm, yyyy-mm-ddTHH:MM:ssZ)\n  PS: Should be left empty if passenger wants an immediate departure\n- checkedLuggageNumber: Number of luggage: (Between 0 and 10)\n- passengersNumber: Number of passengers: (Between 1 and 6)\n",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations": {
+      "post": {
+        "operationId": "create",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Create a reservation with a chosen price estimate",
+        "summary": "Create Reservation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reservation"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- typeOfReservation: Type of desired reservation: (Transport, ..)\n- removalPlace: PickUp address: (Preferably a complete address)\n- depositPlace: DropOff address: (Preferably a complete address)\n- orderDate: Desired date format (yyyy-MM-dd HH:mm, yyyy-mm-ddTHH:MM:ssZ)\n  PS: Should be the same as in Pricing route\n- checkedLuggageNumber: Number of big luggage: (Between 0 and 10)\n- passengersNumber: Number of passengers: (Between 1 and 6)\n- partnerClient: Client info: (name, lastName, email, telephone)\n  Desired telephone number format for french numbers (+33612345678, 0033612345678, 0612345678)\n  Desired telephone number format for international numbers (dialing code (+..) + number) for example (+33612345678)\n- chosenEstimation: The chosen estimate price: (provider, carType, estimationId)\n- additionalInformation: (flight ticket, baby seats, disabled person, ....)\n- options: Only for Marcel, and information (IDs) should be brought from Pricing request response,\n  (providers => Marcel => estimations => vehicle => options) and it should be an array like [{id: 19}, {id: ..}, ...]",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/cancel/{id}/reservation": {
+      "post": {
+        "operationId": "cancelReservation",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Cancel a reservation immediately without a penalty estimation",
+        "summary": "Cancel Reservation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelImmediatelyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/provider/cancel/estimation/{id}/reservation": {
+      "get": {
+        "operationId": "cancelReservationPenaltyEstimation",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Get the amount of penalty that the client will pay in case of reservation cancellation, (only for MySam reservations)",
+        "summary": "Cancel Reservation Penalty Estimation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/provider/cancel/{id}/reservation": {
+      "put": {
+        "operationId": "cancelAfterPenaltyEstimation",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Cancel a reservation after accepting the penalty amount, (only for MySam reservations)",
+        "summary": "Cancel Reservation After Penalty Estimation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelAfterEstimationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/provider/trip/{id}/reservation": {
+      "get": {
+        "operationId": "getTripProvider",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Get reservation information",
+        "summary": "Get one Reservation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/all/active/reservations": {
+      "get": {
+        "operationId": "fetchPartnerClient",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Get a list of all active reservations and their information",
+        "summary": "Get All Active Reservations",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reservations/history/reservations": {
+      "get": {
+        "operationId": "getReservationHistoryPartner",
+        "tags": [
+          "Reservation"
+        ],
+        "description": "Get a list of all reservations history and their information",
+        "summary": "Get Reservations History",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transportInfo/coverage": {
+      "get": {
+        "operationId": "getCoverage",
+        "tags": [
+          "Public Transport"
+        ],
+        "description": "Get List of the areas covered by public transport",
+        "summary": "Coverage",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transportInfo/coverage/region": {
+      "post": {
+        "operationId": "getOneRegionCoverage",
+        "tags": [
+          "Public Transport"
+        ],
+        "description": "Get information about a specific region covered by public transport",
+        "summary": "Region Coverage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageByRegion"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- region_id: ID of region coverde by public transport: (Example: fr-idf for France-île de France).\n This route should be requested after requesting the route {Coverage} to get {region_id} for the wanted region.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transportInfo/coverage/address": {
+      "post": {
+        "operationId": "getOneAddressCoverage",
+        "tags": [
+          "Public Transport"
+        ],
+        "description": "Get information about a specific address covered by public transport",
+        "summary": "Address Coverage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageByAddress"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- longitude: Address longitude.\n- latitude: Address latitude.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transportInfo/journeys": {
+      "post": {
+        "operationId": "getAllJourneys",
+        "tags": [
+          "Public Transport"
+        ],
+        "description": "Get List of the journeys covered by public transport",
+        "summary": "Journeys",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Journeys"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- fromAddressLongitude: PickUp address longitude.\n- fromAddressLatitude: PickUp address latitude.\n- toAddressLongitude: DropOff address longitude.\n- toAddressLatitude: DropOff address latitude.\n- time: Departure time in format: (yyyy-MM-ddTHH:mm:ss).",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transportInfo/coverage/region/journeys": {
+      "post": {
+        "operationId": "getOneRegionJourneys",
+        "tags": [
+          "Public Transport"
+        ],
+        "description": "Get List of the journeys covered for a region by public transport",
+        "summary": "Region Journeys",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JourneysByRegion"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- fromAddressLongitude: PickUp address longitude.\n- fromAddressLatitude: PickUp address latitude.\n- toAddressLongitude: DropOff address longitude.\n- toAddressLatitude: DropOff address latitude.\n- region_id: Departure time in format: (fr-idf for France-île de France).",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/countries": {
+      "get": {
+        "operationId": "getCountriesList",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Get a list of countries that supported by our services.",
+        "summary": "Countries list.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportCountriesListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/currencies": {
+      "get": {
+        "operationId": "getCurrenciesList",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Get a list of currencies that supported by our services.",
+        "summary": "Currencies list.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportCurrenciesListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/airportTerminals/{countryCode}": {
+      "get": {
+        "operationId": "getAirportTerminals",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Get a list of airport terminals that supported by our services for a country.",
+        "summary": "Airport terminals list.",
+        "parameters": [
+          {
+            "name": "countryCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportTerminalsListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/createQuote": {
+      "post": {
+        "operationId": "createQuote",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Get a list of booking quotes.",
+        "summary": "Get Quotes.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirportQuotesListBody"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- fromLocation: Location object containing the following params\n    (type, description (the address), lat, lng).\n- toLocation object containing the following params\n    (type, description (the address), lat, lng).\n- flight: Flight object containing the following params(landingLocalDatetime, departureLocalDatetime).\n- passengersNumber: Number of passengers.\n\nAnd containing the following non mandatory information:\n- passengerInfo: Passenger Info.\n\nP.S:\n- All non mandatory objects should exist in the body but left empty.\n- Date format (yyyy-MM-ddTHH:mm, example 2000-01-01T10:00).\n- Variable (type) should have one of the values (airport-terminal, address, hotel).\n- Variable (departureLocalDatetime) should only have value if toLocation [type] was airport-terminal, and landingLocalDatetime is left empty.\n- Variable (landingLocalDatetime) should only have value if fromLocation [type] was airport-terminal, and departureLocalDatetime is left empty.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportQuotesListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/getQuoteRequest/{quoteRequestId}": {
+      "get": {
+        "operationId": "getQuoteRequest",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Show a booking quotes list.",
+        "summary": "Get Quotes List.",
+        "parameters": [
+          {
+            "name": "quoteRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportQuotesListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/getQuote/{quoteRequestId}/{quoteId}": {
+      "get": {
+        "operationId": "getQuote",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Show details for one specific quote from booking quotes list.",
+        "summary": "Get One Quote.",
+        "parameters": [
+          {
+            "name": "quoteRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quoteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportOneQuote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/createBooking": {
+      "post": {
+        "operationId": "createBooking",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Create a booking for one specific quote.",
+        "summary": "Create Booking.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirportBookingRequestBody"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- quoteId: Specify which quote for fetching data.\n- flightNumber:  Flight object containing the following params:(landingFlightNumber, departureFlightNumber).\n- passengerInfo: Passenger object containing the following params (name, email and phone).\n- primaryContact: Specify who should be reached out to for this booking as the primary contact person (passenger (default) or agent).\n\nAnd containing the following non mandatory information:\n- quoteRequestId: Specify which quote request for fetching data. Recommend to supply for performance.\n- agent: Required if communication[primary_contact] is agent. Agent object containing the following params (name, phone, email).\n- luggage: Luggage object containing the following params (extra_items: Items other than 1 carry-on and 1 check-in bag per passenger).\n- additionalNotes: Any additional information you would like to communicate to your transport service provider.\n\nP.S:\n- All non mandatory objects should exist in the body but left empty.\n- Variable (departureFlightNumber) should only have value if toLocation [type] was airport-terminal, and landingFlightNumber is left empty.\n- Variable (landingFlightNumber) should only have value if fromLocation [type] was airport-terminal, and departureFlightNumber is left empty.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportBookingRequestResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/getBooking/{bookingId}": {
+      "get": {
+        "operationId": "getBooking",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Show all details for one booking.",
+        "summary": "Get Booking.",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportBookingRequestResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/airportTransfer/cancelBooking": {
+      "patch": {
+        "operationId": "cancelBooking",
+        "tags": [
+          "Airport Transport"
+        ],
+        "description": "Cancel a booking.",
+        "summary": "Cancel Booking.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirportBookingCancelBody"
+              }
+            }
+          },
+          "description": "Request body containing the following mandatory information:\n- bookingId: Booking Id that you want to cancel.\n- message: The reason why you want to cancel.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "JWT authentication problem"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Pricing"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Reservation"
+    },
+    {
+      "name": "Public Transport"
+    },
+    {
+      "name": "Public Transport"
+    },
+    {
+      "name": "Public Transport"
+    },
+    {
+      "name": "Public Transport"
+    },
+    {
+      "name": "Public Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    },
+    {
+      "name": "Airport Transport"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about ShipnCo",
+    "url": "http://ShipnCo.io"
+  },
+  "servers": [
+    {
+      "url": ""
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {
+      "Price": {
+        "type": "object",
+        "properties": {
+          "typeOfReservation": {
+            "type": "string"
+          },
+          "removalPlace": {
+            "type": "string"
+          },
+          "removalPlaceLat": {
+            "type": "number"
+          },
+          "removalPlaceLng": {
+            "type": "number"
+          },
+          "depositPlace": {
+            "type": "string"
+          },
+          "depositPlaceLat": {
+            "type": "number"
+          },
+          "depositPlaceLng": {
+            "type": "number"
+          },
+          "orderDate": {
+            "type": "string"
+          },
+          "checkedLuggageNumber": {
+            "type": "number"
+          },
+          "passengersNumber": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "typeOfReservation",
+          "removalPlace",
+          "removalPlaceLat",
+          "removalPlaceLng",
+          "depositPlace",
+          "depositPlaceLat",
+          "depositPlaceLng",
+          "checkedLuggageNumber",
+          "passengersNumber"
+        ]
+      },
+      "PriceResponse": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "number",
+            "description": "If value is 0, then you should change addresses format"
+          },
+          "duration": {
+            "type": "number",
+            "description": "If value is 0, then you should change addresses format"
+          },
+          "distinationAddress": {
+            "type": "string"
+          },
+          "originAddress": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string"
+          },
+          "providers": {
+            "$ref": "#/components/schemas/Providers"
+          }
+        },
+        "required": []
+      },
+      "Providers": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "estimations": {
+            "$ref": "#/components/schemas/Estimations"
+          }
+        },
+        "required": [
+          "providerId",
+          "estimations"
+        ]
+      },
+      "Estimations": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "$ref": "#/components/schemas/Vehicle"
+          }
+        },
+        "required": [
+          "vehicle"
+        ]
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "options": {
+            "$ref": "#/components/schemas/CarsOptions"
+          }
+        },
+        "required": [
+          "id",
+          "price"
+        ]
+      },
+      "CarsOptions": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "time": {
+            "type": "number"
+          },
+          "checked_by_default": {
+            "type": "boolean"
+          },
+          "icon_url": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "Reservation": {
+        "type": "object",
+        "properties": {
+          "typeOfReservation": {
+            "type": "string"
+          },
+          "removalPlace": {
+            "type": "string"
+          },
+          "removalPlaceLat": {
+            "type": "number"
+          },
+          "removalPlaceLng": {
+            "type": "number"
+          },
+          "depositPlace": {
+            "type": "string"
+          },
+          "depositPlaceLat": {
+            "type": "number"
+          },
+          "depositPlaceLng": {
+            "type": "number"
+          },
+          "orderDate": {
+            "type": "string"
+          },
+          "checkedLuggageNumber": {
+            "type": "number"
+          },
+          "passengersNumber": {
+            "type": "number"
+          },
+          "partnerClient": {
+            "$ref": "#/components/schemas/PartnerClient"
+          },
+          "chosenEstimation": {
+            "$ref": "#/components/schemas/ChosenEstimation"
+          },
+          "additionalInformations": {
+            "type": "string"
+          },
+          "options": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "typeOfReservation",
+          "removalPlace",
+          "removalPlaceLat",
+          "removalPlaceLng",
+          "depositPlace",
+          "depositPlaceLat",
+          "depositPlaceLng",
+          "checkedLuggageNumber",
+          "passengersNumber",
+          "partnerClient",
+          "chosenEstimation"
+        ]
+      },
+      "ReservationResponse": {
+        "type": "object",
+        "properties": {
+          "reservationNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "priceTTC": {
+            "type": "number"
+          },
+          "priceHT": {
+            "type": "number"
+          },
+          "TVA": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "_id": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "PartnerClient": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "lastName",
+          "email",
+          "telephone"
+        ]
+      },
+      "ChosenEstimation": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "carType": {
+            "type": "string"
+          },
+          "estimationId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "provider",
+          "carType",
+          "estimationId"
+        ]
+      },
+      "CancelImmediately": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "CoverageByRegion": {
+        "type": "object",
+        "properties": {
+          "region_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region_id"
+        ]
+      },
+      "CoverageByAddress": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude"
+        ]
+      },
+      "Journeys": {
+        "type": "object",
+        "properties": {
+          "fromAddressLongitude": {
+            "type": "string"
+          },
+          "fromAddressLatitude": {
+            "type": "string"
+          },
+          "toAddressLongitude": {
+            "type": "string"
+          },
+          "toAddressLatitude": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fromAddressLongitude",
+          "fromAddressLatitude",
+          "toAddressLongitude",
+          "toAddressLatitude",
+          "time"
+        ]
+      },
+      "JourneysByRegion": {
+        "type": "object",
+        "properties": {
+          "fromAddressLongitude": {
+            "type": "string"
+          },
+          "fromAddressLatitude": {
+            "type": "string"
+          },
+          "toAddressLongitude": {
+            "type": "string"
+          },
+          "toAddressLatitude": {
+            "type": "string"
+          },
+          "region_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fromAddressLongitude",
+          "fromAddressLatitude",
+          "toAddressLongitude",
+          "toAddressLatitude",
+          "region_id"
+        ]
+      },
+      "CancelImmediatelyResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "penalty": {
+            "type": "number"
+          }
+        },
+        "required": []
+      },
+      "CancelAfterEstimationResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportOneCountry": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name_short": {
+            "type": "string"
+          },
+          "name_full": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportCountriesListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirportOneCountry"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportOneCurrency": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name_short": {
+            "type": "string"
+          },
+          "name_full": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportCurrenciesListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirportOneCurrency"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportOneTerminal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": []
+      },
+      "OneAirport": {
+        "type": "object",
+        "properties": {
+          "iata": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "name_alias": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "terminals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirportOneTerminal"
+            }
+          }
+        },
+        "required": []
+      },
+      "AirportTerminalsListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "airports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OneAirport"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportQuoteLocation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": []
+      },
+      "AirportQuoteFlight": {
+        "type": "object",
+        "properties": {
+          "landingFlightNumber": {
+            "type": "string"
+          },
+          "departureFlightNumber": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportQuotesListBody": {
+        "type": "object",
+        "properties": {
+          "fromLocation": {
+            "$ref": "#/components/schemas/AirportQuoteLocation"
+          },
+          "toLocation": {
+            "$ref": "#/components/schemas/AirportQuoteLocation"
+          },
+          "flight": {
+            "$ref": "#/components/schemas/AirportQuoteFlight"
+          },
+          "passengersNumber": {
+            "type": "number"
+          },
+          "passengerInfo": {
+            "$ref": "#/components/schemas/PartnerClient"
+          }
+        },
+        "required": [
+          "fromLocation",
+          "toLocation",
+          "flight",
+          "passengersNumber"
+        ]
+      },
+      "AirportOneQuoteServiceSupplierInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportOneQuoteServicePassengerReviews": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "averageRating": {
+            "type": "number"
+          }
+        },
+        "required": []
+      },
+      "AirportOneQuoteServiceInfo": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "supplier": {
+            "$ref": "#/components/schemas/AirportOneQuoteServiceSupplierInfo"
+          },
+          "passengerReviews": {
+            "$ref": "#/components/schemas/AirportOneQuoteServicePassengerReviews"
+          }
+        },
+        "required": []
+      },
+      "AirportOneQuoteFare": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "refundCancellationPolicy": {
+            "type": "string"
+          },
+          "refundPolicies": {
+            "type": "object"
+          }
+        },
+        "required": []
+      },
+      "AirportOneQuote": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "serviceInfo": {
+            "$ref": "#/components/schemas/AirportOneQuoteServiceInfo"
+          },
+          "fare": {
+            "$ref": "#/components/schemas/AirportOneQuoteFare"
+          },
+          "luggage": {
+            "type": "object"
+          },
+          "quoteExpirationTime": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportQuotesListResponse": {
+        "type": "object",
+        "properties": {
+          "quoteRequest": {
+            "$ref": "#/components/schemas/AirportQuotesListBody"
+          },
+          "quoteRequestDate": {
+            "type": "string"
+          },
+          "quoteRequestId": {
+            "type": "string"
+          },
+          "quotesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirportOneQuote"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportBookingContactInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportBookingRequestBody": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "quoteRequestId": {
+            "type": "string"
+          },
+          "flightNumber": {
+            "$ref": "#/components/schemas/AirportQuoteFlight"
+          },
+          "passengerInfo": {
+            "$ref": "#/components/schemas/AirportBookingContactInfo"
+          },
+          "primaryContact": {
+            "type": "string"
+          },
+          "agent": {
+            "$ref": "#/components/schemas/AirportBookingContactInfo"
+          },
+          "luggage": {
+            "type": "object"
+          },
+          "additionalNotes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId",
+          "flightNumber",
+          "passengerInfo",
+          "primaryContact"
+        ]
+      },
+      "AirportBookingRequest": {
+        "type": "object",
+        "properties": {
+          "flightNumber": {
+            "$ref": "#/components/schemas/AirportQuoteFlight"
+          },
+          "passengerInfo": {
+            "$ref": "#/components/schemas/AirportBookingContactInfo"
+          },
+          "primaryContact": {
+            "type": "string"
+          },
+          "quoteId": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportBooking": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string"
+          },
+          "bookingStatus": {
+            "type": "string"
+          },
+          "bookingDatetime": {
+            "type": "string"
+          },
+          "bookingRequest": {
+            "$ref": "#/components/schemas/AirportBookingRequest"
+          },
+          "meetingInstructions": {
+            "type": "string"
+          },
+          "serviceInfo": {
+            "$ref": "#/components/schemas/AirportOneQuoteServiceInfo"
+          },
+          "fare": {
+            "$ref": "#/components/schemas/AirportOneQuoteFare"
+          },
+          "fromLocation": {
+            "$ref": "#/components/schemas/AirportQuoteLocation"
+          },
+          "toLocation": {
+            "$ref": "#/components/schemas/AirportQuoteLocation"
+          }
+        },
+        "required": []
+      },
+      "AirportBookingRequestResponse": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "string"
+          },
+          "booking": {
+            "$ref": "#/components/schemas/AirportBooking"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "AirportBookingCancelBody": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookingId",
+          "message"
+        ]
+      }
+    }
+  }
+}

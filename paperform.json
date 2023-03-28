@@ -1,0 +1,1650 @@
+{
+  "openapi": "3.0.2",
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "**API access is only available on the Pro and Agency plans**. If you have an Essentials account, you will need to [upgrade to Pro](/account/pro) to access the API. To use this API you will need a valid API Key. You can generate an API key on [your account page](https://paperform.co/account/developer). \nYour API key needs to be sent with every request in the authorization header:\n```\n\"Authorization\": \"Bearer <token>\"\n```\n"
+    },
+    {
+      "name": "Rate Limits",
+      "description": "The Paperform API is rate limited to prevent abuse. If you exceed the rates, you will see a response of `429 Too Many Requests`. You can monitor your current usage and limits via the following response headers.\n\nHeader | Description\n----------------|-------------\nX-RateLimit-Limit | Request limit per minute.\nX-RateLimit-Remaining | The number of requests left for the time window.\nRetry-After | How many seconds to wait before the limit has lifted.\nX-RateLimit-Reset | Unix timestamp for when the limit will lift.\n"
+    },
+    {
+      "name": "Webhooks",
+      "description": "**Webhooks are only available on Pro and Agency plans**. Webhooks are used to integrate Paperform form submissions into external services and can be configured in the editor. For more information about setting up webhooks see the [help docs](https://paperform.co/help/articles/how-to-use-webhooks/).\n"
+    },
+    {
+      "name": "forms",
+      "description": "Below are all of the endpoints related to retrieving forms and their fields. Throughout the API, you can identify a form in one of two ways\n1. The form's ID which can be retrieved through the API.\n2. The form's slug. The slug is the part of the form URL before .paperform.co. For example, the slug for the form https://newsletter.paperform.co is \"newsletter\".\n\nNote that a form's custom slug can be changed, so for that reason we strongly recommend using the ID where possible.\n",
+      "x-displayName": "Forms"
+    },
+    {
+      "name": "partial-submissions",
+      "description": "Partial Submissions are a feature available on some plans for Paperform. They allow you to see when a submission has been started, but not submitted. Partial submissions are stored for a maximum of 30 days before being automatically removed. Note that the partial submissions API returns the partial submission record even after the submission has been completed. The primary reason for this is so that you can keep track of which partial submissions have gone on to be submitted. If a partial submission has been submitted, the `submitted_at` property will be set to the date time the submission was made.",
+      "x-displayName": "Partial Submissions"
+    },
+    {
+      "name": "submissions",
+      "description": "The submissions API allows you to retrieve submissions for your forms.\n",
+      "x-displayName": "Submissions"
+    },
+    {
+      "name": "feature-requests",
+      "x-displayName": "Submit a Feature Request",
+      "description": "<div data-paperform-id=\"rccpeoez\"></div>\n"
+    },
+    {
+      "name": "support",
+      "x-displayName": "Contact Support",
+      "description": "For help working with the Paperform API contact our support team via the [in-app chat](https://paperform.co/dashboard) or via [email](mailto:support@paperform.co).\n"
+    },
+    {
+      "name": "webhook-model",
+      "x-displayName": "Webhook Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Webhook\" />\n"
+    },
+    {
+      "name": "form-model",
+      "x-displayName": "Form Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Form\" />\n"
+    },
+    {
+      "name": "submission-model",
+      "x-displayName": "Submission Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Submission\" />\n"
+    },
+    {
+      "name": "partial-submission-model",
+      "x-displayName": "Partial Submission Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/PartialSubmission\" />\n"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Overview",
+      "tags": [
+        "Authentication",
+        "Rate Limits",
+        "Webhooks"
+      ]
+    },
+    {
+      "name": "Endpoints",
+      "tags": [
+        "forms",
+        "submissions",
+        "partial-submissions"
+      ]
+    },
+    {
+      "name": "Models",
+      "tags": [
+        "form-model",
+        "submission-model",
+        "partial-submission-model",
+        "webhook-model"
+      ]
+    },
+    {
+      "name": "Support",
+      "tags": [
+        "support",
+        "feature-requests"
+      ]
+    }
+  ],
+  "info": {
+    "version": "1.0.0",
+    "title": "Paperform API",
+    "contact": {
+      "name": "Paperform API Support",
+      "url": "https://paperform.co",
+      "email": "support@paperform.co"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.paperform.co/v1"
+    }
+  ],
+  "paths": {
+    "/forms": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/skip"
+          },
+          {
+            "$ref": "#/components/parameters/afterId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeDate"
+          },
+          {
+            "$ref": "#/components/parameters/afterDate"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "description": "This endpoint returns a list of forms that are accessible by the authorized user.\n",
+        "operationId": "List Forms",
+        "tags": [
+          "forms"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a list of forms",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ok"
+                          ]
+                        },
+                        "results": {
+                          "type": "object",
+                          "properties": {
+                            "forms": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Form"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/forms\";\n\nfetch(url, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$response = $client->get('/forms');\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/forms'\n\nresponse = requests.get(url, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET \\\n'https://api.paperform.co/v1/forms'\n"
+          }
+        ]
+      }
+    },
+    "/forms/{slug_or_id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/slugOrID"
+          }
+        ],
+        "description": "This endpoint returns a specific form by slug or ID.\n",
+        "operationId": "Get Form",
+        "tags": [
+          "forms"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a single form that matched the provided slug or ID\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "form": {
+                          "$ref": "#/components/schemas/Form"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/forms/\";\nconst formSlug = \"my-form-slug\";\n\nfetch(url + formSlug, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$slug = 'my-form-slug';\n\n$response = $client->get('/forms/' . $slug);\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/forms/'\nslug = 'my-form-slug'\n\nresponse = requests.get(url + slug, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET \\\n'https://api.paperform.co/v1/forms/my-form-slug'\n"
+          }
+        ]
+      }
+    },
+    "/forms/{slug_or_id}/fields": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/slugOrID"
+          }
+        ],
+        "description": "This endpoint returns the list of fields available for a specific form by slug or ID.\n",
+        "operationId": "Get Form Fields",
+        "tags": [
+          "forms"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned fields for a single form that matched the provided slug or ID\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "fields": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/FormField"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/forms/\";\nconst formSlug = \"my-form-slug\";\n\nfetch(url + formSlug + \"/fields\", { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$slug = 'my-form-slug';\n\n$response = $client->get('/forms/' . $slug . '/fields');\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/forms/'\nslug = 'my-form-slug'\n\nresponse = requests.get(url + slug + '/fields', headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET \\\n'https://api.paperform.co/v1/forms/my-form-slug/fields'\n"
+          }
+        ]
+      }
+    },
+    "/submissions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/formIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/skip"
+          },
+          {
+            "$ref": "#/components/parameters/afterId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeDate"
+          },
+          {
+            "$ref": "#/components/parameters/afterDate"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "description": "This endpoint returns a list of submissions matching the requested parameters.\n",
+        "operationId": "List Submissions",
+        "tags": [
+          "submissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a list of submissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ok"
+                          ]
+                        },
+                        "results": {
+                          "type": "object",
+                          "properties": {
+                            "submissions": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Submission"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/submissions\";\n\nconst query = qs.stringify({\n  form: \"my-form-slug\",\n  limit: 10,\n  after_date: \"2019-06-11T20:36:29.000Z\"\n});\n\nfetch(url + \"?\" + query, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$query = [\n  'form' => 'my-form-slug',\n  'limit' => 10,\n  'after_date' => '2019-06-11T20:36:29.000Z'\n];\n\n$response = $client->get(\n  '/submissions', ['query' => $query]\n  );\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/submissions'\n\nquery = {\n  'form': 'my-form-slug', \n  'limit': 10, \n  'after_date': '2019-06-11T20:36:29.000Z'\n  }\n\nresponse = requests.get(url, params=query, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET -G \\\n'https://api.paperform.co/v1/submissions' \\\n-d 'form=my-form-slug' \\\n-d 'limit=10' \\\n-d 'after_date=2019-06-11T20:36:29.000Z' \\\n"
+          }
+        ]
+      }
+    },
+    "/submissions/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/uuid"
+          }
+        ],
+        "description": "This endpoint returns a specific submission by ID.\n",
+        "operationId": "Get Submission",
+        "tags": [
+          "submissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a single submission that matched the provided ID\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "submission": {
+                          "$ref": "#/components/schemas/Submission"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/submissions/\";\nconst submissionId = \"5d40fdaf174b4c0007043072\";\n\nfetch(url + submissionId, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co/v1';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$submission_id = '5d40fdaf174b4c0007043072';\n\n$response = $client->get('/submissions/' . $submission_id);\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/submissions/'\nsubmission_id = '5d40fdaf174b4c0007043072'\n\nresponse = requests.get(url + submission_id, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET \\\n'https://api.paperform.co/v1/submissions/5d40fdaf174b4c0007043072'\n"
+          }
+        ]
+      }
+    },
+    "/partial-submissions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/formIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/skip"
+          },
+          {
+            "$ref": "#/components/parameters/afterId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeId"
+          },
+          {
+            "$ref": "#/components/parameters/beforeDate"
+          },
+          {
+            "$ref": "#/components/parameters/afterDate"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "description": "This endpoint returns a list of partial submissions matching the provided parameters.\n",
+        "operationId": "List Partial Submissions",
+        "tags": [
+          "partial-submissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a list of partial submissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ok"
+                          ]
+                        },
+                        "results": {
+                          "type": "object",
+                          "properties": {
+                            "partial-submissions": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/PartialSubmission"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/partial-submissions\";\n\nconst query = qs.stringify({\n  form: \"my-form-slug\",\n  limit: 10,\n  after_date: \"2019-06-11T20:36:29.000Z\"\n});\n\nfetch(url + \"?\" + query, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$query = [\n  'form' => 'my-form-slug',\n  'limit' => 10,\n  'after_date' => '2019-06-11T20:36:29.000Z'\n];\n\n$response = $client->get(\n  '/partial-submissions', ['query' => $query]\n  );\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/partial-submissions'\n\nquery = {\n  'form': 'my-form-slug', \n  'limit': 10, \n  'after_date': '2019-06-11T20:36:29.000Z'\n  }\n\nresponse = requests.get(url, params=query, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET -G \\\n'https://api.paperform.co/v1/partial-submissions' \\\n-d 'form=my-form-slug' \\\n-d 'limit=10' \\\n-d 'after_date=2019-06-11T20:36:29.000Z' \\\n"
+          }
+        ]
+      }
+    },
+    "/partial-submissions/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/uuid"
+          }
+        ],
+        "description": "This endpoint returns a specific partial submission by ID.\n",
+        "operationId": "Get Partial Submission",
+        "tags": [
+          "partial-submissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a single partial submission that matched the provided ID\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "partial-submission": {
+                          "$ref": "#/components/schemas/PartialSubmission"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Validation"
+          },
+          "429": {
+            "$ref": "#/components/responses/Throttled"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "Node",
+            "source": "const qs = require(\"querystring\");\nconst fetch = require(\"node-fetch\")\n\nconst token = process.env.API_KEY;\nconst headers = {\n  Authorization: `Bearer ${token}`\n};\n\nconst url = \"https://api.paperform.co/v1/partial-submissions/\";\nconst partialSubmissionId = \"5d40fdaf174b4c0007043072\";\n\nfetch(url + partialSubmissionId, { headers })\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => console.log(error));\n"
+          },
+          {
+            "lang": "PHP",
+            "source": "$base_uri = 'https://api.paperform.co/v1';\n$token = getenv(\"API_KEY\");\n$headers = ['Authorization' => 'Bearer ' . $token];\n$client = new \\GuzzleHttp\\Client([\n  'base_uri' => $base_uri, 'headers' => $headers\n  ]);\n\n$partial_submission_id = '5d40fdaf174b4c0007043072';\n\n$response = $client->get('/partial-submissions/' . $partial_submission_id);\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import requests\nimport os\n\ntoken = os.environ['API_KEY']\nheaders = { 'Authorization': 'Bearer ' + token }\n\nurl = 'https://api.paperform.co/v1/partial-submissions/'\npartial_submission_id = '5d40fdaf174b4c0007043072'\n\nresponse = requests.get(url + partial_submission_id, headers=headers)\n"
+          },
+          {
+            "lang": "shell",
+            "source": "API_KEY=\"your api key here\"\n\ncurl -i \\\n-H \"Authorization: Bearer $API_KEY\" \\\n-X GET \\\n'https://api.paperform.co/v1/partial-submissions/5d40fdaf174b4c0007043072'\n"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "not_found"
+                      ],
+                      "description": "The requested resource was not found"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "authentication"
+                      ],
+                      "description": "Token not provided for not valid"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Invalid Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "validation"
+                      ],
+                      "description": "Invalid parameters provided"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Not Permitted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "permission"
+                      ],
+                      "description": "Not permitted to access requested resource"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unexpected": {
+        "description": "Unexpected Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "server_error"
+                      ],
+                      "description": "An unexpected error"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Validation": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "error"
+                      ]
+                    },
+                    "error_type": {
+                      "type": "string",
+                      "enum": [
+                        "validation"
+                      ],
+                      "description": "Invalid parameters provided"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Throttled": {
+        "description": "Too Many Requests",
+        "content": {
+          "text/html": {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Too many requests"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "slugOrID": {
+        "in": "path",
+        "name": "slug_or_id",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The form's slug, custom slug or ID.",
+        "example": "my-form-slug"
+      },
+      "uuid": {
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "The id of the record to get",
+        "example": "5d40fdaf174b4c0007043072"
+      },
+      "formIdParam": {
+        "in": "query",
+        "name": "form",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The slug, custom slug or ID of a Form to get results for.",
+        "example": "67fqxwkp"
+      },
+      "afterId": {
+        "in": "query",
+        "name": "after_id",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Return results after the provided ID.",
+        "example": "5d40fdaf174b4c0007043072"
+      },
+      "beforeId": {
+        "in": "query",
+        "name": "before_id",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Return results before the provided ID.",
+        "example": "5d40fdaf174b4c0007043072"
+      },
+      "skip": {
+        "in": "query",
+        "name": "skip",
+        "schema": {
+          "type": "integer",
+          "default": 0
+        },
+        "description": "Number of results to skip in the result set."
+      },
+      "limit": {
+        "in": "query",
+        "name": "limit",
+        "schema": {
+          "type": "integer",
+          "maximum": 100,
+          "default": 20
+        },
+        "description": "The number or results to return."
+      },
+      "sort": {
+        "in": "query",
+        "name": "sort",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "ASC",
+            "DESC"
+          ]
+        },
+        "description": "The direction to sort in. Results are sorted by `created_at`, and defaults to `\"DESC\"`."
+      },
+      "beforeDate": {
+        "in": "query",
+        "name": "before_date",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": "Return results created on or after this date-time (UTC). Overwritten by `before_id`.",
+        "example": "2019-06-11T20:36:29.000Z"
+      },
+      "afterDate": {
+        "in": "query",
+        "name": "after_date",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": "Return results created before this date (UTC). Overwritten by `after_id`.",
+        "example": "2019-06-11T20:36:29.000Z"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "An error message"
+          },
+          "details": {
+            "type": "array",
+            "description": "Suggested actions to resolve the error",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "error_type",
+          "message"
+        ]
+      },
+      "ErrorType": {
+        "type": "string",
+        "enum": [
+          "validation",
+          "authentication",
+          "permission",
+          "not_found"
+        ]
+      },
+      "PartialSubmission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "form_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SubmissionData"
+          },
+          "last_answered": {
+            "type": "string",
+            "nullable": true
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-string",
+            "nullable": true,
+            "description": "If the partial submission was submitted, this will be set to a formatted date-time string in your account timezone indicating the time the submission was made."
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the last time the partial submission was updated."
+          },
+          "created_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the time the partial submission was created."
+          },
+          "account_timezone": {
+            "type": "string",
+            "description": "Your configured account timezone"
+          },
+          "submitted_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          },
+          "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          },
+          "updated_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          }
+        }
+      },
+      "Form": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The default slug for the form"
+          },
+          "custom_slug": {
+            "type": "string",
+            "nullable": true,
+            "description": "The custom slug for the form if set"
+          },
+          "space_id": {
+            "type": "integer",
+            "description": "The id of the Space which contains the form"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the form"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the form"
+          },
+          "cover_image_url": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://s3-ap-southeast-2.amazonaws.com/paperform/u-22714/1/2019-04-14/58p3u6p/cabinet-clothes-clothes-hanger-996329.jpg",
+            "description": "The cover image for the form"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://lffa4fxo.paperform.co",
+            "description": "The main sharing URL for the form"
+          },
+          "additional_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Additional URLs for the form"
+          },
+          "live": {
+            "type": "boolean",
+            "description": "Indicates if the form is currently accepting submissions"
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags assigned to the form"
+          },
+          "submission_count": {
+            "type": "integer",
+            "description": "The number of submissions the form has received"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the time the form was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the time the form was created."
+          },
+          "account_timezone": {
+            "type": "string",
+            "description": "The configured timezone for your account"
+          },
+          "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          },
+          "updated_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          }
+        }
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "form_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the Form which received the Submission"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SubmissionData"
+          },
+          "device": {
+            "$ref": "#/components/schemas/Device"
+          },
+          "charge": {
+            "$ref": "#/components/schemas/Charge"
+          },
+          "pdfs": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Pdf"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the time the form was created."
+          },
+          "account_timezone": {
+            "type": "string",
+            "description": "The configured timezone for your account"
+          },
+          "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A formatted date-time string in UTC indicating the time the form was created."
+          }
+        }
+      },
+      "SubmissionData": {
+        "type": "object",
+        "description": "The `data` object stores the answers from the form. Each value is stored against it's key. Note that custom keys are not used here.",
+        "properties": {
+          "KEY": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "object"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      },
+      "Webhook": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebhookData"
+          },
+          "form_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the Form where the webhook is configured"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug of the Form where the webhook is configured"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the Submission which triggered the webhook"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "A formatted date-time string in your account timezone indicating the time the submission was created."
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "The IP address where the submission originated"
+          },
+          "device": {
+            "$ref": "#/components/schemas/Device"
+          },
+          "charge": {
+            "$ref": "#/components/schemas/Charge"
+          }
+        }
+      },
+      "WebhookData": {
+        "description": "The `data` array stores the answers from the submission. Each answer is represented by an object with these properties.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "The title of the question"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description text of the question"
+            },
+            "type": {
+              "type": "string",
+              "description": "The type of the question"
+            },
+            "key": {
+              "type": "string",
+              "description": "The default key of the question"
+            },
+            "custom_key": {
+              "type": "string",
+              "description": "The custom key of the question if set",
+              "nullable": true
+            },
+            "value": {
+              "description": "The answer to the question from the Submission",
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Pdf": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "filename": {
+            "type": "string"
+          }
+        }
+      },
+      "Charge": {
+        "description": "Information about payments relating to the submission",
+        "type": "object",
+        "properties": {
+          "products": {
+            "description": "The products included in the charge",
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "summary": {
+            "description": "A summary of the charge",
+            "type": "string"
+          },
+          "discount": {
+            "description": "The total discount applied to the charge",
+            "type": "integer"
+          },
+          "discounted_subscriptions": {
+            "description": "The IDs of discounted subscriptions in the charge",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coupon": {
+            "description": "If a coupon was applied to the charge",
+            "type": "boolean"
+          },
+          "total": {
+            "description": "The total of the charge",
+            "type": "integer"
+          },
+          "tax": {
+            "description": "The fixed tax amounts on the charge",
+            "type": "integer"
+          },
+          "tax_percentage": {
+            "description": "The percentage tax amounts on the charge",
+            "type": "integer"
+          },
+          "processing_fee": {
+            "description": "The processing fee on the charge",
+            "type": "integer"
+          },
+          "authorize": {
+            "description": "If the charge was only authorized for later capture",
+            "type": "boolean"
+          },
+          "receipt_email": {
+            "description": "The receipt email given in the checkout",
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "charge": {
+            "type": "string"
+          },
+          "payment_source_id": {
+            "description": "The id of the payment source used to make the charge",
+            "type": "integer"
+          },
+          "payment_source_service": {
+            "description": "The payment service from the payment source used to make the charge",
+            "type": "string"
+          },
+          "live": {
+            "description": "If the charge was made in 'live' mode",
+            "type": "boolean"
+          }
+        }
+      },
+      "Customer": {
+        "description": "The customer attached to the charge",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Product": {
+        "description": "A product included in a charge",
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "Device": {
+        "description": "Information about the device which made the submission",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "device": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "browser": {
+            "type": "string"
+          },
+          "embedded": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "user_agent": {
+            "type": "string"
+          },
+          "utm_source": {
+            "type": "string"
+          },
+          "utm_medium": {
+            "type": "string"
+          },
+          "utm_campaign": {
+            "type": "string"
+          },
+          "utm_term": {
+            "type": "string"
+          },
+          "utm_content": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          }
+        }
+      },
+      "FormField": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "3jbh8"
+          },
+          "custom_key": {
+            "type": "string",
+            "example": "email",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "example": "Email address",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "example": "Enter your email address",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "example": "email"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "skip": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API access is only available on the Pro and Agency plans. If you have an Essentials account, you will need to upgrade to Pro to access the API. To use this API you will need a valid API Key. You can generate an API key on your account page.",
+        "bearerFormat": "Bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "apikey": []
+    }
+  ]
+}

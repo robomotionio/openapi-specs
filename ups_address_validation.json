@@ -1,0 +1,613 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Address Validation City, State, Zip",
+    "description": "The UPS Address Validation API's database is updated every month with new address information from USPS.  Address Validation for City, State, Zip is only available for the United States",
+    "termsOfService": "https://www.ups.com/upsdeveloperkit/assets/html/serviceAgreement.html",
+    "version": "1.0.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about Address Validation, Error Codes and Appendix",
+    "url": "https://www.ups.com/upsdeveloperkit/assets/html/AVStatic.html"
+  },
+  "servers": [
+    {
+      "url": "https://wwwcie.ups.com/rest"
+    },
+    {
+      "url": "https://onlinetools.ups.com/rest"
+    }
+  ],
+  "paths": {
+    "/AV": {
+      "post": {
+        "summary": "The UPS Address Validation API's database is updated every month with new address information from USPS.  Address Validation for City, State, Zip is only available for the United States",
+        "operationId": "AV",
+        "requestBody": {
+          "description": "The UPS Address Validation API's database is updated every month with new address information from USPS.  Address Validation for City, State, Zip is only available for the United States",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ADDRESSVALIDATIONRequestWrapper"
+              },
+              "examples": {
+                "json": {
+                  "summary": "A sample JSON request",
+                  "value": {
+                    "AccessRequest": {
+                      "AccessLicenseNumber": "Your Access License Number",
+                      "UserId": "Your Username",
+                      "Password": "Your Password"
+                    },
+                    "AddressValidationRequest": {
+                      "Request": {
+                        "TransactionReference": {
+                          "CustomerContext": "Your Customer Context"
+                        },
+                        "RequestAction": "AV"
+                      },
+                      "Address": {
+                        "City": "ALPHARETTA",
+                        "StateProvinceCode": "GA",
+                        "PostalCode": "30005"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/ADDRESSVALIDATIONRequestWrapper"
+              },
+              "examples": {
+                "xml": {
+                  "summary": "A sample XML request",
+                  "value": "<?xml version=\"1.0\" ?>\r\n<AccessRequest xml:lang='en-US'>\r\n<AccessLicenseNumber>YOURACCESSLICENSENUMBER</AccessLicenseNumber>\r\n<UserId>YOURUSERID</UserId>\r\n<Password>YOURPASSWORD</Password>\r\n</AccessRequest>\r\n<?xml version=\"1.0\" ?>\r\n<AddressValidationRequest xml:lang='en-US'>\r\n<Request>\r\n<TransactionReference>\r\n<CustomerContext>Your Customer Context</CustomerContext>\r\n</TransactionReference>\r\n<RequestAction>AV</RequestAction>\r\n</Request>\r\n<Address>\r\n<City>Alpharetta</City>\r\n<StateProvinceCode>GA</StateProvinceCode>\r\n<PostalCode>30005</PostalCode>\r\n<CountryCode>US</CountryCode>\r\n</Address>\r\n</AddressValidationRequest>"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ADDRESSVALIDATIONResponseWrapper"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ADDRESSVALIDATIONResponseWrapper"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ADDRESSVALIDATIONRequestWrapper": {
+        "xml": {
+          "name": "AddressValidationRequest"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "AddressValidationRequest"
+        ],
+        "properties": {
+          "AddressValidationRequest": {
+            "$ref": "#/components/schemas/AddressValidationRequest"
+          }
+        }
+      },
+      "ADDRESSVALIDATIONResponseWrapper": {
+        "xml": {
+          "name": "AddressValidationResponse"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "AddressValidationResponse"
+        ],
+        "properties": {
+          "AddressValidationResponse": {
+            "$ref": "#/components/schemas/AddressValidationResponse"
+          }
+        }
+      },
+      "AddressValidationRequest": {
+        "type": "object",
+        "required": [
+          "Address",
+          "Request"
+        ],
+        "properties": {
+          "Request": {
+            "$ref": "#/components/schemas/AddressValidationRequest_Request"
+          },
+          "Address": {
+            "$ref": "#/components/schemas/AddressValidationRequest_Address"
+          }
+        },
+        "xml": {
+          "name": "AddressValidationRequest"
+        },
+        "description": "Container for AddressValidationRequest  ",
+        "maximum": 1
+      },
+      "AddressValidationRequest_Request": {
+        "type": "object",
+        "properties": {
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Request_TransactionReference"
+          },
+          "RequestAction": {
+            "description": "The action to be taken by the Address Validation tool. Must contain 'AV' to execute address validation.  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "RequestOption": {
+            "description": "Not Used.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1
+          }
+        },
+        "xml": {
+          "name": "Request"
+        },
+        "maximum": 1,
+        "required": [
+          "RequestAction"
+        ],
+        "description": "Container for Request  "
+      },
+      "Request_TransactionReference": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "CustomerContext": {
+            "description": "Customer context can be any free form, valid XML characters. The client uses CustomerContext to synchronize request/response pairs. The client establishes CustomerContext, which may contain customer-defined valid XML tags that are echoed in the response.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "Transaction Reference container tag.  "
+      },
+      "TransactionReference_CustomerContext": {
+        "description": "Customer context can be any free form, valid XML characters. The client uses CustomerContext to synchronize request/response pairs. The client establishes CustomerContext, which may contain customer-defined valid XML tags that are echoed in the response.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "Request_RequestAction": {
+        "description": "The action to be taken by the Address Validation tool. Must contain 'AV' to execute address validation.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Request_RequestOption": {
+        "description": "Not Used.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "AddressValidationRequest_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "StateProvinceCode",
+          "City",
+          "CountryCode"
+        ],
+        "properties": {
+          "City": {
+            "description": "The city for this address match.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "StateProvinceCode": {
+            "description": "The state for this address match.  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "CountryCode": {
+            "description": "Two character Country or Territory Code.  See Country or Territory Code table for values.  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "PostalCode": {
+            "description": "Postal code to be validated. (A valid city/state/postal code combination must be included as input)  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 9
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Address container tag.  "
+      },
+      "Address_City": {
+        "description": "The city for this address match.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_StateProvinceCode": {
+        "description": "The state for this address match.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Address_CountryCode": {
+        "description": "Two character Country or Territory Code.  See Country or Territory Code table for values.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Address_PostalCode": {
+        "description": "Postal code to be validated. (A valid city/state/postal code combination must be included as input)  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 9
+      },
+      "AddressValidationResponse": {
+        "type": "object",
+        "required": [
+          "Response",
+          "AddressValidationResult"
+        ],
+        "properties": {
+          "Response": {
+            "$ref": "#/components/schemas/AddressValidationResponse_Response"
+          },
+          "AddressValidationResult": {
+            "$ref": "#/components/schemas/AddressValidationResponse_AddressValidationResult"
+          }
+        },
+        "xml": {
+          "name": "AddressValidationResponse"
+        },
+        "description": "Container for AddressValidationResponse  ",
+        "maximum": 1
+      },
+      "AddressValidationResponse_Response": {
+        "type": "object",
+        "required": [
+          "TransactionReference",
+          "ResponseStatusCode",
+          "Error"
+        ],
+        "properties": {
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Response_TransactionReference"
+          },
+          "ResponseStatusCode": {
+            "description": "Identifies the success or failure of the transaction. \n1 = Successful\n0 = Failed  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1
+          },
+          "ResponseStatusDescription": {
+            "description": "Describes Response Status Code. Returns text of 'Success' or 'Failure'.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "Error": {
+            "$ref": "#/components/schemas/Response_Error"
+          }
+        },
+        "xml": {
+          "name": "Response"
+        },
+        "maximum": 1,
+        "description": "Container for Response  "
+      },
+      "Response_TransactionReference": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "CustomerContext": {
+            "description": "Customer context can be any free form, valid XML characters. The client uses CustomerContext to synchronize request/response pairs. The client establishes CustomerContext, which may contain customer-defined valid XML tags that are echoed in the response.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "TransactionIdentifier": {
+            "description": "  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "XpciVersion": {
+            "description": "Identifies the version of the message. The current XpciVersion is 1.0001.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 6
+          },
+          "ToolVersion": {
+            "description": "  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 6
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "Container for customer provided data.  "
+      },
+      "TransactionReference_TransactionIdentifier": {
+        "description": "  ",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TransactionReference_XpciVersion": {
+        "description": "Identifies the version of the message. The current XpciVersion is 1.0001.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 6
+      },
+      "TransactionReference_ToolVersion": {
+        "description": "  ",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Response_ResponseStatusCode": {
+        "description": "Identifies the success or failure of the transaction. \n1 = Successful\n0 = Failed  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "Response_ResponseStatusDescription": {
+        "description": "Describes Response Status Code. Returns text of 'Success' or 'Failure'.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Response_Error": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "ErrorLocation",
+          "ErrorSeverity",
+          "ErrorCode"
+        ],
+        "properties": {
+          "ErrorSeverity": {
+            "description": "Describes the severity of the error.  TransientError - Customer's data has not been processed due to system unavailability. The customer has to wait and try again.\nHardError - The error was encountered processing the customer's data and that the data needs correction.\nWarning - The customer's data was successfully processed; however, there were warnings encountered during processing.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "ErrorCode": {
+            "description": "A numeric value that describes the error. Each tool defines a range of error codes.  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "ErrorDescription": {
+            "description": "Describes the error code.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "MinimumRetrySeconds": {
+            "description": "Number of seconds to wait until retry. This field is populated on special conditions of the Transient Error only, as defined by the service. A number between 1 and 86400 (24 hours)  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "ErrorLocation": {
+            "$ref": "#/components/schemas/Error_ErrorLocation"
+          },
+          "ErrorDigest": {
+            "description": "The contents of the element in error.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          }
+        },
+        "xml": {
+          "name": "Error"
+        },
+        "description": "If an error is encountered during the interchange, the Response contains an error. If the error is present, then the ErrorSeverity and ErrorCode are required.  "
+      },
+      "Error_ErrorSeverity": {
+        "description": "Describes the severity of the error.  TransientError - Customer's data has not been processed due to system unavailability. The customer has to wait and try again.\nHardError - The error was encountered processing the customer's data and that the data needs correction.\nWarning - The customer's data was successfully processed; however, there were warnings encountered during processing.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Error_ErrorCode": {
+        "description": "A numeric value that describes the error. Each tool defines a range of error codes.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Error_ErrorDescription": {
+        "description": "Describes the error code.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 150
+      },
+      "Error_MinimumRetrySeconds": {
+        "description": "Number of seconds to wait until retry. This field is populated on special conditions of the Transient Error only, as defined by the service. A number between 1 and 86400 (24 hours)  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Error_ErrorLocation": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "ErrorLocationElementName": {
+            "description": "The XPATH name of the element in error. This is a valid XPATH pointing to an element in the request document.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "ErrorLocationAttributeName": {
+            "description": "The name of the attribute in error. This is the name of the attribute contained by the ErrorLocation Element.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          }
+        },
+        "xml": {
+          "name": "ErrorLocation"
+        },
+        "description": "Identifies the element in error.  "
+      },
+      "ErrorLocation_ErrorLocationElementName": {
+        "description": "The XPATH name of the element in error. This is a valid XPATH pointing to an element in the request document.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "ErrorLocation_ErrorLocationAttributeName": {
+        "description": "The name of the attribute in error. This is the name of the attribute contained by the ErrorLocation Element.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Error_ErrorDigest": {
+        "description": "The contents of the element in error.  ",
+        "type": "string"
+      },
+      "AddressValidationResponse_AddressValidationResult": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Address",
+          "Quality",
+          "PostalCodeLowEnd",
+          "Rank",
+          "PostalCodeHighEnd"
+        ],
+        "properties": {
+          "Rank": {
+            "description": "The rank of each range result.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "Quality": {
+            "description": "The quality factor, which describes the accuracy of the result compared to the request.\n1.0 = Exact match. \n95-.99 = Very close match.  \n90-.94 = Close match.  \n70-.89 = Possible match.   \n00-.69 = Poor match  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "Address": {
+            "$ref": "#/components/schemas/AddressValidationResult_Address"
+          },
+          "PostalCodeLowEnd": {
+            "description": "When the Address Validation tool finds matches for a given input combination, a postal code range may be associated with each match. This is the low end of the range.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "PostalCodeHighEnd": {
+            "description": "When the Address Validation tool finds matches for a given input combination, a postal code range may be associated with each match. This is the high end of the range.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          }
+        },
+        "xml": {
+          "name": "AddressValidationResult"
+        },
+        "description": "Address Validation Result container tag.  "
+      },
+      "AddressValidationResult_Rank": {
+        "description": "The rank of each range result.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "AddressValidationResult_Quality": {
+        "description": "The quality factor, which describes the accuracy of the result compared to the request.\n1.0 = Exact match. \n95-.99 = Very close match.  \n90-.94 = Close match.  \n70-.89 = Possible match.   \n00-.69 = Poor match  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "AddressValidationResult_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "StateProvinceCode",
+          "City"
+        ],
+        "properties": {
+          "City": {
+            "description": "The city for this address match.  ",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "StateProvinceCode": {
+            "description": "The state for this address match.  ",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Container for address  "
+      },
+      "AddressValidationResult_PostalCodeLowEnd": {
+        "description": "When the Address Validation tool finds matches for a given input combination, a postal code range may be associated with each match. This is the low end of the range.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "AddressValidationResult_PostalCodeHighEnd": {
+        "description": "When the Address Validation tool finds matches for a given input combination, a postal code range may be associated with each match. This is the high end of the range.  ",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      }
+    }
+  }
+}

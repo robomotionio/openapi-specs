@@ -1,0 +1,2311 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Resources",
+    "description": "Automate your invoicing with the Pennylane API.",
+    "contact": {
+      "email": "tech@pennylane.tech"
+    },
+    "version": "1.0.0",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/pennylane.com"
+    }
+  },
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "node",
+      "ruby",
+      "php",
+      "python",
+      "java"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://app.pennylane.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "Customers",
+      "description": "Create, Read, Update & List your customers"
+    },
+    {
+      "name": "Products",
+      "description": "Create, Read, Update & List your products"
+    },
+    {
+      "name": "Invoices",
+      "description": "Create & List your invoices"
+    },
+    {
+      "name": "Estimates",
+      "description": "Create & List your estimates"
+    }
+  ],
+  "paths": {
+    "/api/external/v1/me": {
+      "get": {
+        "operationId": "get-me",
+        "summary": "User Profile",
+        "description": "This endpoint returns information about the current_user and company.",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the current_user and company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current_user": {
+                      "type": "object",
+                      "properties": {
+                        "first_name": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "example": "Doe"
+                        }
+                      }
+                    },
+                    "company": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Pennylane"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/customers": {
+      "post": {
+        "operationId": "customers-post",
+        "summary": "Create a customer",
+        "description": "This endpoint allows you to create a customer based on a specific payload. You can even provide your own id.",
+        "tags": [
+          "Customers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "customer"
+                ],
+                "type": "object",
+                "properties": {
+                  "customer": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/InputCompanyCustomer"
+                      },
+                      {
+                        "$ref": "#/components/schemas/InputIndividualCustomer"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer has been created successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "422": {
+            "description": "An error occurred during creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "customers-get",
+        "summary": "List all customers",
+        "description": "This endpoint returns a list of customers.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Customers are paginated, this is the current page returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of customers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "currentPage": {
+                      "type": "integer"
+                    },
+                    "customers": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Customer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/customers/{id}": {
+      "get": {
+        "operationId": "customers-id-get",
+        "summary": "Retrieve a customer",
+        "description": "This endpoint returns a specific customer.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Existing customer identifier (source_id)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "customers-id-put",
+        "summary": "Update a customer",
+        "description": "This endpoint updates a specific customer.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Existing customer identifier (source_id)",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "customer"
+                ],
+                "type": "object",
+                "properties": {
+                  "customer": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/CompanyCustomer"
+                      },
+                      {
+                        "$ref": "#/components/schemas/IndividualCustomer"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer has been updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Customer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The customer can't be updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v1/products": {
+      "post": {
+        "operationId": "products-post",
+        "summary": "Create a product",
+        "description": "This endpoint allows you to create a product based on a specific payload. You can even provide your own id.",
+        "tags": [
+          "Products"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "product"
+                ],
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "$ref": "#/components/schemas/InputProduct"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product has been created successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "422": {
+            "description": "An error occurred during creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "products-get",
+        "summary": "List all products",
+        "description": "This endpoint returns a list of products.",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Products are paginated, this is the current page returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "currentPage": {
+                      "type": "integer"
+                    },
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/products/{id}": {
+      "get": {
+        "operationId": "products-id-get",
+        "summary": "Retrieve a product",
+        "description": "This endpoint returns a specific customer.",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Existing product identifier (source_id)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "products-id-put",
+        "summary": "Update a product",
+        "description": "This endpoint updates a specific product.",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product identifier (source_id)",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "product"
+                ],
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product has been updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The product can't be updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_invoices/links": {
+      "post": {
+        "operationId": "customer_invoices-links",
+        "summary": "Links an invoice with a credit note",
+        "description": "This endpoint allows you to link together a credit note with an invoice, only two items supported.",
+        "tags": [
+          "Invoices"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "quote_group_uuids"
+                ],
+                "type": "object",
+                "properties": {
+                  "quote_group_uuids": {
+                    "type": "array",
+                    "example": [
+                      "cefc7caf-f04c-46c6-9e4a-9a623113dc33",
+                      "65a88161-ad68-4ef7-a42a-814f46f4c237"
+                    ],
+                    "description": "A list of the quote_group_uuids to link together. This endpoint takes the two invoices with these quote_group_uuids and assigns a new quote_group_uuids, this makes them linked together.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoices linked sucessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "quote_group_uuid": {
+                      "type": "string",
+                      "example": "88d07f20-7a3e-4eb6-a01b-64c697e6b2e6",
+                      "description": "The new quote_group_uuids assigned to the credit note and the invoice"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_invoices": {
+      "post": {
+        "operationId": "customer_invoices-post",
+        "summary": "Create an invoice",
+        "description": "This endpoint allows you to create a invoice based on a specific payload. Pennylane will generate a pdf for you.",
+        "tags": [
+          "Invoices"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "invoice",
+                  "create_customer",
+                  "create_products"
+                ],
+                "type": "object",
+                "properties": {
+                  "create_customer": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Do you wish to create a new customer? If false, you need to specify a valid customer source_id"
+                  },
+                  "create_products": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Do you wish to create new products? If false and you pass the product key in the invoice_lines object, all the lines must specify a valid product source_id."
+                  },
+                  "invoice": {
+                    "type": "object",
+                    "required": [
+                      "date",
+                      "deadline",
+                      "draft",
+                      "customer",
+                      "line_items"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Invoice date",
+                        "example": "2020-01-01"
+                      },
+                      "deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Invoice payment deadline",
+                        "example": "2022-02-02"
+                      },
+                      "draft": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Do you wish to create a draft invoice (otherwise it is a finalized invoice) ? Reminder, once created, a finalized invoice cannot be edited !"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Invoice Currency (ISO 4217). Default is EUR."
+                      },
+                      "special_mention": {
+                        "type": "string",
+                        "example": "Additional details",
+                        "description": "Additional details"
+                      },
+                      "transactions_reference": {
+                        "required": [
+                          "banking_provider,",
+                          "provider_field_name",
+                          "provider_field_value"
+                        ],
+                        "type": "object",
+                        "description": "By adding this field you can automatically reconciliate the newly created (or imported) invoice with a transaction using transactions payment reference (Currently only stripe is supported)",
+                        "properties": {
+                          "banking_provider": {
+                            "type": "string",
+                            "description": "The banking provider for the transaction",
+                            "example": "stripe"
+                          },
+                          "provider_field_name": {
+                            "type": "string",
+                            "description": "Name of the field that you want to match",
+                            "example": "payment_id"
+                          },
+                          "provider_field_value": {
+                            "type": "string",
+                            "description": "Value that you want to match"
+                          }
+                        }
+                      },
+                      "customer": {
+                        "$ref": "#/components/schemas/InputCustomer"
+                      },
+                      "line_items": {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "$ref": "#/components/schemas/InputLineItemWithoutProduct"
+                            },
+                            {
+                              "$ref": "#/components/schemas/InputLineItemWithExistingProduct"
+                            },
+                            {
+                              "$ref": "#/components/schemas/InputLineItemWithNewProduct"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice has been created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "invoice": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "operationId": "customer_invoices-get",
+        "summary": "List all invoices",
+        "description": "This endpoint returns a list of invoices corresponding to the filter provided.",
+        "tags": [
+          "Invoices"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Invoices are paginated, this is the current page which will be returned. The page index is starting at 1."
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "schema": {
+              "type": "string",
+              "example": "[{field: 'status', operator: 'scope', value: 'late_status'}]"
+            },
+            "description": "You can choose to filter invoices on a specific attributes (status, date, deadline, amount, etc).\n\nFor instance, invoices can be filtered by status using the syntax : [{field: 'status', operator: 'scope', value: 'late_status'}].\nAvailable statuses:\n- incomplete_status: an imported invoice that does not have all its information completed\n- draft_status: an invoice that is still in draft mode\n- upcoming_status: a finalized invoice that is not paid and for which deadline is upcoming\n- late_status: a finalized invoice that is not paid and for which deadline is passed\n- paid_status: a paid invoice\n- cancelled_status: a finalized invoice that is linked with credit_note and credit_note covers all the currency_amount of the original invoice.\n- partially_cancelled_status: a finalized invoice that is linked with credit_note and credit_note does not covert all the currency_amount of the original invoice.\n- partially_cancelled_draft_status: a finalized invoice that is linked with a draft credit_note.\n- credit_note_status: a credit_note (invoice with a negative amount)\n"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "per_page",
+            "description": "Invoices are paginated. By default, you get 20 invoices by page. You can specify another number of invoices by page."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 5,
+                      "description": "The total number of pages available"
+                    },
+                    "currentPage": {
+                      "type": "integer",
+                      "example": 1,
+                      "description": "The current page returned"
+                    },
+                    "invoices": {
+                      "type": "array",
+                      "description": "The list of invoices",
+                      "items": {
+                        "$ref": "#/components/schemas/Invoice"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_invoices/{id}": {
+      "get": {
+        "operationId": "customer_invoices-id-get",
+        "summary": "Retrieve an invoice",
+        "description": "This endpoint returns a specific invoice.",
+        "tags": [
+          "Invoices"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Existing invoice identifier (id)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customer": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Invoice not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_invoices/import": {
+      "post": {
+        "operationId": "customer_invoices-import",
+        "summary": "Import an invoice",
+        "description": "This endpoint allows you to create a invoice based on a specific payload and pdf.",
+        "tags": [
+          "Invoices"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "invoice",
+                  "create_customer"
+                ],
+                "type": "object",
+                "properties": {
+                  "create_customer": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Do you wish to create a new customer ? If false, you need to specify a valid customer source_id"
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "example": "https://myapp.com/invoice-file.pdf",
+                    "description": "A link to retrieve the invoice pdf. The file will be imported asynchronously."
+                  },
+                  "file": {
+                    "type": "string",
+                    "example": "Base64 encoded file content",
+                    "description": "The content encoded in base64 of the file if an url is not provided."
+                  },
+                  "invoice": {
+                    "type": "object",
+                    "required": [
+                      "date",
+                      "deadline",
+                      "customer",
+                      "line_items"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Invoice date",
+                        "example": "2020-01-01"
+                      },
+                      "deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Invoice payment deadline",
+                        "example": "2022-02-02"
+                      },
+                      "invoice_number": {
+                        "type": "string",
+                        "description": "Invoice number",
+                        "example": "#5938753"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Invoice Currency (ISO 4217). Default is EUR."
+                      },
+                      "transactions_reference": {
+                        "description": "By adding this field you can automatically reconciliate the newly created (or imported) invoice with a transaction using transactions payment reference (Currently only stripe is supported)",
+                        "required": [
+                          "banking_provider",
+                          "provider_field_name",
+                          "provider_field_value"
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "banking_provider": {
+                            "type": "string",
+                            "description": "The banking provider for the transaction",
+                            "example": "stripe"
+                          },
+                          "provider_field_name": {
+                            "type": "string",
+                            "description": "Name of the field that you want to match",
+                            "example": "payment_id"
+                          },
+                          "provider_field_value": {
+                            "type": "string",
+                            "description": "Value that you want to match"
+                          }
+                        }
+                      },
+                      "customer": {
+                        "$ref": "#/components/schemas/InputCustomer"
+                      },
+                      "line_items": {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "$ref": "#/components/schemas/InputLineItemWithoutProduct"
+                            },
+                            {
+                              "$ref": "#/components/schemas/InputLineItem"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice has been imported successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "invoice": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_estimates": {
+      "get": {
+        "operationId": "customer_estimates-get",
+        "summary": "List all estimates",
+        "description": "This endpoint returns a list of estimates corresponding to the filter provided.",
+        "tags": [
+          "Estimates"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Estimates are paginated, this is the current page returned"
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "schema": {
+              "type": "string",
+              "example": "[{field: 'status', operator: 'scope', value: 'estimate_pending_status'}]"
+            },
+            "description": "You can choose to filter estimates on a specific attributes (status, date, deadline, amount, etc).\n\nFor instance, estimates can be filtered by status using the syntax : [{field: 'status', operator: 'scope', value: 'estimate_pending_status'}].\n\nAvailable statuses:\n- estimate_pending_status: an estimate waiting to be denied or accepted\n- estimate_accepted_status: an estimate that has been accepted\n- estimate_denied_status: an estimate that has been denied\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of estimates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "currentPage": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "estimates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Estimate"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "operationId": "customer_estimates-post",
+        "summary": "Create an estimate",
+        "description": "This endpoint allows you to create an estimate based on a specific payload. Pennylane will generate a pdf for you.",
+        "tags": [
+          "Estimates"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "estimate",
+                  "create_customer",
+                  "create_products"
+                ],
+                "type": "object",
+                "properties": {
+                  "create_customer": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Do you wish to create a new customer? If false, you need to specify a valid customer source_id"
+                  },
+                  "create_products": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Do you wish to create new products? If false and you pass the product key in the invoice_lines object, all the lines must specify a valid product source_id."
+                  },
+                  "estimate": {
+                    "type": "object",
+                    "required": [
+                      "date",
+                      "deadline",
+                      "customer",
+                      "line_items"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Estimate issue date",
+                        "example": "2020-01-01"
+                      },
+                      "deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Estimate expiration date",
+                        "example": "2022-02-02"
+                      },
+                      "customer": {
+                        "$ref": "#/components/schemas/InputCustomer"
+                      },
+                      "line_items": {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "$ref": "#/components/schemas/InputLineItemWithoutProduct"
+                            },
+                            {
+                              "$ref": "#/components/schemas/InputLineItem"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Estimate has been created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "estimate": {
+                      "$ref": "#/components/schemas/Estimate"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/external/v1/customer_estimates/{id}": {
+      "get": {
+        "operationId": "customer_estimates-id-get",
+        "summary": "Retrieve an estimate",
+        "description": "This endpoint returns a specific estimate.",
+        "tags": [
+          "Estimates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Existing estimate identifier (id)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an estimate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customer": {
+                      "$ref": "#/components/schemas/Estimate"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Estimate not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/MissingParameterError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v1/enums/{id}": {
+      "get": {
+        "operationId": "enums-id-get",
+        "tags": [
+          "Enums"
+        ],
+        "summary": "Retrieve an enum",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "vat_rate",
+                "unit",
+                "countries",
+                "currency",
+                "customer_type",
+                "payment_conditions",
+                "gender",
+                "substance",
+                "invoice_viewable_source"
+              ]
+            },
+            "description": "Enum identifier",
+            "required": true,
+            "example": "vat_rate"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "description": "Locale to use",
+            "required": true,
+            "example": "fr",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fr",
+                "en"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the available values for a specific enum",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "example": [
+                    {
+                      "value": "mister",
+                      "label": "Mister"
+                    },
+                    {
+                      "value": "madam",
+                      "label": "Madam"
+                    }
+                  ],
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InputLineItemWithoutProduct": {
+        "title": "Line item Without Product",
+        "type": "object",
+        "required": [
+          "label",
+          "quantity",
+          "currency_amount",
+          "unit",
+          "vat_rate"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Demo label",
+            "description": "Line item label"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 12,
+            "description": "Line item quantity (number of items)"
+          },
+          "currency_amount": {
+            "type": "number",
+            "example": 13.24,
+            "description": "Line item currency amount (in invoice currency)"
+          },
+          "plan_item_number": {
+            "type": "string",
+            "example": "707",
+            "description": "The accounting plan item for the invoice line"
+          },
+          "unit": {
+            "type": "string",
+            "example": "piece",
+            "description": "Line item unit (type of unit)",
+            "enum": [
+              "piece",
+              "hour",
+              "day",
+              "month",
+              "percentage",
+              "kilogram"
+            ]
+          },
+          "vat_rate": {
+            "type": "string",
+            "example": "FR_200",
+            "description": "Line item vat rate"
+          }
+        }
+      },
+      "InputLineItem": {
+        "title": "Line item with existing or new product",
+        "type": "object",
+        "required": [
+          "label",
+          "quantity",
+          "product"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Demo label",
+            "description": "Line item label"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 12,
+            "description": "Line item quantity (number of items)"
+          },
+          "plan_item_number": {
+            "type": "string",
+            "example": "707",
+            "description": "The accounting plan item for the invoice line (default is using the product plan item)"
+          },
+          "product": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/InputProduct"
+              },
+              {
+                "$ref": "#/components/schemas/InputProductSourceId"
+              }
+            ]
+          }
+        }
+      },
+      "InputLineItemWithExistingProduct": {
+        "title": "Line item with existing product",
+        "type": "object",
+        "required": [
+          "quantity",
+          "product"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Demo label",
+            "description": "Line item label (default is using the product label)"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 12,
+            "description": "Line item quantity (number of items)"
+          },
+          "plan_item_number": {
+            "type": "string",
+            "example": "707",
+            "description": "The accounting plan item for the invoice line (default is using the product plan item)"
+          },
+          "product": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InputProductSourceId"
+              }
+            ]
+          }
+        }
+      },
+      "InputLineItemWithNewProduct": {
+        "title": "Line item with new product",
+        "type": "object",
+        "required": [
+          "label",
+          "quantity",
+          "product"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Demo label",
+            "description": "Line item label"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 12,
+            "description": "Line item quantity (number of items)"
+          },
+          "plan_item_number": {
+            "type": "string",
+            "example": "707",
+            "description": "The accounting plan item for the invoice line (default is using the product plan item)"
+          },
+          "product": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InputProduct"
+              }
+            ]
+          }
+        }
+      },
+      "InputProductSourceId": {
+        "title": "Existing Product",
+        "type": "object",
+        "required": [
+          "source_id"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "description": "Existing product identifier (source_id)",
+            "example": "0e67fc3c-c632-4feb-ad34-e18ed5fbf66a"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InputCommonCustomer": {
+        "title": "Common Customer",
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "example": "38a1f19a-256d-4692-a8fe-0a16403f59ff",
+            "description": "You can use your own id when creating the customer. If not provided, Pennylane will pick one for you. Id must be unique",
+            "nullable": false
+          },
+          "emails": {
+            "type": "array",
+            "example": [
+              "hello@example.org"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "billing_iban": {
+            "type": "string",
+            "example": "FRXX XXXX XXXX XXXX XXXX XXXX XXX",
+            "description": "The billing IBAN of the customer. This is the iban on which you wish to receive payment from this customer."
+          },
+          "delivery_address": {
+            "type": "string",
+            "example": "33 rue du mail",
+            "description": "Customer address (shipping address)"
+          },
+          "delivery_postal_code": {
+            "type": "string",
+            "example": 75002,
+            "description": "Postal code (shipping address)"
+          },
+          "delivery_city": {
+            "type": "string",
+            "example": "Paris",
+            "description": "City (shipping address)"
+          },
+          "delivery_country_alpha2": {
+            "type": "string",
+            "example": "FR",
+            "description": "Country alpha code (shipping address)"
+          },
+          "payment_conditions": {
+            "type": "string",
+            "example": "30_days",
+            "description": "Customer payment conditions",
+            "enum": [
+              "upon_receipt",
+              "custom",
+              "15_days",
+              "30_days",
+              "45_days",
+              "60_days"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "example": "+33123232323",
+            "description": "Customer phone number"
+          }
+        }
+      },
+      "InputCompanyCustomer": {
+        "title": "Company Customer",
+        "type": "object",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "customer_type",
+              "address",
+              "postal_code",
+              "city",
+              "country_alpha2"
+            ],
+            "properties": {
+              "customer_type": {
+                "type": "string",
+                "example": "company",
+                "description": "Type of the customer. Must be company",
+                "enum": [
+                  "company"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "example": "Pennylane",
+                "description": "Company name"
+              },
+              "reg_no": {
+                "type": "string",
+                "example": "XXXXXXXXX",
+                "description": "Customer registration number (SIREN)"
+              },
+              "address": {
+                "type": "string",
+                "example": "4 rue du faubourg saint martin",
+                "description": "Customer address (billing address)"
+              },
+              "postal_code": {
+                "type": "string",
+                "example": 75010,
+                "description": "Postal code (billing address)"
+              },
+              "city": {
+                "type": "string",
+                "example": "Paris",
+                "description": "City (billing address)"
+              },
+              "country_alpha2": {
+                "type": "string",
+                "example": "FR",
+                "description": "Country alpha code (billing address)"
+              },
+              "recipient": {
+                "type": "string",
+                "example": "On the behalf of John",
+                "description": "Recipient displayed in the invoice"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/InputCommonCustomer"
+          }
+        ]
+      },
+      "InputIndividualCustomer": {
+        "title": "Individual Customer",
+        "required": [
+          "postal_code"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "first_name",
+              "last_name",
+              "gender",
+              "customer_type",
+              "country_alpha2"
+            ],
+            "properties": {
+              "customer_type": {
+                "type": "string",
+                "example": "company",
+                "description": "Type of the customer. Must be individual",
+                "enum": [
+                  "individual"
+                ]
+              },
+              "first_name": {
+                "type": "string",
+                "example": "John",
+                "description": "Customer first name"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe",
+                "description": "Customer last name"
+              },
+              "gender": {
+                "type": "string",
+                "example": "mister",
+                "description": "Customer gender",
+                "enum": [
+                  "mister",
+                  "madam"
+                ]
+              },
+              "address": {
+                "type": "string",
+                "example": "4 rue du faubourg saint martin",
+                "description": "Customer address (billing address)"
+              },
+              "postal_code": {
+                "type": "string",
+                "example": 75010,
+                "description": "Postal code (billing address)"
+              },
+              "city": {
+                "type": "string",
+                "example": "Paris",
+                "description": "City (billing address)"
+              },
+              "country_alpha2": {
+                "type": "string",
+                "example": "FR",
+                "description": "Country alpha code (billing address)"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/InputCommonCustomer"
+          }
+        ]
+      },
+      "InputCustomerSourceId": {
+        "title": "Existing Customer",
+        "type": "object",
+        "required": [
+          "source_id"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "description": "Existing customer identifier (source_id)",
+            "example": "0e67fc3c-c632-4feb-ad34-e18ed5fbf66a"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InputCustomer": {
+        "title": "Customer",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InputCustomerSourceId"
+          },
+          {
+            "$ref": "#/components/schemas/InputCompanyCustomer"
+          },
+          {
+            "$ref": "#/components/schemas/InputIndividualCustomer"
+          }
+        ]
+      },
+      "InputProduct": {
+        "title": "Product",
+        "type": "object",
+        "required": [
+          "label",
+          "unit",
+          "price",
+          "vat_rate",
+          "currency"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "description": "You can use your own id when creating the product. If not provided, Pennylane will pick one for you. Id must be unique",
+            "example": "0e67fc3c-c632-4feb-ad34-e18ed5fbf66a"
+          },
+          "label": {
+            "type": "string",
+            "description": "Product label",
+            "example": "Pack 1"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description",
+            "example": "This is the package level 1"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Product unit",
+            "example": "piece"
+          },
+          "price_before_tax": {
+            "type": "number",
+            "description": "Product price before taxes",
+            "example": 10
+          },
+          "price": {
+            "type": "number",
+            "description": "Product price including taxes",
+            "example": 12
+          },
+          "vat_rate": {
+            "type": "string",
+            "description": "Product vat rate",
+            "example": "FR_200"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Product currency",
+            "example": "EUR"
+          },
+          "reference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Product reference",
+            "example": "REF-453"
+          },
+          "substance": {
+            "nullable": true,
+            "type": "string",
+            "description": "Product substance. Can be services or goods.",
+            "example": "goods"
+          }
+        }
+      },
+      "LineItem": {
+        "title": "Line item",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Demo label",
+            "description": "Line item label"
+          },
+          "unit": {
+            "type": "string",
+            "nullable": false,
+            "example": "piece",
+            "enum": [
+              "piece",
+              "hour",
+              "day",
+              "month",
+              "percentage"
+            ],
+            "description": "The kind of unit which applies to the amount, the values are:\n  - piece: The item is sold by pieces\n  - hour: The item is sold by hours (typically a service)\n  - day: The item is sold by days (typically a service)\n  - month: The item is sold by months (typically a service)\n"
+          },
+          "quantity": {
+            "type": "string",
+            "example": 12,
+            "description": "Line item quantity (number of items)"
+          },
+          "amount": {
+            "type": "string",
+            "example": "50.4",
+            "description": "The total amount of the document items in euros including taxes and deducting discounts"
+          },
+          "currency_amount": {
+            "type": "string",
+            "example": "50.4",
+            "description": "The total amount of the document items in the document's currency including taxes and deducting discounts.\nIf the currency is euro, amount and currencyAmount are identical.\n"
+          },
+          "description": {
+            "type": "string",
+            "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+            "description": "Line item description"
+          }
+        }
+      },
+      "CommonCustomer": {
+        "title": "Common Customer",
+        "type": "object",
+        "properties": {
+          "updated_at": {
+            "type": "string",
+            "example": "2021-06-30T07:44:37.545Z",
+            "description": "The last time the customer has been updated"
+          },
+          "source_id": {
+            "type": "string",
+            "example": "38a1f19a-256d-4692-a8fe-0a16403f59ff",
+            "description": "Customer identifier (is unique)",
+            "nullable": false
+          },
+          "emails": {
+            "type": "array",
+            "example": [
+              "hello@example.org"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "billing_iban": {
+            "type": "string",
+            "example": "FRXX XXXX XXXX XXXX XXXX XXXX XXX",
+            "description": "The billing IBAN of the customer. This is the iban on which you wish to receive payment from this customer."
+          },
+          "customer_type": {
+            "type": "string",
+            "example": "company",
+            "description": "Type of the customer (company or individual)",
+            "enum": [
+              "company",
+              "individual"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "example": "4 rue du faubourg saint martin",
+            "description": "Customer address (billing address)"
+          },
+          "postal_code": {
+            "type": "string",
+            "example": 75010,
+            "description": "Postal code (billing address)"
+          },
+          "city": {
+            "type": "string",
+            "example": "Paris",
+            "description": "City (billing address)"
+          },
+          "country_alpha2": {
+            "type": "string",
+            "example": "FR",
+            "description": "Country alpha code (billing address)"
+          },
+          "delivery_address": {
+            "type": "string",
+            "example": "33 rue du mail",
+            "description": "Customer address (shipping address)"
+          },
+          "delivery_postal_code": {
+            "type": "string",
+            "example": 75002,
+            "description": "Postal code (shipping address)"
+          },
+          "delivery_city": {
+            "type": "string",
+            "example": "Paris",
+            "description": "City (shipping address)"
+          },
+          "delivery_country_alpha2": {
+            "type": "string",
+            "example": "FR",
+            "description": "Country alpha code (shipping address)"
+          },
+          "payment_conditions": {
+            "type": "string",
+            "example": "30_days",
+            "description": "Customer payment conditions",
+            "enum": [
+              "upon_receipt",
+              "custom",
+              "15_days",
+              "30_days",
+              "45_days",
+              "60_days"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "example": "+33123232323",
+            "description": "Customer phone number"
+          }
+        }
+      },
+      "CompanyCustomer": {
+        "title": "Company Customer",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Pennylane",
+                "description": "Company name"
+              },
+              "reg_no": {
+                "type": "string",
+                "example": "XXXXXXXXX",
+                "description": "Customer registration number (SIREN)"
+              },
+              "recipient": {
+                "type": "string",
+                "example": "On the behalf of John",
+                "description": "Invoice Recipient"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CommonCustomer"
+          }
+        ]
+      },
+      "IndividualCustomer": {
+        "title": "Individual Customer",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "example": "John",
+                "description": "Customer first name"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe",
+                "description": "Customer last name"
+              },
+              "gender": {
+                "type": "string",
+                "example": "mister",
+                "description": "Customer gender",
+                "enum": [
+                  "mister",
+                  "madam"
+                ]
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CommonCustomer"
+          }
+        ]
+      },
+      "Customer": {
+        "title": "Customer",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "example": "John",
+                "description": "Customer first name (present only when type is individual)"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe",
+                "description": "Customer last name (present only when type is individual)"
+              },
+              "gender": {
+                "type": "string",
+                "example": "mister",
+                "description": "Customer gender (present only when type is individual)",
+                "enum": [
+                  "mister",
+                  "madam"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "example": "Pennylane",
+                "description": "Company name (present only when type is company)"
+              },
+              "reg_no": {
+                "type": "string",
+                "example": "XXXXXXXXX",
+                "description": "Customer registration number (SIREN - present only when type is company)"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CommonCustomer"
+          }
+        ]
+      },
+      "Invoice": {
+        "title": "Invoice",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Invoice identifier",
+            "example": "wMoOACctiA"
+          },
+          "label": {
+            "type": "string",
+            "example": "Invoice label",
+            "nullable": true
+          },
+          "invoice_number": {
+            "type": "string",
+            "example": "Invoice number",
+            "nullable": true
+          },
+          "quote_group_uuid": {
+            "type": "string",
+            "example": "b50b8fe6-48ce-4380-b9b3-52eec688fc04",
+            "description": "Two invoices having the same quote_group_uuid are linked together"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "example": true,
+            "description": "Invoice draft status (set to True if the invoice is a draft)"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "example": true,
+            "description": "Invoice estimate status (set to True if the document is an estimate, False if it's an invoice)"
+          },
+          "currency": {
+            "type": "string",
+            "example": "EUR",
+            "description": "Invoice currency code (ISO 4217)"
+          },
+          "amount": {
+            "type": "string",
+            "example": "230.32",
+            "description": "Invoice amount (total value of the invoice in euros. If the currency is euro, Currency Amount and Invoice Amount are identical)"
+          },
+          "currency_amount": {
+            "type": "string",
+            "example": "230.32",
+            "description": "Invoice currency amount (total value of the invoice in the currency of the invoice)"
+          },
+          "currency_amount_before_tax": {
+            "type": "string",
+            "example": "196.32",
+            "description": "Invoice currency amount before tax (total value before tax of the invoice in the currency of the invoice)"
+          },
+          "exchange_rate": {
+            "type": "string",
+            "example": "1.0",
+            "description": "Invoice exchange rate (used to convert the invoice to euros. If the invoice currency is euro it will be 1.0)"
+          },
+          "date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2020-01-01",
+            "description": "Invoice issue date (ISO 8601)"
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2020-09-02",
+            "nullable": true,
+            "description": "Invoice payment deadline (ISO 8601)"
+          },
+          "currency_tax": {
+            "type": "string",
+            "example": "34.0",
+            "description": "Invoice taxable amount (in invoice currency)"
+          },
+          "language": {
+            "type": "string",
+            "example": "fr_FR",
+            "description": "Language of the invoice. The locale region is separated by an underscore like in \"fr_FR\"."
+          },
+          "paid": {
+            "type": "boolean",
+            "example": false,
+            "description": "Invoice paid status (set to True if the invoice is paid)"
+          },
+          "discount": {
+            "type": "string",
+            "example": 50.1,
+            "description": "Invoice discount Amount (total discounted amount on the invoice. Set to 0.0 if the invoice does not have any discount. If the discount is relative, set as a percentage value between 0 and 1)"
+          },
+          "discount_type": {
+            "type": "string",
+            "example": "relative",
+            "description": "Invoice discount Type (relative if it is a percentage of the total or absolute if it is an amount)"
+          },
+          "file_url": {
+            "type": "string",
+            "example": "https://app.pennylane.tech/.../file.pdf",
+            "nullable": true,
+            "description": "If there's a file attached to the invoice, this is the link of the file"
+          },
+          "remaining_amount": {
+            "type": "string",
+            "example": "20.0",
+            "description": "The remaining amount to pay for the invoice to be considered paid"
+          },
+          "source": {
+            "type": "string",
+            "example": "email",
+            "description": "Where the invoice is coming from, here are the different values:\n  - quotes: Created directly from the editor\n  - stripe: Imported from Stripe\n  - other: Other cases\n"
+          },
+          "special_mention": {
+            "type": "string",
+            "example": "Additional details",
+            "description": "Additional details"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-06-30T08:04:15.400Z",
+            "description": "The last time the invoice has been updated"
+          },
+          "customer": {
+            "type": "object",
+            "nullable": true,
+            "$ref": "#/components/schemas/Customer"
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          }
+        }
+      },
+      "Estimate": {
+        "title": "Estimate",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Estimate identifier",
+            "example": "jHgtAKntoW"
+          },
+          "label": {
+            "type": "string",
+            "example": "Estimate label",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "EUR",
+            "description": "Estimate currency code (ISO 4217)"
+          },
+          "amount": {
+            "type": "string",
+            "example": "230.32",
+            "description": "Estimate amount (total value of the estimate in euros. If the currency is euro, Currency Amount and Estimate Amount are identical)"
+          },
+          "currency_amount": {
+            "type": "string",
+            "example": "230.32",
+            "description": "Estimate currency amount (total value of the estimate in the currency of the estimate)"
+          },
+          "currency_amount_before_tax": {
+            "type": "string",
+            "example": "196.32",
+            "description": "Estimate currency amount before tax (total value before tax of the estimate in the currency of the estimate)"
+          },
+          "exchange_rate": {
+            "type": "string",
+            "example": "1.0",
+            "description": "Estimate exchange rate (used to convert the estimate to euros. If the estimate currency is euro it will be 1.0)"
+          },
+          "date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2020-01-01",
+            "description": "Estimate issue date"
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2020-09-02",
+            "nullable": true,
+            "description": "Estimate expiration date"
+          },
+          "currency_tax": {
+            "type": "string",
+            "example": "34.0",
+            "description": "Estimate taxable amount (in estimate currency)"
+          },
+          "language": {
+            "type": "string",
+            "example": "fr_FR",
+            "description": "Estimate Language"
+          },
+          "discount": {
+            "type": "string",
+            "example": 50.1,
+            "description": "Estimate discount Amount (total discounted amount on the estimate. Set to 0.0 if the estimate does not have any discount. If the discount is relative, set as a percentage value between 0 and 1)"
+          },
+          "discount_type": {
+            "type": "string",
+            "example": "relative",
+            "description": "Estimate discount Type (relative if it is a percentage of the total or absolute if it is an amount)"
+          },
+          "file_url": {
+            "type": "string",
+            "example": "https://app.pennylane.tech/.../file.pdf",
+            "description": "This is the link of the file attached to the estimate"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-06-30T08:04:15.400Z",
+            "description": "The last time the estimate has been updated"
+          },
+          "source": {
+            "type": "string",
+            "example": "quotes",
+            "description": "Where the estimate is coming from. The only possible value is 'quotes' for now.\n  - quotes: Created directly from the editor\n"
+          },
+          "customer": {
+            "type": "object",
+            "nullable": true,
+            "$ref": "#/components/schemas/Customer"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          }
+        }
+      },
+      "Product": {
+        "title": "Product",
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "description": "Product identifier (is unique)",
+            "example": "0e67fc3c-c632-4feb-ad34-e18ed5fbf66a"
+          },
+          "label": {
+            "type": "string",
+            "description": "Product label",
+            "example": "Pack 1"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description",
+            "example": "This is the package level 1"
+          },
+          "unit": {
+            "type": "string",
+            "description": "The kind of unit which applies to the amount, the values are:\n  - piece: The item is sold by pieces\n  - hour: The item is sold by hours (typically a service)\n  - day: The item is sold by days (typically a service)\n  - month: The item is sold by months (typically a service)\n",
+            "example": "piece"
+          },
+          "price": {
+            "type": "number",
+            "description": "Product price including taxes",
+            "example": 12
+          },
+          "vat_rate": {
+            "type": "string",
+            "description": "Product vat rate",
+            "example": "FR_200"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Product currency (ISO 4217). Default is EUR.",
+            "example": "EUR"
+          },
+          "reference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Product reference",
+            "example": "REF-453"
+          },
+          "substance": {
+            "nullable": true,
+            "type": "string",
+            "description": "Product substance. Can be services or goods.",
+            "example": "goods"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2021-06-30T08:04:15.400Z",
+            "description": "The last time the product has been updated"
+          }
+        }
+      }
+    },
+    "responses": {
+      "MissingParameterError": {
+        "description": "Missing parameter"
+      },
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid"
+      }
+    },
+    "securitySchemes": {
+      "API Key": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ]
+}

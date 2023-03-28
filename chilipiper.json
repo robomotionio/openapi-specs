@@ -1,0 +1,1996 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "",
+    "description": "",
+    "termsOfService": "",
+    "version": ""
+  },
+  "servers": [
+    {
+      "url": "https://edge.na.chilipiper.com"
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/reports/workspaces": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Schedules workspaces report for execution",
+        "description": "Schedules workspaces report for execution in the future",
+        "operationId": "workspacesReport",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Request successfully created"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/queue": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Lists queues",
+        "description": "Lists queues for workspaceId if provided, otherwise lists all queues.",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "query",
+            "description": "Id of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastId",
+            "in": "query",
+            "description": "Last seen id, for pagination purposes",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "A limit on the number of objects to be returned, between 1 and 100",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lists queues",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queue/{queueId}/user": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Lists users for queue",
+        "description": "Lists all users in a queue if it exists",
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "name": "queueId",
+            "in": "path",
+            "description": "Id of the queue",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lists users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Queue id is not found"
+          }
+        }
+      }
+    },
+    "/queue/{queueId}/user/update/weighted": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Updates multiple users into queue with specific weight",
+        "description": "Updates multiple users to an existing queue with specific weight",
+        "operationId": "updateWeighted",
+        "parameters": [
+          {
+            "name": "queueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "List of user ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeightedAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Lists user ids successfully assigned to queue",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Queue id or one of user's id is not found"
+          }
+        }
+      }
+    },
+    "/queue/{queueId}/user/assign/weighted": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Add multiple users into queue with specific weight",
+        "description": "Assigns multiple users to an existing queue with specific weight",
+        "operationId": "assignWeighted",
+        "parameters": [
+          {
+            "name": "queueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "List of user ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeightedAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Lists user ids successfully assigned to queue",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Queue id or one of user's id is not found"
+          }
+        }
+      }
+    },
+    "/queue/{queueId}/user/unassign": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Unassigns users from queue",
+        "description": "Unassigns multiple users to an existing queue",
+        "operationId": "unassign",
+        "parameters": [
+          {
+            "name": "queueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/List"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lists users successfuly removed from a queue",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Queue id or one of user's id is not found"
+          }
+        }
+      }
+    },
+    "/queue/{queueId}/user/assign": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Add multiple users into queue",
+        "description": "Assigns multiple users to an existing queue",
+        "operationId": "assign",
+        "parameters": [
+          {
+            "name": "queueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "List of user ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/List"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Lists user ids successfully assigned to queue",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Queue id or one of user's id is not found"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Gets user",
+        "description": "Gets a user with queues data if exists",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns user data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWithDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User was not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Updates user",
+        "description": "Updates a user if it exists",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User was not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Deletes user",
+        "description": "Deletes user if exists",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was deleted",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User was not found"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Lists users",
+        "description": "Lists users for workspaceId if provided, otherwise paginates over all users.",
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "query",
+            "description": "Id of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastId",
+            "in": "query",
+            "description": "Last seen id, for pagination purposes",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "A limit on the number of objects to be returned, between 1 and 100",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lists users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Updates multiple users",
+        "description": "Updates multiple users",
+        "operationId": "updateMultiple",
+        "requestBody": {
+          "description": "List of user update requests",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMultipleUsers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users were updated successfuly",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "There was error while updating some users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/find": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Filter users based on parameters",
+        "description": "Filters users by sfid or email. No users are returned for no filter",
+        "operationId": "find",
+        "parameters": [
+          {
+            "name": "sfid",
+            "in": "query",
+            "description": "Optional filter on salesforce id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Optional filter on email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lists users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/addToWorkspace": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Adds user to workspace",
+        "description": "Adds user to workspaces if user and workspaces exist. User is added only when it's the only matched user using selector.",
+        "operationId": "addToWorkspaces",
+        "requestBody": {
+          "description": "Select field has all subfields optional. Users matching all these fields are returned. If an id is of invalid format, it is ignored.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkspacesModifier"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was added to workspaces",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspacesModifier"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or workspace was not found"
+          },
+          "422": {
+            "description": "Multiple users matched the select"
+          }
+        }
+      }
+    },
+    "/users/removeFromWorkspace": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Removes user from workspaces",
+        "description": "Removes user from workspaces if user and workspaces exist. User is removed only when it's the only matched user using selector.",
+        "operationId": "removeFromWorkspaces",
+        "requestBody": {
+          "description": "Select field has all subfields optional. Users matching all these fields are returned. If an id is of invalid format, it is ignored.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkspacesModifier"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was removed to workspaces",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspacesModifier"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or workspace was not found"
+          },
+          "422": {
+            "description": "Multiple users matched the select"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WeightedAssign": {
+        "required": [
+          "users",
+          "weight"
+        ],
+        "type": "object",
+        "properties": {
+          "users": {
+            "required": [
+              "empty"
+            ],
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "object"
+            }
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "BookerAlgorithm": {
+        "type": "object"
+      },
+      "UserDto": {
+        "required": [
+          "connections",
+          "displayName",
+          "id",
+          "licences",
+          "workspaces"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "workspaces": {
+            "$ref": "#/components/schemas/WorkspacesDto"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "linkName": {
+            "type": "string"
+          },
+          "connections": {
+            "$ref": "#/components/schemas/UserConnections"
+          },
+          "licences": {
+            "$ref": "#/components/schemas/UserLicences"
+          },
+          "isAdmin": {
+            "type": "boolean"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "lastLoggedIn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "preferredTimezone": {
+            "type": "string"
+          },
+          "usePreferredTimezone": {
+            "type": "boolean"
+          },
+          "activeInQueue": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RingCentralConnection": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ConnectionHealth": {
+        "type": "object",
+        "properties": {
+          "troubleStarted": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cases": {
+            "type": "object"
+          },
+          "totalCases": {
+            "type": "object"
+          },
+          "gameOver": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserLicenceStatus": {
+        "type": "object"
+      },
+      "ListUpdateUserBodyRequest": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/UpdateUserBodyRequest"
+        }
+      },
+      "WorkingHoursRequest": {
+        "required": [
+          "hoursPerDay"
+        ],
+        "type": "object",
+        "properties": {
+          "hoursPerDay": {
+            "$ref": "#/components/schemas/AvailableDays"
+          },
+          "workStarts": {
+            "$ref": "#/components/schemas/WorkingTime"
+          },
+          "workEnds": {
+            "$ref": "#/components/schemas/WorkingTime"
+          }
+        }
+      },
+      "UserConnections": {
+        "required": [
+          "otherSalesforce"
+        ],
+        "type": "object",
+        "properties": {
+          "microsoft": {
+            "$ref": "#/components/schemas/MicrosoftUserConnection"
+          },
+          "google": {
+            "$ref": "#/components/schemas/GoogleUserConnection"
+          },
+          "salesforce": {
+            "$ref": "#/components/schemas/SalesforceUserConnection"
+          },
+          "otherSalesforce": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/SalesforceUserConnection"
+            }
+          },
+          "gotomeeting": {
+            "$ref": "#/components/schemas/GoToMeetingConnection"
+          },
+          "webex": {
+            "$ref": "#/components/schemas/WebexConnection"
+          },
+          "zoom": {
+            "$ref": "#/components/schemas/ZoomConnection"
+          },
+          "ringCentral": {
+            "$ref": "#/components/schemas/RingCentralConnection"
+          },
+          "hubspot": {
+            "$ref": "#/components/schemas/HubspotUserConnection"
+          },
+          "hopin": {
+            "$ref": "#/components/schemas/HopinConnection"
+          },
+          "gong": {
+            "$ref": "#/components/schemas/GongUserConnection"
+          }
+        }
+      },
+      "OnlineSelector": {
+        "required": [
+          "templates"
+        ],
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "templates": {
+            "uniqueItems": true,
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/TemplateDescription"
+            }
+          },
+          "welcome": {
+            "type": "string"
+          }
+        }
+      },
+      "List": {
+        "required": [
+          "empty"
+        ],
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "type": "object"
+        }
+      },
+      "AvailableDays": {
+        "required": [
+          "sunday"
+        ],
+        "type": "object",
+        "properties": {
+          "sunday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "monday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "tuesday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "wednesday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "thursday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "friday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "saturday": {
+            "$ref": "#/components/schemas/AvailableHours"
+          },
+          "hasActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ListCondition": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/Condition"
+        }
+      },
+      "ConnectionStatus": {
+        "type": "object"
+      },
+      "Member": {
+        "required": [
+          "weight",
+          "weightRate"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "lock": {
+            "type": "boolean"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "initialOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activationDate": {
+            "type": "object"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "calibration": {
+            "type": "object"
+          },
+          "main": {
+            "type": "object"
+          },
+          "mandatory": {
+            "type": "object"
+          },
+          "weightRate": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ListWorkingInterval": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/WorkingInterval"
+        }
+      },
+      "SetObject": {
+        "uniqueItems": true,
+        "type": "array",
+        "properties": {
+          "traversableAgain": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "type": "object"
+        }
+      },
+      "UserWithDetails": {
+        "required": [
+          "queues",
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "queues": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/Queue"
+            }
+          }
+        }
+      },
+      "UpdateUserBodyRequest": {
+        "required": [
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "salesforceId": {
+            "type": "string"
+          },
+          "workingHours": {
+            "$ref": "#/components/schemas/WorkingHoursRequest"
+          },
+          "timezone": {
+            "type": "string"
+          }
+        }
+      },
+      "ListRoomOrder": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/RoomOrder"
+        }
+      },
+      "WorkspacesDto": {
+        "required": [
+          "assignedTo",
+          "recentlySelected"
+        ],
+        "type": "object",
+        "properties": {
+          "assignedTo": {
+            "uniqueItems": true,
+            "required": [
+              "traversableAgain"
+            ],
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "string"
+            }
+          },
+          "adminOf": {
+            "uniqueItems": true,
+            "required": [
+              "traversableAgain"
+            ],
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "type": "string"
+          },
+          "selected": {
+            "type": "string"
+          },
+          "recentlySelected": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateMultipleUsers": {
+        "required": [
+          "update"
+        ],
+        "type": "object",
+        "properties": {
+          "update": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/UpdateUserBodyRequest"
+            }
+          }
+        }
+      },
+      "RoomListDescription": {
+        "required": [
+          "algorithm",
+          "list"
+        ],
+        "type": "object",
+        "properties": {
+          "list": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/RoomOrder"
+            }
+          },
+          "algorithm": {
+            "$ref": "#/components/schemas/RoomDistribution"
+          }
+        }
+      },
+      "GoToMeetingConnection": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GoogleUserConnection": {
+        "required": [
+          "aliases"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "aliases": {
+            "uniqueItems": true,
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "string"
+            }
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "isAdmin": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "health": {
+            "$ref": "#/components/schemas/ConnectionHealth"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserLicence": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/UserLicenceStatus"
+          }
+        }
+      },
+      "GongUserConnection": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "salesforceId": {
+            "type": "string"
+          },
+          "workingHours": {
+            "$ref": "#/components/schemas/WorkingHoursRequest"
+          },
+          "timezone": {
+            "type": "string"
+          }
+        }
+      },
+      "WebexConnection": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Operator": {
+        "type": "object",
+        "properties": {
+          "entryName": {
+            "type": "string"
+          }
+        }
+      },
+      "Ownership": {
+        "type": "object"
+      },
+      "ListQueue": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/Queue"
+        }
+      },
+      "PhoneActionProspectQualified": {
+        "type": "object"
+      },
+      "TemplateDescription": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Weekday": {
+        "type": "object"
+      },
+      "ListObjectId": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "type": "string"
+        }
+      },
+      "PhoneActionNoReps": {
+        "type": "object"
+      },
+      "SetTemplateDescription": {
+        "uniqueItems": true,
+        "type": "array",
+        "properties": {
+          "traversableAgain": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/TemplateDescription"
+        }
+      },
+      "RuleTag": {
+        "type": "object",
+        "properties": {
+          "entryName": {
+            "type": "string"
+          }
+        }
+      },
+      "Queue": {
+        "required": [
+          "algorithm",
+          "members",
+          "membersIds",
+          "ownership",
+          "phoneActionNoReps",
+          "phoneActionProspectQualified",
+          "rules"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "rules": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/Condition"
+            }
+          },
+          "formula": {
+            "type": "string"
+          },
+          "members": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/Member"
+            }
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/Ownership"
+          },
+          "addSalesforce": {
+            "type": "boolean"
+          },
+          "addCrm": {
+            "type": "object"
+          },
+          "handoff": {
+            "type": "object"
+          },
+          "hotHandoff": {
+            "type": "boolean"
+          },
+          "template": {
+            "type": "string"
+          },
+          "algorithm": {
+            "$ref": "#/components/schemas/BookerAlgorithm"
+          },
+          "bookerMandatory": {
+            "type": "object"
+          },
+          "withBookerGuest": {
+            "type": "boolean"
+          },
+          "onlineSettings": {
+            "$ref": "#/components/schemas/OnlineSettings"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "creationDateTime": {
+            "type": "object"
+          },
+          "phoneActionProspectQualified": {
+            "$ref": "#/components/schemas/PhoneActionProspectQualified"
+          },
+          "phoneActionNoReps": {
+            "$ref": "#/components/schemas/PhoneActionNoReps"
+          },
+          "rooms": {
+            "$ref": "#/components/schemas/RoomListDescription"
+          },
+          "eventsInSlot": {
+            "type": "object"
+          },
+          "enableBroadReschedule": {
+            "type": "object"
+          },
+          "membersIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "object"
+            }
+          },
+          "defaultBooker": {
+            "type": "object"
+          },
+          "lightning": {
+            "type": "boolean"
+          },
+          "bookingLink": {
+            "type": "boolean"
+          },
+          "internal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OnlineSettings": {
+        "type": "object",
+        "properties": {
+          "online": {
+            "type": "boolean"
+          },
+          "linkName": {
+            "type": "string"
+          },
+          "defaultBooker": {
+            "type": "object"
+          },
+          "placeholderId": {
+            "type": "string"
+          },
+          "bookingLinkId": {
+            "type": "string"
+          },
+          "onlineSelector": {
+            "$ref": "#/components/schemas/OnlineSelector"
+          }
+        }
+      },
+      "SetString": {
+        "uniqueItems": true,
+        "required": [
+          "traversableAgain"
+        ],
+        "type": "array",
+        "properties": {
+          "traversableAgain": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "type": "string"
+        }
+      },
+      "Condition": {
+        "required": [
+          "operator"
+        ],
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "value": {
+            "type": "string"
+          },
+          "tag": {
+            "$ref": "#/components/schemas/RuleTag"
+          },
+          "ownership": {
+            "type": "boolean"
+          }
+        }
+      },
+      "WorkingTime": {
+        "required": [
+          "hours"
+        ],
+        "type": "object",
+        "properties": {
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "present": {
+            "type": "string"
+          }
+        }
+      },
+      "SalesforceUserConnection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "userRoleId": {
+            "type": "string"
+          },
+          "liveops": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "canBeUsedAsOwner": {
+            "type": "boolean"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserSelector": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "object"
+          },
+          "email": {
+            "type": "string"
+          },
+          "salesforceId": {
+            "type": "string"
+          }
+        }
+      },
+      "RoomOrder": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WorkingInterval": {
+        "required": [
+          "workStarts"
+        ],
+        "type": "object",
+        "properties": {
+          "workStarts": {
+            "$ref": "#/components/schemas/WorkingTime"
+          },
+          "workEnds": {
+            "$ref": "#/components/schemas/WorkingTime"
+          },
+          "present": {
+            "type": "string"
+          },
+          "degenerate": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HopinConnection": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserLicences": {
+        "required": [
+          "meetings"
+        ],
+        "type": "object",
+        "properties": {
+          "meetings": {
+            "$ref": "#/components/schemas/UserLicence"
+          },
+          "events": {
+            "$ref": "#/components/schemas/UserLicence"
+          },
+          "mildMeetings": {
+            "$ref": "#/components/schemas/UserLicence"
+          },
+          "concierge": {
+            "$ref": "#/components/schemas/UserLicence"
+          },
+          "onMeetings": {
+            "type": "boolean"
+          }
+        }
+      },
+      "WorkspacesModifier": {
+        "required": [
+          "select",
+          "workspaces"
+        ],
+        "type": "object",
+        "properties": {
+          "select": {
+            "$ref": "#/components/schemas/UserSelector"
+          },
+          "workspaces": {
+            "uniqueItems": true,
+            "required": [
+              "traversableAgain"
+            ],
+            "type": "array",
+            "properties": {
+              "traversableAgain": {
+                "type": "boolean"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "MicrosoftUserConnection": {
+        "required": [
+          "health",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "upn": {
+            "type": "string"
+          },
+          "granted": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "health": {
+            "$ref": "#/components/schemas/ConnectionHealth"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AvailableHours": {
+        "required": [
+          "active",
+          "day",
+          "workingIntervals"
+        ],
+        "type": "object",
+        "properties": {
+          "day": {
+            "$ref": "#/components/schemas/Weekday"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "workingIntervals": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              },
+              "traversableAgain": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/WorkingInterval"
+            }
+          },
+          "presentIntervals": {
+            "type": "string"
+          },
+          "notDegenerate": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ZoomConnection": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ListMember": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/Member"
+        }
+      },
+      "RoomDistribution": {
+        "type": "object"
+      },
+      "ListSalesforceUserConnection": {
+        "type": "array",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "traversableAgain": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "$ref": "#/components/schemas/SalesforceUserConnection"
+        }
+      },
+      "SetObjectId": {
+        "uniqueItems": true,
+        "required": [
+          "traversableAgain"
+        ],
+        "type": "array",
+        "properties": {
+          "traversableAgain": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "items": {
+          "type": "string"
+        }
+      },
+      "HubspotUserConnection": {
+        "required": [
+          "ownerId"
+        ],
+        "type": "object",
+        "properties": {
+          "ownerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ConnectionStatus"
+          },
+          "name": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "disconnected": {
+            "type": "boolean"
+          },
+          "connected": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "user jwt",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "cookieAuth": {
+        "type": "http",
+        "description": "deprecated user session"
+      }
+    }
+  }
+}

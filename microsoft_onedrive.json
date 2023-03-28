@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.0",
+  "x-origin": "meta-api.io",
+  "info": {
+    "title": "Microseoft OneDrive",
+    "version": "1.0",
+    "description": "Microsoft OneDrive allows you to create an app that connects with files across OneDrive, OneDrive for Business, and SharePoint document libraries. With Microsoft Graph, you can build a variety of experiences with files stored in Microsoft 365, from simply storing user documents to complex file-sharing scenarios.",
+    "contact": {
+      "name": "Microsoft",
+      "url": "",
+      "email": ""
+    },
+    "termsOfService": "",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/microsoft.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://graph.microsoft.com/v1.0"
+    }
+  ],
+  "paths": {
+    "/drives/{drive-id}": {
+      "parameters": [
+        {
+          "name": "drive-id",
+          "required": true,
+          "in": "path",
+          "description": "The identifier for the drive requested.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Drive",
+        "operationId": "get",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/me/drive/items/{item-id}/children": {
+      "parameters": [
+        {
+          "name": "item-id",
+          "required": true,
+          "in": "path",
+          "description": "The unique identifier of the item within the Drive. Read-only.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "List items of a drive or folder",
+        "operationId": "get",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/drives/{drive-id}/root:/{item-path}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "drive-id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "item-path",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a file with his path inside a drive",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-drives-drive-id-root:-item-path"
+      }
+    },
+    "/me/drive/root:/{item-path}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "item-path",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a file with his path inside your personnal folder",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-me-drive-root:-item-path"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "key": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "scopes": {
+              "Files.Read": "Read user files",
+              "Files.ReadWrite": "Have full access to user files",
+              "Files.Read.All": "Read all files that user can access",
+              "Files.ReadWrite.All": "Have full access to all files user can access",
+              "Sites.Read.All": "Read items in all site collections",
+              "Sites.ReadWrite.All": "Read and write items in all site collections",
+              "offline_access": "Add this scope to enable refresh token"
+            },
+            "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "refreshUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+            "X-Refresh-Settings": {
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "key": []
+    }
+  ]
+}

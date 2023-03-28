@@ -1,0 +1,3343 @@
+{
+  "components": {
+    "schemas": {
+      "Account": {
+        "properties": {
+          "billable": {
+            "type": "boolean"
+          },
+          "capitalized": {
+            "type": "boolean"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "global": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "key": {
+            "type": "string"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/AccountLink"
+            },
+            "type": "array"
+          },
+          "monthlyBudget": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "description": "The Account Status",
+            "enum": [
+              "CLOSED",
+              "OPEN",
+              "ARCHIVED"
+            ],
+            "type": "string"
+          },
+          "tempoContact": {
+            "$ref": "#/components/schemas/TempoUser"
+          },
+          "tempoLead": {
+            "$ref": "#/components/schemas/TempoUser"
+          }
+        },
+        "type": "object"
+      },
+      "AccountBean": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryBean"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/PeopleBean"
+          },
+          "contactAvatar": {
+            "format": "uri",
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerBean"
+          },
+          "global": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "description": "A unique key for the Account",
+            "example": "ACC",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "lead": {
+            "$ref": "#/components/schemas/PeopleBean"
+          },
+          "leadAvatar": {
+            "format": "uri",
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/AccountLinkBean"
+            },
+            "type": "array"
+          },
+          "monthlyBudget": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true,
+              "name": "monthlybudget"
+            }
+          },
+          "name": {
+            "description": "Account Name",
+            "example": "Account",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "status": {
+            "enum": [
+              "CLOSED",
+              "OPEN",
+              "ARCHIVED"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "required": [
+          "key",
+          "lead",
+          "name"
+        ],
+        "type": "object",
+        "xml": {
+          "name": "account"
+        }
+      },
+      "AccountFilterSearchBean": {
+        "properties": {
+          "includeLinks": {
+            "default": "false",
+            "description": "include Account links",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "example": "false",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "limit": {
+            "default": 100,
+            "description": "the total number of accounts to be returned",
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "offset": {
+            "default": 0,
+            "description": "the offset to start searching",
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "orderBy": {
+            "default": "name ASC",
+            "description": "order by",
+            "enum": [
+              "id ASC",
+              "id DESC",
+              "key ASC",
+              "key DESC",
+              "name ASC",
+              "name DESC",
+              "lead ASC",
+              "lead DESC",
+              "contact ADC",
+              "contact DESC",
+              "status ASC",
+              "status DESC",
+              "monthlyBudget ASC",
+              "monthlyBudget DESC",
+              "customer ASC",
+              "customer DESC",
+              "category ASC",
+              "category DESC",
+              "global ASC",
+              "global DESC",
+              "links ASC",
+              "links DESC"
+            ],
+            "example": "customer ASC|DESC",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "query": {
+            "description": "Text search",
+            "example": "ABC",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "tqlQuery": {
+            "default": "status = OPEN",
+            "description": "the query",
+            "example": "customer IS EMPTY OR customer = | status IN (\"OPEN\",\"CLOSED\") AND project =",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "AccountInputBean": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryInputBean"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/ContactInputBean"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerInputBean"
+          },
+          "key": {
+            "example": "ACC",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "lead": {
+            "$ref": "#/components/schemas/PeopleInputBean"
+          },
+          "name": {
+            "example": "Account",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "status": {
+            "description": "Account Status",
+            "enum": [
+              "CLOSED",
+              "OPEN",
+              "ARCHIVED"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "required": [
+          "contact",
+          "key",
+          "lead",
+          "name",
+          "status"
+        ],
+        "type": "object"
+      },
+      "AccountLink": {
+        "properties": {
+          "accountId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "defaultAccount": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "linkType": {
+            "enum": [
+              "IMPORTED",
+              "MANUAL"
+            ],
+            "type": "string"
+          },
+          "scope": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "scopeType": {
+            "enum": [
+              "PROJECT"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AccountLinkBean": {
+        "properties": {
+          "accountId": {
+            "description": "Account ID",
+            "example": 12345,
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "defaultAccount": {
+            "default": false,
+            "description": "Indicate if this is the default account",
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "description": "Jira Project Key",
+            "example": "PROJ",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "linkType": {
+            "default": "MANUAL",
+            "description": "Represents the type of link, that is whether the link was created manually or whether it was created in a import",
+            "enum": [
+              "IMPORTED",
+              "MANUAL"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "description": "Jira Project Name",
+            "example": "Project",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scope": {
+            "description": "Jira Project ID",
+            "example": 12345,
+            "format": "int64",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scopeType": {
+            "description": "Represents the type of scope the Account is linked to (Jira Project)",
+            "enum": [
+              "PROJECT"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "linkType",
+          "scope",
+          "scopeType"
+        ],
+        "type": "object",
+        "xml": {
+          "name": "link"
+        }
+      },
+      "AccountSearchBean": {
+        "properties": {
+          "accounts": {
+            "items": {
+              "$ref": "#/components/schemas/AccountBean"
+            },
+            "type": "array"
+          },
+          "currentPage": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "query": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "totalRecords": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "tqlQuery": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "accountsearch"
+        }
+      },
+      "BudgetBean": {
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scopeId": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scopeType": {
+            "enum": [
+              "ACCOUNT"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "value": {
+            "format": "double",
+            "type": "number",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "valueType": {
+            "enum": [
+              "MONEY"
+            ],
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "Category": {
+        "properties": {
+          "categoryType": {
+            "$ref": "#/components/schemas/CategoryType"
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "key": {
+            "description": "Account Attribute Key",
+            "example": "CUST",
+            "type": "string"
+          },
+          "name": {
+            "description": "Account Attribute Name",
+            "example": "Customer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name"
+        ],
+        "type": "object"
+      },
+      "CategoryBean": {
+        "properties": {
+          "categoryType": {
+            "$ref": "#/components/schemas/CategoryTypeBean"
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "category"
+        }
+      },
+      "CategoryInputBean": {
+        "description": "Account Category | Can be omitted",
+        "properties": {
+          "id": {
+            "example": 12345,
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "CategoryType": {
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CategoryTypeBean": {
+        "properties": {
+          "color": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "categorytype"
+        }
+      },
+      "ContactInputBean": {
+        "description": "Customer Contact | Can be set to empty {}",
+        "properties": {
+          "key": {
+            "example": "joeSchmoe",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "username": {
+            "example": "joeSchmoe",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "CustomFieldBean": {
+        "properties": {
+          "custom": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "navigable": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "orderable": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "schema": {
+            "$ref": "#/components/schemas/JsonTypeBean"
+          },
+          "searchable": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "Customer": {
+        "properties": {
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "key": {
+            "description": "Account Attribute Key",
+            "example": "CUST",
+            "type": "string"
+          },
+          "name": {
+            "description": "Account Attribute Name",
+            "example": "Customer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name"
+        ],
+        "type": "object"
+      },
+      "CustomerBean": {
+        "properties": {
+          "accountCount": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "archivedAccountCount": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "customer"
+        }
+      },
+      "CustomerInputBean": {
+        "description": "Customer Information | Can be omitted",
+        "properties": {
+          "id": {
+            "example": 12345,
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "example": "CUST",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "example": "Customer",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "CustomerPermission": {
+        "properties": {
+          "customerId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/TempoGroup"
+            },
+            "type": "array"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/TempoUser"
+            },
+            "type": "array"
+          },
+          "weight": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CustomerPermissionBean": {
+        "properties": {
+          "customerId": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "description": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "groups": {
+            "description": "List of Groups",
+            "example": [
+              "jira-administrators",
+              "devs"
+            ],
+            "items": {
+              "description": "List of Groups",
+              "example": "[\"jira-administrators\",\"devs\"]",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "userKeys": {
+            "description": "List of User Keys",
+            "example": [
+              "johnDoe",
+              "joeSchmoe"
+            ],
+            "items": {
+              "description": "List of User Keys",
+              "example": "[\"johnDoe\",\"joeSchmoe\"]",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "userNames": {
+            "items": {
+              "readOnly": true,
+              "type": "string"
+            },
+            "readOnly": true,
+            "type": "array"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/UserBean"
+            },
+            "readOnly": true,
+            "type": "array"
+          },
+          "weight": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "required": [
+          "groups",
+          "userKeys"
+        ],
+        "type": "object",
+        "xml": {
+          "name": "customerpermission"
+        }
+      },
+      "HeaderBean": {
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/AccountBean"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerBean"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "header"
+        }
+      },
+      "I18nResources": {
+        "properties": {
+          "locale": {
+            "properties": {
+              "country": {
+                "type": "string"
+              },
+              "displayCountry": {
+                "type": "string"
+              },
+              "displayLanguage": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "displayScript": {
+                "type": "string"
+              },
+              "displayVariant": {
+                "type": "string"
+              },
+              "extensionKeys": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "iso3Country": {
+                "type": "string"
+              },
+              "iso3Language": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "script": {
+                "type": "string"
+              },
+              "unicodeLocaleAttributes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "unicodeLocaleKeys": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "variant": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "ImportFromServiceBean": {
+        "properties": {
+          "importURL": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "JsonTypeBean": {
+        "type": "object"
+      },
+      "LinkBean": {
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "type": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "link"
+        }
+      },
+      "LinkInputBean": {
+        "properties": {
+          "id": {
+            "description": "This is omitted if changing the DEFAULT_RATE",
+            "example": 12345,
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "type": {
+            "enum": [
+              "DEFAULT_RATE",
+              "TEAM_ROLE"
+            ],
+            "example": "TEAM_ROLE",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "PeopleBean": {
+        "properties": {
+          "active": {
+            "readOnly": true,
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "avatarUrls": {
+            "additionalProperties": {
+              "format": "uri",
+              "readOnly": true,
+              "type": "string"
+            },
+            "readOnly": true,
+            "type": "object"
+          },
+          "displayName": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "emailAddress": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "key": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "titleI18nKey": {
+            "readOnly": true,
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "username": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "people"
+        }
+      },
+      "PeopleInputBean": {
+        "description": "Account Lead Information",
+        "properties": {
+          "key": {
+            "example": "johnDoe",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "username": {
+            "example": "johnDoe",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "RateBean": {
+        "properties": {
+          "amount": {
+            "format": "double",
+            "type": "number",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "link": {
+            "$ref": "#/components/schemas/LinkBean"
+          },
+          "rateTable": {
+            "$ref": "#/components/schemas/RateTableBean"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "rate"
+        }
+      },
+      "RateInputBean": {
+        "properties": {
+          "amount": {
+            "example": 40,
+            "format": "double",
+            "type": "number",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "link": {
+            "$ref": "#/components/schemas/LinkInputBean"
+          },
+          "rateTable": {
+            "$ref": "#/components/schemas/RateTableLinkBean"
+          }
+        },
+        "type": "object"
+      },
+      "RateTableBean": {
+        "properties": {
+          "currencyCode": {
+            "description": "Currency Code",
+            "example": "USD",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "defaultTable": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "discount": {
+            "description": "Discount percentage",
+            "example": 15,
+            "format": "double",
+            "type": "number",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "effectiveDate": {
+            "description": "Effective Date",
+            "example": "yyyy-MM-dd",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "id": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "parent": {
+            "$ref": "#/components/schemas/RateTableBean"
+          },
+          "rates": {
+            "items": {
+              "$ref": "#/components/schemas/RateBean"
+            },
+            "type": "array"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/ScopeBean"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "rate-table"
+        }
+      },
+      "RateTableInputBean": {
+        "properties": {
+          "currencyCode": {
+            "example": "USD",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "example": "Rate Table Name",
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "RateTableLinkBean": {
+        "properties": {
+          "id": {
+            "example": 12345,
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ScopeBean": {
+        "properties": {
+          "scopeId": {
+            "type": "number",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scopeType": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ScopedRateTableBean": {
+        "properties": {
+          "parentId": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "parentName": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scopeId": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ScopedRateTablesBean": {
+        "properties": {
+          "defaultId": {
+            "format": "int32",
+            "type": "integer",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "defaultName": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "scoped": {
+            "items": {
+              "$ref": "#/components/schemas/ScopedRateTableBean"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "scopedNames"
+        }
+      },
+      "TempoGroup": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TempoUser": {
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "i18nResources": {
+            "$ref": "#/components/schemas/I18nResources"
+          },
+          "key": {
+            "type": "string"
+          },
+          "locale": {
+            "properties": {
+              "country": {
+                "type": "string"
+              },
+              "displayCountry": {
+                "type": "string"
+              },
+              "displayLanguage": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "displayScript": {
+                "type": "string"
+              },
+              "displayVariant": {
+                "type": "string"
+              },
+              "extensionKeys": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "iso3Country": {
+                "type": "string"
+              },
+              "iso3Language": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "script": {
+                "type": "string"
+              },
+              "unicodeLocaleAttributes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "unicodeLocaleKeys": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "variant": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/Tenant"
+          },
+          "timeZone": {
+            "properties": {
+              "displayName": {
+                "type": "string"
+              },
+              "dstsavings": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "id": {
+                "type": "string"
+              },
+              "rawOffset": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Tenant": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "TEMPO",
+              "JIRA"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UserBean": {
+        "properties": {
+          "avatar": {
+            "additionalProperties": {
+              "format": "uri",
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "displayName": {
+            "type": "string",
+            "xml": {
+              "attribute": true,
+              "name": "displayname"
+            }
+          },
+          "jiraUser": {
+            "type": "boolean",
+            "xml": {
+              "attribute": true
+            }
+          },
+          "name": {
+            "type": "string",
+            "xml": {
+              "attribute": true
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "scheme": "basic",
+        "type": "http"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Contact Tempo Customer Support.",
+    "url": "https://tempo-io.atlassian.net/servicedesk/customer/portal/6"
+  },
+  "info": {
+    "description": "Welcome to Tempo Accounts API Documentation. Use this REST API to programmatically transfer data to or from Tempo Core in order to integrate with other business components. REST being based on open standards, you are free to use any web development language to access the API.",
+    "termsOfService": "https://www.tempo.io/terms-of-use",
+    "title": "Tempo Accounts",
+    "version": "1.0",
+    "x-logo": {
+      "altText": "Tempo Software",
+      "href": "https://www.tempo.io/server-api-documentation/",
+      "url": "https://cdn2.hubspot.net/hubfs/2814970/openApi/TEMPO_OpenAPI.png"
+    }
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/tempo-accounts/1/account": {
+      "get": {
+        "operationId": "getAccounts",
+        "parameters": [
+          {
+            "description": "Skip archived Accounts",
+            "in": "query",
+            "name": "skipArchived",
+            "schema": {
+              "default": "true",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include Account links",
+            "in": "query",
+            "name": "expand",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Accounts",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      },
+      "post": {
+        "description": "Adding new Account requires the Manage Accounts Permission. Note: To create account-links you must use the Account Links endpoint.",
+        "operationId": "createAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountInputBean"
+              }
+            }
+          },
+          "description": "The new Account",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Creates Account",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/customer/{customerId}": {
+      "get": {
+        "description": "The Caller must have the Browse Account permission for the Account",
+        "operationId": "getAccountsByCustomer",
+        "parameters": [
+          {
+            "description": "The Customer Id",
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get un-archived Accounts by customer",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/key/{accountKey}": {
+      "get": {
+        "description": " The Caller must have the Browse Account permission for the Account",
+        "operationId": "getAccountByKey",
+        "parameters": [
+          {
+            "description": "The Account Key",
+            "example": "ACC",
+            "in": "path",
+            "name": "accountKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Account by Key",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/lead": {
+      "get": {
+        "description": "The Caller must have the Browse Account permission for the Account",
+        "operationId": "getAccountsByLead",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Account for logged in Lead",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/leads": {
+      "get": {
+        "operationId": "getLeads",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TempoUser"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Leads",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/project/{projectId}": {
+      "get": {
+        "description": "This will return Accounts for which the Caller has Browse Account Permission for",
+        "operationId": "getAccountsByProject",
+        "parameters": [
+          {
+            "description": "The Jira Project Id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Accounts by JIRA Project",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/search": {
+      "get": {
+        "operationId": "searchFilteredAccountsGetV1",
+        "parameters": [
+          {
+            "description": "the query",
+            "example": "customer IS EMPTY OR customer = | status IN (\"OPEN\",\"CLOSED\") AND project =",
+            "in": "query",
+            "name": "tqlQuery",
+            "schema": {
+              "default": "status = OPEN",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Text search",
+            "example": "ABC",
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the total number of accounts to be returned",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "the offset to start searching",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "order by",
+            "in": "query",
+            "name": "orderBy",
+            "schema": {
+              "default": "name ASC",
+              "enum": [
+                "id ASC",
+                "id DESC",
+                "key ASC",
+                "key DESC",
+                "name ASC",
+                "name DESC",
+                "lead ASC",
+                "lead DESC",
+                "contact ADC",
+                "contact DESC",
+                "status ASC",
+                "status DESC",
+                "monthlyBudget ASC",
+                "monthlyBudget DESC",
+                "customer ASC",
+                "customer DESC",
+                "category ASC",
+                "category DESC",
+                "global ASC",
+                "global DESC",
+                "links ASC",
+                "links DESC"
+              ],
+              "example": "customer ASC|DESC",
+              "type": "string"
+            }
+          },
+          {
+            "description": "include Account links",
+            "in": "query",
+            "name": "includeLinks",
+            "schema": {
+              "default": "false",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountSearchBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Accounts filtered by a query",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/status/{status}": {
+      "get": {
+        "description": "The Caller must have the Browse Account permission for Account",
+        "operationId": "getAccountsByStatus",
+        "parameters": [
+          {
+            "description": "The Acocunt Status",
+            "in": "path",
+            "name": "status",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Accounts by Status",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/{accountId}": {
+      "delete": {
+        "operationId": "deleteAccount",
+        "parameters": [
+          {
+            "description": "the id of the Account to be deleted",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Delete an Account by given id",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      },
+      "get": {
+        "description": "The Caller must have the Browse Account permission for the Account",
+        "operationId": "getAccountById",
+        "parameters": [
+          {
+            "description": "Id of Account",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Account by given id",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      },
+      "put": {
+        "description": "Note: To update account-links you must use the Account Links endpoint.",
+        "operationId": "updateAccount",
+        "parameters": [
+          {
+            "description": "the id of Account to update",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountBean"
+              }
+            }
+          },
+          "description": "Account name, Account key and lead are required, rest is optional"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Update Account by ID",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/{accountId}/global/{global}": {
+      "put": {
+        "description": "The Caller must have Manage Account Permission for the Account. Making an account global, it is linked to all projects.",
+        "operationId": "setGlobal",
+        "parameters": [
+          {
+            "description": "id of the Account",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "is global",
+            "in": "path",
+            "name": "global",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Set an Account as a global Account",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/{accountId}/header": {
+      "get": {
+        "description": " Caller must have the Manage Account Permission for the Account",
+        "operationId": "getAccountHeader",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeaderBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Gets Account Header",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/account/{accountId}/link": {
+      "get": {
+        "operationId": "getLinks",
+        "parameters": [
+          {
+            "description": "id of the Account",
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountLinkBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Links linked to a specific Account by id",
+        "tags": [
+          "Accounts"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/budget": {
+      "post": {
+        "deprecated": true,
+        "operationId": "createBudget",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetBean"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "default response"
+          }
+        },
+        "tags": [
+          "Budget"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/budget/account/{accountId}": {
+      "get": {
+        "deprecated": true,
+        "operationId": "getBudgetsByAccount",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "valueType",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "default response"
+          }
+        },
+        "tags": [
+          "Budget"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/budget/{id}": {
+      "get": {
+        "deprecated": true,
+        "operationId": "getBudgetById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "default response"
+          }
+        },
+        "tags": [
+          "Budget"
+        ],
+        "x-public": true
+      },
+      "put": {
+        "deprecated": true,
+        "operationId": "updateBudget",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetBean"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "default response"
+          }
+        },
+        "tags": [
+          "Budget"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/category/type": {
+      "get": {
+        "operationId": "getCategoryTypes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryType"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Category Types",
+        "tags": [
+          "Categories"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/config/customfield": {
+      "put": {
+        "operationId": "changeFieldName",
+        "parameters": [
+          {
+            "description": "The new custom field name",
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Rename the Account custom field.",
+        "tags": [
+          "Config"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/config/fieldconfig/{fieldConfigId}/{value}": {
+      "put": {
+        "operationId": "setFieldConfigRequiredOrOptional",
+        "parameters": [
+          {
+            "description": "id of the custom field",
+            "in": "path",
+            "name": "fieldConfigId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "string containing a boolean value if the field is optional or required. Options: True -> required, false -> optional",
+            "in": "path",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Set whether the custom field is required or optional",
+        "tags": [
+          "Config"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/config/property/{propertyName}": {
+      "get": {
+        "description": "Get an Account property setting, whether it should be cleared or not when issues are moved between projects",
+        "operationId": "getAccountsPropertyValue",
+        "parameters": [
+          {
+            "description": "The name of the property",
+            "in": "path",
+            "name": "propertyName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get an Account property setting",
+        "tags": [
+          "Config"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/config/property/{property}/{value}": {
+      "put": {
+        "description": "Set whether an account property value should be cleared when an issue is moved to another project",
+        "operationId": "setAccountsProperty",
+        "parameters": [
+          {
+            "description": "The property name",
+            "in": "path",
+            "name": "property",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "true to clear the value on move, false otherwise",
+            "in": "path",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Set an Account property",
+        "tags": [
+          "Config"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/field": {
+      "get": {
+        "operationId": "getAccountCF",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomFieldBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get the account custom field",
+        "tags": [
+          "Fields"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/field/setOnScreen": {
+      "get": {
+        "operationId": "getSetOnScreen",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Checks if account custom field is set on any screen",
+        "tags": [
+          "Fields"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/field/setOnScreen/project/{projectId}": {
+      "get": {
+        "operationId": "getSetOnScreenByProject",
+        "parameters": [
+          {
+            "description": "The Jira Project Id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Checks if account custom field is set on JIRA Project screen",
+        "tags": [
+          "Fields"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/link": {
+      "post": {
+        "operationId": "addLink",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountLinkBean"
+              }
+            }
+          },
+          "description": "The new Account Link",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLinkBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Adds a link to an Account.",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/link/picker": {
+      "get": {
+        "operationId": "getAccountLinkPicker",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountLinkBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Accounts with projects and links",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/link/project/{projectId}": {
+      "get": {
+        "operationId": "getLinksToProject",
+        "parameters": [
+          {
+            "description": "The Jira Project ID",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountLinkBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Gets all links to a specific project",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/link/project/{projectId}/default": {
+      "get": {
+        "operationId": "getDefaultLinkToProject",
+        "parameters": [
+          {
+            "description": "The id of the TemoProject",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLinkBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Gets the default link to a specific project",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/link/{linkId}": {
+      "delete": {
+        "operationId": "deleteLink",
+        "parameters": [
+          {
+            "description": "The Accounts Link ID",
+            "in": "path",
+            "name": "linkId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Deletes a specific Account Link.",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      },
+      "get": {
+        "operationId": "getLink",
+        "parameters": [
+          {
+            "description": "The id of the Link",
+            "in": "path",
+            "name": "linkId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLinkBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get a specific Account Link.",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      },
+      "put": {
+        "operationId": "updateLink",
+        "parameters": [
+          {
+            "description": "The id if the Link",
+            "in": "path",
+            "name": "linkId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountLinkBean"
+              }
+            }
+          },
+          "description": "The new Account Link",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLinkBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Updates a specific Account Link",
+        "tags": [
+          "Account Links"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/permission/customer/{customerId}": {
+      "get": {
+        "operationId": "getAllCustomerPermissions",
+        "parameters": [
+          {
+            "description": "The Customer Id",
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerPermission"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all Customer Permissions",
+        "tags": [
+          "Permission"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/permission/customer/{customerId}/{permissionKey}": {
+      "put": {
+        "description": "Grant permissions to users by associating them to the customer on an individual user level or on a group level",
+        "operationId": "updateMembersForPermission",
+        "parameters": [
+          {
+            "description": "Id of the Customer",
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The Permission Key",
+            "in": "path",
+            "name": "permissionKey",
+            "required": true,
+            "schema": {
+              "enum": [
+                "tempo.books.customer.browse.budget"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerPermissionBean"
+              }
+            }
+          },
+          "description": "The Customer Permission bean"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerPermission"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Update Member-Customer permission",
+        "tags": [
+          "Permission"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable": {
+      "get": {
+        "operationId": "getRateTables",
+        "parameters": [
+          {
+            "description": "the type of scope for the rate table",
+            "example": "ACCOUNT",
+            "in": "query",
+            "name": "scopeType",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the id of the scope (Currently the only supported scope id is the id of the account)",
+            "in": "query",
+            "name": "scopeId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateTableBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Rate Tables by Scope type and scope id",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      },
+      "post": {
+        "operationId": "createRateTable",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateTableInputBean"
+              }
+            }
+          },
+          "description": "The new Rate Table bean"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateTableBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Create a new Rate Table",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable/global": {
+      "get": {
+        "operationId": "getGlobalRateTables",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateTableBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Gets all existing global rate tables",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable/rate": {
+      "get": {
+        "operationId": "getRates",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get all existing Rates",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      },
+      "post": {
+        "operationId": "createRate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateInputBean"
+              }
+            }
+          },
+          "description": "The new Rate"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Add a new Rate within Rate Table",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable/rate/{rateId}": {
+      "get": {
+        "operationId": "getRate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rateId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get rate by Id",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      },
+      "put": {
+        "operationId": "updateRate",
+        "parameters": [
+          {
+            "description": "The Id of the Rate",
+            "in": "path",
+            "name": "rateId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateInputBean"
+              }
+            }
+          },
+          "description": "The new Rate"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Updates a Rate",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable/scope/{parentId}": {
+      "get": {
+        "operationId": "getScopeIdsByParentAndScopeType",
+        "parameters": [
+          {
+            "description": "Id of the RateTable Bean",
+            "in": "path",
+            "name": "parentId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "the type of scope for the rate table (Currently, the only supported scope type is: \"ACCOUNT\")",
+            "in": "query",
+            "name": "scopeType",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Gets ids of scope object that are linked to a rate table",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    },
+    "/tempo-accounts/1/ratetable/{rateTableId}": {
+      "delete": {
+        "operationId": "deleteRateTable",
+        "parameters": [
+          {
+            "description": "the Rate Table Id",
+            "in": "path",
+            "name": "rateTableId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "boolean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Delete a rate table",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      },
+      "get": {
+        "operationId": "getRateTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rateTableId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateTableBean"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Get Rate Table by id",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      },
+      "put": {
+        "operationId": "updateRateTable",
+        "parameters": [
+          {
+            "description": "The Rate Table Id",
+            "in": "path",
+            "name": "rateTableId",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateTableInputBean"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RateTableBean"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "4XX": {
+            "description": "Bad Request"
+          }
+        },
+        "summary": "Update Currency Code of Price Tables",
+        "tags": [
+          "Rate Table"
+        ],
+        "x-public": true
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://{JIRA_BASE_URL}/rest",
+      "variables": {
+        "JIRA_BASE_URL": {
+          "default": "JIRA_BASE_URL"
+        }
+      }
+    }
+  ]
+}

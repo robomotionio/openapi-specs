@@ -1,0 +1,2461 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "2.1.0",
+    "title": "opendatasoft"
+  },
+  "security": [
+    {
+      "api_key": []
+    },
+    {
+      "basic": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "metadata"
+    },
+    {
+      "name": "catalog"
+    },
+    {
+      "name": "export catalog"
+    },
+    {
+      "name": "dataset"
+    },
+    {
+      "name": "export dataset"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "root",
+          "ods"
+        ],
+        "operationId": "getRoot",
+        "description": "API entry point\n\nProvides links for:\n* catalog, your domain's list of datasets\n* opendatasoft, all datasets on the Opendatasoft network\n",
+        "responses": {
+          "200": {
+            "description": "Provide a set of links to the most basic entry points in the API (sources)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}": {
+      "get": {
+        "operationId": "getSource",
+        "tags": [
+          "catalog",
+          "ods"
+        ],
+        "description": "Source entry points\n\nProvides links for the source's datasets and metadata.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provide a set of links to the basic entry points for the given source.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/metadata_templates": {
+      "get": {
+        "operationId": "getMetadataTemplatesTypes",
+        "tags": [
+          "metadata",
+          "ods"
+        ],
+        "description": "List of available metadata templates types, each with their endpoints.\n",
+        "responses": {
+          "200": {
+            "description": "List of available metadata templates types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          }
+        ]
+      }
+    },
+    "/{source}/metadata_templates/{metadata_template_type}": {
+      "get": {
+        "operationId": "getMetadataTemplatesType",
+        "tags": [
+          "metadata",
+          "ods"
+        ],
+        "description": "List of metadata templates available for this type.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/metadata_template_type"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of metadata templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "metadata_templates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "links": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/link"
+                            }
+                          },
+                          "metadata_template": {
+                            "$ref": "#/components/schemas/metadata_template"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/metadata_templates/{metadata_template_type}/{metadata_template_name}": {
+      "get": {
+        "operationId": "getMetadataTemplate",
+        "tags": [
+          "metadata",
+          "ods"
+        ],
+        "description": "A single metadata_template\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/metadata_template_type"
+          },
+          {
+            "$ref": "#/components/parameters/metadata_template_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A metadata template selected by ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "metadata_template": {
+                      "$ref": "#/components/schemas/metadata_template"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/aggregates": {
+      "get": {
+        "operationId": "aggregateDatasets",
+        "tags": [
+          "catalog",
+          "aggregations",
+          "ods"
+        ],
+        "description": "Compute aggregations from catalog and return a list of each aggregate indexed by their names.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/group_by"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/order_by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aggregation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "aggregations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/aggregation"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/facets": {
+      "get": {
+        "operationId": "getDatasetsFacets",
+        "tags": [
+          "catalog",
+          "facet",
+          "ods"
+        ],
+        "description": "Enumerate facets values for datasets and return a list of values for each facet.\nCan be used to implement guided navigation in large result sets.\n\nRead [the facets documentation](https://help.opendatasoft.com/apis/ods-search-v2/#enumerating-facets-values) for more details.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/facet"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Facets enumeration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "facets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/facet_enumeration"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets": {
+      "get": {
+        "operationId": "getDatasets",
+        "tags": [
+          "catalog",
+          "ods"
+        ],
+        "description": "List of available datasets, each with their endpoints, paginated.\n\nLinks provided:\n* previous page\n* next page\n* last page\n* first page\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of available datasets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "total_count": {
+                      "type": "integer"
+                    },
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "datasets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "links": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/link"
+                            }
+                          },
+                          "dataset": {
+                            "$ref": "#/components/schemas/dataset"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/json": {
+      "get": {
+        "operationId": "exportDatasetsJson",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in JSON format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a JSON file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/csv": {
+      "get": {
+        "operationId": "exportDatasetsCSV",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in CSV format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "Provide a different delimiter (default ',').",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                ",",
+                ";",
+                "|"
+              ],
+              "default": ";"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a CSV file",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/rdf": {
+      "get": {
+        "operationId": "exportDatasetsRDF",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in RDF/XML format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a RDF XML file",
+            "content": {
+              "application/rdf+xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/xls": {
+      "get": {
+        "operationId": "exportDatasetsXLS",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in XLS (Excel) format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an XLS file",
+            "content": {
+              "xls": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/ttl": {
+      "get": {
+        "operationId": "exportDatasetsTTL",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in TTL (turtle/rdf) format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a TTL file",
+            "content": {
+              "text/turtle": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/exports/rss": {
+      "get": {
+        "operationId": "exportDatasetsRSS",
+        "tags": [
+          "export catalog",
+          "ods"
+        ],
+        "description": "Export catalog (source) in RSS format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a JSON file",
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}": {
+      "get": {
+        "operationId": "getDataset",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "List of available endpoints for the specified dataset, with metadata and endpoints.\n\nWill provide links for:\n* the attachments endpoint\n* the files endpoint\n* the records endpoint\n* the catalog endpoint\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/include_app_metas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The dataset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "dataset": {
+                      "$ref": "#/components/schemas/dataset"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/aggregates": {
+      "get": {
+        "operationId": "aggregateRecords",
+        "tags": [
+          "dataset",
+          "aggregations",
+          "ods"
+        ],
+        "description": "Compute aggregations from dataset records and return a list of each aggregate indexed by their names.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/group_by"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/order_by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aggregation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "aggregations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/aggregation"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/facets": {
+      "get": {
+        "operationId": "getRecordsFacets",
+        "tags": [
+          "dataset",
+          "facet",
+          "ods"
+        ],
+        "description": "Enumerate facets values for records and return a list of values for each facet.\nCan be used to implement guided navigation in large result sets.\n\nRead [the facets documentation](https://help.opendatasoft.com/apis/ods-search-v2/#enumerating-facets-values) for more details.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/facet"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Facets enumeration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "facets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/facet_enumeration"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/attachments": {
+      "get": {
+        "operationId": "getDatasetAttachements",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Get list of all available attachments\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all available attachments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "attachments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/attachment"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/attachments/{attachment_id}": {
+      "get": {
+        "operationId": "downloadDatasetAttachement",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Download attachment\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/attachment_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested attachment"
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/feedback": {
+      "put": {
+        "operationId": "sendDatasetFeedback",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Create new feedback entry.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "comment": {
+                    "type": "string"
+                  },
+                  "recordid": {
+                    "type": "string",
+                    "description": "Feedback entry's recordid"
+                  },
+                  "newValues": {
+                    "type": "object",
+                    "description": "New record value"
+                  },
+                  "schema": {
+                    "type": "object",
+                    "description": "Record schema"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Feedback entry",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success message: {status: 'ok'}\n"
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/files/{file_id}": {
+      "get": {
+        "operationId": "getDatasetFile",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Download file\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/file_id"
+          },
+          {
+            "$ref": "#/components/parameters/thumbnail_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested file, or its thumbnail (if thumbnail_size is specified)"
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/records": {
+      "get": {
+        "operationId": "getRecords",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "description": "Search dataset's records.\n",
+        "responses": {
+          "200": {
+            "description": "Records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "total_count": {
+                      "type": "integer"
+                    },
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "links": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/link"
+                            }
+                          },
+                          "record": {
+                            "$ref": "#/components/schemas/record"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/json": {
+      "get": {
+        "operationId": "exportRecordsJSON",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in JSON format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a JSON file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/csv": {
+      "get": {
+        "operationId": "exportRecordsCSV",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in CSV format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "Provide a different delimiter (default ',').",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                ",",
+                ";",
+                "|"
+              ],
+              "default": ";"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a CSV file",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/geojson": {
+      "get": {
+        "operationId": "exportRecordsGEOJSON",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in GEOJSON format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a GEOJSON file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/xls": {
+      "get": {
+        "operationId": "exportRecordsXLS",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in XLS (Excel) format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an XLS file",
+            "content": {
+              "xls": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/shp": {
+      "get": {
+        "operationId": "exportRecordsSHP",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in Esri shapefile (shp) format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a Shapefile zip",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/ov2": {
+      "get": {
+        "operationId": "exportRecordsOV2",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in OV2 format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an ov2 file",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/exports/ical": {
+      "get": {
+        "operationId": "exportRecordsICAL",
+        "tags": [
+          "export dataset",
+          "ods"
+        ],
+        "description": "Export dataset in ICAL format\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/where"
+          },
+          {
+            "$ref": "#/components/parameters/search"
+          },
+          {
+            "$ref": "#/components/parameters/refine"
+          },
+          {
+            "$ref": "#/components/parameters/exclude"
+          },
+          {
+            "$ref": "#/components/parameters/rows_export"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an ICAL file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/records/{record_id}": {
+      "get": {
+        "operationId": "getRecord",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/record_id"
+          },
+          {
+            "$ref": "#/components/parameters/pretty"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          },
+          {
+            "$ref": "#/components/parameters/select"
+          }
+        ],
+        "description": "Retrieve a single record based on its ID.\n",
+        "responses": {
+          "200": {
+            "description": "A single record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/record"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/reuses": {
+      "get": {
+        "operationId": "getDatasetReuses",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Get list of reuses\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/rows"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of reuses\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "reuses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/reuse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/reuses/{reuse_id}": {
+      "get": {
+        "operationId": "getDatasetReuse",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "Retrieve a single reuse based on its ID.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/reuse_id"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of reuses\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "reuse": {
+                      "$ref": "#/components/schemas/reuse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/snapshots": {
+      "get": {
+        "operationId": "getDatasetSnapshots",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "List of all snapshots for this dataset.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all snapshots, each with their endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "snapshots": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/snapshot"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{source}/datasets/{dataset_id}/snapshots/{snapshot_id}": {
+      "get": {
+        "operationId": "downloadDatasetSnapshot",
+        "tags": [
+          "dataset",
+          "ods"
+        ],
+        "description": "List of all snapshots for this dataset.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/dataset_id"
+          },
+          {
+            "$ref": "#/components/parameters/snapshot_id"
+          },
+          {
+            "$ref": "#/components/parameters/timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The full dataset in the state it was in when the snapshot was created, in CSV"
+          }
+        }
+      }
+    },
+    "/pages": {
+      "get": {
+        "operationId": "getPages",
+        "tags": [
+          "page",
+          "ods"
+        ],
+        "description": "List of all pages from this portal.\n",
+        "responses": {
+          "200": {
+            "description": "List of all pages, each with their endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "links": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/link"
+                            }
+                          },
+                          "page": {
+                            "$ref": "#/components/schemas/page"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pages/{slug}": {
+      "get": {
+        "operationId": "getPage",
+        "tags": [
+          "page",
+          "ods"
+        ],
+        "description": "A single page's metadata from this portal\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/slug"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single page's metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/link"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/page"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://opendata.datainfogreffe.fr/api/v2"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "source": {
+        "description": "Each source represents a different catalog of datasets you'll be able to query.\n\nThere are 2 sources available:\n\n* catalog: the catalog of datasets on your portal\n* opendatasoft: Opendatasoft's repository of public datasets, also available at\n  [data.opendatasoft.com](https://data.opendatasoft.com/page/home/)\n",
+        "name": "source",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "catalog",
+            "opendatasoft",
+            "monitoring"
+          ],
+          "default": "catalog"
+        }
+      },
+      "dataset_id": {
+        "description": "Dataset identifier.\n\nCan be found in the \"information\" tab of the dataset page.\n",
+        "name": "dataset_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "record_id": {
+        "name": "record_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "attachment_id": {
+        "name": "attachment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "file_id": {
+        "name": "file_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "snapshot_id": {
+        "name": "snapshot_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "reuse_id": {
+        "name": "reuse_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "metadata_template_type": {
+        "name": "metadata_template_type",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "basic",
+            "interop",
+            "extra"
+          ],
+          "default": "basic"
+        }
+      },
+      "metadata_template_name": {
+        "name": "metadata_template_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "where": {
+        "name": "where",
+        "in": "query",
+        "description": "An array of filters.\n\nA filter is a text expression performing a simple full-text search that can also include logical operations\n(NOT, AND, OR...) as well as lots of other functions, thus performing more complex and more precise searches.\n\nRead [the query language reference](https://docs.opendatasoft.com/api/explore/v2.html#where-clause) for more details.\n",
+        "required": false,
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "search": {
+        "name": "search",
+        "in": "query",
+        "description": "An array of full text search.\n\nA full text search performs a prefixed text search for each provided terms in all visible fields of a catalog/dataset.\n",
+        "required": false,
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "refine": {
+        "name": "refine",
+        "in": "query",
+        "description": "An array of facet filter. For example **city:Paris** or **modified:2019/12**.\nThe request will only include the selected facet value.\n\nRead [filtering with facets value](https://help.opendatasoft.com/apis/ods-search-v2/#filtering-with-facets-values) for more details.\n\n*Should not to be confused with a where filter. Refining with a facet is equivalent to selecting an entry in the left navigation panel.*\n",
+        "required": false,
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "exclude": {
+        "name": "exclude",
+        "in": "query",
+        "description": "An array of facet filter. For example **city:Paris** or **modified:2019/12**.\nThe request will exclude the defined facet value.\n\nRead [filtering with facets value](https://help.opendatasoft.com/apis/ods-search-v2/#filtering-with-facets-values) for more details.\n\n*Should not to be confused with a where filter. Excluding a facet value is equivalent to removing an entry in the left navigation panel.*\n",
+        "required": false,
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "rows_export": {
+        "name": "rows",
+        "in": "query",
+        "description": "Number of items to return in export.\n\nUse -1 to retrieve all records\n",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": -1,
+          "default": -1
+        }
+      },
+      "rows": {
+        "name": "rows",
+        "in": "query",
+        "description": "Number of items to return.\n\nTo use in conjonction with start to implement pagination.\n\nRows maximum value is 100. To retrive more data use export entry points.\n",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 100,
+          "default": 10
+        }
+      },
+      "start": {
+        "name": "start",
+        "in": "query",
+        "description": "Index of the first item to return (starting at 0).\n\nTo use in conjonction with rows to implement pagination.\n",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "select": {
+        "name": "select",
+        "in": "query",
+        "description": "A select expression can be used to add, remove or change fields to return.\nAn expression can be:\n  - a wildcard ('*'): return all fields\n  - a field name: return only this field\n  - an include/exclude function. Include (resp exclude) all field matching include/exclude expression. This expression can contain wildcard. For example: include(spa*) will return all fields begining with 'spa'\n  - a complex expression: return the result of this expression. A label can be set for this expression, in that case, field will be named with this label. For instance: 'size * 2 as bigger_size' will return a new field named bigger_size and containing the double of size field value.\n",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "group_by": {
+        "name": "group_by",
+        "in": "query",
+        "description": "A group by expression defines a grouping function for an aggregation.\nIt can be:\n - a field name: group result by each value of this field\n - a range function: group result by range\n - a date function: group result by date\nIt is possible to specify a custom name with the 'as name' notation. For instance: group_by='city_field as city'.\n",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "description": "A list of field names, each possibly prefixed with a minus (-).\n\nMay also be 'random(seed)', where seed can be omitted but if specified must be an int. This allows to keep\nrelative ordering during pagination.\n\nSorts results according to the specified fields' values. By default, the sort is ascending (from the smallest\nvalue to the biggest value). A minus sign (‘-‘) may be used to perform a descending sort. Sorting is only\navailable on numeric fields (int, double, date and datetime) and on text fields which have the sortable\nannotation.\n",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "order_by": {
+        "name": "order_by",
+        "in": "query",
+        "description": "A list of field names or aggregation, followed by an order (asc | desc).\n\nexample: **sum(age) desc, name asc**\n",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "pretty": {
+        "name": "pretty",
+        "in": "query",
+        "description": "Activate pretty print",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "timezone": {
+        "name": "timezone",
+        "in": "query",
+        "description": "Set timezone for datetime fields",
+        "schema": {
+          "type": "string",
+          "default": "UTC"
+        }
+      },
+      "thumbnail_size": {
+        "name": "thumbnail_size",
+        "in": "query",
+        "description": "Set the size of the thumbnail representing the resource (attachment, image or file)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "facet": {
+        "name": "facet",
+        "in": "query",
+        "description": "An array of facets names\n\nA facet is a field used for filtering and exploration.\nTo use a field as a facet, you have to configure it in your back office.\n\nRead [the facets documentation](https://help.opendatasoft.com/apis/ods-search-v2/#facets) for more details.\n",
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "mime_type": {
+        "name": "mime_type",
+        "description": "Specify one (or many) mime type(s) and return only the files matching said type(s).",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "include_app_metas": {
+        "description": "Explicitely request application metas for each datasets.\n",
+        "name": "include_app_metas",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "slug": {
+        "description": "Page slug.\n",
+        "name": "slug",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "apikey",
+        "in": "query"
+      },
+      "basic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "links": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/link"
+        }
+      },
+      "link": {
+        "type": "object",
+        "properties": {
+          "rel": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "metadata_template": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "datasets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/dataset"
+        }
+      },
+      "dataset": {
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_records": {
+            "type": "boolean"
+          },
+          "data_visible": {
+            "type": "boolean"
+          },
+          "features": {
+            "description": "A map of available features for a dataset, with the fields they apply to.\n",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metas": {
+            "type": "object"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "records": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/record"
+        }
+      },
+      "record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "dateTime"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "fields": {
+            "type": "object"
+          }
+        }
+      },
+      "attachment": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "metas": {
+            "type": "object"
+          }
+        }
+      },
+      "aggregation": {
+        "description": "Result of an aggregation request.",
+        "type": "object",
+        "example": {
+          "count(*)": 86
+        }
+      },
+      "reuse": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "description": "Date when the reuse was submitted.",
+            "type": "string",
+            "format": "dateTime"
+          },
+          "thumbnail": {
+            "description": "URL illustrating the work.",
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string"
+              },
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              }
+            }
+          },
+          "title": {
+            "description": "Short description of the user's work.",
+            "type": "string"
+          },
+          "url": {
+            "description": "URL where the work can be accessed publicly.",
+            "type": "string"
+          },
+          "id": {
+            "description": "reuse id",
+            "type": "string"
+          },
+          "description": {
+            "description": "Slightly longer description of what was achieved using the dataset."
+          }
+        }
+      },
+      "snapshot": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "snapshot_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "dateTime"
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "description": "A localized string (that is an object where the keys are language codes and the values translations of a same\nstring).\n",
+            "type": "object",
+            "properties": {
+              "fr": {
+                "type": "string"
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "query_string": {
+        "description": "Query string using the query language.\nExample: (field1=\"value1\" or field1=\"value2\") and field2=value2 and \"full text search\"\n\nSupports geo queries with the following functions:\n* distance(myfield, center, radius): restrict entries to those where {myfield} is less than {radius} from {center} (center being defined 'lat,lon')\n* bbox(myfield, topleft, bottomright): restrict entries to those where {myfield} is within the bounds defined by the two sets of coordinates {topleft} and {bottomright}\n* polygon(myfield, mypolygon): restrict entries to those where {myfield} is within the bounds of {mypolygon}; {mypolygon} being a list of 'lat,lon' vertices\n* wkt(myfield, mywkt): restrict entries to those where {myfield} is within the body of {mywkt}; {mywkt} being a Well Known Text (see 'http://en.wikipedia.org/wiki/Well-known_text' for reference)\n",
+        "type": "string"
+      },
+      "timezone": {
+        "description": "A timezone\n\nIf used as a parameter, defines the timezone the calculations will be performed in. If left empty, 'UTC' is\nassumed.\n",
+        "type": "string",
+        "example": "Europe/Paris"
+      },
+      "facet_enumeration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "facets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/facet_value_enumeration"
+            }
+          }
+        }
+      },
+      "facet_value_enumeration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "string"
+          },
+          "facets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/facet_value_enumeration"
+            }
+          }
+        }
+      }
+    }
+  }
+}

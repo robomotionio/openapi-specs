@@ -1,0 +1,919 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Data Integration API",
+    "version": "Latest"
+  },
+  "servers": [
+    {
+      "url": "https://api-na.sagex3.com{basePath}",
+      "variables": {
+        "basePath": {
+          "default": "/v1"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Root API",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RootResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/authorise": {
+      "get": {
+        "summary": "Request authorization and get an access id",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "description": "customer url must be included in the scope following this example '{scope} customer={customerUrl}'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "307": {
+            "description": "307 callback url redirect",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Redirect to callback url with status code and message if in error",
+                "example": "https://example.qa-sagex3.com/appAccess?id=dfsdfejjer123k"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token": {
+      "post": {
+        "summary": "Authorization token generation and refresh",
+        "requestBody": {
+          "description": "token query",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "301": {
+            "description": "301 region redirect",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Redirect to correct region"
+              }
+            }
+          },
+          "400": {
+            "description": "400 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "missingParam": {
+                    "message": "Missing required request parameters"
+                  },
+                  "invalidGrant": {
+                    "message": "Invalid grant type"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403 Authorization error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unauthorised"
+                },
+                "example": {
+                  "disabledApp": {
+                    "message": "The application registered on Sage Business Cloud is disabled"
+                  },
+                  "authAwaitingApproval": {
+                    "message": "The pairing request has not been accepted"
+                  },
+                  "expired": {
+                    "message": "The request has expired"
+                  },
+                  "notFound": {
+                    "message": "Pairing request not found"
+                  },
+                  "tokenExpired": {
+                    "message": "Token has expired"
+                  },
+                  "deleted": {
+                    "message": "The refresh token is flagged as to be deleted"
+                  },
+                  "tokenError": {
+                    "message": "Missing timing in token"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "notRegistered": {
+                    "message": "Could not associate the requested url with an customer application registered on Sage Business Cloud"
+                  },
+                  "invalidClientId": {
+                    "message": "Could not associate the values with an active application registered on Sage Business Cloud"
+                  },
+                  "redirectOrRefreshTokenError": {
+                    "message": "Could not associate the values with an active application registered on Sage Business Cloud"
+                  },
+                  "badRefreshToken": {
+                    "message": "Could not associate the refresh token with an existing token registered on Sage Business Cloud"
+                  }
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "501 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "internalError": {
+                    "message": "An internal error occurred"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletion of refresh token",
+        "parameters": [
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "A valid refresh token"
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Provided when the application was registered"
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Provided when the application was registered"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenDeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "missingParam": {
+                    "message": "Missing required request parameters"
+                  }
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "501 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "internalError": {
+                    "message": "An unknown internal error occurred"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders": {
+      "get": {
+        "summary": "Get the list of X3 folders",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Value is \\\"Bearer sometoken\\\""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "301": {
+            "description": "301 region redirect",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Redirect to correct region"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unauthorised"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    },
+    "/datadelivery/{folder}": {
+      "get": {
+        "summary": "Get a download link or list of files",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Value is \\\"Bearer sometoken\\\""
+          },
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the X3 folder (e.g. SEED)"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The filename parameter is optional.\nIf not set (or blank) it will return a list of files and obey the page parameter.\nIf set to an actual filename it will return the redirect to the download url.\nIf the parameter ends in a / it will return a list for a subfolder.\n"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response will contain the list of files available for download",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileList"
+                }
+              }
+            }
+          },
+          "301": {
+            "description": "301 redirect response provides the signed url to download the file",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Redirect to download URL"
+              }
+            }
+          },
+          "500": {
+            "description": "500 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "internalError": {
+                    "message": "An internal error occurred"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a file from the download folder",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Value is \\\"Bearer sometoken\\\""
+          },
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the X3 folder (e.g. SEED)"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the file to be deleted"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "204 response ok"
+          },
+          "500": {
+            "description": "500 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    },
+    "/dataingestion/{folder}": {
+      "post": {
+        "summary": "Upload a file",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Value is \\\"Bearer sometoken\\\""
+          },
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the X3 folder (e.g. SEED)"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadFileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "missingParam": {
+                    "message": "Missing required request parameters filename"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403 Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "fileExists": {
+                    "message": "File already exists"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    },
+    "/dataingestion/tracking/{fileid}": {
+      "get": {
+        "summary": "File upload progression tracking",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Value is \\\"Bearer sometoken\\\""
+          },
+          {
+            "name": "fileid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackingFileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Empty": {
+        "title": "Empty Schema",
+        "type": "object"
+      },
+      "RootResponse": {
+        "type": "object",
+        "title": "Response from API call on /",
+        "properties": {
+          "customerAccess": {
+            "type": "object",
+            "properties": {
+              "authorise": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/token/authorise"
+              },
+              "token": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/token"
+              }
+            }
+          },
+          "customerUsage": {
+            "type": "object",
+            "properties": {
+              "register": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/register"
+              },
+              "folder": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/folders"
+              },
+              "dataIngestion": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/dataingestions/{folderName}/"
+              },
+              "dataDelivery": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/datadelivery/{folderName}/"
+              }
+            }
+          },
+          "businessDomains": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessDomain"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "title": "Error response",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "error message text"
+          }
+        }
+      },
+      "Unauthorised": {
+        "type": "object",
+        "title": "Unauthorised response",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Unauthorised"
+          }
+        }
+      },
+      "FolderResponse": {
+        "type": "object",
+        "title": "Response from API call on /folders",
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          }
+        }
+      },
+      "UploadFileResponse": {
+        "type": "object",
+        "title": "Response from API call for uploading file",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "example": "signed upload url"
+          },
+          "trackingUrl": {
+            "type": "string",
+            "example": "https://api-na.sagex3.com/v1/dataingestion/tracking/3f601feb-0666-479b-ab20-154909d32ecd"
+          }
+        }
+      },
+      "TrackingFileResponse": {
+        "type": "object",
+        "title": "Response from API call for uploaded file tracking",
+        "properties": {
+          "$url": {
+            "type": "string",
+            "example": "https://api-na.sagex3.com/v1/dataingestion/tracking/3f601feb-0666-479b-ab20-154909d32ecd"
+          },
+          "fileName": {
+            "type": "string",
+            "example": "test18.txt"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2019-02-15T22:46:12.432Z"
+          },
+          "status": {
+            "type": "string",
+            "example": "awaiting_upload"
+          },
+          "statusMessage": {
+            "type": "string",
+            "example": "Waiting for upload"
+          },
+          "lastStatusUpdate": {
+            "type": "string",
+            "example": "2019-02-15T22:46:12.432Z"
+          },
+          "customerCode": {
+            "type": "string",
+            "example": "customer"
+          },
+          "folder": {
+            "type": "string",
+            "example": "SEED"
+          }
+        }
+      },
+      "TokenDeleteResponse": {
+        "type": "object",
+        "title": "Token delete response",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Refresh token was marked as deleted"
+          }
+        }
+      },
+      "BusinessDomain": {
+        "type": "string",
+        "example": "ALL"
+      },
+      "Folder": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "SEED"
+          },
+          "$url": {
+            "type": "object",
+            "properties": {
+              "dataIngestion": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/dataingestion/SEED/"
+              },
+              "dataDelivery": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/datadelivery/SEED/"
+              },
+              "dataService": {
+                "type": "string",
+                "example": "https://api-na.sagex3.com/v1/dataservice/X3CLOUDV2_SEED/api"
+              }
+            }
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJSUzUxMiIsImtpZCI6IjNwX2VsSXBnQkNwY0dRYkpzNGVUTFlzYWdQVjQ1Z01pU1RidElfSWVxTzA9In0.eyJqdGkiOiJiMWVmZWQ1Zi01YWE2LTQ2YjctYmNkYi05ZDM5NjgzMDFjZWYiLCJpYXQiOjE1Mjc1MTAwMzMsImV4cCI6MTUyNzUxMDMzMywiaXNzIjoib2F1dGguYXdzLnNiYy1hY2NvdW50aW5nLnNhZ2UuY29tIiwic3ViIjoiNDQ0IiwiYXVkIjoiYXBpLnNiYy1hY2NvdW50aW5nLnNhZ2UuY29tIiwiYXpwIjoiMzMzIiwiY291bnRyeSI6InVzIiwic2NvcGVzIjoiYWNjb3VudHM6cncgYWNjb3VudGluZzpydyBjb3JlOnJ3In0.NnE2Wxt5BTZa6m2vh8fcH54gyWRFciZWuVq8KrtbLJLatMUHxQAo4WY3Tht6HmhpI-oq-yxg5LADtvRRDbxFrBTnXOGm6Go3-UdBC6OADo_18PrtpN6e1FiY-BV9k16zJyiB_R8pQXPTVSp_9XXBqpNSJGqJ__sIdYPLx0wrkWorI73DLR_0KSFVs5dFufPpdhmBZ_BhfSd3Fe1B4ErVo8m28jP_6QFNt2ssZAxufidVnk3wXAyqN0fka-tMjK7OrEenGQl_PAVLxhvMhpw6PRDxKYfoPUmmcaqTkZLK7aTFP0m23BtRwSs6ezRqzQzsbUgIWkUTSzh6tfVFDVheEz8tLhctU_OqvcoNmufCMV7kDYQ0_JRcGnMN5MTaMnVG49NQ0sWsmsD9drOfuN6bJeJFu-F5GAL3BAUP6UZcunj0a9I1WAEs0Zf5sEEQkDK2VOJ-mh5JVOkdbUnfverETaI5i0X_kCVgjP1q1Glq5xv8Mm85kO-0kLuO3VOHAM70_ln9e8_gcIIpBuerVFrwFUX1SFBu1JUNWq6_TfIh3WkehkYpK33aQy-dnRg0dgkx_MVyGenIvqvcTGzd9l7SNgqyzoOeY01LJb-NQBKDgGFbyNrUhvud7f4O68AaabDDntSQmlBrxPNqF-bAPYlpb90kD6NKUb9YiM7z6wnij4o"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Scope represents the authorization that will be associated with your access tokens. It must include the list of API you want to consume. Today the list of valid api in the scope are : api.dataIngestion, api.dataDelivery, api.graphQL, api.sync",
+            "example": "api.dataIngestion api.dataDelivery"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "example": 300
+          },
+          "refresh_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJSUzUxMiIsImtpZCI6IjNwX2VsSXBnQkNwY0dRYkpzNGVUTFlzYWdQVjQ1Z01pU1RidElfSWVxTzA9In0.eyJqdGkiOiI0Yjk1MmQxYy04OGEwLTQxZjUtYjdiNS0wMDVmOTc4ODg5YjYiLCJpYXQiOjE1Mjc1MTAwNjIsImV4cCI6MTUyNzUxMDM2MiwiaXNzIjoib2F1dGguYXdzLnNiYy1hY2NvdW50aW5nLnNhZ2UuY29tIiwic3ViIjoiNDQ0IiwiYXVkIjoiYXBpLnNiYy1hY2NvdW50aW5nLnNhZ2UuY29tIiwiYXpwIjoiMzMzIiwiY291bnRyeSI6InVzIiwic2NvcGVzIjoiYWNjb3VudHM6cncgYWNjb3VudGluZzpydyBjb3JlOnJ3In0.QQZ4bzOnrGUnNjYsJfK_FBNxKz1jGpF0Z-ur4wCoOTERi2W4iosX1N7ksdkRfUKSJlWlOfPp2XNMxszONmqZHczPjmVNUc0er1qo-oDmPJfbcH305sWmMFqspfoaUOCVXu_TcAh5Dz_zBUAznhBGbx603SBidvjMIa9Jncy9SjjYrJqhzz4y1-vgST4hccGCbsORGB_U6yKgfS6bupzoLVDdCj2bsgG4hSiDqagXbpAsoh9vR2UBALsJz8PUEEW7qA81B7SjtLUiHbvzryKhMt-7Q631D2j_iQaGpld1aICMBfAL0h5wiJMjf6r9R-EcJOmSzWtCcTI0y-PJfprinxIo3Mg_sljfoe_0wrEikIWRQIQa3D40nhMnLtqevCftPscQjLO_vf_ERUICHTiJdXiKsSwmUp9EGKnWC_qEKOcVA-o7y_vsAuFODsUvXC9k6Z7sVCg2k37k8r4NqoJ82d_l4ZrgNnvV6VEL2xtuASIA46-MlWWTPTbuQkzyfmVQW1gg50q4tNT8XkvVil6F2rNCiLSA2vhsH8lLu8mcSfCqVaPJh9-XvtjSkKUAtjgA3aa8bJEuUXFRn-U6Z7TyMZGHRZCEg-1IZa49rOQ5FhfvD85MQL466vAdr7X1zwVqxvr1T3UW58NuKMr3FyAWRyQhp_bBB8AXdf4W1BIeYLk"
+          },
+          "refresh_token_expires_in": {
+            "type": "integer",
+            "example": 2678400
+          }
+        }
+      },
+      "File": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "rerer/azerty.txt"
+          },
+          "downloadUrl": {
+            "type": "string",
+            "example": "X3?filename=rerer/azerty.txt"
+          },
+          "lastModified": {
+            "type": "string",
+            "example": "2018-08-09T14:10:34.000Z"
+          },
+          "checksum": {
+            "type": "string",
+            "example": "\"a41cbbdedf8543de3d8a6bca31f59f54\""
+          },
+          "size": {
+            "type": "integer",
+            "example": 18
+          },
+          "storageClass": {
+            "type": "string",
+            "example": "STANDARD"
+          },
+          "deleteUrl": {
+            "type": "string",
+            "example": "X3?filename=rerer/azerty.txt"
+          }
+        }
+      },
+      "FileList": {
+        "type": "object",
+        "properties": {
+          "isTruncated": {
+            "type": "boolean",
+            "example": true
+          },
+          "maxItems": {
+            "type": "integer",
+            "example": 4
+          },
+          "itemsCount": {
+            "type": "integer",
+            "example": 4
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/File"
+            }
+          },
+          "$previous": {
+            "type": "string",
+            "example": "X3?page=1"
+          },
+          "$next": {
+            "type": "string",
+            "example": "X3?page=3"
+          }
+        }
+      },
+      "TokenQuery": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Access code provided from the authorization request (only required for token generation)"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Provided when the application was registered"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "Provided when the application was registered"
+          },
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "authorization_code",
+              "refresh_token"
+            ]
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "URL where the customer should be redirected after granting the app access to the cluster. (only required for token generation)"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token used to generate a new access token - only required when grant_type is refresh_token"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "accessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

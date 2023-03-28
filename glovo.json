@@ -1,0 +1,2453 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "https://stageapi.glovoapp.com",
+      "description": "Test server"
+    },
+    {
+      "url": "https://api.glovoapp.com",
+      "description": "Production server"
+    }
+  ],
+  "info": {
+    "description": "\n\n# Introduction\n\nThe Glovo Partners API is aimed at developers from POS systems that want to programmatically manage stores, keep their content updated and handle orders with the purpose of improving efficiency and keeping data in sync with their business.\n\n\n# Getting started\n\nIf this is the first time you operate with our API, please contact your Glovo Account Manager (AM) to setup your credentials.\n\nYou'll be asked to provide the following information:\n- Details of the store(s) you want to operate with.\n- An unique identifier for each store.\n- A set of endpoint URLs for the notifications you want to receive from Glovo (for example when an order is dispatched to your store).\n\n\n## API Credentials\n\nTo operate with this API you will be provided of a single static `token` that will work for all of the Stores under your control. This token is secret and should be kept in a secure place.\n\nFor more details on how to use it please review the [Authentication](#section/Authentication) section.\n\n## Unique identifier of the store\n\nSince you could be operating with multiple stores, identifying each one in every operation is be essential. It's important that you hold and share with us an unique identifier for every store integrated through this API.\n\nThis identifier will be requested for every endpoint call as a path parameter:\n\n```http\n/stores/YOUR-STORE-ID/...\n```\n\nWe will also make sure that you receive it as part all notifications we will be sending to your webhooks:\n\n```json\n{\n  ...\n  \"store_id\": \"YOUR-STORE-ID\",\n  ...\n}\n```\n\n## Marketplace orders\n\nThe delivery of an order can be either taken care by a Glovo courier or by the store itself. For the cases Glovo is not involved in the delivery process we identify these stores as **marketplace**.\nThrough this documention you will see notes and references destinated to these types of stores that require extra information to fulfill an order.\n\n## Event notifications using webhooks\n\nNotifications about different events that happen in Glovo are going to be send to your systems using [Webhooks](https://en.wikipedia.org/wiki/Webhook).\n\nYour AM is going to request a set of endpoint URLs from your systems for us to send those notifications. Having a single endpoint for all notifications or different ones will be completely up to you and how your system is designed. \n\n```\n// example of some webhooks\nhttps://yourserver.com/glovo/orders/dispatched\nhttps://yourserver.com/glovo/orders/cancelled\n```\n\nIt is important that **all the webhook URLs are accessible from any IP address**. To understand more about security for these webhooks, please refer to the [Authentication](#section/Authentication) section.\n\nAs a general rule, we will be calling your registered webhooks with an HTTP `POST` method unless otherwise specified in the notification description.\n\nPlease refer to the [Order Notifications](#tag/Notifications) section to see all different events you can subscribe to along with the notification schemas.\n\n# Best Usage Policy\n\nPlease follow these guidelines in order to reduce potential issues that could delay rollout of your integration.\n\nWe strongly advise before using our system that the you check two important concepts:\n- The rate limit for the endpoint that you are intending to used is respected by the systems that will call it.\n- That the menu uploaded matches our [JSON schema](#json-schema), or it will be rejected as part of the upload process.\n- All image urls that are uploaded to the system should use the protocol HTTPS for security reasons - the JSON schema above will reject any that are not served by it.\n\nIf either of these cause issues or are not understood please contact your account manager for further information and support.\n\n# Store Image Guidelines\n\nIt is important to select appropriate images as the structure of store's menu affects the visual display of the products and directly impacts the user experience in both the Glovo app and the website. \n    \n## Product Images\n\nProduct images are nice-to-have but not mandatory.\n\n  Specifications:\n\n    * Orientation: Square.\n    \n    * Dimensions: 1000 x 1000 px.\n    \n    * Format: JPG.\n    \n    * File size: below 1MB\n    \n    * Background: light, plain colour or plain texture (e.g. wooden)\n    \n    * Protocol: HTTPS\n\n    * You must show the product in a frontal plane\n    \n    * Each product separately\n  \nNote: It's important to maintain the coherent style of the product images (e.g. follow the same color palette and perspective) and keep in mind that for improving the user’s experience, it is recommended to have either all the products with an image or no pictures at all. Having only a few products with images across the menu creates visual chaos and can unwillingly contribute to boosting sales of only those products with visual representation.   \n\nIn the most common menu type (with Sections only) the products that contain images will be displayed as below:\n  \n<div align=\"center\" class=\"img-div\">\n  <img alt=\"product image 1\" src=\"img/product_image_1.png#center\" />\n</div>\n\nAfter selecting any product, the image becomes square: \n\n<div align=\"center\" class=\"img-div\">\n  <img alt=\"product image 2\" src=\"img/product_image_2.png#center\" />\n</div>\n\n## Collection Images\n\nCollection images generated automatically from 3 selected images of products grouped under the same collection. They will be displayed together as seen below:\n\n<div align=\"center\" class=\"img-div\">\n  <img alt=\"collection image\" src=\"img/collection_image.png#center\" />\n</div>\n\n\n## Supercollection Images\n\nThese are mandatory for all supercollections.\n\n  Specifications:\n\n    * Orientation: Horizontal.\n      \n    * Dimensions - 2484 x 1380 px.\n      \n    * Format: JPG.\n      \n    * File size: below 1,5 MB\n\n    * Protocol: HTTPS.\n      \n    * Must show the product in a close-up, without transparency\n      \n    * They can not be photomontages or contain logos or promotional elements pasted on the image\n      \n    * They can have the logo of the brand applied to commercial elements as napkins, tablecloths, etc.\n\nThey will appear in the app like this:\n\n<div align=\"center\" class=\"img-div\">\n  <img alt=\"collection image\" src=\"img/supercollection_image.png#center\" />\n</div>\n\n## Future changes\n\nPlease note that this part of the document is flux. There is the possibility of changes to some of the images specified here in the near future.\n\n# Authentication\n\nA static `token` to operate with our API will be provided by your AM. It's important that you keep it in a secure place. All API calls must be made over HTTPS. \n\nThe token won't be require to be changed over time, but if you think it was compromised in some way, please contact us so we can generate a new one.\n\n<SecurityDefinitions />\n",
+    "title": "Glovo Partners API",
+    "contact": {
+      "name": "Contact",
+      "email": "partner.integrationseu@glovoapp.com"
+    },
+    "x-logo": {
+      "url": "img/logo.png",
+      "altText": "Glovo logo"
+    }
+  },
+  "tags": [
+    {
+      "name": "Orders",
+      "x-displayName": "Orders",
+      "description": "These resources will allow you to make operations over orders for your stores."
+    },
+    {
+      "name": "Notifications",
+      "x-displayName": "Notifications",
+      "description": "Whenever one of these events happen in Glovo, we will send you a notification to some of your [registered webhooks](#section/Getting-started/Event-notifications-using-webhooks)."
+    },
+    {
+      "name": "Menu",
+      "x-displayName": "Menu",
+      "description": "The menu represents how you organize the store content to be availabile for your customers. These resources will allow you to make operations over it, allowing you to re-organize items or even revamp your entire catalog of products.\n\nIn order to understand the menu structure please refer to [Menu model](#tag/Menu-model)\n"
+    },
+    {
+      "name": "Menu-items",
+      "x-displayName": "Items",
+      "description": "Items represent products and attribute included in a store menu. These resources will allow you to perform single or bulk operations to keep them up-to-date around their price and availability."
+    },
+    {
+      "name": "Scheduling",
+      "x-displayName": "Scheduling",
+      "description": "These resources allow you to make operations on the schedule of a store."
+    },
+    {
+      "name": "Order-model",
+      "x-displayName": "Order model",
+      "description": "Representation of an order that belongs to a particular store.\n\n<SchemaDefinition schemaRef=\"#/components/schemas/Order\" />\n"
+    },
+    {
+      "name": "Menu-model",
+      "x-displayName": "Menu model",
+      "description": "Representation of a menu that belongs to a store.\n\nIf you want to make sure your JSON matches the model representation you can <a id=\"downloadJsonSchema\">download the Menu JSON schema <i data-feather=\"download\"></i></a> or use our [validation tool](menu_validation.html).\n\n<SchemaDefinition schemaRef=\"#/components/schemas/Menu\" />\n"
+    },
+    {
+      "name": "Rate-limit",
+      "x-displayName": "Rate Limit",
+      "description": "Coming soon!\n"
+    },
+    {
+      "name": "Versioning",
+      "x-displayName": "Versioning",
+      "description": "<div class=\"alert-box warn\">\n  <i data-feather=\"alert-triangle\"></i>\n  It is important to <b>not apply strict validation</b> to any JSON we send to your webhooks! As new changes may break your integration.\n</div>\n\n\nThe API is currently evolving as we add new features for partners and integrators. It’s important that you are aware that **non-breaking changes** might be introduced at any time without previous notice. Here is a list of non-breaking changes Glovo can introduce and your integration should support:\n  - Adding a new endpoint\n  - Adding a new optional field in a request body\n  - Setting a previously required field in a request to optional\n  - Changing error messages from responses\n  - Adding field in any notification to your webhooks\n\n\n\nOn the other hand, Glovo also can introduce **breaking changes** at any time. These changes will come with a previous notice and a provided amount of time will be granted to you to comply with them. Breaking changes might include:\n  - Deprecating an endpoint\n  - Adding a new required field in a request body\n  - Renaming a field in a request body\n  - Setting a previously optional field in a request to required\n"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Orders API",
+      "tags": [
+        "Orders",
+        "Notifications"
+      ]
+    },
+    {
+      "name": "Content API",
+      "tags": [
+        "Menu",
+        "Menu-items"
+      ]
+    },
+    {
+      "name": "Store API",
+      "tags": [
+        "Scheduling"
+      ]
+    },
+    {
+      "name": "Models",
+      "tags": [
+        "Order-model",
+        "Menu-model"
+      ]
+    },
+    {
+      "name": "General",
+      "tags": [
+        "Rate-limit",
+        "Versioning"
+      ]
+    }
+  ],
+  "paths": {
+    "/webhook/stores/{storeId}/orders/{orderId}/status": {
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Update order status",
+        "description": "Allows the update of the order status during different stages of the preparation",
+        "operationId": "Update-order-status",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "Unique identifier of the order to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderStatus"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request PUT \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/orders/{orderId}/status \\\n     --header 'Authorization: <your-secret-token>' \\\n     --header 'content-type: application/json' \\\n     --data '{\n        \"status\": \"STATUS_VALUE\"\n     }'\n"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation (no content response)"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/orders/{orderId}/replace_products": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Modify order products",
+        "description": "This option allows an update to the products and attributes of an order when a customer asks for changes or the order cannot be fulfilled as initially requested.\n\nDepending on the information in the request body, we will replace products / attributes from the order, remove products from the order or add products to the order.\n",
+        "operationId": "Modify-order-products",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "Unique identifier of the order to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModifyOrder"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request POST \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/orders/{orderId}/replace_products \\\n     --header 'Authorization: <your-secret-token>' \\\n     --header 'content-type: application/json' \\\n     --data '{\n        \"replacements\": [\n          {\n            \"purchased_product_id\": \"MTg4MjcwNA==\",\n            \"product\": {\n              \"id\": \"pd6\",\n              \"quantity\": 1,\n              \"attributes\": []\n            }\n          }\n        ],\n        \"removed_purchases\": [\n          \"MTg4MjcwM1==\"\n        ],\n        \"added_products\": [\n          {\n            \"id\": \"pd8\",\n            \"quantity\": 1,\n            \"attributes\": []\n          },\n          {\n            \"id\": \"pd9\",\n            \"quantity\": 2,\n            \"attributes\": [\n              {\n                \"quantity\": 1,\n                \"id\": \"at1\"\n              },\n              {\n                \"quantity\": 1,\n                \"id\": \"at2\"\n              },\n              {\n                \"quantity\": 1,\n                \"id\": \"at3\"\n              },\n              {\n                \"quantity\": 1,\n                \"id\": \"at4\"\n              }\n            ]\n          }\n        ]\n     }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "[Order](#tag/Order-model) with the products updated correctly \n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order-2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. This may be caused by the following reasons:\n  * An invalid request in which there are no products listed for replacement, removal or addition. Message: \"Invalid body. All the lists are empty.\"\n  * Order is already picked or cancelled and so cannot be modified. Message: \"Invalid order status\"\n  * Order is a big order and so is automatically split, so cannot be updated. Message: \"Cannot change products in automatically split orders\"\n  * The newly modified order that the request makes exceeds the maximum size permitted in proportion to the original order. This cannot be twice the size of the original order, although all modified orders smaller or equal to 5 are permitted. Message: \"Modified order quantity exceeds maximum permitted.\"\n  * The order modification lists contain a product id that does not exist. Message: \"Purchased product id <<PRODUCT-ID>> not present in the original order\"\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/menu": {
+      "post": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Upload menu",
+        "description": "Allows you to upload or update the entire menu of a store in Glovo.\n\nThis process is asynchronous, so we will provide a `transaction_id` to follow the process with the [Verify menu upload endpoint](#operation/Verify-upload-menu)\n\n<div align=\"center\">\n  <img alt=\"menu flow\" src=\"img/menu_update_process.png#center\" />\n</div>\n\n<div class=\"alert-box info\">\n  <i data-feather=\"info\"></i>\n  There is a maximum number of 5 of menu updates allowed per day per store address. For small products and attributes updates please use the individual or bulk endpoints.\n</div>\n\nIn case the limit is reached we will return status code 429 (too many requests).\n\nIf for some reason the Glovo system fails while updating, no changes will be made at all to avoid inconsistencies.\n",
+        "operationId": "Upload-menu",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "menuUrl": {
+                    "type": "string",
+                    "description": "URL to a JSON resource following the format specified in [Menu model](#tag/Menu-model).\n\nWe will request the JSON resource sending the header `Authorization: Bearer your-secret-token`\n\nIt is important that all the URL can be accessible from any IP address.\n",
+                    "example": "https://yourserver.json/path-to-your-menu.json",
+                    "required": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request POST \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/menu \\\n     --header 'Authorization: <your-secret-token>' \\\n     --header 'content-type: application/json' \\\n     --data '{\n        \"menuUrl\": \"https://yourserver.json/path-to-your-menu.json\"\n     }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionId"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/menu/{transactionId}": {
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Verify menu upload",
+        "description": "\nAllows you to check the status of the menu update process in Glovo for a particular `transaction_id`.\n\nThese are the possible status:\n\n* `SUCCESS`: The menu update process finished successfully\n* `PROCESSING`: The menu update process has not finished yet\n* `FETCH_MENU_INVALID_PAYLOAD`: The menu update process finished with errors caused by invalid JSON input\n* `FETCH_MENU_SERVER_ERROR`: The menu update process finished with errors trying to download the menu from the partner URL (eg. time-out, invalid URL, etc.)\n* `FETCH_MENU_UNAUTHORIZED`: The menu update process finished with errors trying to download the menu from the partner URL (eg. authorization errors)\n* `NOT_PROCESSED`: The menu update process finished with errors due to incorrect integration setup\n* `LIMIT_EXCEEDED`: The maximum number of menu updates allowed per day per store address was exceeded\n* `GLOVO_ERROR`: The menu update process finished unsuccessfully due to an error in the Glovo system\n\nIf the status indicates an error, we will send additional information to help you understand the cause.\n\n<div class=\"alert-box info\">\n  <i data-feather=\"info\"></i>\n  If the status of your menu update is <code>NOT_PROCESSED</code> or <code>GLOVO_ERROR</code>, please contact your account manager for support.\n</div>\n",
+        "operationId": "Verify-upload-menu",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Unique identifier of the menu update transaction to follow",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/menu/{transactionId} \\\n     --header 'Authorization: <your-secret-token>'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuUploadStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid transaction ID"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/products/{productId}": {
+      "patch": {
+        "tags": [
+          "Menu-items"
+        ],
+        "summary": "Modify products",
+        "description": "Allows you to perform a partial update over a product. Only the attributes sent in the request will be updated.",
+        "operationId": "Modify-product",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Unique identifier of the product within a store",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModifyProduct"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request PATCH \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/products/{productId} \\\n     --header 'Authorization: <your-secret-token>\n     --header 'content-type: application/json' \\\n     --data '{\n        \"price\": 10.0,\n        \"available\": true\n     }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifyProductResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/attributes/{attributeId}": {
+      "patch": {
+        "tags": [
+          "Menu-items"
+        ],
+        "summary": "Modify attributes",
+        "description": "Allows you to perform a partial update over an attribute. Only the attributes sent in the request will be updated.",
+        "operationId": "Modify-attribute",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attributeId",
+            "in": "path",
+            "description": "Unique identifier of the attribute within a store",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModifyAttribute"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request PATCH \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/attributes/{attributeId} \\\n     --header 'Authorization: <your-secret-token>\n     --header 'content-type: application/json' \\\n     --data '{\n        \"price_impact\": 1.5,\n        \"available\": true\n     }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifyAttributeResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/menu/updates": {
+      "post": {
+        "tags": [
+          "Menu-items"
+        ],
+        "summary": "Bulk update items",
+        "description": "Allows you to partially modify multiple products and attributes as part of a single request.\n\nIf there are fields of the items you want to leave unchanged, simply do not specify them in the request (see the JSON example). Do not set the value of fields you do not want to modify to null!\n\nThis process is asynchronous, so we will provide a `transaction_id` to follow the process with the [Verify bulk update items status endpoint](#operation/Verify-bulk-update-items)\n\nThis is a convenient option when you have to perform massive updates in your store catalog.\nAlthough this is an async process, the performance is significantly better than sending a request per product with the `PATCH` endpoints.\n\n<div class=\"alert-box info\">\n  <i data-feather=\"info\"></i>\n  The maximum number of items that can be processed in a single request is <strong>10000</strong>. In case the total number is exceeded the request will return an error.\n</div>\n\nIf for some reason the Glovo system fails while updating, it is possible for the bulk update process to succeed only partially: some items will be updated while others will not.\nConcrete details will be given on the bulk update status endpoint.\n",
+        "operationId": "Bulk-update-items",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUpdateItems"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request POST \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/menu/updates \\\n     --header 'Authorization: <your-secret-token>' \\\n     --header 'content-type: application/json' \\\n     --data '{\n        \"products\": [\n            {\n              \"id\": \"product_1\",\n              \"name\": \"Product 1\",\n              \"image_url\": \"https://fakeimg.pl/300\",\n              \"price\": 9.95,\n              \"available\": true\n            },\n            {\n              \"id\": \"product_2\",\n              \"available\": false\n            },\n            {\n              \"id\": \"product_3\",\n              \"price\": 2.95,\n              \"available\": true\n            },\n            {\n              \"id\": \"product_4\",\n              \"name\": null,\n              \"available\": true\n            }\n        ],\n        \"attributes\": [\n            {\n              \"id\": \"attribute_1\",\n              \"name\": \"Attribute 1\",\n              \"price_impact\": 3.45,\n              \"available\": true\n            },\n            {\n              \"id\": \"attribute_2\",\n              \"available\": false\n            },\n            {\n              \"id\": \"attribute_3\",\n              \"price_impact\": 0.95,\n              \"available\": true\n            },\n            {\n              \"id\": \"attribute_4\",\n              \"name\": null,\n              \"available\": true\n            }\n        ]\n     }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionId"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/menu/updates/{transactionId}": {
+      "get": {
+        "tags": [
+          "Menu-items"
+        ],
+        "summary": "Verify bulk update items status",
+        "description": "Allows you to check the status of the items bulk update process in Glovo for a particular `transaction_id`.\n\nThese are the possible status:\n\n* `SUCCESS`: The bulk update process finished successfully\n* `PROCESSING`: The bulk update process has not finished yet\n* `PARTIALLY_PROCESSED`: Some of the products/attributes submitted in the request could not have been updated. The \"Products/Attributes updated\" and \"Products/Attributes not updated\" arrays in the \"details\" field contain the corresponding IDs.\n* `NOT_PROCESSED`: The bulk update process finished with errors due to incorrect setup\n* `GLOVO_ERROR`: The bulk update process finished unsuccessfully due to an error in the Glovo system\n\nIf the status indicates an error, we will send additional information to help you understand the cause.\n\n<div class=\"alert-box info\">\n  <i data-feather=\"info\"></i>\n  If the status of your bulk update is <code>NOT_PROCESSED</code> or <code>GLOVO_ERROR</code>, please contact your account manager for support.\n</div>\n",
+        "operationId": "Verify-bulk-update-items",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Unique identifier of the bulk update transaction to follow",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/menu/updates/{transactionId} \\\n     --header 'Authorization: <your-secret-token>'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateItemsStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid transaction ID"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/schedule": {
+      "get": {
+        "tags": [
+          "Scheduling"
+        ],
+        "summary": "Schedule",
+        "description": "Allows you to get the current schedule for a particular store.",
+        "operationId": "Store-schedule",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/schedule \\\n     --header 'Authorization: <your-secret-token>'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreSchedule"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/webhook/stores/{storeId}/closing": {
+      "put": {
+        "tags": [
+          "Scheduling"
+        ],
+        "summary": "Close temporaly",
+        "description": "Allows you to close a store temporarily until a specified date and time in the future. This will ignore the opening times defined in the store schedule, forcing the store to be closed until the specified date and time.",
+        "operationId": "Close-temporaly",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "until": {
+                    "type": "string",
+                    "description": "A date-time in the future with an offset from UTC/Greenwich in the ISO-8601 calendar system.",
+                    "example": "2019-12-20T10:00:00+01:00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request PUT \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/closing \\\n     --header 'Authorization: <your-secret-token>' \\\n     --header 'content-type: application/json' \\\n     --data '{\n        \"until\": \"2019-12-20T10:00:00+01:00\"\n     }'\n"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Scheduling"
+        ],
+        "summary": "Active temporary closing",
+        "description": "Allows you to get an active store temporary closure if any.",
+        "operationId": "Active-temporary-closing",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/closing \\\n     --header 'Authorization: <your-secret-token>'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "until": {
+                      "type": "string",
+                      "description": "A date-time in the future with an offset from UTC/Greenwich in the ISO-8601 calendar system. If there is no active temporary closing this value will be set to null.",
+                      "example": "2019-12-20T10:00:00+01:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Scheduling"
+        ],
+        "summary": "Remove temporary closing",
+        "description": "Allows you to remove an active temporary closure for a store. After the removal, the store will continue following their regular schedule.",
+        "operationId": "Remove-close-temporaly",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request DELETE \\\n     --url https://api.glovoapp.com/webhook/stores/{storeId}/closing \\\n     --header 'Authorization: <your-secret-token>'\n"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/paris/menu/validate": {
+      "post": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Validate menu",
+        "description": "Allows you to upload a menu and validate it against the current JSON schema definition. You will receive either an all-OK message or a list of errors and a list of warnings that the menu would generate along with details of the errors",
+        "operationId": "validate-menu",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Menu-2"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Curl",
+            "source": "curl --request POST \\\n    --url https://api.glovoapp.com/paris/menu/validate \\\n    --header 'content-type: application/json' \\\n    --data '{\n        \"products\": [\n        {\n            \"id\": \"pro-7089\",\n            \"name\": \"PIZZA 4 FORMATGES\",\n            \"price\": \"11\",\n            \"image_url\": \"https://camarero10.s3.eu-central-1.amazonaws.com/2884/products_imgs/51166.jpg\",\n            \"description\": \"Pizza dels \\\"fratelli Colombo\\\" amb massa mare de llarga fermentació amb formatge parmesà, gorgonçola, fontina i mozzarella\\n\\nPizza de los \\\"fratelli Colombo\\\" con masa madre de larga fermentación con queso parmesano, gorgonzola, fontina y mozzarella\",\n            \"available\": true,\n            \"attributes_groups\": []\n        }\n        ],\n        \"collections\": [\n        {\n            \"name\": \"CORNER Fratelli Colombo\",\n            \"position\": \"13\",\n            \"sections\": [\n            {\n                \"name\": \"PIZZA AL MOMENT/PIZZA AL MOMENTO\",\n                \"position\": \"16\",\n                \"products\": [\n                \"pro-7089\",\n                \"pro-7100\",\n                \"pro-7098\",\n                \"pro-7097\",\n                \"pro-7101\"\n                ]\n            }\n            ]\n        }\n        ],\n        \"attributes\": [\n        {\n            \"id\": \"opv-180\",\n            \"name\": \"1 Racion\",\n            \"selected_by_default\": \"false\",\n            \"price_impact\": \"15.90\",\n            \"available\": true\n        }\n        ],\n        \"attribute_groups\": [\n        {\n            \"id\": \"sides_1\",\n            \"name\": \"Choose a side\",\n            \"min\": \"0\",\n            \"max\": \"1\",\n            \"collapse\": \"true\",\n            \"multiple_selection\": \"false\",\n            \"attributes\": [\n            \"side_1\",\n            \"side_2\",\n            \"side_3\",\n            \"side_4\"\n            ]\n        }\n        ],\n        \"supercollections\": [\n        {\n            \"name\": \"COLOMBO GLOVO\",\n            \"position\": \"0\",\n            \"image_url\": \"https://camarero10.s3.eu-central-1.amazonaws.com/2884/products_imgs/file1612429637.jpg\",\n            \"collections\": [\n            \"CORNER Fratelli Colombo\"\n            ]\n        }\n        ]\n    }'\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schema validation succeed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuValidationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Schema validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Order": {
+        "$ref": "#/components/schemas/Order-2"
+      },
+      "Menu": {
+        "$ref": "#/components/schemas/Menu-2"
+      },
+      "OrderStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Use the following information to understand when to send each status:\n\n- `ACCEPTED`: The order has been accepted by the store. Be aware that if you don't accept the order we will still move forward with the order, as we don't require an acceptance to proceed.\n- `READY_FOR_PICKUP`: The order is ready to be picked up by a courier or the customer (Only available for orders delivered by Glovo couriers)\n- `OUT_FOR_DELIVERY`: The courier has collected the order in the store and is now being delivered to the customer (Only available for [Marketplace orders](#section/Getting-started/Marketplace-orders))\n- `PICKED_UP_BY_CUSTOMER`: The order has been picked up by the customer (Only available for orders to be picked up by the customer)\n",
+            "enum": [
+              "ACCEPTED",
+              "READY_FOR_PICKUP",
+              "OUT_FOR_DELIVERY",
+              "PICKED_UP_BY_CUSTOMER"
+            ]
+          }
+        }
+      },
+      "BadRequest": {
+        "type": "object",
+        "properties": {
+          "userInfo": {
+            "type": "object"
+          },
+          "code": {
+            "type": "string",
+            "example": "189654"
+          },
+          "requestId": {
+            "type": "string",
+            "example": "4568100530282487425"
+          },
+          "domain": {
+            "type": "string",
+            "example": "com.glovoapp.core-services"
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of error stating its cause",
+            "example": "There was a problem with your request."
+          },
+          "staticCode": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "ModifyOrder": {
+        "type": "object",
+        "required": [
+          "replacements",
+          "removed_purchases",
+          "added_products"
+        ],
+        "properties": {
+          "replacements": {
+            "type": "array",
+            "description": "List of products to replace in the order",
+            "minItems": 0,
+            "items": {
+              "type": "object",
+              "required": [
+                "purchased_product_id",
+                "product"
+              ],
+              "properties": {
+                "purchased_product_id": {
+                  "description": "Unique identifier of the purchased product (`purchased_product_id`) that *will be replaced* in the original order\n",
+                  "type": "string",
+                  "example": "MTg4MjcwNA=="
+                },
+                "product": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "quantity",
+                    "attributes"
+                  ],
+                  "description": "The replacement product",
+                  "properties": {
+                    "id": {
+                      "description": "Unique identifier of the product within a store",
+                      "type": "string",
+                      "example": "pd6"
+                    },
+                    "quantity": {
+                      "description": "Product quantity",
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "attributes": {
+                      "type": "array",
+                      "minItems": 0,
+                      "description": "List of attributes associated with the replaced product",
+                      "required": [
+                        "id",
+                        "quantity"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "description": "Unique identifier of the attribute within a store",
+                            "type": "string",
+                            "example": "at2"
+                          },
+                          "quantity": {
+                            "description": "Product quantity",
+                            "type": "integer",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "removed_purchases": {
+            "type": "array",
+            "minItems": 0,
+            "description": "List of unique identifiers of purchased products (`purchased_product_id`) to be removed from the order\n",
+            "items": {
+              "description": "Unique identifier of the purchased_product (purchased_product_id) that will be replaced from the original order",
+              "type": "string",
+              "example": "MTg4MjcwM1=="
+            }
+          },
+          "added_products": {
+            "type": "array",
+            "minItems": 0,
+            "description": "List of products to be added to the order",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "quantity",
+                "attributes"
+              ],
+              "description": "A product to be added to the order",
+              "properties": {
+                "id": {
+                  "description": "Unique identifier of the product within a store",
+                  "type": "string",
+                  "example": "pd9"
+                },
+                "quantity": {
+                  "description": "Product quantity",
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 1
+                },
+                "attributes": {
+                  "type": "array",
+                  "minItems": 0,
+                  "description": "List of attributes associated with the replaced product",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "quantity"
+                    ],
+                    "properties": {
+                      "id": {
+                        "description": "Unique identifier of the attribute within a store",
+                        "type": "string",
+                        "example": "at3"
+                      },
+                      "quantity": {
+                        "description": "Attribute quantity",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrderId": {
+        "type": "string",
+        "description": "Unique identifier of the order",
+        "example": "12345"
+      },
+      "StoreId": {
+        "type": "string",
+        "description": "[Unique identifier of the store](#section/Getting-started/Unique-identifier-of-the-store)\n",
+        "example": "your-store-id"
+      },
+      "Order-2": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderId"
+              }
+            ]
+          },
+          "store_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreId"
+              }
+            ]
+          },
+          "order_time": {
+            "type": "string",
+            "description": "Local time of the acceptance of the order by Glovo",
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "example": "2018-06-08 14:24:53"
+          },
+          "estimated_pickup_time": {
+            "type": "string",
+            "description": "Local time of courier's expected arrival at the store",
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "example": "2018-06-08 14:45:44"
+          },
+          "utc_offset_minutes": {
+            "type": "string",
+            "description": "Time difference in minutes between UTC and the local time of the store",
+            "format": "int32",
+            "example": "60"
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "- `CASH`: Indicates that the courier will pay for the order with cash\n\n- `DELAYED`: Indicates that Glovo will pay for the order by an invoice sent to the partner\n",
+            "enum": [
+              "CASH",
+              "DELAYED"
+            ],
+            "example": "CASH"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code of the order",
+            "example": "EUR"
+          },
+          "order_code": {
+            "type": "string",
+            "description": "Alphanumeric identifier of the order used for historical identification or by Glovo support",
+            "example": "BA7DWBUL"
+          },
+          "allergy_info": {
+            "type": "string",
+            "description": "Customer provided details of their allergies",
+            "example": "I am allergic to tomato"
+          },
+          "estimated_total_price": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Estimated total price of products and attributes in the order denominated in cents and excluding the delivery fee",
+            "example": 3080
+          },
+          "delivery_fee": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Delivery price of the order in cents. Relevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nIf the order is delivered by Glovo this will be `null`\n",
+            "example": null
+          },
+          "minimum_basket_surcharge": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The minimum basket surcharge in cents. Relevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nIf the order is delivered by Glovo this will be `null`\n",
+            "example": null
+          },
+          "customer_cash_payment_amount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The total amount the customer will pay as cash. Relevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nIf the order is delivered by Glovo or if this value is not informed by the customer, this will be set to `null`\n",
+            "example": 5000
+          },
+          "courier": {
+            "type": "object",
+            "description": "Contains details of the assigned courier",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Courier name",
+                "example": "Flash"
+              },
+              "phone_number": {
+                "type": "string",
+                "description": "Courier phone number with international prefix",
+                "example": "+34666666666"
+              }
+            }
+          },
+          "customer": {
+            "type": "object",
+            "description": "Ordering customer's details",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Customer name",
+                "example": "Waldo"
+              },
+              "phone_number": {
+                "type": "string",
+                "description": "Customer phone number. Relevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nFor Glovo orders this will be set to `\"N/A\"`\n",
+                "example": "N/A"
+              },
+              "hash": {
+                "type": "string",
+                "description": "Unique identifier of the customer",
+                "example": "11111111-2222-3333-4444-555555555555"
+              },
+              "invoicing_details": {
+                "type": "object",
+                "description": "Customer invocing details (when provided). If not available this will be set to null`",
+                "properties": {
+                  "company_name": {
+                    "type": "string",
+                    "description": "Company name",
+                    "example": "Acme Inc."
+                  },
+                  "company_address": {
+                    "type": "string",
+                    "description": "Address including city",
+                    "example": "42 Wallaby Way, Sydney"
+                  },
+                  "tax_id": {
+                    "type": "string",
+                    "description": "Tax ID",
+                    "example": "B12341234"
+                  }
+                }
+              }
+            }
+          },
+          "products": {
+            "type": "array",
+            "minItems": 1,
+            "description": "List of order products",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the product within a store",
+                  "example": "pd1"
+                },
+                "purchased_product_id": {
+                  "type": "string",
+                  "description": "Unique identifier of every individual selection of a (potentially customized) product within the order.\nThis identifier is necessary to perform order modifications over the products purchased.\n",
+                  "example": "A1"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Product quantity",
+                  "example": 2
+                },
+                "price": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Product unit price (without attributes) in cents",
+                  "example": 1000
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Product name",
+                  "example": "Burger"
+                },
+                "attributes": {
+                  "type": "array",
+                  "minItems": 0,
+                  "description": "Attributes associated with the given product",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the attribute within a store",
+                        "example": "at1"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Attribute quantity",
+                        "example": 2
+                      },
+                      "price": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Attribute unit price in cents",
+                        "example": 300
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Attribute name",
+                        "example": "Extra meat"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "quantity",
+                      "price",
+                      "name"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "quantity",
+                "price",
+                "attributes",
+                "purchased_product_id"
+              ]
+            },
+            "example": [
+              {
+                "id": "pd1",
+                "purchased_product_id": "A1",
+                "name": "Burger",
+                "price": 1000,
+                "quantity": 2,
+                "attributes": [
+                  {
+                    "id": "at1",
+                    "name": "Extra meat",
+                    "price": 300,
+                    "quantity": 1
+                  },
+                  {
+                    "id": "at2",
+                    "name": "Water (33 cl)",
+                    "price": 0,
+                    "quantity": 1
+                  },
+                  {
+                    "id": "at3",
+                    "name": "Tomato sauce",
+                    "price": 0,
+                    "quantity": 1
+                  },
+                  {
+                    "id": "at4",
+                    "name": "Lettuce",
+                    "price": 0,
+                    "quantity": 1
+                  }
+                ]
+              },
+              {
+                "id": "pd2",
+                "purchased_product_id": "A2",
+                "name": "Ice cream",
+                "price": 480,
+                "quantity": 1,
+                "attributes": [
+                  {
+                    "id": "at5",
+                    "name": "Vanilla",
+                    "price": 0,
+                    "quantity": 1
+                  },
+                  {
+                    "id": "at6",
+                    "name": "Small size",
+                    "price": 0,
+                    "quantity": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "delivery_address": {
+            "type": "object",
+            "description": "Order delivery address details. Relevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nIf the order is delivered by Glovo this will be set to `null`\n",
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "Complete delivery address including city",
+                "example": "123 Fake Street, Gotham"
+              },
+              "latitude": {
+                "type": "number",
+                "format": "double",
+                "description": "Address latitude",
+                "example": 41.3971955
+              },
+              "longitude": {
+                "type": "number",
+                "format": "double",
+                "description": "Address longitude",
+                "example": 2.2001737
+              }
+            }
+          },
+          "bundled_orders": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Bundled orders are those that are to be delivered together by a single courier. Relevant to Glovo orders only.\n\nFor [marketplace orders](#section/Getting-started/Marketplace-orders) this will be set to `null`\n",
+            "example": [
+              "order-id-1",
+              "order-id-2"
+            ]
+          },
+          "pick_up_code": {
+            "type": "string",
+            "description": "Non-sequential, non-unique 3 digit numerical code used to identify an order for pickup by the courier or customer",
+            "example": "433"
+          },
+          "is_picked_up_by_customer": {
+            "type": "boolean",
+            "description": "Indicates that the order will be picked up by a customer instead of by a courier",
+            "example": false
+          },
+          "cutlery_requested": {
+            "type": "boolean",
+            "description": "Indicates that the customer requested cutlery for the order",
+            "example": true
+          },
+          "partner_discounts_products": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total value in cents of partner-funded promotional discounts applied to products",
+            "example": 1550
+          },
+          "partner_discounted_products_total": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total value in cents of products after partner-funded promotional discounts have been applied",
+            "example": 1530
+          },
+          "total_customer_to_pay": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The final amount to be paid in cents by customer after discounts, promotions, surcharges, fees and other adjustments have been calculated.\n\nRelevant to [marketplace orders](#section/Getting-started/Marketplace-orders) only.\n\nIf the order is delivered by Glovo this will be set to `null`\n",
+            "example": null
+          },
+          "loyalty_card": {
+            "type": "string",
+            "description": "Optional customer-provided store loyalty code. If the value is present, the Partner can choose to apply the corresponding rewards or discounts for the order to the identified loyalty customer.\n\nIf the value is not provided by the customer this will be set to `null`\n",
+            "example": "CUSTOMER123"
+          }
+        },
+        "required": [
+          "order_id",
+          "store_id",
+          "payment_method",
+          "currency",
+          "order_code",
+          "estimated_total_price",
+          "courier",
+          "customer",
+          "products",
+          "bundled_orders",
+          "is_picked_up_by_customer",
+          "partner_discounts_products",
+          "partner_discounted_products_total"
+        ]
+      },
+      "TransactionId": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier of the asynchronous operation",
+            "example": "a946a2c7-f4e7-46ac-ae63-8a5497cb0ad9"
+          }
+        }
+      },
+      "MenuUploadStatus": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier of the asynchronous operation",
+            "example": "a946a2c7-f4e7-46ac-ae63-8a5497cb0ad9"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the menu update",
+            "enum": [
+              "SUCCESS",
+              "PROCESSING",
+              "FETCH_MENU_INVALID_PAYLOAD",
+              "FETCH_MENU_SERVER_ERROR",
+              "FETCH_MENU_UNAUTHORIZED",
+              "NOT_PROCESSED",
+              "LIMIT_EXCEEDED",
+              "GLOVO_ERROR"
+            ],
+            "example": "FETCH_MENU_INVALID_PAYLOAD"
+          },
+          "last_updated_at": {
+            "type": "string",
+            "description": "Timestamp of the lastest menu status update",
+            "example": "2020-03-24T10:03:49.614Z"
+          },
+          "details": {
+            "type": "array",
+            "description": "Details for the current menu status",
+            "example": [
+              "Invalid section [\"Menus\"]: Section must contain at least one product"
+            ]
+          }
+        }
+      },
+      "ModifyProduct": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "The new product price in the store. If the value is not present or is null, it will not be updated.",
+            "example": 10
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Flag indicating if the product is available in the store. If the value is not present or is null, it will not be updated.",
+            "example": true
+          }
+        }
+      },
+      "ModifyProductResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the attribute within a store",
+            "example": "burger1"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "Burger Large"
+          },
+          "price": {
+            "type": "string",
+            "format": null,
+            "description": "Product price",
+            "example": "10.0"
+          },
+          "image_url": {
+            "type": "string",
+            "description": "Url of the product image. Must use HTTPS protocol.",
+            "example": "https://server.com/image"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description",
+            "example": "A large cheeseburger"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Specifies if the product is available to be purchased",
+            "example": true
+          }
+        }
+      },
+      "ModifyAttribute": {
+        "type": "object",
+        "properties": {
+          "price_impact": {
+            "type": "number",
+            "format": "double",
+            "description": "The new attribute price in the store. If the value is not present or is null, it will not be updated.",
+            "example": 1.5
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Flag indicating if the attribute is available in the store. If the value is not present or is null, it will not be updated.",
+            "example": true
+          }
+        }
+      },
+      "ModifyAttributeResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the attribute within a store",
+            "example": "side1"
+          },
+          "name": {
+            "type": "string",
+            "description": "Attribute name",
+            "example": "French fries"
+          },
+          "selected_by_default": {
+            "type": "boolean",
+            "description": "Specifies if the attribute should be selected by default when customizing the product associated",
+            "example": true
+          },
+          "price": {
+            "type": "string",
+            "format": null,
+            "description": "Attribute price",
+            "example": "1.5"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Specifies if the product is available to be purchased",
+            "example": true
+          }
+        }
+      },
+      "BulkUpdateItems": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "description": "Products to be updated.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the attribute within a store",
+                  "example": "burger1"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Product name",
+                  "example": "Burger Large"
+                },
+                "price": {
+                  "type": "number",
+                  "format": "double",
+                  "description": "Product price",
+                  "example": "10.0"
+                },
+                "image_url": {
+                  "type": "string",
+                  "description": "Url of the product image. Must use HTTPS protocol.",
+                  "example": "https://server.com/image"
+                },
+                "available": {
+                  "type": "boolean",
+                  "description": "Specifies if the product is available to be purchased",
+                  "example": true
+                }
+              }
+            }
+          },
+          "attributes": {
+            "description": "Attributes to be updated.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the attribute within a store",
+                  "example": "side1"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Attribute name",
+                  "example": "French fries"
+                },
+                "price_impact": {
+                  "type": "number",
+                  "format": "double",
+                  "description": "Attribute price",
+                  "example": "1.5"
+                },
+                "available": {
+                  "type": "boolean",
+                  "description": "Specifies if the product is available to be purchased",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "BulkUpdateItemsStatus": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier of the asynchronous operation",
+            "example": "a946a2c7-f4e7-46ac-ae63-8a5497cb0ad9"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the bulk update",
+            "enum": [
+              "SUCCESS",
+              "PROCESSING",
+              "PARTIALLY_PROCESSED",
+              "NOT_PROCESSED",
+              "GLOVO_ERROR"
+            ],
+            "example": "PARTIALLY_PROCESSED"
+          },
+          "last_updated_at": {
+            "type": "string",
+            "description": "Timestamp of the lastest menu status update",
+            "example": "2020-03-24T10:03:49.614Z"
+          },
+          "details": {
+            "type": "array",
+            "description": "Details for the current menu status",
+            "example": [
+              "Products updated: [11111, 22222]",
+              "Products not updated: [12345, 56789]",
+              "Attributes updated: [33333, 44444]",
+              "Attributes not updated: [67890, 45678]"
+            ]
+          }
+        }
+      },
+      "StoreSchedule": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the store based on its city.",
+            "example": "Europe/Madrid"
+          },
+          "schedule": {
+            "type": "array",
+            "description": "Array of Day Schedule objects containing the weekly schedule of the store.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day_of_week": {
+                  "type": "integer",
+                  "description": "The day of the week. The week is considered as starting from Sunday with value 1.",
+                  "example": 1
+                },
+                "time_slots": {
+                  "type": "array",
+                  "description": "Array of Time Slot objects containing opening times for a day.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "opening": {
+                        "type": "string",
+                        "description": "Starting time of the slot in the format `HH:mm`",
+                        "example": "12:00"
+                      },
+                      "closing": {
+                        "type": "string",
+                        "description": "Ending time of the slot in the format `HH:mm`",
+                        "example": "15:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Menu-2": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "type": "array",
+            "minItems": 0,
+            "description": "A product can be customized in different ways e.g. add mayonnaise, bundle it with a drink, or add extra meat. \nEach of these customizations is considered an attribute. It is not mandatory for a product to have attributes. \nEach attribute can have a different price impact. Similar attributes are grouped into attribute groups.\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the attribute within a store"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Attribute name"
+                },
+                "price_impact": {
+                  "type": "number",
+                  "format": "double",
+                  "description": "Attribute price"
+                },
+                "selected_by_default": {
+                  "type": "boolean",
+                  "description": "Specifies if the attribute should be selected by default when customizing the product associated"
+                },
+                "available": {
+                  "type": "boolean",
+                  "description": "Specifies if the attribute is available to be purchased"
+                }
+              },
+              "required": [
+                "id",
+                "price_impact",
+                "selected_by_default"
+              ]
+            }
+          },
+          "attribute_groups": {
+            "type": "array",
+            "minItems": 0,
+            "description": "Attribute groups allow to group similar customizations into generic groups. Each attribute group can have a minimum and maximum of choices for the customer.\nExamples of attribute groups could include:\n- Sauces: a group of attributes such as mayo, mustard or tomato sauce\n- Drinks: a group of attributes such as water, coke, or lemonade\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the attribute group within a store"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Attribute group name"
+                },
+                "min": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Minimum attributes a customer can choose from the group"
+                },
+                "max": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Maximum attributes a customer can choose from the group"
+                },
+                "collapse": {
+                  "type": "boolean",
+                  "description": "Indicates whether the list of attributes within the group will be displayed as collapsed by default in the customer apps"
+                },
+                "multiple_selection": {
+                  "type": "boolean",
+                  "description": "Indecates if the customer can choose more than attribute from the group"
+                },
+                "attributes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of attribute unique identifiers that would be part of the group. Attributes will be displayed in the order of the list."
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "min",
+                "max",
+                "collapse",
+                "multiple_selection",
+                "attributes"
+              ]
+            }
+          },
+          "products": {
+            "type": "array",
+            "minItems": 1,
+            "description": "A product is the main component of a Glovo menu. It usually represents a physical product in a store, although we give stores flexibility to configure what they want to offer as products.\nEach product belongs in a section.\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier of the product within a store"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Product name"
+                },
+                "price": {
+                  "type": "number",
+                  "format": "double",
+                  "description": "Product price"
+                },
+                "image_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Url of the product image. Must use HTTPS protocol."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Product description"
+                },
+                "attributes_groups": {
+                  "type": "array",
+                  "minItems": 0,
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of attribute group unique identifiers that would be part of the product. Attribute groups will be displayed in the order of the list."
+                },
+                "available": {
+                  "type": "boolean",
+                  "description": "Specifies if the product is available to be purchased"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "price"
+              ]
+            }
+          },
+          "collections": {
+            "type": "array",
+            "minItems": 1,
+            "description": "A collection is the main categorization of a Glovo menu. It is mandatory to have at least one collection in your menu.\nSome examples of collections include: Drinks, Burgers, Salads, Desserts, Pasta.\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Collection name. It should be unique as it will serve as identifier of the collection."
+                },
+                "position": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Relative position of the collection in the menu"
+                },
+                "image_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Url of the collection image. Must use HTTPS protocol."
+                },
+                "sections": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "A section is a subdivision within a collection. Any collection must contain at least one section with at least one product associated.\n",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Section name"
+                      },
+                      "position": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Relative position of the section in the collection"
+                      },
+                      "products": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of products unique identifiers that would be part of the section. Products will be displayed in the order of the list."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "products"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "sections"
+              ]
+            }
+          },
+          "supercollections": {
+            "type": "array",
+            "minItems": 0,
+            "description": "A super collection is the uppermost categorization of a Glovo menu. Super collections are not required.\nIf at least one exists, a list of all the super collections is displayed to customers when they open a store in the app. Otherwise, the collection is displayed as the uppermost categorization.\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Super collection name"
+                },
+                "position": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Relative position of the super collection in the menu"
+                },
+                "image_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Url of the super collection image. Must use HTTPS protocol."
+                },
+                "collections": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of collection names that would be part of the super collection. Collections will be displayed in the order of the list."
+                }
+              },
+              "required": [
+                "name",
+                "collections"
+              ]
+            }
+          }
+        },
+        "example": {
+          "attributes": [
+            {
+              "id": "side_1",
+              "name": "French fries (small)",
+              "selected_by_default": true,
+              "price_impact": 0,
+              "available": false
+            },
+            {
+              "id": "side_2",
+              "name": "French fries (medium)",
+              "selected_by_default": false,
+              "price_impact": 1,
+              "available": true
+            },
+            {
+              "id": "side_3",
+              "name": "Salad (small)",
+              "selected_by_default": true,
+              "price_impact": 0
+            },
+            {
+              "id": "side_4",
+              "name": "Salad (medium)",
+              "selected_by_default": false,
+              "price_impact": 1
+            },
+            {
+              "id": "drink_1",
+              "name": "Water (0,5l)",
+              "selected_by_default": false,
+              "price_impact": 1
+            },
+            {
+              "id": "drink_2",
+              "name": "Lemonade (0,5l)",
+              "selected_by_default": false,
+              "price_impact": 2
+            },
+            {
+              "id": "burger_type_1",
+              "name": "Beef burger",
+              "selected_by_default": false,
+              "price_impact": 0
+            },
+            {
+              "id": "burger_type_2",
+              "name": "Chicken burger",
+              "selected_by_default": false,
+              "price_impact": 0
+            },
+            {
+              "id": "salad_type_1",
+              "name": "Caesar salad",
+              "selected_by_default": false,
+              "price_impact": 0
+            },
+            {
+              "id": "salad_type_2",
+              "name": "Greek salad",
+              "selected_by_default": false,
+              "price_impact": 0
+            },
+            {
+              "id": "pizza_size_1",
+              "name": "Medium (16cm)",
+              "selected_by_default": false,
+              "price_impact": 0
+            },
+            {
+              "id": "pizza_size_2",
+              "name": "Family size (30cm)",
+              "selected_by_default": false,
+              "price_impact": 4
+            }
+          ],
+          "attribute_groups": [
+            {
+              "id": "sides_1",
+              "name": "Choose a side",
+              "min": 0,
+              "max": 1,
+              "collapse": true,
+              "multiple_selection": false,
+              "attributes": [
+                "side_1",
+                "side_2",
+                "side_3",
+                "side_4"
+              ]
+            },
+            {
+              "id": "drinks_1",
+              "name": "Choose a drink",
+              "min": 1,
+              "max": 1,
+              "collapse": false,
+              "multiple_selection": false,
+              "attributes": [
+                "drink_1",
+                "drink_2"
+              ]
+            },
+            {
+              "id": "burger_types_1",
+              "name": "Choose the type of burger",
+              "min": 1,
+              "max": 1,
+              "collapse": true,
+              "multiple_selection": false,
+              "attributes": [
+                "burger_type_1",
+                "burger_type_2"
+              ]
+            },
+            {
+              "id": "salad_types_1",
+              "name": "Choose the type of salad",
+              "min": 1,
+              "max": 1,
+              "collapse": false,
+              "multiple_selection": false,
+              "attributes": [
+                "salad_type_1",
+                "salad_type_2"
+              ]
+            },
+            {
+              "id": "pizza_sizes_1",
+              "name": "Choose the size of your pizza",
+              "min": 1,
+              "max": 1,
+              "collapse": false,
+              "multiple_selection": false,
+              "attributes": [
+                "pizza_size_1",
+                "pizza_size_2"
+              ]
+            }
+          ],
+          "products": [
+            {
+              "id": "burger_1",
+              "name": "Burger + side + drink",
+              "price": 7.5,
+              "image_url": "https://i.imgur.com/Mcgmjaz.png",
+              "description": "Combination of delicious burger, a side and a drink",
+              "attributes_groups": [
+                "sides_1",
+                "drinks_1",
+                "burger_types_1"
+              ],
+              "available": false
+            },
+            {
+              "id": "salad_1",
+              "name": "Salad + drink",
+              "price": 5,
+              "image_url": "https://i.imgur.com/Tsj3NOK.png",
+              "description": "Healthy salad and a drink",
+              "attributes_groups": [
+                "drinks_1",
+                "salad_types_1"
+              ],
+              "available": true
+            },
+            {
+              "id": "pizza_1",
+              "name": "Pizza Margherita",
+              "price": 10,
+              "image_url": "https://i.imgur.com/Qj5MlEH.png",
+              "description": "Amazing pizza margherita",
+              "attributes_groups": [
+                "pizza_sizes_1"
+              ]
+            }
+          ],
+          "collections": [
+            {
+              "name": "Menus",
+              "position": 0,
+              "image_url": "https://i.imgur.com/Qj5MlEH.png",
+              "sections": [
+                {
+                  "name": "Burger menus",
+                  "position": 1,
+                  "products": [
+                    "burger_1"
+                  ]
+                },
+                {
+                  "name": "Salad menus",
+                  "position": 2,
+                  "products": [
+                    "salad_1"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Pizzas",
+              "position": 1,
+              "image_url": "https://i.imgur.com/Qj5MlEH.png",
+              "sections": [
+                {
+                  "name": "Pizzas",
+                  "position": 1,
+                  "products": [
+                    "pizza_1"
+                  ]
+                }
+              ]
+            }
+          ],
+          "supercollections": [
+            {
+              "name": "Lunch Menu",
+              "position": 0,
+              "image_url": "https://i.imgur.com/Qj5DlEH.png",
+              "collections": [
+                "Menus",
+                "Pizzas"
+              ]
+            }
+          ]
+        }
+      },
+      "MenuValidationResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Specifies if the menu is valid or not"
+          },
+          "errors": {
+            "type": "array",
+            "description": "Detailed information of the errors generated by JSON schema",
+            "items": {
+              "type": "string"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "description": "Detailed information of the warnings generated by JSON schema",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "OrderCancelled": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderId"
+              }
+            ]
+          },
+          "store_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreId"
+              }
+            ]
+          },
+          "cancel_reason": {
+            "type": "string",
+            "enum": [
+              "PRODUCTS_NOT_AVAILABLE",
+              "STORE_CAN_NOT_DELIVER",
+              "PARTNER_PRINTER_ISSUE",
+              "USER_ERROR",
+              "ORDER_NOT_FEASIBLE",
+              "OTHER"
+            ],
+            "description": "Description of order cancellation reason\n\n- `PRODUCTS_NOT_AVAILABLE`: Products are not available in store\n- `STORE_CAN_NOT_DELIVER`: Order could not be delivered by partner\n- `PARTNER_PRINTER_ISSUE`: Order cancelled due to issues with partner's device\n- `USER_ERROR`: Customer has cancelled the order\n- `ORDER_NOT_FEASIBLE`: It is impossible to fulfill the customer's request\n- `OTHER`: Other cancellation reasons that do not fall into the above categories\n",
+            "example": "STORE_ERROR"
+          },
+          "payment_strategy": {
+            "type": "string",
+            "enum": [
+              "PAY_NOTHING",
+              "PAY_PRODUCTS"
+            ],
+            "description": "- `PAY_NOTHING`: Glovo will not pay the partner for the order products\n- `PAY_PRODUCTS`: Glovo will pay the partner for the order products\n",
+            "example": "PAY_PRODUCTS"
+          }
+        },
+        "required": [
+          "order_id",
+          "store_id",
+          "cancel_reason"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "token": {
+        "description": "All incoming requests to our API must include the specified header including your token.\n\n```\nAuthorization: token\n```\nIn order to validate that Glovo is the one making requests to your [registered webhooks](#section/Getting-started/Event-notifications-using-webhooks) for event notifications, we will also be sending you this `Authorization` header including the `token`.\n",
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "responses": {
+      "ResponseDescription": {
+        "description": "Return a 200 status to indicate that the data was received successfully.\n\nIf our systems do not receive a 2xx status response, we will start a notification retry process based on an exponential backoff algorithm. The goal is to improve the chance that our notifications successfully reach your servers. We will have a default maximum 3 retries for each notification.\n\nFrom your side it's important to ensure that you are processing the requests in an **idempotent manner**; you should deduplicate order IDs to avoid processing the same order information more than once.\n"
+      }
+    }
+  },
+  "x-webhooks": {
+    "orderDispatched": {
+      "post": {
+        "summary": "Order Dispatched",
+        "description": "You will receive a a `POST` request notification every time an order is dispatched to any of your registered stores.\n\nThis notification is sent to stores so that they can start to prepare the order. This notification is sent at a time determined by the courier's expected arrival time and the store's own estimated time necessary for the preparation of the order.\n\n<div class=\"alert-box warn\">\n  <i data-feather=\"alert-triangle\"></i>\n  It's important that you comply with our <a href=\"#tag/Versioning\">versioning</a> specifications once you start handling our notifications.\n</div>\n",
+        "operationId": "Order-dispatched",
+        "tags": [
+          "Notifications"
+        ],
+        "method": [
+          "POST"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "requestBody": {
+          "description": "Notification with the [Order model](#tag/Order-model) format\n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order-2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResponseDescription"
+          }
+        }
+      }
+    },
+    "orderCancelled": {
+      "post": {
+        "summary": "Order Cancelled",
+        "description": "You will receive a `POST` request notification every time an order is cancelled.\n\nThis notification will be sent **only if the order has previously been accepted by the store.**\n",
+        "operationId": "Order-cancelled",
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Specify that the content will be sent as JSON",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCancelled"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResponseDescription"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1945 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Wordpress API v2",
+    "description": "The WordPress REST API provides API endpoints for WordPress data types that allow developers to interact with sites remotely by sending and receiving JSON.\n\n# Why use the WordPress REST API\nThe WordPress REST API makes it easier than ever to use WordPress in new and exciting ways, such as creating Single Page Applications on top of WordPress. You could create a plugin to provide an entirely new admin experiences for WordPress, or create a brand new interactive front-end experience.\n\n# Key Concepts\nTo get started with using the WordPress REST API we will break down some of the key concepts and terms associated with the API:\n* Routes/Endpoints\n* Requests\n* Responses\n* Schema\n* Controller Classes\n\nEach of these concepts play a crucial role in using and understanding the WordPress REST API. Let’s briefly break them down so that we can later explore each in greater depth.\n\n# Routes & Endpoints\nA route, in the context of the WordPress REST API, is a URI which can be mapped to different HTTP methods. The mapping of an individual HTTP method to a route is known as an _“endpoint”_. To clarify: If we make a **GET** request to _http://oursite.com/wp-json/_, we will get a JSON response showing us what routes are available, and within each route, what endpoints are available. _/wp-json/_ is a route itself and when a **GET** request is made it matches to the endpoint that displays what is known as the index for the WordPress REST API. \n\n> Note:\n  If you’re using non-pretty permalinks, you should pass the REST API route as a query string parameter. The route http://oursite.com/wp-json/ in the example above would hence be http://oursite.com/?rest_route=/.\n\n\n# Schema\nEach endpoint requires and provides slightly different data structures, and those structures are defined in the API Schema. The schema structures API data and provides a comprehensive list of all of the properties the API can return and input parameters it can accept. \nSchema also provides security benefits for the API, as it enables us to validate the requests being made to the API. The Schema section further explores this large topic.\n\n# Authorization\n\nSome of the endpoints require special role permissions which may require more setup in your Wordpress instance, such as downloading a role permissions editor tool. \n\n# Cookie Authentication\nCookie authentication is the standard authentication method included with WordPress. When you log in to your dashboard, this sets up the cookies correctly for you, so plugin and theme developers need only to have a logged-in user.\n\nHowever, the REST API includes a technique called **_nonces_** to avoid CSRF issues. This prevents other sites from forcing you to perform actions without explicitly intending to do so. This requires slightly special handling for the API.\n\nFor developers using the built-in Javascript API, this is handled automatically for you. This is the recommended way to use the API for plugins and themes. Custom data models can extend **_wp.api.models.Base_** to ensure this is sent correctly for any custom requests.\n\nFor developers making manual Ajax requests, the **_nonce_** will need to be passed with each request. The API uses nonces with the action set to **_wp_rest**. These can then be passed to the API via the **_wpnonce** data parameter (either **POST** data or in the query for **GET** requests), or via the **X-WP-Nonce** header. If no nonce is provided the API will set the current user to 0, turning the request into an unauthenticated request, even if you’re logged into WordPress.\n\n> Note: Until recently, most software had spotty support for DELETE requests. For instance, PHP doesn’t   transform the request body of a DELETE request into a super global. As such, supplying the nonce as a   header is the most reliable approach.\n\nIt is important to keep in mind that this authentication method relies on **_WordPress cookies_**. As a result this method is only applicable when the REST API is used inside of WordPress and the current user is logged in. In addition, the current user must have the appropriate capability to perform the action being performed.\n\n\nWhile cookie authentication is the only authentication mechanism available natively within WordPress, plugins may be added to support alternative modes of authentication that will work from remote applications. Some example plugins are OAuth 1.0a Server, Application Passwords, and JSON Web Tokens.\n\n\n# Why is the REST API not verifying the incoming Origin header? Does this expose my site to CSRF attacks?\n**_Cross-Origin Resource Sharing (CORS)_** is a mechanism which allows a website to control which Origins (originating external sites) are allowed to access your site’s data. CORS prevents against a particular type of attack known as **_Cross-Site Request Forgery_**, or CSRF. However, WordPress has an existing CSRF protection mechanism which uses nonces. Tightening CORS restrictions would prevent some authentication methods, so the WordPress REST API uses nonces for CSRF protection instead of CORS.\n\nBecause the **_WordPress REST API does not verify the Origin header of incoming requests_**, public REST API endpoints may therefore be accessed from any site.\n\nThis is an intentional design decision, but if you wish to prevent your site from being accessed from unknown origins you may unhook the default **rest_send_cors_headers** function from the **rest_pre_serve_request** filter hook, then hook in your own function to that same filter to specify stricter CORS headers.\n\n\n\n",
+    "contact": {},
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "{url}",
+      "variables": {
+        "url": {
+          "default": "http://example.com",
+          "description": "Your Wordpress URL"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/wp-json/wp/v2/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "List Posts",
+        "description": "## List Posts\n| | |\n| :-- | :--\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page``` | Current page of collection.<br/>Default:**1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```after```|Limit response to posts published after a given ISO8601 compliant date.\n|```author```|Limit result set to posts assigned to specific authors.\n|```author_exclude```|Ensure result set excludes posts assigned to specific authors.\n|```before```|Limit response to posts published before a given ISO8601 compliant date.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|\tSort collection by object attribute.<br/>Default: **date**<br/>One of: **author, date, id, include, modified, parent, relevance, slug, include_slugs, title**\n|```slug```|Limit result set to posts with one or more specific slugs.\n|```status```|Limit result set to posts assigned one or more statuses.<br/>Default: **publish**\n|```categories```|Limit result set to all items that have the specified term assigned in the categories taxonomy.\n|```categories_exclude```|Limit result set to all items except those that have the specified term assigned in the categories taxonomy.\n|```tags```|Limit result set to all items that have the specified term assigned in the tags taxonomy.\n|```tags_exclude```|Limit result set to all items except those that have the specified term assigned in the tags taxonomy.\n|```sticky```|Limit result set to items that are sticky.",
+        "operationId": "ListPosts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Create Posts",
+        "description": "| | |\n| :--- | :---\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug``` |An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```author```|The ID for the author of the object.\n|```excerpt```|The excerpt for the object.\n|```featured_media```|The ID of the featured media for the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```format```|The format for the object.<br/>One of: **standard, aside, chat, gallery, link, image, quote, status, video, audio**\n|```meta```|Meta fields.\n|```sticky```|Whether or not the object should be treated as sticky.\n|```template```|The theme file to use to display the object.\n|```categories```|The terms assigned to the object in the category taxonomy.\n|```tags```|The terms assigned to the object in the post_tag taxonomy.",
+        "operationId": "CreatePosts",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/posts/{postId}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Retrieve a Post",
+        "description": "| | |\n| :--- | :---\n|```id```|Unique identifier for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```password```|The password for the post if it is password protected.",
+        "operationId": "RetrieveaPost",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Update a Post",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```author```|The ID for the author of the object.\n|```excerpt```|The excerpt for the object.\n|```featured_media```|The ID of the featured media for the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```format```|The format for the object.<br/>One of: **standard, aside, chat, gallery, link, image, quote, status, video, audio**\n|```meta```|Meta fields.\n|```sticky```|Whether or not the object should be treated as sticky.\n|```template```|The theme file to use to display the object.\n|```categories```|The terms assigned to the object in the category taxonomy.\n|```tags```|The terms assigned to the object in the post_tag taxonomy.",
+        "operationId": "UpdateaPost",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          },
+          {
+            "name": "excerpt",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{excerpt}}"
+            }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Delete a Post",
+        "description": "| | |\n| :--- | :---\n|```id```|Unique identifier for the object.\n|```force```|Whether to bypass trash and force deletion.",
+        "operationId": "DeleteaPost",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/media": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "List Media",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```after```|Limit response to posts published after a given ISO8601 compliant date.\n|```author```|Limit result set to posts assigned to specific authors.\n|```author_exclude```|Ensure result set excludes posts assigned to specific authors.\n|```before```|Limit response to posts published before a given ISO8601 compliant date.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default: **date**<br/>One of: **author, date, id, include, modified, parent, relevance, slug, include_slugs, title**\n|```parent```|Limit result set to items with particular parent IDs.\n|```parent_exclude```|Limit result set to all items except those of a particular parent ID.\n|```slug```|Limit result set to posts with one or more specific slugs.\n|```status```|Limit result set to posts assigned one or more statuses.<br/>Default: **inherit**\n|```media_type```|Limit result set to attachments of a particular media type.<br/>One of: **image, video, audio, application**\n|```mime_type```|Limit result set to attachments of a particular MIME type.",
+        "operationId": "ListMedia",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Create a Media item",
+        "description": "|||\n|:--|:--\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```title```|The title for the object.\n|```author```|The ID for the author of the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```meta```|Meta fields.\n|```template```|The theme file to use to display the object.\n|```alt_text```|Alternative text to display when attachment is not displayed.\n|```caption```|The attachment caption.\n|```description```|The attachment description.\n|```post```|The ID for the associated post of the attachment.\n\n\nMultiple different ways to do this. The way I illustrate here is:\n\nSet the ```Content-Type``` to the image file type. \nSet ```Content-Disposition``` to ```form-data;filename=\"YOUR-FILENAME.FILE_TYPE\"\nSet the binary to the file you wish to upload.",
+        "operationId": "CreateaMediaitem",
+        "parameters": [
+          {
+            "name": "Content-Disposition",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "form-data; filename=\"test_funny.jpg\""
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "image/jpeg"
+              ],
+              "type": "string",
+              "example": "image/jpeg"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "encoding": {},
+              "schema": {
+                "required": [
+                  "test-file"
+                ],
+                "type": "object",
+                "properties": {
+                  "test-file": {
+                    "type": "string",
+                    "description": "some test param",
+                    "example": "{{file}}"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/media/{mediaId}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Retrieve a Media item",
+        "description": "|||\n|:--|:--\n|```id```|Unique identifier for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaMediaitem",
+        "parameters": [
+          {
+            "name": "mediaId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Update a Media item",
+        "description": "|||\n|:--|:--\n|```id```|Unique identifier for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```title```|The title for the object.\n|```author```|The ID for the author of the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```meta```|Meta fields.\n|```template```|The theme file to use to display the object.\n|```alt_text```|Alternative text to display when attachment is not displayed.\n|```caption```|The attachment caption.\n|```description```|The attachment description.\n|```post```|The ID for the associated post of the attachment.",
+        "operationId": "UpdateaMediaitem",
+        "parameters": [
+          {
+            "name": "caption",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{caption}}"
+            }
+          },
+          {
+            "name": "mediaId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Delete a Media item",
+        "description": "|||\n|:--|:--\n|```id```|Unique identifier for the object.\n|```force```|Whether to bypass trash and force deletion.",
+        "operationId": "DeleteaMediaitem",
+        "parameters": [
+          {
+            "name": "force",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
+          },
+          {
+            "name": "mediaId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/pages": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "List Pages",
+        "description": "|||\n|:---|:---\n|```context```|\tScope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```after```|Limit response to posts published after a given ISO8601 compliant date.\n|```author```|Limit result set to posts assigned to specific authors.\n|```author_exclude```|Ensure result set excludes posts assigned to specific authors.\n|```efore```|Limit response to posts published before a given ISO8601 compliant date.\n|```exclude```|Ensure result set excludes specific IDs.\ninclude\tLimit result set to specific IDs.\n|```menu_order```|Limit result set to posts with a specific menu_order value.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default: **date**<br/>One of: **author, date, id, include, modified, parent, relevance, slug, include_slugs, title, menu_order**\n|```parent```|Limit result set to items with particular parent IDs.\n|```parent_exclude```|Limit result set to all items except those of a particular parent ID.\n|```slug```|Limit result set to posts with one or more specific slugs.\n|```status```|Limit result set to posts assigned one or more statuses.<br/>Default: **publish**",
+        "operationId": "ListPages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Create a Page",
+        "description": "|||\n|:---|:---\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```parent```|The ID for the parent of the object.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```author```|The ID for the author of the object.\n|```excerpt```|The excerpt for the object.\n|```featured_media```|The ID of the featured media for the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```menu_order```|The order of the object in relation to other object of its type.\n|```meta```|Meta fields.\n|```template```|The theme file to use to display the object.",
+        "operationId": "CreateaPage",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          },
+          {
+            "name": "excerpt",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{excerpt}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/pages/{pageId}": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Retrieve a Page",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```password```|The password for the post if it is password protected.",
+        "operationId": "RetrieveaPage",
+        "parameters": [
+          {
+            "name": "pageId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Update a Page",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```parent```|The ID for the parent of the object.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```author```|The ID for the author of the object.\n|```excerpt```|The excerpt for the object.\n|```featured_media```|The ID of the featured media for the object.\n|```comment_status```|Whether or not comments are open on the object.<br/>One of: **open, closed**\n|```ping_status```|Whether or not the object can be pinged.<br/>One of: **open, closed**\n|```menu_order```|The order of the object in relation to other object of its type.\n|```meta```|Meta fields.\n|```template```|The theme file to use to display the object.",
+        "operationId": "UpdateaPage",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "excerpt",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{excerpt}}"
+            }
+          },
+          {
+            "name": "pageId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Delete a Page",
+        "description": "|||\n|:--|:--\n|```id```|Unique identifier for the object.\n|```force```|Whether to bypass trash and force deletion.\n",
+        "operationId": "DeleteaPage",
+        "parameters": [
+          {
+            "name": "pageId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/themes": {
+      "get": {
+        "tags": [
+          "Themes"
+        ],
+        "summary": "List Themes",
+        "description": "|||\n|:---|:---\n|```status```|Limit result set to themes assigned one or more statuses.<br/>Required: **1**\n|```context```|Scope under which the request is made; determines fields present in response.\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.",
+        "operationId": "ListThemes",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{themeStatus}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/tags": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "List Tags",
+        "description": "|||\n|:--|:---\n|```context```|Scope under which the request is made;determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **asc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by term attribute.<br/>Default: **name**<br/>One of: **id, include, name, slug, include_slugs, term_group, description, count**\n|```hide_empty```|Whether to hide terms not assigned to any posts.\n|```post```|Limit result set to terms assigned to a specific post.\n|```slug```|Limit result set to terms with one or more specific slugs.\n",
+        "operationId": "ListTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Create a Tag",
+        "description": "|||\n|:---|:---\n|```description```|HTML description of the term.\n|```name```|HTML title for the term.<br/>Required: **1**\n|```slug```|An alphanumeric identifier for the term unique to its type.\n|```meta```|Meta fields.",
+        "operationId": "CreateaTag",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{test-tag}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/tags/{tagId}": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Retrieve a Tag",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```context```|Scope under which the request is made; |```determines```|fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaTag",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Update a Tag",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```description```|HTML description of the term.\n|```name```|HTML title for the term.\n|```slug```|An alphanumeric identifier for the term unique to its type.\n|```meta```|Meta fields.",
+        "operationId": "UpdateaTag",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{test-tag}}"
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete a Tag",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```force```|Required to be true, as terms do not support trashing.\n",
+        "operationId": "DeleteaTag",
+        "parameters": [
+          {
+            "name": "force",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/types": {
+      "get": {
+        "tags": [
+          "Types"
+        ],
+        "summary": "List Types",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "ListTypes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/types/{typeId}": {
+      "get": {
+        "tags": [
+          "Types"
+        ],
+        "summary": "Retrieve a Type",
+        "description": "|||\n|:---|:---\n|```type```|An alphanumeric identifier for the post type.<br/> Required:**1**\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{type}}"
+            }
+          },
+          {
+            "name": "typeId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List Categories",
+        "description": "|||\n|:--|:--\n|```context```|Scope under which the request is made;determines fields present in response.\n<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **asc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by term attribute.<br/>Default: **name**<br/>One of: **id, include, name, slug, include_slugs, term_group, description, count**\n|```hide_empty```|Whether to hide terms not assigned to any posts.\n|```parent```|Limit result set to terms assigned to a specific parent.\n|```post```|Limit result set to terms assigned to a specific post.\n|```slug```|Limit result set to terms with one or more specific slugs.",
+        "operationId": "ListCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create a category",
+        "description": "|||\n|:---|:---\n|```description```|HTML description of the term.\n|```name```|HTML title for the term.<br/>Required: **1**\n|```slug```|An alphanumeric identifier for the term unique to its type.\n|```parent```|The parent term ID.\n|```meta```|Meta fields.",
+        "operationId": "Createacategory",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{categoriesName}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/categories/{categoriesId}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Retrieve a Category",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaCategory",
+        "parameters": [
+          {
+            "name": "categoriesId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Update a Category",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```description```|HTML description of the term.\n|```name```|HTML title for the term.\n|```slug```|An alphanumeric identifier for the term unique to its type.\n|```parent```|The parent term ID.\n|```meta```|Meta fields.",
+        "operationId": "UpdateaCategory",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{categoriesName}}"
+            }
+          },
+          {
+            "name": "categoriesId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Delete a Category",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the term.\n|```force```|Required to be true, as terms do not support trashing.\n",
+        "operationId": "DeleteaCategory",
+        "parameters": [
+          {
+            "name": "force",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
+          },
+          {
+            "name": "categoriesId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/taxonomies": {
+      "get": {
+        "tags": [
+          "Taxonomies"
+        ],
+        "summary": "Retrieve a Taxonomy",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```type```|Limit results to taxonomies associated with a specific post type.\n",
+        "operationId": "RetrieveaTaxonomy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/taxonomies/{taxonomy}": {
+      "get": {
+        "tags": [
+          "Taxonomies"
+        ],
+        "summary": "Retrieve a Taxonomy",
+        "description": "|||\n|:--|:--\n|```taxonomy```|An alphanumeric identifier for the taxonomy.\n|```context```|Scope under which the request is made; determines fields present in response.<bvr/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "GetRetrieveaTaxonomy",
+        "parameters": [
+          {
+            "name": "taxonomy",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/statuses": {
+      "get": {
+        "tags": [
+          "Statuses"
+        ],
+        "summary": "Retrieve a Status",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, ed**",
+        "operationId": "RetrieveaStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/statuses/{statusId}": {
+      "get": {
+        "tags": [
+          "Statuses"
+        ],
+        "summary": "Retrieve a Status",
+        "description": "|||\n|:---|:---\n|```status```|An alphanumeric identifier for the status.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "GetRetrieveaStatus",
+        "parameters": [
+          {
+            "name": "statusId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/search": {
+      "get": {
+        "tags": [
+          "Search Results"
+        ],
+        "summary": "List Search-results",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```type```|Limit results to items of an object type.<br/>Default: **post**<br/>One of: **post**\n|```subtype```|Limit results to items of one or more object subtypes.<br/>Default: **any**",
+        "operationId": "ListSearch-results",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/blocks": {
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "List wp_blocks",
+        "description": "| | | \n| :--- | :---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```after```|Limit response to posts published after a given ISO8601 compliant date.\n|```before```|Limit response to posts published before a given ISO8601 compliant date.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default: **date**<br/>One of: **author, date, id, include, modified, parent, relevance, slug, include_slugs, title**\n|```slug```|Limit result set to posts with one or more specific slugs.\n|```status```|Limit result set to posts assigned one or more statuses.<br/>Default: **publish**",
+        "operationId": "Listwp_blocks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Create a wp_block",
+        "description": "| | |\n| :--- | :---\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```template```|The theme file to use to display the object.",
+        "operationId": "Createawp_block",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/blocks/{blockId}": {
+      "post": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Updating a wp_block",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```template```|The theme file to use to display the object.",
+        "operationId": "Updatingawp_block",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{title}}"
+            }
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Retrieve a wp_block",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```password```|The password for the post if it is password protected.",
+        "operationId": "Retrieveawp_block",
+        "parameters": [
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Delete a wp_block",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```force```|Whether to bypass trash and force deletion.",
+        "operationId": "Deleteawp_block",
+        "parameters": [
+          {
+            "name": "force",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/comments": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List Comments",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```after```|Limit response to comments published after a given ISO8601 compliant date.\n|```author```|Limit result set to comments assigned to specific user IDs. Requires authorization.\n|```author_exclude```|Ensure result set excludes comments assigned to specific user IDs. Requires authorization.\n|```author_email```|Limit result set to that from specific author email. Requires authorization.\n|```before```|\tLimit response to comments published before a given ISO8601 compliant date.\n|```exclude```|\tEnsure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default:** date_gmt**<br/>One of: **date, date_gmt, id, include, post, parent, type**\n|```parent```|Limit result set to comments of specific parent IDs.\n|```parent_exclude```|Ensure result set excludes specific parent IDs.\n|```post```|Limit result set to comments assigned to specific post IDs.\n|```status```|Limit result set to comments assigned a specific status. Requires authorization.<br/>Default: **approve**\n|```type```|Limit result set to comments assigned a specific type. Requires authorization.<br/>Default: **comment**\n|```password```|The password for the post if it is password protected.",
+        "operationId": "ListComments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Create a Comment",
+        "description": "|||\n|:---|:---\n|```post```|The ID of the associated post object.<br/>Required:**1**\n|```content```|The content for the object.<br/>Required:**1**\n|```author```|The ID of the user object, if author was a user.\n|```author_email```|Email address for the object author.\n|```author_ip```|IP address for the object author.\n|```author_name```|Display name for the object author.\n|```author_url```|URL for the object author.\n|```author_user_agent```|User agent for the object author.\n|```content```|The content for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```parent```|The ID for the parent of the object.\n|```status```|State of the object.\n|```meta```|Meta fields.",
+        "operationId": "CreateaComment",
+        "parameters": [
+          {
+            "name": "post",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{commentPostId}}"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "author_name",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{author}}"
+            }
+          },
+          {
+            "name": "author_email",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{email}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/comments/{commentId}": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Update a Comment",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the object.\n|```author```|The ID of the user object, if author was a user.\n|```author_email```|Email address for the object author.\n|```author_ip```|IP address for the object author.\n|```author_name```|Display name for the object author.\n|```author_url```|URL for the object author.\n|```author_user_agent```|User agent for the object author.\n|```content```|The content for the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```parent```|The ID for the parent of the object.\n|```post```|The ID of the associated post object.\n|```status```|State of the object.\n|```meta```|Meta fields.",
+        "operationId": "UpdateaComment",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{content}}"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/blocks/{blockId}/autosaves": {
+      "get": {
+        "tags": [
+          "Block Revisions"
+        ],
+        "summary": "Retrieve a wp_block-revision",
+        "description": "|||\n|:---|:---\n|```parent```|The ID for the parent of the object.<br/>Request:**1**\n|```context```|Scope under which the request is made; |```determines```|fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "Retrieveawp_block-revision",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{postId}}"
+            }
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/{blockId}/autosaves": {
+      "post": {
+        "tags": [
+          "Block Revisions"
+        ],
+        "summary": "Create a wp_block-revision",
+        "description": "|||\n|:--|:--\n|```parent```|The ID for the parent of the object.\n|```date```|The date the object was published, in the site's timezone.\n|```date_gmt```|The date the object was published, as GMT.\n|```slug```|An alphanumeric identifier for the object unique to its type.\n|```status```|A named status for the object.<br/>One of: **publish, future, draft, pending, private**\n|```password```|A password to protect access to the content and excerpt.\n|```title```|The title for the object.\n|```content```|The content for the object.\n|```template```|The theme file to use to display the object.",
+        "operationId": "Createawp_block-revision",
+        "parameters": [
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/blocks/{parentId}/autosaves/{blockId}": {
+      "get": {
+        "tags": [
+          "Block Revisions"
+        ],
+        "summary": "Retrieve a wp_block-revision with parent",
+        "description": "|||\n|:---|:---\n|```parent```|The ID for the parent of the object.\n|```id```|The ID for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "Retrieveawp_block-revisionwithparent",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp/v2/posts/{postId}/revisions": {
+      "get": {
+        "tags": [
+          "Post Revisions"
+        ],
+        "summary": "List Post Revisions",
+        "description": "| | |\n| :-- | :--\n|```parent``` |The ID for the parent of the object.\n|```context```|\tScope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.\n|```search```|Limit results to those matching a string.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```\t| Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **desc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default: **date**<br/>One of: **date, id, include, relevance, slug, include_slugs, title**",
+        "operationId": "ListPostRevisions",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp/v2/posts/{parentId}/revisions/{revisionId}": {
+      "get": {
+        "tags": [
+          "Post Revisions"
+        ],
+        "summary": "Retrieve a Post-Revision",
+        "description": "| | |\n|:--|:--\n|```parent```|The ID for the parent of the object.\n|```id```|Unique identifier for the object.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaPost-Revision",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp/v2/posts/{parentId}/revisions/{revisionsId}": {
+      "delete": {
+        "tags": [
+          "Post Revisions"
+        ],
+        "summary": "Delete a Post-revision",
+        "description": "| | |\n| :--- | :-- \n|```parent```|The ID for the parent of the object.\n|```id```|Unique identifier for the object.\n|```force```|Required to be true, as revisions do not support trashing.",
+        "operationId": "DeleteaPost-revision",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revisionsId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/block-renderer/{blockName}": {
+      "get": {
+        "tags": [
+          "Block Renderer"
+        ],
+        "summary": "Retrieve a Rendered-block",
+        "description": "|||\n|:---|:---\n|```name```|Unique registered name for the block.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **edit**\n|```attributes```|Attributes for core/tag-cloud block\n|```post_id```|ID of the post context.",
+        "operationId": "RetrieveaRendered-block",
+        "parameters": [
+          {
+            "name": "blockName",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List Users",
+        "description": "|||\n|:--|:--\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**\n|```page```|Current page of the collection.<br/>Default: **1**\n|```per_page```|Maximum number of items to be returned in result set.<br/>Default: **10**\n|```search```|Limit results to those matching a string.\n|```exclude```|Ensure result set excludes specific IDs.\n|```include```|Limit result set to specific IDs.\n|```offset```|Offset the result set by a specific number of items.\n|```order```|Order sort attribute ascending or descending.<br/>Default: **asc**<br/>One of: **asc, desc**\n|```orderby```|Sort collection by object attribute.<br/>Default: **name**<br/>One of: **id, include, name, registered_date, slug, include_slugs, email, url**\n|```slug```|Limit result set to users with one or more specific slugs.\n|```roles```|Limit result set to users matching at least one specific role provided. Accepts csv list or single role.\n|```who```|Limit result set to users who are considered authors.<br/>One of: **authors**",
+        "operationId": "ListUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a User",
+        "description": "|||\n|:---|:---\n|```username```|Login name for the user.<br/>Required: **1**\n|```name```|Display name for the user.\n|```first_name```|First name for the user.\n|```last_name```|Last name for the user.\n|```email```|The email address for the user.<br/>Required: **1**\n|```url```|URL of the user.\n|```description```|Description of the user.\n|```locale```|Locale for the user.<br/>One of: **en_US**\n|```nickname```|The nickname for the user.\n|```slug```|An alphanumeric identifier for the user.\n|```roles```|Roles assigned to the user.\n|```password```|Password for the user (never included).<br/>Required: **1**\n|```meta```|Meta fields.",
+        "operationId": "CreateaUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Retrieve a User",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the user.\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update a User",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the user.\n|```username```|Login name for the user.\n|```name```|Display name for the user.\n|```first_name```|First name for the user.\n|```last_name```|Last name for the user.\n|```email```|The email address for the user.\n|```url```|URL of the user.\n|```description```|Description of the user.\n|```locale```|Locale for the user.<br/>One of: **en_US**\n|```nickname```|The nickname for the user.\n|```slug```|An alphanumeric identifier for the user.\n|```roles```|Roles assigned to the user.\n|```password```|Password for the user (never included).\n|```meta```|Meta fields.",
+        "operationId": "UpdateaUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete User",
+        "description": "|||\n|:---|:---\n|```id```|Unique identifier for the user.\n|```force```|Required to be true, as users do not support trashing.\n|```reassign```|Reassign the deleted user's posts and links to this user ID.<br/>Required: **1**",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Retrieve a Me",
+        "description": "|||\n|:---|:---\n|```context```|Scope under which the request is made; determines fields present in response.<br/>Default: **view**<br/>One of: **view, embed, edit**",
+        "operationId": "RetrieveaMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Me",
+        "description": "|||\n|:---|:---\n|```username```|Login name for the user.\n|```name```|Display name for the user.\n|```first_name```|First name for the user.\n|```last_name```|Last name for the user.\n|```email```|The email address for the user.\n|```url```|URL of the user.\n|```description```|Description of the user.\n|```locale```|Locale for the user.<br/>One of: **en_US**\n|```nickname```|The nickname for the user.\n|```slug```|An alphanumeric identifier for the user.\n|```roles```|Roles assigned to the user.\n|```password```|Password for the user (never included).\n|```meta```|Meta fields.",
+        "operationId": "UpdateMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete Me",
+        "description": "|||\n|:---|:---\n|```force```|Required to be true, as users do not support trashing.\n|```reassign```|Reassign the deleted user's posts and links to this user ID.<br/>Required: **1**",
+        "operationId": "DeleteMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json/wp/v2/settings": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Retrieve Site Settings",
+        "description": "There are no arguments for this endpoint.\n",
+        "operationId": "RetrieveSiteSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Update Site Settings",
+        "description": "|||\n|:---|:---\n|```title```|Site title.\n|```description```|Site tagline.\n|```timezone```|A city in the same timezone as you.\n|```date_format```|A date format for all date strings.\n|```time_format```|A time format for all time strings.\n|```start_of_week```|A day number of the week that the week should start on.\n|```language```|WordPress locale code.\n|```use_smilies```|Convert emoticons like :-) and :-P to graphics on display.\n|```default_category```|Default post category.\n|```default_post_format```|Default post format.\n|```posts_per_page```|Blog pages show at most.\n|```default_ping_status```|Allow link notifications from other blogs (pingbacks and trackbacks) on new articles.<br/>One of: **open, closed**\n|```default_comment_status```|Allow people to post comments on new articles.<br/>One of: **open, closed**",
+        "operationId": "UpdateSiteSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/wp-json": {
+      "get": {
+        "tags": [
+          "Misc"
+        ],
+        "summary": "Routes",
+        "description": "Returns all the available API routes and endpoints for a Wordpress instance.",
+        "operationId": "Routes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "httpBasic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "httpBasic": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Posts",
+      "description": "## Schema\n``` The schema defines all the fields that exist for a post object. ```\n\n\n| |    |\n|:-|:- |\n|```date``` <br> datedatestring,datetime ([details](https://core.trac.wordpress.org/ticket/41032)) | The date the object was published, in the site's timezone. <br >Context: **view, edit, embed** |\n| ```date_gmt``` <br >string, datetime ([details](https://core.trac.wordpress.org/ticket/41032)) | The date the object was published, as GMT.<br />Context: **view, edit**\n|```guid``` <br /> object | The globally unique identifier for the object. <br />Read only<br />Context: **view, edit**\n| ```id``` <br /> integer |  Unique identifier for the object.<br /> Read Only <br /> Context: **view, edit, embed**\n| ```link``` <br /> string, uri | Url to the object. <br /> Read Only <br /> Context: **view, edit, embed**\n| ```modified``` <br /> string, datetime ([details](https://core.trac.wordpress.org/ticket/41032)) | The date the object was last modified, in the site's timezone. <br /> Read only <br /> Context: **view, edit**\n| modified_gmt <br /> string, datetime ([details](https://core.trac.wordpress.org/ticket/41032)) | The date the object was last modified, as GMT. <br /> Read only <br /> Context: **view, edit**\n| ```slug``` <br /> string | An alphanumeric identifier for the object unique to its type. <br /> Context: **view, edit**\n| ```status``` <br /> string | A named status for the object. <br /> Context: **view, edit** <br /> One of: **publish, future, draft, pending, private**\n| ```type``` <br /> string | Type of Post for the object. <br /> Read Only <br /> Context: **view, edit, embed**\n| ```password``` <br /> string | A password to protect access to the content and excerpt. <br/> Context: **edit**\n| ```permalink_template``` <br/> string | Permalink template for the object <br/> Read Only <br/> Context: **edit**\n| ```generated_slug``` <br/> string | Permalink template for the object. <br/> Read only <br/> Context: **edit**\n|```title``` <br/> object | The title for the object. <br/> Context: **view, edit, embed**\n| ```content``` <br/> object | The content for the object. <br/>Context: **view, edit**\n|```author``` <br/> integer | The ID for the author of the object<br/>Context:**view, edit, embed**\n|```excerpt```<br/>object | The exerpt of the object.<br/>Context:**view, edit, embed**\n|```featured_media```<br/>integer | The ID of the featured media for the object<br/>Context: **view, edit, embed**\n|```comment_status```<br/>string | Whether or not comments are open on the object.<br/>Context: **view, edit**<br />One of:**open, closed**\n|```ping_status```<br/>string | Whether or not the object can be pinged.<br/>Context: **open, closed**\n|```format```<br/>string | The format for the object.<br/>Context: **view, edit**<br/>One of: **standard, aside, chat, gallery, link, image, quote, status, video, audio**\n|```meta```<br/>object | Meta fields.<br/>Context: **view, edit**\n|```sticky```<br/>boolean | Whether or not the object should be treated as sticky.<br/>Context: **view, edit**\n|```template```<br/>string | The theme file to use to display the object.<br/>Context: **view, edit**\n|```categories```<br/>array | The terms assigned to the object in the category taxonomy.<br/>Context: **view, edit**\n|```tags```<br/>array | The terms assigned to the object in the post_tag taxonomy.<br/>Context: **view, edit**"
+    },
+    {
+      "name": "Media",
+      "description": "|||\n|:---|:---\n|```date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, as GMT.<br/>Context: **view, edit**\n|```guid```<br/>object<br/>The globally unique identifier for the object.<br/>Read only<br/>Context: **view, edit**\n|```id```<br/>integer|Unique identifier for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```link```<br/>string,uri|URL to the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```modified```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, in the site's timezone.<br/>Read only<br/>Context: **view, edit**\n|```modified_gmt```<br/>string,<b/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, as GMT.<br/>Read only<br/>Context: **view, edit**\n|```slug```</br>string|An alphanumeric identifier for the object unique to its type.<br/>Context: **view, edit, embed**\n|```status```<br/>string|A named status for the object.<br/>Context: **view, edit**<br/>One of: **publish, future, draft, pending, private**\n|```type```<br/>string|Type of Post for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```permalink_template```<br/>string|Permalink template for the object.<br/>Read only<br/>Context: **edit**\n|```generated_slug```<br/>string|Slug automatically generated from the object title.<br/>Read only<br/>Context: **edit**\n|```title```<br/>object|The title for the object.<br/>Context: **view, edit, embed**\n|```author```<br/>integer|The ID for the author of the object.<br/>Context: **view, edit, embed**\n|```comment_status```</br>string|Whether or not comments are open on the object.<br/>Context: **view, edit**<br/>One of: **open, closed**\n|```ping_status```<br/>string|Whether or not the object can be pinged.<br/>Context: **view, edit**<br/>One of: **open, closed**\n|```meta```<br/>object|Meta fields.<br/>Context: **view, edit**\n|```template```<br/>string|The theme file to use to display the object.<br/>Context: **view, edit**\n|```alt_text```<br/>string|Alternative text to display when attachment is not displayed.<br/>Context: **view, edit, embed**\n|```caption```<br/>object|The attachment caption.<br/>Context: **view, edit, embed**\n|```description```<br/>object|The attachment description.<br/>Context: **view, edit**\n|```media_type```<br/>string|Attachment type.<br/>Read only<br/>Context: **view, edit, embed**<br/>One of: **image, file**\n|```mime_type```<br/>string|The attachment MIME type.<br/>Read only<br/>Context: **view, edit, embed**\n|```media_details```<br/>object|Details about the media file, specific to its type.<br/>Read only<br/>Context: **view, edit, embed**\n|```post```<br/>integer|The ID for the associated post of the attachment.<br/>Context: **view, edit**\n|```source_url```<br/>string, uri|URL to the original attachment file.<br/>Read only<br/>Context: **view, edit, embed**"
+    },
+    {
+      "name": "Pages",
+      "description": "|||\n|:---|:---\n|```date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, as GMT.<br/>Context: **view, edit**\n|```guid```<br/>object|The globally unique identifier for the object.<br/>Read only<br/>Context: **view, edit**\n|```id```<br/>integer|Unique identifier for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```link```<br/>string,uri|URL to the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```modified```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))\nThe date the object was last modified, in the site's timezone.<br/>Read only<br/>Context: **view, edit**\n|```modified_gmt```<br/>string,<br/>\ndatetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, as GMT.<br/>Read only<br/>Context: **view, edit**\n|```slug```<br/>string|An alphanumeric identifier for the object unique to its type.<br/>Context: **view, edit, embed**\n|```status```<br/>string|A named status for the object.<br/>Context: **view, edit**<br/>One of: **publish, future, draft, pending, private**\n|```type```<br/>string|Type of Post for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```password```<br/>string|A password to protect access to the content and excerpt.<br/>Context: **edit**\n|```permalink_template```<br/>string|Permalink template for the object.<br/>Read only<br/>Context: **edit**\n|```generated_slug```<br/>string|Slug automatically generated from the object title.<br/>Read only<br/>Context: **edit**\n|```parent```<br/>integer|The ID for the parent of the object.<br/>Context: **view, edit**\n|```title``<br/>object|The title for the object.<br/>Context: **view, edit, embed**\n|```content```<br/>object|The content for the object.<br/>Context: **view, edit**\n|```author```<br/>integer|The ID for the author of the object.<br/>Context: **view, edit, embed**\n|```excerpt```<br/>object|The excerpt for the object.<br/>Context: **view, edit, embed**\n|```featured_media```<br/>integer|The ID of the featured media for the object.<br/>Context: **view, edit, embed**\n|```comment_status```<br/>string|Whether or not comments are open on the object.<br/>Context: **view, edit**<br/>One of: **open, closed**\n|```ping_status```<br/>string|Whether or not the object can be pinged.<br/>Context: **view, edit**<br/>One of: **open, closed**\n|```menu_order```<br/>integer|The order of the object in relation to other object of its type.<br/>Context: **view, edit**\n|```meta```<br/>object|Meta fields.<br/>Context: **view, edit**\n|```template```<br/>string|The theme file to use to display the object.<br/>Context: **view, edit**\n\n\n\n"
+    },
+    {
+      "name": "Themes",
+      "description": "|||\n|:--|:--\n|```theme_supports```<br/>array|Features supported by this theme.<br/>Read only\n\n\nhttps://developer.wordpress.org/cli/commands/theme/status/\n"
+    },
+    {
+      "name": "Tags",
+      "description": "|||\n|:--|:--\n|```id```<br/>integer|Unique identifier for the term.<br/>Read only<br/>Context: **view, embed, edit**\n|```count```<br/>integer|Number of published posts for the term.<br/>Read only<br/>Context: **view, edit**\n|```description```<br/>string|HTML description of the term.<br/>Context: **view, edit**\n|```link```<br/>string,uri|URL of the term.<br/>Read only<br/>Context: **view, embed, edit**\n|```name```<br/>string|HTML title for the term.<br/>Context: **view, embed, edit**\n|```slug```<br/>string|An alphanumeric identifier for the term unique to its type.<br/>Context: **view, embed, edit**\n|```taxonomy```<br/>string|Type attribution for the term.<br/>Read only<br/>Context: **view, embed, edit**<br/>One of: **category, post_tag, nav_menu, link_category, post_format**\n|```meta```<br/>object|Meta fields.<br/>Context: **view, edit**"
+    },
+    {
+      "name": "Types",
+      "description": "|||\n|:--|:---\n|```capabilities```<br/>object|All capabilities used by the post type.<br/>Read only<br/>Context: **edit**\n|```description```<br/>string|A human-readable description of the post type.<br/>Read only<br/>Context: **view, edit**\n|```hierarchical``<br/>boolean|Whether or not the post type should have children.<br/>Read only<br/>Context: **view, edit**\n|```viewable```<br/>boolean|Whether or not the post type can be viewed.<br/>Read only<br/>Context: **edit**\n|```labels```object|Human-readable labels for the post type for various contexts.<br/>Read only<br/>Context: **edit**\n|```name```<br/>string|The title for the post type.<br/>Read only<br/>Context: **view, edit, embed**\n|```slug```<br/>string|An alphanumeric identifier for the post type.<br/>Read only<br/>Context: **view, edit, embed**\n|```supports```<br/>object|All features, supported by the post type.<br/>Read only<br/>Context: **edit**\n|```taxonomies```<br/>array|Taxonomies associated with post type.<br/>Read only<br/>Context: **view, edit**\n|```rest_base```string|REST base route for the post type.<br/>Read only<br/>Context: **view, edit, embed**"
+    },
+    {
+      "name": "Categories",
+      "description": "|||\n|:---|:---\n|```id```<br/>integer|Unique identifier for the term.<br/>Read only<br/>Context: **view, embed, edit**\n|```count```<br/>integer|Number of published posts for the term.<br/>Read only<br/>Context: **view, edit**\n|```description```<br/>string|HTML description of the term.<br/>Context: **view, edit**\n|```link```<br/>string,uri<br/>|URL of the term.<br/>Read only<br/>Context: **view, embed, edit**\n|```name```<br/>string|HTML title for the term.<br/>Context: **view, embed, edit**\n|```slug```<br/>string|An alphanumeric identifier for the term unique to its type.<br/>Context: **view, embed, edit**\n|```taxonomy```<br/>string|Type attribution for the term.<br/>Read only<br/>Context: **view, embed, edit**<br/>One of: **category, post_tag, nav_menu, link_category, post_format**\n|```parent```<br/>integer|The parent term ID.<br/>Context: **view, edit**\n|```meta``<br/>object|Meta fields.<br/>Context: **view, edit**"
+    },
+    {
+      "name": "Taxonomies",
+      "description": "|||\n|:---|:---\n|```capabilities```<br/>object|All capabilities used by the taxonomy.<br/>Read only<br/>Context: **edit**\n|```description```</br>string|A human-readable description of the taxonomy.<br/>Read only<br/>Context: **view, edit**\n|```hierarchical```<br/>boolean|Whether or not the taxonomy should have children.<br/>Read only<br/>Context: **view, edit**\n|```labels```<br/>object|Human-readable labels for the taxonomy for various contexts.<br/>Read only<br/>Context: **edit**\n|```name```<br/>string|The title for the taxonomy.<br/>Read only<br/>Context: **view, edit, embed**\n|```slug```<br/>string|An alphanumeric identifier for the taxonomy.<br/>Read only<br/>Context: **view, edit, embed**\n|```show_cloud```<br/>boolean|Whether or not the term cloud should be displayed.<br/>Read only<br/>Context: **edit**\n|```types```<br/>array|Types associated with the taxonomy.<br/>Read only<br/>Context: **view, edit**\n|```rest_base```<br/>string|REST base route for the taxonomy.<br/>Read only<br/>Context: **view, edit, embed**\n|```visibility```<br/>object|The visibility settings for the taxonomy.<br/>Read only<br/>Context: **edit**"
+    },
+    {
+      "name": "Statuses",
+      "description": "|||\n|:---|:---\n|||\n|```name```<br/>string|The title for the status.<br/>Read only<br/>Context: **embed, view, edit**\n|```private```<br/>boolean|Whether posts with this status should be private.<br/>Read only<br/>Context: **edit**\n|```protected```<br/>boolean|Whether posts with this status should be protected.<br/>Read only<br/>Context: **edit**\n|```public```<br/>boolean|Whether posts of this status should be shown in the front end of the site.<br/>Read only<br/>Context: **view, edit**\n|```queryable```<br/>boolean|Whether posts with this status should be publicly-queryable.<br/>Read only<br/>Context: **view, edit**\n|```show_in_list```<br/>boolean|Whether to include posts in the edit listing for their post type.<br/>Read only<br/>Context: **edit**\n|```slug```<br/>string|An alphanumeric identifier for the status.<br/>Read only<br/>Context: **embed, view, edit**"
+    },
+    {
+      "name": "Search Results",
+      "description": "|||\n|:---|:---\n|```id```<br/>integer|Unique identifier for the object.<br/>Read only<br/>Context: **view, embed**\n|```title```<br/>string|The title for the object.<br/>Read only<br/>Context: **view, embed**\n|```url```<br/>string,uri|URL to the object.<br/>Read only<br/>Context: **view, embed**\n|```type```<br/>string|Object type.<br/>Read only<br/>Context: **view, embed**<br/>One of: **post**\n|```subtype```<br/>string|Object subtype.<br/>Read only<br/>Context: **view, embed**<br/>One of: **post, page**"
+    },
+    {
+      "name": "Blocks",
+      "description": "|||\n|:---|:---\n|```author```<br/>integer|The ID for the author of the object.<br/>Context: **view, edit, embed**\n|```date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, as GMT.<br/>Context: **view, edit**\n|```guid```<br/>object|The globally unique identifier for the object.<br/>Read only<br/>Context: **view, edit**\n|```id```<br/>integer|Unique identifier for the object.<br/>Context: **view, edit, embed**\n|```modified```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, in the site's timezone.<br/>Context: **view, edit**\n|```modified_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, as GMT.<br/>Context: **view, edit**\n|```parent```<br/>integer|The ID for the parent of the object.<br/>Context: **view, edit, embed**\n|```slug```<br/>string|An alphanumeric identifier for the object unique to its type.<br/>Context: **view, edit, embed**\n|```title```<br/>object|The title for the object.<br/>Context: **view, edit, embed**\n|```content```<br/>object|The content for the object.<br/>Context: **view, edit**\n|```preview_link```<br/>string,uri|Preview link for the post.<br/>Read only<br/>Context: **edit**"
+    },
+    {
+      "name": "Comments",
+      "description": "|||\n|:---|:---\n|```id```<br/>integer|Unique identifier for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```author```<br/>integer|The ID of the user object, if author was a user.<br/>Context: **view, edit, embed**\n|```author_email```<br/>string,email|Email address for the object author.<br/>Context: **edit**\n|```author_ip```<br/>string,ip|IP address for the object author.<br/>Context: **edit**\n|```author_name```<br/>string|Display name for the object author.<br/>Context: **view, edit, embed**\n|```author_url```<br/>string,uri|URL for the object author.<br/>Context: **view, edit, embed**\n|```author_user_agent```<br/>string|User agent for the object author.<br/>Context: **edit**\n|```content```<br/>object|The content for the object.<br/>Context: **view, edit, embed**\n|```date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, as GMT.<br/>Context: **view, edit**\n|```link```<br/>string,uri|URL to the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```parent```<br/>integer|The ID for the parent of the object.<br/>Context: **view, edit, embed**\n|```post```<br/>integer|The ID of the associated post object.<br/>Context: **view, edit**\n|```status```<br/>string|State of the object.<br/>Context: **view, edit**\n|```type```<br/>string|Type of Comment for the object.<br/>Read only<br/>Context: **view, edit, embed**\n|```author_avatar_urls```<br/>object|Avatar URLs for the object author.<br/>Read only<br/>Context: **view, edit, embed**\n|```meta```|object\tMeta fields.<br/>Context: **view, edit**"
+    },
+    {
+      "name": "Block Revisions",
+      "description": "|||\n|:---|:---\n|```author```<br/>integer|The ID for the author of the object.<br/>Context: **view, edit, embed**\n|```date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|\nThe date the object was published, as GMT.<br/>Context: **view, edit**\n|```guid```<br/>object|The globally unique identifier for the object.<br/>Read only<br/>Context: **view, edit**\n|```id```<br/>integer|Unique identifier for the object.<br/>Context: **view, edit, embed**\n|```modified```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, in the site's timezone.<br/>Context: **view, edit**\n|```modified_gmt```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, as GMT.<br/>Context: **view, edit**\n|```parent```<br/>integer|The ID for the parent of the object.<br/>Context: **view, edit, embed**\n|```slug```<br/>string|An alphanumeric identifier for the object unique to its type.<br/>Context: **view, edit, embed**\n|```title```<br/>object|The title for the object.<br/>Context: **view, edit, embed**\n|```content```<br/>object|The content for the object.<br/>Context: **view, edit**\n|```preview_link```<br/>string,uri|Preview link for the post.<br/>Read only<br/>Context: **edit**"
+    },
+    {
+      "name": "Post Revisions",
+      "description": "#Schema\nThe schema defines all the fields that exist for a post-revision object.\n\n| | |\n| :-- | :--\n|```author```<br/>integer |\tThe ID for the author of the object.</br>Context: **view, edit, embed**\n|```date```<br/>string,datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, in the site's timezone.<br/>Context: **view, edit, embed**\n|```date_gmt```<br/>string,datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was published, as GMT.<br/>Context: **view, edit**\n|```guid```<br/>object|The globally unique identifier for the object.<br/>Read only<br/>Context: **view, edit**\n|```id```<br/>integer\t|Unique identifier for the object.<br/>Context: **view, edit, embed**\n|```modified```<br/>string,datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, in the site's timezone.<br/>Context: **view, edit**\n|```modified_gmt```<br/>string,datetime ([details](https://core.trac.wordpress.org/ticket/41032))|The date the object was last modified, as GMT.<br/>Context: **view, edit**\n|```parent```<br/>integer|The ID for the parent of the object.<br/>Context: **view, edit, embed**\n|```slug```<br/>string|\tAn alphanumeric identifier for the object unique to its type.<br/>Context: **view, edit, embed**\n|```title```<br/>object\t| The title for the object.<br/>Context: **view, edit, embed**\n|```content```<br/>object |The content for the object.<br/>Context: **view, edit**\n|```excerpt```<br/>object\t| The excerpt for the object.<br/>Context: **view, edit, embed**\n"
+    },
+    {
+      "name": "Block Renderer",
+      "description": "|||\n|:---|:---\n|```rendered```<br/>string|The rendered block.<br/>Context: **edit**"
+    },
+    {
+      "name": "Users",
+      "description": "|||\n|:---|:---\n|```id```<br/>integer|Unique identifier for the user.<br/>Read only<br/>Context: **embed, view, edit**\n|```username```<br/>string|Login name for the user.<br/>Context: **edit**\n|```name```<br/>string|Display name for the user.<br/>Context: **embed, view, edit**\n|```first_name```<br/>string|First name for the user.<br/>Context: **edit**\n|```last_name```<br/>string|Last name for the user.<br/>Context:  **edit**\n|```email```<br/>string,email|The email address for the user.<br/>Context: **edit**\n|```url```<br/>string,uri|URL of the user<br/>Context: **embed, view, edit**\n|```description```|<br/>string|Description of the user.<br/>Context: **embed, view, edit**\n|```link```<br/>string,uri | Author URL of the user.<br/>Read only<br/>Context: **embed, view, edit**\n|```locale```<br/>string|Locale for the user.<br/>Context:  **edit**<br/>One of: **en_US**\n|```nickname```<br/>string|The nickname for the user.<br/>Context: **edit**\n|```slug```<br/>string|An alphanumeric identifier for the user.<br/>Context: **embed, view, edit**\n|```registered_date```<br/>string,<br/>datetime ([details](https://core.trac.wordpress.org/ticket/41032))|Registration date for the user.<br/>Read only<br/>Context: **edit**\n|```roles```<br/>array|Roles assigned to the user.<br/>Context: **edit**\n|```password```<br/>string|Password for the user (never included)\n|```capabilities```<br/>object|All capabilities assigned to the user.<br/>Read only<br/>Context: **edit**\n|```extra_capabilities```<br/>object|Any extra capabilities assigned to the user.<br/>Read only<br>Context: **edit**\n|```avatar_urls```<br/>object|Avatar URLs for the user.<br/>Read only<br/>Context: **embed, view, edit**\n|```meta```<br/>object|Meta fields.<br/>Context: **view, edit**"
+    },
+    {
+      "name": "Settings",
+      "description": "|||\n|:---|:---\n|```title```<br/>string|Site title.\n|```description```<br/>string|Site tagline.\n|```timezone```<br/>string|A city in the same timezone as you.\n|```date_format```<br/>string|\tA date format for all date strings.\n|```time_format```<br/>string|A time format for all time strings.\n|```start_of_week```<br/>integer|A day number of the week that the week should start on.\n|```language```<br/>string|WordPress locale code.\n|```use_smilies```<br/>boolean|Convert emoticons like :-) and :-P to graphics on display.\n|```default_category```<br/>integer|Default post category.\n|```default_post_format```<br/>string|Default post format.\n|```posts_per_page```<br/>integer | Blog pages show at most.\n|```default_ping_status```<br/>string|Allow link notifications from other blogs (pingbacks and trackbacks) on new articles.<br/>One of: **open, closed**\n|```default_comment_status```<br/>string|Allow people to post comments on new articles.<br/>One of: **open, closed**"
+    },
+    {
+      "name": "Misc",
+      "description": ""
+    }
+  ]
+}

@@ -1,0 +1,1603 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Business Data Service",
+    "description": "Internet and On-Premise data aggregation service.\n",
+    "version": "Beta",
+    "contact": {
+      "name": "SAP 3D Visualization service",
+      "email": "sap_cp_3d_visualization@sap.com"
+    }
+  },
+  "x-sap-shortText": "Aggregate internet and on-premise data.",
+  "security": [
+    {
+      "service_auth": [
+        "read-content",
+        "author-content",
+        "delete-content"
+      ]
+    }
+  ],
+  "externalDocs": {
+    "description": "Application Help",
+    "url": "https://help.sap.com/viewer/b881318bde9048e69bb74379dcc75d7f/Cloud/en-US/0cf9a68e18144d0aa6ca57b878671b65.html"
+  },
+  "paths": {
+    "/connections": {
+      "get": {
+        "tags": [
+          "Connection"
+        ],
+        "summary": "Get existing connections.",
+        "description": "Lists existing connection details.\n\n**NOTE:** only summaries are provided; authentication details and additional properties are not provided.\nTo access full connection details call *GET /connections/{connectionName}* endpoint.\n",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListConnectionSummaries"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Connection"
+        ],
+        "summary": "Create connection.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Connection"
+        },
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionSummary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connections/{connectionName}": {
+      "get": {
+        "tags": [
+          "Connection"
+        ],
+        "summary": "Get existing connection.",
+        "description": "Output full connection details including authentication details and additional properties.\n",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/connectionNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Connection"
+        ],
+        "summary": "Update connection.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/connectionNamePathParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Connection"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionSummary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Connection"
+        ],
+        "summary": "Delete connection.",
+        "security": [
+          {
+            "service_auth": [
+              "delete-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/connectionNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connections/test": {
+      "post": {
+        "tags": [
+          "Connection",
+          "Test"
+        ],
+        "summary": "Test connection.",
+        "description": "Tests connection details without creating the connection in the system.\nUseful for testing connections and their outputs before calling the *POST /connections* endpoint.\n",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Connection"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessDatasourceResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDatasourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connections/test/{connectionName}": {
+      "post": {
+        "tags": [
+          "Connection",
+          "Test"
+        ],
+        "summary": "Test existing connection.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/connectionNamePathParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Parameters"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessDatasourceResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDatasourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mappings": {
+      "get": {
+        "tags": [
+          "Mapping"
+        ],
+        "summary": "Get existing mappings.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListMappings"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mapping"
+        ],
+        "summary": "Create mapping.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Mapping"
+        },
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mapping"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mappings/{mappingName}": {
+      "get": {
+        "tags": [
+          "Mapping"
+        ],
+        "summary": "Get existing mapping.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mappingNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mapping"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mapping"
+        ],
+        "summary": "Update mapping.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mappingNamePathParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Mapping"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mapping"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mapping"
+        ],
+        "summary": "Delete mapping.",
+        "security": [
+          {
+            "service_auth": [
+              "delete-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mappingNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mappings/test": {
+      "post": {
+        "tags": [
+          "Mapping",
+          "Test"
+        ],
+        "summary": "Test mapping.",
+        "description": "Tests mapping details without creating the mapping in the system.\nUseful for testing mappings and their outputs before calling the *POST /mappings* endpoint.\n",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/connectionNameQueryParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Mapping"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessDatasourceResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDatasourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mappings/test/{mappingName}": {
+      "post": {
+        "tags": [
+          "Mapping",
+          "Test"
+        ],
+        "summary": "Test existing mapping.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mappingNamePathParam"
+          },
+          {
+            "$ref": "#/components/parameters/connectionNameQueryParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Parameters"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessDatasourceResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDatasourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasources": {
+      "get": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Get existing datasources.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDatasources"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Create datasource.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Datasource"
+        },
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Datasource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasources/{datasourceName}": {
+      "get": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Get existing datasource.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/datasourceNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Datasource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Update datasource.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/datasourceNamePathParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Datasource"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Datasource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Get datasource data.",
+        "description": "Gets the datasource data.\n",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/datasourceNamePathParam"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Parameters"
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SuccessDatasourceResponse"
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ErrorDatasourceResponse"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Delete datasource.",
+        "security": [
+          {
+            "service_auth": [
+              "delete-content"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/datasourceNamePathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/templates": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Get existing template names.",
+        "security": [
+          {
+            "service_auth": [
+              "read-content"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTemplateNames"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Create datasource from template.",
+        "security": [
+          {
+            "service_auth": [
+              "author-content"
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template"
+              }
+            }
+          },
+          "description": "The template details.",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Datasource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{subaccountname}.sap-3d-business-data.cfapps.{region}.hana.ondemand.com/{instancename}/v1",
+      "description": "Business Data Service Admin API on SAP Business Technology Platform",
+      "templates": {
+        "subaccountname": "The name of the subaccount on SAP Business Technology Platform",
+        "region": {
+          "enum": [
+            "eu10",
+            "us10"
+          ],
+          "default": "eu10",
+          "description": "The SAP Business Technology Platform region where the Business Data Service is being used from."
+        },
+        "instancename": "The name of the Business Data Service instance to access (obtained from service binding)."
+      }
+    }
+  ],
+  "components": {
+    "parameters": {
+      "connectionNameQueryParam": {
+        "name": "connectionName",
+        "in": "query",
+        "description": "The name of the connection.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "connectionNamePathParam": {
+        "name": "connectionName",
+        "in": "path",
+        "description": "The name of the connection.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "mappingNamePathParam": {
+        "name": "mappingName",
+        "in": "path",
+        "description": "The name of the mapping.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "datasourceNamePathParam": {
+        "name": "datasourceName",
+        "in": "path",
+        "description": "The name of the datasource.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "requestBodies": {
+      "Datasource": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Datasource"
+            }
+          }
+        },
+        "description": "The datasource details.",
+        "required": true
+      },
+      "Mapping": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Mapping"
+            }
+          }
+        },
+        "description": "The mapping details.",
+        "required": true
+      },
+      "Connection": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Connection"
+            }
+          }
+        },
+        "description": "The connection details.",
+        "required": true
+      },
+      "Parameters": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Parameters"
+            }
+          }
+        },
+        "description": "The parameter replacement values.",
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "service_auth": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://{subaccountname}.authentication.{region}.hana.ondemand.com/oauth/token",
+            "scopes": {
+              "read-content": "Ability to read existing content.",
+              "author-content": "Ability to create and update content.",
+              "delete-content": "Ability to delete content."
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "LogEventCode": {
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          520,
+          521,
+          620,
+          4096,
+          4097,
+          4098,
+          4099,
+          4100,
+          4101,
+          4102,
+          8191,
+          8192,
+          8193,
+          8194,
+          8195,
+          8196,
+          8199,
+          8200,
+          8201,
+          8210,
+          8211,
+          8500,
+          8501,
+          8502
+        ],
+        "description": "A code describing the error that occurred, if known. Useful to decide programmatically how to respond to an error condition.\n\nPossible values:\n* `0` - Unknown\n* `1` - Message\n* `2` - Profile\n* `3` - Major version mismatch\n* `4` - Minor version greater\n* `5` - Minor version compatible\n* `6` - Match item\n* `7` - Match item exactly\n* `8` - Replace instance entity\n* `9` - Update entity\n* `10` - File not found\n* `11` - File read start\n* `12` - File read complete\n* `13` - File write start\n* `14` - File write complete\n* `15` - File error\n* `16` - Memory error\n* `17` - Selector not resolved\n* `18` - Entity not found\n* `19` - Entity created\n* `20` - Parent selector not resolved\n* `21` - Mesh creation failed\n* `22` - Invalid animation data type\n* `23` - Unsupported metadata type\n* `24` - Unsupported metadata structure\n* `25` - Unsupported render method\n* `26` - Unsupported render stage\n* `27` - Entity skipped\n* `28` - File reference not found\n* `29` - File reference found\n* `30` - File auxiliary not found\n* `31` - File auxiliary found\n* `32` - File substitution\n* `33` - File invalid format\n* `34` - File encryption error\n* `35` - File compression error\n* `36` - Match content\n* `37` - New content\n* `38` - Removed content\n* `39` - Aborted\n* `40` - Reference selector not resolved\n* `41` - Entity VEID error\n* `42` - Instance VEID error\n* `43` - Element VEID error\n* `44` - Content VEID error\n* `45` - Validation error\n* `46` - Duplicate entity removed\n* `47` - Duplicate entity skipped\n* `48` - Unresolved entity variant\n* `49` - Version mismatch\n* `50` - Missing component\n* `51` - Unsupported\n* `52` - Invalid parameter\n* `53` - Empty entity\n* `54` - File version error\n* `55` - Unknown object session ID\n* `56` - Metadata fault\n* `57` - Query plan\n* `58` - Persistence error\n* `59` - Warning\n* `60` - Error\n* `61` - Messaging error\n* `520` - Network error\n* `521` - Network timeout\n* `620` - DB insufficient disk space\n* `4096` - Profiling start (open model)\n* `4097` - Profiling prepare model\n* `4098` - Profiling read geometry\n* `4099` - Profiling decode geometry\n* `4100` - Profiling read image\n* `4101` - Profiling read material\n* `4102` - Profiling read data\n* `8191` - Profiling max\n* `8192` - Scene VEID\n* `8193` - Object count\n* `8194` - Object total count\n* `8195` - Stage start\n* `8196` - Stage progress\n* `8199` - Stage complete\n* `8200` - Task start\n* `8201` - Task progress\n* `8210` - Task complete\n* `8211` - Object size\n* `8500` - Tenant instance not found\n* `8501` - Tenant instance offline\n* `8502` - Tenant instance deleted\n"
+      },
+      "EventValue": {
+        "type": "object",
+        "description": "Name/value pair used to provide detail data in an event.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "LogEvent": {
+        "type": "object",
+        "description": "An event that occurred.",
+        "properties": {
+          "context": {
+            "type": "string",
+            "description": "System or client provided context identifier. Not used in processing."
+          },
+          "code": {
+            "$ref": "#/components/schemas/LogEventCode"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventValue"
+            }
+          }
+        }
+      },
+      "SuccessResultProperties": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "description": "Whether an operation succeeded.",
+            "default": "success",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ErrorResultProperties": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "description": "Whether an operation succeeded.",
+            "default": "failure",
+            "enum": [
+              "failure"
+            ]
+          }
+        }
+      },
+      "EventMessageProperties": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "User readable message describing the error condition in more detail.",
+            "type": "string"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogEvent"
+            }
+          }
+        }
+      },
+      "BaseResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SuccessResultProperties"
+          },
+          {
+            "$ref": "#/components/schemas/EventMessageProperties"
+          }
+        ]
+      },
+      "ErrorResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ErrorResultProperties"
+          },
+          {
+            "$ref": "#/components/schemas/EventMessageProperties"
+          }
+        ]
+      },
+      "ObjectName": {
+        "type": "string",
+        "pattern": "[^\\w\\-\\P{InBasic_Latin}]+",
+        "maxLength": 256
+      },
+      "ConnectionSummary": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "proxyType": {
+            "type": "string",
+            "enum": [
+              "Internet",
+              "OnPremise"
+            ]
+          },
+          "requiredParameters": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 0
+            },
+            "default": null
+          }
+        },
+        "required": [
+          "name",
+          "url",
+          "proxyType"
+        ]
+      },
+      "ListConnectionSummaries": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ConnectionSummary"
+        },
+        "minItems": 0
+      },
+      "Authentication": {
+        "type": "object",
+        "properties": {
+          "authenticationType": {
+            "type": "string",
+            "enum": [
+              "NoAuthentication",
+              "PrincipalPropagation",
+              "BasicAuthentication",
+              "OAuth2ClientCredentials"
+            ],
+            "description": "Connection endpoint authentication types:\n\n* `NoAuthentication` - No authentication is required to process the connection endpoint.\n* `PrincipalPropagation` - Callers authentication token is passed through to the connection endpoint.\n* `BasicAuthentication` - User and password are passed through to the connection endpoint.\n* `OAuth2ClientCredentials` - Authentication token is obtained using OAuth2 Client Credentials flow, and, than, passed through to the connection endpoint.\n\n**NOTE:** `OAuth2ClientCredentials` is supported for *Internet* connections only.\n"
+          },
+          "user": {
+            "type": "string",
+            "description": "Basic authentication username.\n\n**NOTE:** required for `BasicAuthentication` authentication type.\n"
+          },
+          "password": {
+            "type": "string",
+            "default": null,
+            "description": "Basic authentication password.\n"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "OAuth2 client credentials client id.\n\n**NOTE:** required for `OAuth2ClientCredentials` authentication type.\n"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "OAuth2 client credentials client secret.\n\n**NOTE:** required for `OAuth2ClientCredentials` authentication type.\n"
+          },
+          "tokenServiceUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "OAuth2 client credentials token service URL.\n\n**NOTE:** required for `OAuth2ClientCredentials` authentication type.\n\nSupports templated URLs.\n\nTemplate variables:\n* `<uaa_tenant>` - 3D Visualisation tenant's name - resolves to e.g. \"sapdev\"\n* `<cf_region>` - 3D Visualisation region - resolves to e.g. \"sap\"\n\nExamples:\n* https://sapdev.authentication.sap.hana.ondemand.com/oauth/token\n* https://<uaa_tenant>.authentication.<cf_region>.hana.ondemand.com/oauth/token\n\nAll of these examples will resolve to the same URL given: tenant is \"sapdev\" and region is \"sap\"\n"
+          }
+        },
+        "required": [
+          "authenticationType",
+          "user",
+          "clientId",
+          "clientSecret",
+          "tokenServiceUrl"
+        ],
+        "description": "Connection endpoint authentication.\n\nExamples:\n\n**No Authentication**\n\n```json\n{\n  \"authenticationType\": \"NoAuthentication\"\n}\n```\n\n**Principal Propagation**\n\n```json\n{\n  \"authenticationType\": \"PrincipalPropagation\"\n}\n```\n\n**Principal Propagation**\n\n```json\n{\n  \"authenticationType\": \"BasicAuthentication\",\n  \"user\": \"some username\",\n  \"password\": \"some password\"\n}\n```\n\n**Principal Propagation**\n\n```json\n{\n  \"authenticationType\": \"OAuth2ClientCredentials\",\n  \"clientId\": \"some client id\",\n  \"clientSecret\": \"some client secret\",\n  \"tokenServiceUrl\": \"https://3dvis.authentication.sap.hana.ondemand.com/oauth/token\"\n}\n```\n"
+      },
+      "Parameters": {
+        "type": "object",
+        "description": "Contains parameter replacement values. Required when calling connection test, mapping test and datasource endpoints.\n\nThe syntax is \"\\_\\_[parameterName]\\_\\_\".\n\ne.g. http://127.0.0.1:4242/v1/scenes/\\_\\_sceneId\\_\\_?$expand=att\n\nThe \"\\_\\_sceneId\\_\\_\" will be replaced with the \"sceneId\" value if it is found in **params**.\n",
+        "additionalProperties": {
+          "type": "string",
+          "minProperties": 0
+        }
+      },
+      "Connection": {
+        "type": "object",
+        "properties": {
+          "proxyType": {
+            "type": "string",
+            "enum": [
+              "Internet",
+              "OnPremise"
+            ],
+            "description": "Connection type:\n\n* `Internet` - Connection to an Internet accessible endpoint.\n* `OnPremise` - Connection to an SAP on-premise system.\n"
+          },
+          "name": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "description": {
+            "type": "string",
+            "default": null,
+            "description": "The connection description.\n"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The url for the connection endpoint.\n\nSupports templated URLs.\n\nTemplate variables:\n* `<3dvis-storage-service>` - tenant's 3D Visualisation Storage Service instance - resolves to e.g. \"https://sapdev.sap-3d-storage.cfapps.sap.hana.ondemand.com/inst29\"\n* `<3dvis-asset-service>` - tenant's 3D Visualisation Management Service instance - resolves to e.g. \"https://sapdev.sap-3d-asset.cfapps.sap.hana.ondemand.com/inst29\"\n* `<3dvis-authoring-service>` - tenant's 3D Visualisation Authoring Service instance - resolves to e.g. \"https://sapdev.sap-3d-integration.cfapps.sap.hana.ondemand.com/inst29\"\n* `<uaa_tenant>` - 3D Visualisation tenant's name - resolves to e.g. \"sapdev\"\n* `<cf_region>` - 3D Visualisation region - resolves to e.g. \"sap\"\n* `<3dvis_instance>` - 3D Visualisation tenant's instance name - resolves to e.g. \"inst29\"\n\nExamples:\n* https://sapdev.sap-3d-storage.cfapps.sap.hana.ondemand.com/inst29/v1/scenes/\\_\\_sceneId\\_\\_?$expand=att\n* https://<3dvis-storage-service>/v1/scenes/\\_\\_sceneId\\_\\_?$expand=att\n* https://<uaa_tenant>.sap-3d-storage.cfapps.<cf_region>.hana.ondemand.com/<3dvis_instance>/v1/scenes/\\_\\_sceneId\\_\\_?$expand=att\n\nAll of these examples will resolve to the same URL given: tenant is \"sapdev\", region is \"sap\" and tenant instance is \"inst29\"\n"
+          },
+          "requiredParameters": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 0
+            },
+            "default": null,
+            "description": "A list of connection url parameters for which values must be provided in order to execute the connection.\nE.G. `https://sapdev.sap-3d-storage.cfapps.sap.hana.ondemand.com/inst29/v1/scenes/\\_\\_sceneId\\_\\_?$expand=att` connection url specifies a parameter 'sceneId' which must be present when executing the connection.\n\nExample:\n\n```json\n[\n  \"sceneId\"\n]\n```\n"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minProperties": 0
+            },
+            "description": "Additional connection properties.\n"
+          },
+          "params": {
+            "$ref": "#/components/schemas/Parameters"
+          },
+          "authentication": {
+            "$ref": "#/components/schemas/Authentication"
+          }
+        },
+        "required": [
+          "proxyType",
+          "name",
+          "url",
+          "authentication"
+        ],
+        "description": "Connection to an Internet accessible endpoint or an SAP on-premise system.\n\nExamples:\n\n**Internet Connection**\n\n```json\n{\n\t\"name\": \"scene_node_metadata\",\n\t\"description\": \"Returns the metadata for a scene node\",\n\t\"url\": \"<3dvis-storage-service>/v1/scenes/__sceneId__/nodes/__sid__?$expand=meta\",\n\t\"requiredParameters\": [\n\t\t\"sceneId\",\n\t\t\"sid\"\n\t],\n\t\"proxyType\": \"Internet\",\n\t\"authentication\": {\n\t\t\"authenticationType\": \"PrincipalPropagation\"\n\t}\n}\n```\n\n**On_Premise Connection**\n\n```json\n{\n\t\"name\": \"sap_material_id_details\",\n\t\"description\": \"Details of SAP Material ID retrieved from S4/HANA\",\n\t\"url\": \"http://s4hve:5001/sap/opu/odata/sap/ZVE_HMI_PROD_DETAILS_CDS/ZVE_HMI_PROD_DETAILS('__materialId__')?$format=json\",\n\t\"requiredParameters\": [\n\t\t\"materialId\"\n\t],\n\t\"proxyType\": \"OnPremise\",\n\t\"authentication\": {\n\t\t\"authenticationType\": \"BasicAuthentication\",\n\t\t\"user\": \"some username\",\n\t\t\"password\": \"some password\"\n\t},\n\t\"additionalProperties\": {\n\t\t\"sap-client\": \"100\"\n\t},\n\t\"locationId\": \"pco_anvm02\"\n}\n```\n"
+      },
+      "JsonPathExpression": {
+        "type": "string",
+        "description": "A JsonPath expression. For details see: [Jayway JsonPath](https://github.com/json-path/JsonPath)\n"
+      },
+      "Mapping": {
+        "type": "object",
+        "properties": {
+          "mappingType": {
+            "type": "string",
+            "enum": [
+              "Object",
+              "ObjectProperties",
+              "List",
+              "Hierarchy",
+              "Grouping"
+            ],
+            "description": "Connection raw data to datasource output data mapping types:\n\n* `Object` - Maps a single object from connection response data.\n* `ObjectProperties` - Maps single object properties from connection response data.\n* `List` - Maps one or more objects from connection response data.\n* `Hierarchy` - Maps a hierarchy from connection response data.\n* `Grouping` - Maps a grouping derived from connection response data.\n"
+          },
+          "name": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "description": {
+            "type": "string",
+            "default": null,
+            "description": "The mapping description\n"
+          },
+          "select": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonPathExpression"
+            },
+            "description": "Contains mapping selection property names and their JSON path expressions.\n\n**NOTE:** required for `Hierarchy` and `Grouping` mappings. Optional for `Object` and `List` mappings. Ignored for `ObjectProperties` mappings.\n"
+          },
+          "filter": {
+            "$ref": "#/components/schemas/JsonPathExpression"
+          },
+          "key": {
+            "$ref": "#/components/schemas/JsonPathExpression"
+          },
+          "keyOutputName": {
+            "type": "string",
+            "description": "The grouping key output name.\n\n**NOTE:** required for `Grouping` mappings.\n"
+          },
+          "keyRequiredParameters": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 0
+            },
+            "default": null,
+            "description": "A list of grouping key parameter for which values must be provided in order to execute the mapping.\nE.G. `$..metadata[?(@.category=='__keySource__' && @.tag=='__keyName__')].value` mapping key specifies a parameters 'keySource' and 'keyName' which must be present when executing the mapping.\n\nExample:\n\n```json\n[\n  \"keySource\",\n  \"keyName\"\n]\n"
+          },
+          "params": {
+            "$ref": "#/components/schemas/Parameters"
+          }
+        },
+        "required": [
+          "mappingType",
+          "name",
+          "select",
+          "key",
+          "keyOutputName"
+        ],
+        "description": "Connection raw data to datasource output data mapping.\n\nExamples:\n\n**Object Mapping**\n\n```json\n{\n  \"name\": \"tree_node\",\n  \"description\": \"Map first tree node\",\n  \"mappingType\": \"Object\",\n  \"filter\": \"$.tree.nodes[0]\"\n}\n```\n\n**Object Properties Mapping**\n\n```json\n{\n  \"name\": \"tree_node_properties\",\n  \"description\": \"Map first tree node properties\",\n  \"mappingType\": \"ObjectProperties\",\n  \"filter\": \"$.tree.nodes[0]\"\n}\n```\n\n**List Mapping**\n\n```json\n{\n  \"name\": \"tree_nodes\",\n  \"description\": \"Map tree nodes outputting selector id, name and first attribute object\",\n  \"mappingType\": \"List\",\n  \"select\": {\n    \"selectorId\": \"$.sid\",\n    \"name\": \"$.name\",\n    \"firstAttribute\": \"$.attributes[0]\"\n  },\n  \"filter\": \"$.tree.nodes\"\n}\n```\n\n**Hierarchy Mapping**\n\n```json\n{\n  \"name\": \"tree_hierarchy\",\n  \"description\": \"Map tree hierarchy\",\n  \"mappingType\": \"Hierarchy\",\n  \"select\": {\n    \"parentId\": \"$.parent\",\n    \"id\": \"$.sid\",\n    \"name\": \"$.name\"\n  },\n  \"filter\": \"$.tree.nodes\"\n}\n```\n\n**Grouping Mapping**\n\n```json\n{\n  \"key\": \"$..attributes[?(@.source=='__keySource__' && @.type=='__keyType__')].values[?(@['__keyName__'])]['__keyName__']\",\n  \"keyOutputName\": \"attributeType\",\n  \"name\": \"tree_node_grouping_by_attribute\",\n  \"description\": \"Map tree nodes grouped by attribute\",\n  \"mappingType\": \"Grouping\",\n  \"select\": {\n    \"sids\": \"$.sid\",\n    \"names\": \"$.name\"\n  },\n  \"filter\": \"$..nodes[?(@.attributes)]\",\n  \"keyRequiredParameters\": [\n    \"keySource\",\n    \"keyType\",\n    \"keyName\"\n\t]\n}\n```\n"
+      },
+      "ListMappings": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Mapping"
+        },
+        "minItems": 0
+      },
+      "DatasourceResponseProperties": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The mapping name used to produce the data.\n"
+          },
+          "data": {
+            "type": "object",
+            "default": {},
+            "description": "The data produced by mapping the raw connection response.\n"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The mapping response code. One of the standard HTTP response codes.\n"
+          }
+        },
+        "required": [
+          "label",
+          "data",
+          "code"
+        ]
+      },
+      "SuccessDatasourceResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DatasourceResponseProperties"
+          }
+        ],
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "ErrorDatasourceResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DatasourceResponseProperties"
+          }
+        ],
+        "properties": {
+          "errorMessage": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "failure"
+            ]
+          }
+        },
+        "required": [
+          "errorMessage",
+          "result"
+        ]
+      },
+      "Datasource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "description": {
+            "type": "string",
+            "default": null,
+            "description": "The datasource description.\n"
+          },
+          "connectionName": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "mappingNames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectName"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "connectionName",
+          "mappingNames"
+        ]
+      },
+      "ListDatasources": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Datasource"
+        },
+        "minItems": 0
+      },
+      "ListTemplateNames": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 0
+      },
+      "Template": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ObjectName"
+          },
+          "templateName": {
+            "$ref": "#/components/schemas/ObjectName"
+          }
+        },
+        "required": [
+          "templateName"
+        ]
+      }
+    }
+  }
+}

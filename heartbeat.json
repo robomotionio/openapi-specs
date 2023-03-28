@@ -1,0 +1,1848 @@
+{
+  "openapi": "3.0.0",
+  "x-api-id": "heartbeat",
+  "info": {
+    "version": "1.0.0",
+    "title": "Heartbeat API",
+    "license": {
+      "name": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "Heartbeat is the plug-and-play online community builder that helps you create a tailored community space with all the building blocks needed — voice calls, threads, chats, docs, calendars, directories, matchmaking, analytics, integrations, and more.",
+    "contact": {
+      "url": "https://heartbeat.readme.io/reference/authorization"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.heartbeat.chat/v0"
+    }
+  ],
+  "paths": {
+    "/users/{userID}": {
+      "get": {
+        "description": "Get a user by id",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find the specified user"
+          }
+        },
+        "summary": "Get a user",
+        "operationId": "get-users-userID"
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "Return an array of all users within a Heartbeat community",
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get users",
+        "operationId": "get-users"
+      },
+      "put": {
+        "description": "Create a new user in a Heartbeat community",
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "The user's email. Must be unique to the community",
+                    "type": "string",
+                    "format": "email",
+                    "example": "dmoney@scrutefarms.com"
+                  },
+                  "name": {
+                    "description": "The user's full name",
+                    "type": "string",
+                    "example": "Dwight Schrute"
+                  },
+                  "roleID": {
+                    "description": "The id of the role the user should have",
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "groupIDs": {
+                    "description": "A list of the ids of the groups that the user should belong to",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "profilePicture": {
+                    "description": "A Data URI scheme in the JPG, GIF, or PNG format. Ensure you use the proper content type (image/jpeg, image/png, image/gif) that matches the image data being provided",
+                    "type": "string",
+                    "example": "data:image/jpeg;base64,BASE64_ENCODED_JPEG_IMAGE_DATA"
+                  },
+                  "bio": {
+                    "description": "The user's bio",
+                    "type": "string",
+                    "example": "I'm the best salesman at Dunder Mifflin"
+                  },
+                  "status": {
+                    "description": "The user's status",
+                    "type": "string",
+                    "example": "Trying to get promoted to Assistant Regional Manager"
+                  },
+                  "linkedin": {
+                    "description": "A link to the user's LinkedIn profile",
+                    "type": "string",
+                    "example": "https://www.linkedin.com/in/dwight-schrute/"
+                  },
+                  "twitter": {
+                    "description": "A link to the user's Twitter profile",
+                    "type": "string",
+                    "example": "https://twitter.com/dwight_schrute"
+                  },
+                  "instagram": {
+                    "description": "A link to the user's Instagram profile",
+                    "type": "string",
+                    "example": "https://www.instagram.com/dwightschrute/"
+                  },
+                  "createIntroductionThread": {
+                    "description": "If true and a value for bio is provided, an introduction thread for the user will be created in the channel designated for introductions in your community settings. The introduction thread will include the user's bio",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "email",
+                  "name",
+                  "roleID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Create user",
+        "operationId": "put-user"
+      },
+      "post": {
+        "description": "Update a user's profile information",
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "The email of the user that will be updated. If no user with the provided email exists, will return a 404 response.",
+                    "type": "string",
+                    "format": "email",
+                    "example": "dmoney@scrutefarms.com"
+                  },
+                  "name": {
+                    "description": "The user's full name",
+                    "type": "string",
+                    "example": "Dwight Schrute"
+                  },
+                  "profilePicture": {
+                    "description": "A Data URI scheme in the JPG, GIF, or PNG format. Ensure you use the proper content type (image/jpeg, image/png, image/gif) that matches the image data being provided",
+                    "type": "string",
+                    "example": "data:image/jpeg;base64,BASE64_ENCODED_JPEG_IMAGE_DATA"
+                  },
+                  "bio": {
+                    "description": "The user's bio",
+                    "type": "string",
+                    "example": "I'm the best salesman at Dunder Mifflin"
+                  },
+                  "status": {
+                    "description": "The user's status",
+                    "type": "string",
+                    "example": "Trying to get promoted to Assistant Regional Manager"
+                  },
+                  "linkedin": {
+                    "description": "A link to the user's LinkedIn profile",
+                    "type": "string",
+                    "example": "https://www.linkedin.com/in/dwight-schrute/"
+                  },
+                  "twitter": {
+                    "description": "A link to the user's Twitter profile",
+                    "type": "string",
+                    "example": "https://twitter.com/dwight_schrute"
+                  },
+                  "instagram": {
+                    "description": "A link to the user's Instagram profile",
+                    "type": "string",
+                    "example": "https://www.instagram.com/dwightschrute/"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find a user with the provided email address"
+          }
+        },
+        "summary": "Update user",
+        "operationId": "post-user"
+      },
+      "delete": {
+        "description": "Remove a user from a Heartbeat community. The user will no longer be able to access the community. Threads, comments & messages from the user will not be removed",
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "The email of the user to be deleted. If no user with the provided email exists, will return a 404 response.",
+                    "type": "string",
+                    "format": "email",
+                    "example": "dmoney@scrutefarms.com"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find a user with the provided email address"
+          }
+        },
+        "summary": "Delete user",
+        "operationId": "delete-user"
+      }
+    },
+    "/find/users": {
+      "get": {
+        "description": "Get a user by email",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "description": "The email of the user",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find a user with a matching email"
+          }
+        },
+        "summary": "Get user by email",
+        "operationId": "get-find-users"
+      }
+    },
+    "/invitations": {
+      "get": {
+        "description": "Return an array of all the invitations within a Heartbeat community",
+        "tags": [
+          "invitations"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Invitation"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get invitations",
+        "operationId": "get-invitations"
+      }
+    },
+    "/notifications": {
+      "get": {
+        "description": "Get the number of pending notifications a user in your community has",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "description": "The email address of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "description": "The number of pending notifications",
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested user"
+          }
+        },
+        "summary": "Get notifications",
+        "operationId": "get-notifications"
+      }
+    },
+    "/invitations/{invitationID}": {
+      "post": {
+        "description": "Add users to an existing invitation",
+        "tags": [
+          "invitations"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitationID",
+            "required": true,
+            "description": "The id of the invitation",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "description": "The list of emails to add to the invitation",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "shouldSendEmail": {
+                    "description": "Whether or not to send an invitation email to the users. If false, the users will be allowed to signup via the invitation link, however they will not receive an email from Heartbeat inviting them to join.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "emails",
+                  "shouldSendEmail"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested invitation"
+          }
+        },
+        "summary": "Add users to an invitation",
+        "operationId": "post-invitations-invitationID"
+      }
+    },
+    "/roles": {
+      "get": {
+        "description": "Returns an array of all the roles in a Heartbeat community",
+        "tags": [
+          "roles"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get roles",
+        "operationId": "get-roles"
+      }
+    },
+    "/groups": {
+      "get": {
+        "description": "Returns an array of all Groups within a Heartbeat community",
+        "tags": [
+          "groups"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Group"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get groups",
+        "operationId": "get-groups"
+      },
+      "put": {
+        "description": "Create a new Group in a Heartbeat community",
+        "tags": [
+          "groups"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Cohort 1"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "members": {
+                    "description": "The email addresses of the users that should be added to the group",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "parentGroupID": {
+                    "description": "The id of the parent group",
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Create group",
+        "operationId": "put-groups"
+      }
+    },
+    "/groups/{groupID}": {
+      "get": {
+        "description": "Get a group",
+        "tags": [
+          "groups"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested group id"
+          }
+        },
+        "summary": "Get a group",
+        "operationId": "get-groups-groupID"
+      }
+    },
+    "/groups/{groupID}/memberships": {
+      "put": {
+        "description": "Add users to a group",
+        "tags": [
+          "groups"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "description": "The emails of the users that should be added to the group",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "shouldRemoveFromSiblingGroups": {
+                    "description": "If true, the users will be removed from any other groups that share a parent group with the selected group. Useful when moving users between different stages",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "emails"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested group id or user email"
+          }
+        },
+        "summary": "Add users to a group",
+        "operationId": "put-groups-groupID-memberships"
+      },
+      "delete": {
+        "description": "Remove users from a group",
+        "tags": [
+          "groups"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "description": "The emails of the users that should be removed from the group",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                },
+                "required": [
+                  "emails"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested group id or user email"
+          }
+        },
+        "summary": "Remove users from a group",
+        "operationId": "delete-groups-groupID-memberships"
+      }
+    },
+    "/channelCategories": {
+      "get": {
+        "description": "Returns an array of all channel categories within a community",
+        "tags": [
+          "channels"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChannelCategory"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get channel categories",
+        "operationId": "get-channelCategories"
+      }
+    },
+    "/channels": {
+      "get": {
+        "description": "Returns an array of all channels",
+        "tags": [
+          "channels"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Channel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Get channels",
+        "operationId": "get-channels"
+      },
+      "put": {
+        "description": "Create a new Channel in a Heartbeat community",
+        "tags": [
+          "channels"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "random"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A place to discuss anything you want"
+                  },
+                  "isPrivate": {
+                    "type": "boolean"
+                  },
+                  "channelCategoryID": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "The id for the category where the channel should be created"
+                  },
+                  "invitedUsers": {
+                    "description": "If the channel is private, only these users will be able to access the channel. If both invitedUsers & invitedGroups are provided, the lists will be combined.",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "invitedGroups": {
+                    "description": "If the channel is private, only these groups will be able to access the channel. If both invitedUsers & invitedGroups are provided, the lists will be combined.",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "isPrivate",
+                  "channelCategoryID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Create channel",
+        "operationId": "put-channels"
+      }
+    },
+    "/channels/${channelID}/threads": {
+      "get": {
+        "description": "Returns an array of the 20 most recent threads in a channel",
+        "tags": [
+          "channels"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channelID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Thread"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested channel id"
+          }
+        },
+        "summary": "Get 20 most recent threads in a channel",
+        "operationId": "get-channels-channelID-threads"
+      }
+    },
+    "/threads/${threadID}": {
+      "get": {
+        "description": "Get a thread",
+        "tags": [
+          "channels"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "threadID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Thread"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested thread"
+          }
+        },
+        "summary": "Get a thread",
+        "operationId": "get-threads-threadID"
+      }
+    },
+    "/threads": {
+      "put": {
+        "description": "Create a new thread",
+        "tags": [
+          "channels"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "<p>Welcome everyone!</p>"
+                  },
+                  "channelID": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "userID": {
+                    "description": "The user that will be shown as the author of the thread. Only an admin user can be chosen. If this field is not provided, the user that created the API key will be used",
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "text",
+                  "channelID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Thread"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Create a thread",
+        "operationId": "put-threads"
+      }
+    },
+    "/directMessages": {
+      "put": {
+        "description": "Send a new direct message",
+        "tags": [
+          "messages"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "<p>Hello!</p>"
+                  },
+                  "to": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "The user id of the receiver."
+                  },
+                  "from": {
+                    "description": "The user id of the sender. Only an admin user can be chosen. If this field is not provided, the user that created the API key will be used.",
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "text",
+                  "to"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find a user with a matching user id"
+          }
+        },
+        "summary": "Send a new direct message",
+        "operationId": "put-directMessages"
+      }
+    },
+    "/events": {
+      "get": {
+        "description": "Return an array all Events within a Community",
+        "tags": [
+          "events"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "groupID",
+            "description": "If provided, only events that have been assigned to this group will be returned",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested group id"
+          }
+        },
+        "summary": "Get events",
+        "operationId": "get-events"
+      },
+      "put": {
+        "description": "Create a new Event in a Heartbeat community",
+        "tags": [
+          "events"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Community Onboarding"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A time for everyone to meet each other & understand what our community is all about"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "duration": {
+                    "type": "number"
+                  },
+                  "location": {
+                    "description": "Where the event will be held. If the string 'HEARTBEAT' is provided, then the event will take place in a Heartbeat voice channel. If the string 'ZOOM' is provided, then the event will take place in a custom Zoom link (this option can only be chosen if a Zoom account has been integrated with Heartbeat). Otherwise, the provided string will be passed directly to the Custom location field.",
+                    "type": "string",
+                    "example": "ZOOM"
+                  },
+                  "invitedUsers": {
+                    "description": "A list of users that should be invited to the event. If the email matches an existing Heartbeat user, the Heartbeat user will be invited. Otherwise, an event invite will be sent directly to the provided email address. If both invitedUsers & invitedGroups are empty, the event will be open to everyone in the community.",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "invitedGroups": {
+                    "description": "A list of groups that should be invited to the event. If both invitedUsers & invitedGroups are empty, the event will be open to everyone in the community.",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "startTime",
+                  "duration",
+                  "location"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "summary": "Create a new Event",
+        "operationId": "put-events"
+      }
+    },
+    "/events/{eventID}": {
+      "get": {
+        "description": "Get an event",
+        "tags": [
+          "events"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eventID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find requested event id"
+          }
+        },
+        "summary": "Get an event",
+        "operationId": "get-events-eventsID"
+      }
+    },
+    "/events/{eventID}/instances": {
+      "get": {
+        "description": "Return all the event instances of a recurring Event",
+        "tags": [
+          "events"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eventID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startTime": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "endTime": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find event id"
+          }
+        },
+        "summary": "Get event instances of a recurring Event",
+        "operationId": "get-events-eventsID-instances"
+      }
+    },
+    "/events/{eventID}/attendance": {
+      "get": {
+        "description": "Returns attendance data for the last 10 instances of the specified event. If this event is a non-recurring event, an array of size 1 will be returned with attendance data.",
+        "tags": [
+          "events"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eventID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startTime": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "endTime": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "participants": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "email",
+                          "description": "The email addresses of the users that attended the event"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Could not find event ID"
+          }
+        },
+        "summary": "Get attendance data for the last 10 instances of the specified event",
+        "operationId": "get-events-attendance"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer",
+        "description": ""
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Invalid request body"
+      },
+      "UnauthorizedError": {
+        "description": "API Key is missing or invalid"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "dmoney@schrutefarms.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The user's full name",
+            "example": "Dwight Schrute"
+          },
+          "role": {
+            "type": "string",
+            "description": "The user's current role",
+            "example": "Moderator"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "description": "Whether or not the user is an administrator"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The group id"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The group name",
+                  "example": "Party Planning Committee"
+                }
+              }
+            }
+          },
+          "bio": {
+            "type": "string",
+            "description": "The user's Heartbeat bio",
+            "example": "I'm the best salesman at Dunder Mifflin"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "A URL that points to the user's Heartbeat avatar"
+          },
+          "linkedInSummary": {
+            "type": "string",
+            "description": "A single formatted string containing the user's entire LinkedIn history. Empty if no LinkedIn data is available"
+          },
+          "linkedInData": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "profileUrl": {
+                "type": "string",
+                "example": "https://www.linkedin.com/in/dwight-schrute/"
+              },
+              "headline": {
+                "type": "string",
+                "nullable": true,
+                "example": "Ready to crush your sales quotas"
+              },
+              "company": {
+                "type": "string",
+                "nullable": true,
+                "example": "Dunder Mifflin"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "example": "I'm a motivated salesman always willing to go the extra mile"
+              },
+              "location": {
+                "type": "string",
+                "nullable": true,
+                "example": "Scranton, Pennsylvania, United States"
+              },
+              "jobs": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "companyName": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Dunder Mifflin"
+                    },
+                    "jobTitle": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Assistant to the Regional Manager"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "location": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Scranton, Pennsylvania, United States"
+                    },
+                    "dateRange": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Mar 2005 - May 2013 OR May 2014 - Present"
+                    }
+                  }
+                }
+              },
+              "schools": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "schoolName": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Scranton University"
+                    },
+                    "degree": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Bachelor's Degree"
+                    },
+                    "degreeSpec": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Business Administration"
+                    },
+                    "dateRange": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Aug 1988 - May 1992"
+                    }
+                  }
+                }
+              },
+              "skills": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "Beet Farming",
+                  "German"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Party Planning Committee"
+          },
+          "description": {
+            "type": "string",
+            "example": "Designated committee to plan holiday, birthday, & retirement parties"
+          },
+          "color": {
+            "type": "string",
+            "format": "The hex code color of the group",
+            "example": "#FF6347"
+          },
+          "parentGroupID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The id of the group's parent. Returns null if the group has no parent"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The heartbeat user id"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Angela Martin"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "the email of the user",
+                  "example": "angela.martin@dundermifflin.com"
+                }
+              }
+            }
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the group has been archived or not",
+            "example": false
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "The Heartbeat event name",
+            "example": "Toby's Going-Away Party"
+          },
+          "description": {
+            "type": "string",
+            "description": "The event description",
+            "example": "The best event to happen this year. Look forward to fireworks and BBQ!"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The original start time for the event in UTC. If this event is recurring, this might be in the past."
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The original end time for the event in UTC. If this event is recurring, this may be in the past."
+          },
+          "recurring": {
+            "type": "boolean",
+            "description": "Whether the event is recurring.",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time in UTC at which the event was created."
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The user id of the person that created the event"
+          },
+          "invitedUsers": {
+            "description": "The users that are invited to this event",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "invitedGroups": {
+            "description": "The groups that are invited to this event",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "Invitation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The invitation id"
+          },
+          "role": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The id of the role"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the role",
+                "example": "Moderator"
+              }
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The id of the group"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the group",
+                  "example": "Party Planning Committee"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The role id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the role",
+            "example": "Moderator"
+          }
+        }
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The channel id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the channel",
+            "example": "introductions"
+          },
+          "emoji": {
+            "type": "string",
+            "description": "The emoji for the channel",
+            "example": "👋"
+          },
+          "type": {
+            "description": "What type of channel this is.",
+            "type": "string",
+            "enum": [
+              "POSTS",
+              "CHAT",
+              "VOICE"
+            ]
+          }
+        }
+      },
+      "ChannelCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The channel cateogry id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the channel cateogry",
+            "example": "Alumni"
+          }
+        }
+      },
+      "Thread": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channelID": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the channel where this thread exists"
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the user that created this thread"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the thread",
+            "example": "<p>This is the thread's content</p>"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of URLs pointing to any file attachments on the thread"
+          },
+          "url": {
+            "type": "string",
+            "description": "A URL pointing to this thread",
+            "example": "https://app.heartbeat.chat/mycommunity/t/general/5dbcf5c9-5e7e-4285-9dab-6d3ce7f4dd1e"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The id of the user that created this comment"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the comment",
+            "example": "<p>This is the comments's content</p>"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of URLs pointing to any image attachments on the comment"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of URLs pointing to any file attachments on the comment"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            },
+            "description": "A list of child comments. Heartbeat comments only have 2 levels of nesting, so a child comment will never have more child comments underneath"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "channels"
+    },
+    {
+      "name": "events"
+    },
+    {
+      "name": "groups"
+    },
+    {
+      "name": "invitations"
+    },
+    {
+      "name": "messages"
+    },
+    {
+      "name": "roles"
+    },
+    {
+      "name": "users"
+    }
+  ]
+}

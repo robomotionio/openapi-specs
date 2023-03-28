@@ -1,0 +1,304 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SMSMode API",
+    "version": "1.0",
+    "description": "SMSMode is a provider to send SMS and text messages\nThe implementation is partial (some endpoints are not yet implemented by the Meta API team)",
+    "x-logo": {
+      "url": "https://www.jaimelesstartups.fr/wp-content/uploads/2021/03/logo-smsmode-2019-carre.png"
+    },
+    "contact": {
+      "name": "SMSMode",
+      "url": "smsmode.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.smsmode.com/http/1.6"
+    }
+  ],
+  "paths": {
+    "/sendSMS.do": {
+      "post": {
+        "summary": "Send SMS",
+        "operationId": "post-sendSMS.do",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status_code": {
+                      "type": "number",
+                      "description": "0 Accepted – message is accepted by the system and is currently being processed.\n31 Internal error\n32 Authentication error\n33 Insufficient account balance\n35 Missing mandatory parameter\n50 Temporarily unavailable"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "smsID": {
+                      "type": "string",
+                      "description": "only if status_code = 0"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint to send SMS",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "message",
+            "required": true,
+            "description": "SMS text. Maximum text length for 1 SMS is 160 characters. If  you  need  to  send  long  SMS  (more  than  160  characters)  please  refer  to  optional  parameters below. "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "numero",
+            "description": "Comma  separated  MSISDN  list.  These  numbers  may  use  national  format  (06xxxxxxxx  –  only for French MSISDN) or international format (336xxxxxxxx)."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "groupe",
+            "description": "Name of the group of contact which contains the recipients’ MSISDNs. Note that the group must be present (previously created) on your smsmode© account"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "classe_msg",
+            "description": "• 2 : SMS Pro (default value)• 4 : SMS message allowing an answer from the recipient(only available in France)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_envoi",
+            "description": "SMS sending date (format : ddMMyyyy-HH:mm)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "refClient",
+            "description": "Optional reference ID that will be sent along with the delivery report callback. May be used to set a foreign ID (coming from your system) on this SMS message.Maximum size is 40 characters."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "emetteur",
+            "description": "Text to be used to customize the SMS sender ID. MSISDN are not allowed.Maximum size is 11 characters without blank space or accent. This function is not available when using classe_msg=4.Sender ID available according to the technical constraints of the countries."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "nbr_msg",
+            "description": "Max number of SMS messages that can be sent (default to 5)The  message  will  be  truncated  if  it  exceeds  this  limit.  Depending  on  the  desired  characters count, indicate the number of message to be used as following:• nbr_msg=1 : 160 characters max  •  nbr_msg=2 :306 characters max• nbr_msg=3 :459 characters max"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "notification_url",
+            "description": "Callback URL to be used to notify your system when delivery report is updated (cf. item 12)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "notification_url_reponse",
+            "description": "Callback  URL  to  be  used  to  notify  your  system  when  incoming  message  arrives  (cf.  item  12)."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "application/x-www-form-urlencoded; charset=ISO-8859-15"
+            },
+            "in": "header",
+            "name": "Content-Type",
+            "description": "Must be set to application/x-www-form-urlencoded; charset=ISO-8859-15"
+          }
+        ],
+        "tags": [
+          "sms",
+          "text-message",
+          "messaging"
+        ]
+      },
+      "get": {
+        "summary": "Send SMS",
+        "operationId": "get-sendSMS.do",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status_code": {
+                      "type": "number",
+                      "description": "0 Accepted – message is accepted by the system and is currently being processed.\n31 Internal error\n32 Authentication error\n33 Insufficient account balance\n35 Missing mandatory parameter\n50 Temporarily unavailable"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "smsID": {
+                      "type": "string",
+                      "description": "only if status_code = 0"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint to send SMS",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "message",
+            "required": true,
+            "description": "SMS text. Maximum text length for 1 SMS is 160 characters. If  you  need  to  send  long  SMS  (more  than  160  characters)  please  refer  to  optional  parameters below. "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "numero",
+            "description": "Comma  separated  MSISDN  list.  These  numbers  may  use  national  format  (06xxxxxxxx  –  only for French MSISDN) or international format (336xxxxxxxx)."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "groupe",
+            "description": "Name of the group of contact which contains the recipients’ MSISDNs. Note that the group must be present (previously created) on your smsmode© account"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "classe_msg",
+            "description": "• 2 : SMS Pro (default value)• 4 : SMS message allowing an answer from the recipient(only available in France)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_envoi",
+            "description": "SMS sending date (format : ddMMyyyy-HH:mm)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "refClient",
+            "description": "Optional reference ID that will be sent along with the delivery report callback. May be used to set a foreign ID (coming from your system) on this SMS message.Maximum size is 40 characters."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "emetteur",
+            "description": "Text to be used to customize the SMS sender ID. MSISDN are not allowed.Maximum size is 11 characters without blank space or accent. This function is not available when using classe_msg=4.Sender ID available according to the technical constraints of the countries."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "nbr_msg",
+            "description": "Max number of SMS messages that can be sent (default to 5)The  message  will  be  truncated  if  it  exceeds  this  limit.  Depending  on  the  desired  characters count, indicate the number of message to be used as following:• nbr_msg=1 : 160 characters max  •  nbr_msg=2 :306 characters max• nbr_msg=3 :459 characters max"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "notification_url",
+            "description": "Callback URL to be used to notify your system when delivery report is updated (cf. item 12)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "notification_url_reponse",
+            "description": "Callback  URL  to  be  used  to  notify  your  system  when  incoming  message  arrives  (cf.  item  12)."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "application/x-www-form-urlencoded; charset=ISO-8859-15"
+            },
+            "in": "header",
+            "name": "Content-Type",
+            "description": "Must be set to application/x-www-form-urlencoded; charset=ISO-8859-15"
+          }
+        ],
+        "tags": [
+          "sms",
+          "text-message",
+          "messaging"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "API Key": {
+        "name": "accessToken",
+        "type": "apiKey",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "messaging"
+    },
+    {
+      "name": "sms"
+    },
+    {
+      "name": "text-message"
+    }
+  ]
+}

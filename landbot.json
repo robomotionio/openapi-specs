@@ -1,0 +1,539 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Landbot",
+    "version": "1.0",
+    "x-logo": {
+      "url": "https://assets-global.website-files.com/5e1c4fb5db4d5243c0021d34/5e1c4fb5db4d5267a7021d9c_Webclip.png"
+    },
+    "contact": {
+      "url": "https://www.landbot.io",
+      "name": "Landbot",
+      "email": "help@landbot.io"
+    },
+    "termsOfService": "https://landbot.io/terms-conditions",
+    "description": "Use Landbot drag-and-drop creator to build advanced conversational flows with ease, flexibility, and speed - no coding required. Deploy Chatbots Anywhere, Instantly Launch chatbots popular on messaging channels or the web as pop-ups, widgets, landing pages, or website embeds -with a click. Increase Conversion Rate from Minute One"
+  },
+  "servers": [
+    {
+      "url": "https://api.landbot.io/v1"
+    }
+  ],
+  "paths": {
+    "/agents/{agent_id}/": {
+      "get": {
+        "summary": "Get data",
+        "tags": [
+          "Agents"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "success": true,
+                      "agent": {
+                        "id": 10,
+                        "first_name": "Agent",
+                        "last_name": "007",
+                        "email": "james@bond.com",
+                        "status": "offline"
+                      }
+                    }
+                  },
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "agent": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "status"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "default": "Agent"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "007"
+                        },
+                        "email": {
+                          "type": "string",
+                          "minLength": 1,
+                          "format": "email",
+                          "example": "james@bond.com"
+                        },
+                        "status": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "offline"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "agent"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "success": true,
+                      "agent": {
+                        "id": 10,
+                        "first_name": "Agent",
+                        "last_name": "007",
+                        "email": "james@bond.com",
+                        "status": "offline"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "errors": {
+                        "agent_id": [
+                          "You can't view this agent"
+                        ]
+                      }
+                    }
+                  },
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "required": [
+                        "agent_id"
+                      ],
+                      "properties": {
+                        "agent_id": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "errors"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "errors": {
+                        "agent_id": [
+                          "You can't view this agent"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-agents-:agent_id",
+        "description": "Returns agent data of :agent_id"
+      },
+      "parameters": [
+        {
+          "name": "agent_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "example": 10,
+            "minimum": 0
+          },
+          "description": "Identifier of the agent"
+        }
+      ]
+    },
+    "/agents/": {
+      "post": {
+        "summary": "Create Agent",
+        "operationId": "post-agents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "paid": {
+                      "type": "boolean"
+                    },
+                    "agent": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "email": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "status": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "status"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "paid",
+                    "agent"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "success": true,
+                      "paid": false,
+                      "agent": {
+                        "id": 10,
+                        "first_name": "Agent",
+                        "last_name": "007",
+                        "email": "james@bond.com",
+                        "status": "offline"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "success": true,
+                      "paid": false,
+                      "agent": {
+                        "id": 10,
+                        "first_name": "Agent",
+                        "last_name": "007",
+                        "email": "james@bond.com",
+                        "status": "offline"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Create agent WARNING: This action may cause a charge in your account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "first_name": "Agent",
+                    "last_name": "007",
+                    "email": "james@bond.com",
+                    "password": "007007007",
+                    "password_confirmation": "007007007"
+                  }
+                },
+                "properties": {
+                  "last_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Agent"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "007"
+                  },
+                  "email": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "james@bond.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "007007007"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "007007007"
+                  }
+                },
+                "required": [
+                  "last_name",
+                  "first_name",
+                  "email",
+                  "password",
+                  "password_confirmation"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "first_name": "Agent",
+                    "last_name": "007",
+                    "email": "james@bond.com",
+                    "password": "007007007",
+                    "password_confirmation": "007007007"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agents"
+        ]
+      },
+      "parameters": []
+    },
+    "/customers/{customer_id}/": {
+      "get": {
+        "summary": "Get customer data",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "success": true,
+                      "customer": {
+                        "id": 42,
+                        "name": "Ataulfo",
+                        "channel_id": 1,
+                        "avatar": "https://octodex.github.com/images/dojocat.jpg",
+                        "last_message": 1493285931.828493,
+                        "unread": false,
+                        "archived": false,
+                        "agent_id": 1,
+                        "register_date": 1491480847.264482,
+                        "custom_fields": {
+                          "email": {
+                            "value": "api@helloumi.com",
+                            "type": "string",
+                            "name": "email"
+                          },
+                          "payment_date": {
+                            "value": 1491480957.264482,
+                            "type": "datetime",
+                            "name": "payment_date"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "customer": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "name",
+                        "channel_id",
+                        "avatar",
+                        "last_message",
+                        "unread",
+                        "archived",
+                        "agent_id",
+                        "register_date",
+                        "custom_fields",
+                        "meta_data"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "channel_id": {
+                          "type": "number"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "last_message": {
+                          "type": "number"
+                        },
+                        "unread": {
+                          "type": "boolean"
+                        },
+                        "archived": {
+                          "type": "boolean"
+                        },
+                        "agent_id": {
+                          "type": "number"
+                        },
+                        "register_date": {
+                          "type": "number"
+                        },
+                        "custom_fields": {
+                          "type": "object"
+                        },
+                        "meta_data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "customer"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "success": true,
+                      "customer": {
+                        "id": 42,
+                        "name": "Ataulfo",
+                        "channel_id": 1,
+                        "avatar": "https://octodex.github.com/images/dojocat.jpg",
+                        "last_message": 1493285931.828493,
+                        "unread": false,
+                        "archived": false,
+                        "agent_id": 1,
+                        "register_date": 1491480847.264482,
+                        "custom_fields": {
+                          "email": {
+                            "value": "api@helloumi.com",
+                            "type": "string",
+                            "name": "email"
+                          },
+                          "payment_date": {
+                            "value": 1491480957.264482,
+                            "type": "datetime",
+                            "name": "payment_date"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-customers",
+        "description": "Returns customer data of a customer"
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "name": "customer_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Token": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Token",
+        "description": "You can find your :agent_token in https://app.landbot.io/gui/settings/account"
+      }
+    },
+    "parameters": {
+      "agent_id": {
+        "name": "agent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "minimum": 0
+        },
+        "description": "Identifier of the agent"
+      }
+    }
+  },
+  "security": [
+    {
+      "Token": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Agents"
+    },
+    {
+      "name": "Customers"
+    }
+  ]
+}

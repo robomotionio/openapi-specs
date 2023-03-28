@@ -1,0 +1,1966 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Aides-territoires API",
+    "version": "1.4 (1.3)",
+    "description": "\n\n#### Documentation\n\n|Version       |Description des changements|\n|--------------|---------------------------|\n|1.4 (actuelle)|**Aides** : ajout du champ `is_call_for_project`<br />Ajout de nouveaux points d'entrée : **Programmes**, **Thématiques** et **Périmètres**<br />Documentation de l'API au format OpenAPI 3|\n|1.3           |**Aides** : ajout des champs `loan_amount` and `recoverable_advance_amount`<br />**Aides** : suppression du champ `tags`|\n|1.2           |**Aides** : ajout du champ `categories`|\n|1.1           |**Aides** : ajout du champ `programs`|\n|1.0           |Première version de l'API 🎉<br /> Points d'entrée : **Aides** et **Porteurs d'aides**|\n\n",
+    "termsOfService": "https://aides-territoires.beta.gouv.fr/mentions-l%C3%A9gales/",
+    "contact": {
+      "name": "Une question ? Vous pouvez nous contacter en cliquand ici (puis sélectionnez 'API' comme Sujet)",
+      "url": "https://aides-territoires.beta.gouv.fr/contact/"
+    },
+    "license": {
+      "name": "« Licence Ouverte v2.0 » d'Etalab"
+    }
+  },
+  "paths": {
+    "/api/aids/": {
+      "get": {
+        "operationId": "aids_list",
+        "description": "",
+        "summary": "Lister toutes les aides actuellement publiées",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "text",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Recherche textuelle.",
+            "examples": {
+              "": {},
+              "Velo": {
+                "value": "velo",
+                "summary": "velo"
+              },
+              "PisteOUVelo": {
+                "value": "piste+velo",
+                "summary": "piste OU velo"
+              },
+              "PisteETVelo": {
+                "value": "piste velo",
+                "summary": "piste ET velo"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "targeted_audiences",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "association",
+                "commune",
+                "department",
+                "epci",
+                "farmer",
+                "private_person",
+                "private_sector",
+                "public_cies",
+                "public_org",
+                "region",
+                "researcher",
+                "special"
+              ]
+            },
+            "description": "La structure pour laquelle vous recherchez des aides.<br /><br />Voir aussi `/api/aids/audiences/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "Communes": {
+                "value": "commune"
+              },
+              "EPCIÀFiscalitéPropre": {
+                "value": "epci",
+                "summary": "EPCI à fiscalité propre"
+              },
+              "Départements": {
+                "value": "department"
+              },
+              "Régions": {
+                "value": "region"
+              },
+              "CollectivitésD'outre-merÀStatutsParticuliers": {
+                "value": "special",
+                "summary": "Collectivités d'outre-mer à statuts particuliers"
+              },
+              "Associations": {
+                "value": "association"
+              },
+              "Particuliers": {
+                "value": "private_person"
+              },
+              "Agriculteurs": {
+                "value": "farmer"
+              },
+              "EntreprisesPrivées": {
+                "value": "private_sector",
+                "summary": "Entreprises privées"
+              },
+              "EntreprisesPubliquesLocales(Sem,Spl,SemOp)": {
+                "value": "public_cies",
+                "summary": "Entreprises publiques locales (Sem, Spl, SemOp)"
+              },
+              "ÉtablissementsPublics(écoles,Bibliothèques…)/ServicesDeL'État": {
+                "value": "public_org",
+                "summary": "Établissements publics (écoles, bibliothèques…) / Services de l'État"
+              },
+              "Recherche": {
+                "value": "researcher"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "apply_before",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Candidater avant…",
+            "examples": {
+              "": {},
+              "2021-09-01": {
+                "value": "2021-09-01"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "published_after",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Publiée après…",
+            "examples": {
+              "": {},
+              "2020-11-01": {
+                "value": "2020-11-01"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "aid_type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "financial",
+                "technical"
+              ]
+            },
+            "description": "Nature de l'aide.",
+            "examples": {
+              "": {},
+              "AidesFinancières": {
+                "value": "financial",
+                "summary": "Aides financières"
+              },
+              "AidesEnIngénierie": {
+                "value": "technical",
+                "summary": "Aides en ingénierie"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "financial_aids",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "grant",
+                "loan",
+                "other",
+                "recoverable_advance"
+              ]
+            },
+            "description": "Type d'aides financières.<br /><br />Voir aussi `/api/aids/types/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "Subvention": {
+                "value": "grant"
+              },
+              "Prêt": {
+                "value": "loan"
+              },
+              "AvanceRécupérable": {
+                "value": "recoverable_advance",
+                "summary": "Avance récupérable"
+              },
+              "AutreAideFinancière": {
+                "value": "other",
+                "summary": "Autre aide financière"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "technical_aids",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "financial",
+                "legal",
+                "technical"
+              ]
+            },
+            "description": "Type d'aides en ingénierie.<br /><br />Voir aussi `/api/aids/types/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "IngénierieTechnique": {
+                "value": "technical",
+                "summary": "Ingénierie technique"
+              },
+              "IngénierieFinancière": {
+                "value": "financial",
+                "summary": "Ingénierie financière"
+              },
+              "IngénierieJuridique/Administrative": {
+                "value": "legal",
+                "summary": "Ingénierie Juridique / administrative"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "mobilization_step",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "op",
+                "postop",
+                "preop"
+              ]
+            },
+            "description": "Avancement du projet.<br /><br />Voir aussi `/api/aids/steps/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "Réflexion/Conception": {
+                "value": "preop",
+                "summary": "Réflexion / conception"
+              },
+              "MiseEnŒuvre/Réalisation": {
+                "value": "op",
+                "summary": "Mise en œuvre / réalisation"
+              },
+              "Usage/Valorisation": {
+                "value": "postop",
+                "summary": "Usage / valorisation"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "destinations",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "investment",
+                "supply"
+              ]
+            },
+            "description": "Actions concernées.<br /><br />Voir aussi `/api/aids/destinations/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "DépensesDeFonctionnement": {
+                "value": "supply",
+                "summary": "Dépenses de fonctionnement"
+              },
+              "DépensesD'investissement": {
+                "value": "investment",
+                "summary": "Dépenses d'investissement"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "recurrence",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "oneoff",
+                "ongoing",
+                "recurring"
+              ]
+            },
+            "description": "Récurrence.<br /><br />Voir aussi `/api/aids/recurrences/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "Ponctuelle": {
+                "value": "oneoff"
+              },
+              "Permanente": {
+                "value": "ongoing"
+              },
+              "Récurrente": {
+                "value": "recurring"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "call_for_projects_only",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Appels à projets / Appels à manifestation d'intérêt uniquement.",
+            "examples": {
+              "": {},
+              "True": {
+                "value": true,
+                "summary": "true"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "perimeter",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Le territoire.<br /><br />Voir `/api/perimeters/` pour la liste complète.<br /><br />Note : passer seulement l'id du périmètre suffit (perimeter=70973).",
+            "examples": {
+              "": {},
+              "70973-auvergne-rhone-alpes": {
+                "value": "70973-auvergne-rhone-alpes"
+              },
+              "95861-clermont-ferrand": {
+                "value": "95861-clermont-ferrand"
+              },
+              "109957-pays-cevennes": {
+                "value": "109957-pays-cevennes"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "backers",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Porteurs d'aides.<br /><br />Voir `/api/backers/` pour la liste complète.<br /><br />Notes : <br />- possible de passer plusieurs porteurs (recherche OU)<br />- passer seulement l'id du (ou des) porteur(s) d'aides suffit (backers=22)",
+            "examples": {
+              "": {},
+              "22-ademe": {
+                "value": "22-ademe"
+              },
+              "113-banque-des-territoires": {
+                "value": "113-banque-des-territoires"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "programs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Programmes d'aides.<br /><br />Voir `/api/programs/` pour la liste complète.<br /><br />Notes : <br />- possible de passer plusieurs programmes (recherche OU)<br />- il faut passer le slug du (ou des) programme(s)",
+            "examples": {
+              "": {},
+              "PetitesVillesDeDemain": {
+                "value": "petites-villes-de-demain",
+                "summary": "Petites villes de demain"
+              },
+              "FranceRelance": {
+                "value": "france-relance",
+                "summary": "France Relance"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "themes",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Thématiques.<br /><br />Voir `/api/themes/` pour la liste complète.<br /><br />Notes : <br />- possible de passer plusieurs thématiques (recherche OU)<br />- il faut passer le slug de la (ou des) thématique(s)",
+            "examples": {
+              "": {},
+              "Énergies/Déchets": {
+                "value": "energies-dechets",
+                "summary": "Énergies / Déchets"
+              },
+              "Nature/Environnement": {
+                "value": "nature-environnement-risques",
+                "summary": "Nature / environnement"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Sous-thématiques.<br /><br />Voir `/api/themes/` pour la liste complète.<br /><br />Notes : <br />- possible de passer plusieurs sous-thématiques (recherche OU)<br />- il faut passer le slug de la (ou des) sous-thématique(s)",
+            "examples": {
+              "": {},
+              "AttractivitéÉconomique": {
+                "value": "attractivite",
+                "summary": "Attractivité économique"
+              },
+              "TransitionÉnergétique": {
+                "value": "transition-energetique",
+                "summary": "Transition énergétique"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "origin_url",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "URL d'origine.",
+            "examples": {
+              "": {},
+              "URL": {
+                "value": "http://www.cress-aura.org/actus/mon-ess-lecole-quest-ce-que-cest"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "in_france_relance",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Aides France Relance concernant le MTFP.<br /><br />Pour les aides du Plan de relance, utiliser le paramètre `programs`.",
+            "examples": {
+              "": {},
+              "True": {
+                "value": true,
+                "summary": "true"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "prevent_generic_filter",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Ce paramètre permet d'empêcher le filtrage par défaut     des aides génériques et locales. Quand ce paramètre est présent,     le résultat de l'API va lister toutes les variantes génériques et locales d'une aide.     Il faut donc s'attendre à ce qu'il y ait des aides en doublon.<br /><br />Note : la valeur du paramètre, ici 'yes', n'a pas d'importance,     puisque la simple présence de ce paramètre suffit.",
+            "examples": {
+              "": {},
+              "True": {
+                "value": true,
+                "summary": "true"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "order_by",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "publication_date",
+                "relevance",
+                "submission_deadline"
+              ]
+            },
+            "description": "Trier par.<br /><br />Note : relevance correspond aux aides avec le plus petit périmètre,     puis aux aides qui expirent bientôt.",
+            "examples": {
+              "": {},
+              "Tri :Pertinence": {
+                "value": "relevance",
+                "summary": "Tri : pertinence"
+              },
+              "Tri :DateDePublication": {
+                "value": "publication_date",
+                "summary": "Tri : date de publication"
+              },
+              "Tri :DateDeClôture": {
+                "value": "submission_deadline",
+                "summary": "Tri : date de clôture"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidSerializerLatestList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/{slug}/": {
+      "get": {
+        "operationId": "aids_retrieve",
+        "description": "",
+        "summary": "Afficher l'aide donnée",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "schema": {
+              "type": "string",
+              "title": "Fragment d'URL",
+              "description": "Laisser vide pour autoremplir."
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidSerializerLatest"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/all/": {
+      "get": {
+        "operationId": "aids_all_retrieve",
+        "description": "La donnée retournée n'est pas temps-réel,         le résultat est mis à jour à interval régulier.<br /><br />Si votre application requiert de la donnée temps-réel, alors cette ressource n'est pas         adaptée. Tournez-vous vers `/api/aids/`.",
+        "summary": "Toutes les aides au format JSON",
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidSerializerLatest"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/audiences/": {
+      "get": {
+        "operationId": "aids_audiences_list",
+        "description": "",
+        "summary": "Lister tous les choix de bénéficiaires",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidAudienceList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/destinations/": {
+      "get": {
+        "operationId": "aids_destinations_list",
+        "description": "",
+        "summary": "Lister tous les choix de types de dépenses",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidDestinationList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/recurrences/": {
+      "get": {
+        "operationId": "aids_recurrences_list",
+        "description": "",
+        "summary": "Lister tous les choix de récurrences",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidRecurrenceList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/steps/": {
+      "get": {
+        "operationId": "aids_steps_list",
+        "description": "",
+        "summary": "Lister tous les choix d'états d'avancement",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidStepList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/aids/types/": {
+      "get": {
+        "operationId": "aids_types_list",
+        "description": "",
+        "summary": "Lister tous les choix de types d'aides",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAidTypeList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/backers/": {
+      "get": {
+        "operationId": "backers_list",
+        "description": "",
+        "summary": "Lister tous les porteurs d'aides",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Rechercher par nom.<br /><br />Note : il est possible d'avoir des résultats pertinents avec seulement le début du nom.",
+            "examples": {
+              "": {},
+              "Ademe": {
+                "value": "ademe",
+                "summary": "ademe"
+              },
+              "ConseilRégional": {
+                "value": "conseil régional",
+                "summary": "conseil régional"
+              },
+              "Agenc": {
+                "value": "agenc",
+                "summary": "agenc"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "has_financed_aids",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Renvoyer seulement les porteurs d'aides avec des aides.",
+            "examples": {
+              "": {},
+              "True": {
+                "value": true,
+                "summary": "true"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "has_published_financed_aids",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Renvoyer seulement les porteurs d'aides avec des aides publiées.",
+            "examples": {
+              "": {},
+              "True": {
+                "value": true,
+                "summary": "true"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Porteurs d'aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedBackerList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/perimeters/": {
+      "get": {
+        "operationId": "perimeters_list",
+        "description": "Si vous cherchez une API Adresse :         https://api.gouv.fr/les-api/base-adresse-nationale",
+        "summary": "Lister tous les périmètres",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Rechercher par nom.<br /><br />Note : il est possible d'avoir des résultats pertinents avec seulement le début du nom,     ou un nom légerement erroné.",
+            "examples": {
+              "": {},
+              "Lyon": {
+                "value": "lyon",
+                "summary": "lyon"
+              },
+              "Par": {
+                "value": "par",
+                "summary": "par"
+              },
+              "Grenble": {
+                "value": "grenble",
+                "summary": "grenble"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "scale",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "adhoc",
+                "basin",
+                "commune",
+                "continent",
+                "country",
+                "department",
+                "epci",
+                "mainland",
+                "overseas",
+                "region"
+              ]
+            },
+            "description": "Filtrer par l'échelle.<br /><br />Voir `/api/perimeters/scales/` pour la liste complète.",
+            "examples": {
+              "": {},
+              "Commune": {
+                "value": "commune"
+              },
+              "EPCI": {
+                "value": "epci"
+              },
+              "BassinHydrographique": {
+                "value": "basin",
+                "summary": "Bassin hydrographique"
+              },
+              "Département": {
+                "value": "department"
+              },
+              "Région": {
+                "value": "region"
+              },
+              "Outre-mer": {
+                "value": "overseas"
+              },
+              "Métropole": {
+                "value": "mainland"
+              },
+              "Ad-hoc": {
+                "value": "adhoc"
+              },
+              "Pays": {
+                "value": "country"
+              },
+              "Continent": {
+                "value": "continent"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Périmètres"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPerimeterList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/perimeters/scales/": {
+      "get": {
+        "operationId": "perimeters_scales_list",
+        "description": "Ils sont ordonnés du plus petit au plus grand.",
+        "summary": "Lister tous les choix d'échelles",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Périmètres"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPerimeterScaleList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/programs/": {
+      "get": {
+        "operationId": "programs_list",
+        "description": "",
+        "summary": "Lister tous les programmes d'aides",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Programmes d'aides"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProgramList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/themes/": {
+      "get": {
+        "operationId": "themes_list",
+        "description": "",
+        "summary": "Lister toutes les thématiques (avec leur liste de sous-thématiques)",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "Thématiques"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "tokenAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedThemeList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AidAudience": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
+      },
+      "AidDestination": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "AidRecurrence": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "AidSerializerLatest": {
+        "type": "object",
+        "description": "Transforms a raw Aid into nice json.\n\nDON'T TOUCH THIS!\n\nInstead, do this:\n - create a new Serializer\n - make sure `AidSerializerLatest` inherits from the new serializer\n - bump the default API version in the settings\n - update `aids.api.views.AidViewSet.get_serializer_class`\n - update the documentation : src/template/data/doc.html & src/core/api/doc.py",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "slug": {
+            "type": "string",
+            "title": "Fragment d'URL",
+            "description": "Laisser vide pour autoremplir.",
+            "maxLength": 50,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "title": "URL sur Aides-territoires"
+          },
+          "name": {
+            "type": "string",
+            "title": "Nom",
+            "description": "Le titre doit commencer par un verbe à l’infinitif pour que l'objectif de l'aide soit explicite vis-à-vis de ses bénéficiaires.",
+            "maxLength": 180
+          },
+          "short_title": {
+            "type": "string",
+            "title": "Titre court",
+            "description": "Un titre plus concis, pour affichage spécifique.",
+            "maxLength": 64
+          },
+          "financers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "title": "Porteurs d'aides"
+            },
+            "title": "Porteurs d'aides"
+          },
+          "instructors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "title": "Instructeurs"
+            },
+            "title": "Instructeurs"
+          },
+          "programs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "title": "Programmes"
+            },
+            "title": "Programmes"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description complète de l'aide et de ses objectifs"
+          },
+          "eligibility": {
+            "type": "string",
+            "title": "Éligibilité"
+          },
+          "perimeter": {
+            "type": "string",
+            "readOnly": true,
+            "title": "Périmètre",
+            "description": "Sur quel périmètre l'aide est-elle diffusée ?"
+          },
+          "mobilization_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "État d'avancement du projet pour bénéficier du dispositif"
+          },
+          "origin_url": {
+            "type": "string",
+            "format": "uri",
+            "title": "URL d'origine",
+            "maxLength": 500
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "title": "Thème et catégorie, séparés par « | »."
+            },
+            "title": "Thème et catégorie, séparés par « | ».",
+            "description": "E.g: \"Nature / environnement|Qualité de l'air\""
+          },
+          "is_call_for_project": {
+            "type": "boolean",
+            "nullable": true,
+            "title": "Appel à projet / Manifestation d'intérêt"
+          },
+          "application_url": {
+            "type": "string",
+            "format": "uri",
+            "title": "Lien vers une démarche en ligne",
+            "maxLength": 500
+          },
+          "targeted_audiences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Bénéficiaires de l'aide"
+          },
+          "aid_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Types d'aide"
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Types de dépenses / actions couvertes"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "title": "Date d'ouverture",
+            "description": "À quelle date l'aide est-elle ouverte aux candidatures ?"
+          },
+          "predeposit_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "title": "Date de pré-dépôt",
+            "description": "Quelle est la date de pré-dépôt des dossiers, si applicable ?"
+          },
+          "submission_deadline": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "title": "Date de clôture",
+            "description": "Quelle est la date de clôture de dépôt des dossiers ?"
+          },
+          "subvention_rate_lower_bound": {
+            "type": "string",
+            "readOnly": true,
+            "title": "Taux de subvention min (en %)"
+          },
+          "subvention_rate_upper_bound": {
+            "type": "string",
+            "readOnly": true,
+            "title": "Taux de subvention max (en %)"
+          },
+          "loan_amount": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "nullable": true,
+            "title": "Montant du prêt",
+            "minimum": 0
+          },
+          "recoverable_advance_amount": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "nullable": true,
+            "title": "Montant de l'avance récupérable",
+            "minimum": 0
+          },
+          "contact": {
+            "type": "string"
+          },
+          "recurrence": {
+            "type": "string",
+            "title": "Récurrence",
+            "description": "L'aide est-elle ponctuelle, permanente, ou récurrente ?"
+          },
+          "project_examples": {
+            "type": "string",
+            "title": "Exemples de projets réalisables"
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Date de création"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "title": "Date de mise à jour"
+          }
+        },
+        "required": [
+          "aid_types",
+          "categories",
+          "date_updated",
+          "description",
+          "destinations",
+          "financers",
+          "id",
+          "instructors",
+          "mobilization_steps",
+          "name",
+          "perimeter",
+          "programs",
+          "recurrence",
+          "subvention_rate_lower_bound",
+          "subvention_rate_upper_bound",
+          "targeted_audiences",
+          "url"
+        ]
+      },
+      "AidStep": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "AidType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
+      },
+      "Backer": {
+        "type": "object",
+        "description": "Pourquoi renommer 'name' en 'text' ? Pour l'autocomplete avec select2.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "perimeter": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "perimeter",
+          "text"
+        ]
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "title": "Nom",
+            "maxLength": 70
+          },
+          "slug": {
+            "type": "string",
+            "title": "Fragment d'URL",
+            "maxLength": 50,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "PaginatedAidAudienceList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidAudience"
+            }
+          }
+        }
+      },
+      "PaginatedAidDestinationList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidDestination"
+            }
+          }
+        }
+      },
+      "PaginatedAidRecurrenceList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidRecurrence"
+            }
+          }
+        }
+      },
+      "PaginatedAidSerializerLatestList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidSerializerLatest"
+            }
+          }
+        }
+      },
+      "PaginatedAidStepList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidStep"
+            }
+          }
+        }
+      },
+      "PaginatedAidTypeList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AidType"
+            }
+          }
+        }
+      },
+      "PaginatedBackerList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Backer"
+            }
+          }
+        }
+      },
+      "PaginatedPerimeterList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Perimeter"
+            }
+          }
+        }
+      },
+      "PaginatedPerimeterScaleList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PerimeterScale"
+            }
+          }
+        }
+      },
+      "PaginatedProgramList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Program"
+            }
+          }
+        }
+      },
+      "PaginatedThemeList": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=4"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?page=2"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Theme"
+            }
+          }
+        }
+      },
+      "Perimeter": {
+        "type": "object",
+        "description": "Pourquoi renommer 'name' en 'text' ? Pour l'autocomplete avec select2.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "title": "Nom",
+            "maxLength": 128
+          },
+          "scale": {
+            "type": "string"
+          },
+          "zipcodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "scale",
+          "text",
+          "zipcodes"
+        ]
+      },
+      "PerimeterScale": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "Program": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "title": "Nom",
+            "maxLength": 256
+          },
+          "slug": {
+            "type": "string",
+            "title": "Fragment d'URL",
+            "maxLength": 50,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "perimeter": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "perimeter",
+          "slug"
+        ]
+      },
+      "Theme": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "title": "Nom",
+            "maxLength": 70
+          },
+          "slug": {
+            "type": "string",
+            "title": "Fragment d'URL",
+            "maxLength": 50,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        },
+        "required": [
+          "categories",
+          "id",
+          "name",
+          "slug"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "Session"
+      },
+      "tokenAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Token-based authentication with required prefix \"Token\""
+      }
+    }
+  },
+  "externalDocs": {
+    "url": "https://aides-territoires.beta.gouv.fr/data/"
+  },
+  "servers": [
+    {
+      "url": "https://aides-territoires.beta.gouv.fr",
+      "description": ""
+    }
+  ]
+}

@@ -1,0 +1,2663 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "8fe8338b0395c"
+  },
+  "info": {
+    "title": "Acumbamail",
+    "version": "1.0",
+    "contact": {
+      "url": "https://acumbamail.com/en/contact/",
+      "name": "Acumbamail",
+      "email": "soporte@acumbamail.com"
+    },
+    "termsOfService": "https://acumbamail.com/en/terms-of-use/",
+    "description": "Easily send email and SMS campaigns and boost your business"
+  },
+  "servers": [
+    {
+      "url": "https://acumbamail.com/api/1"
+    }
+  ],
+  "paths": {
+    "/sendSMS/": {
+      "post": {
+        "summary": "sendSMS",
+        "tags": [
+          "SMS"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "messages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "integer"
+                          },
+                          "error": {
+                            "type": "string"
+                          },
+                          "credits": {
+                            "type": "integer"
+                          },
+                          "id": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "messages": [
+                        {
+                          "status": 1,
+                          "error": "Sender is mandatory"
+                        },
+                        {
+                          "status": 0,
+                          "credits": 3,
+                          "id": 410
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "messages": [
+                        {
+                          "status": 0,
+                          "error": "string",
+                          "credits": 0,
+                          "id": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-sendSMS",
+        "description": "Send one or more SMS messages to mobile phones with one call.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "recipient": {
+                      "type": "string"
+                    },
+                    "body": {
+                      "type": "string"
+                    },
+                    "sender": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "x-examples": {
+                  "example-1": [
+                    {
+                      "recipient": "+34634534XXX",
+                      "body": "message test",
+                      "sender": "Tu empresa"
+                    },
+                    {
+                      "recipient": "+34634534XXX",
+                      "body": "message test",
+                      "sender": "Tu empresa"
+                    }
+                  ]
+                }
+              },
+              "examples": {}
+            }
+          },
+          "description": "A list of JSON objects that includes the sender, telephone number and the message that will be sent to each subscriber."
+        }
+      }
+    },
+    "/getCreditsSMS/": {
+      "get": {
+        "summary": "getCreditsSMS",
+        "tags": [
+          "SMS"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Creditos": {
+                      "type": "integer"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "Creditos": 0
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "Creditos": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCreditsSMS",
+        "description": "Returns remaining SMS credits."
+      }
+    },
+    "/getSMSSubscriberReport/": {
+      "get": {
+        "summary": "getSMSSubscriberReport",
+        "tags": [
+          "SMS"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getSMSSubscriberReport",
+        "description": "Displays the list of all the subscribers who have received a certain SMS campaign.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "sms_campaign_id",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getSMSQuickSubscriberReport/": {
+      "get": {
+        "summary": "getSMSQuickSubscriberReport",
+        "tags": [
+          "SMS"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "Returns list with all the subscribers who have been sent a quick campaign, together with the unique ID of this SMS, the SMS status, send date and delivery date",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getSMSQuickSubscriberReport",
+        "description": "Displays the list if subscribers who have received quick SMS campaigns between two dates.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "start_date",
+            "required": true,
+            "description": "Start date of the range of campaigns. (Format: YYYY-MM-DD HH:MM)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "end_date",
+            "description": "End date of the range of campaigns. (Format: YYYY-MM-DD HH:MM)"
+          }
+        ]
+      }
+    },
+    "/addMergeTag/": {
+      "post": {
+        "summary": "addMergeTag",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-addMergeTag",
+        "description": "Adds a field to a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "field_name",
+            "required": true,
+            "description": "Name of column that will be added to the list"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "text",
+                "boolean",
+                "integer",
+                "decimal",
+                "time",
+                "email",
+                "longText",
+                "ip",
+                "url"
+              ]
+            },
+            "in": "query",
+            "name": "field_type",
+            "description": "Type of column that will be added to the list. Possible values are: text, boolean, integer, decimal, time, email, longText, ip and url",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/addSubscriber/": {
+      "post": {
+        "summary": "addSubscriber",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "subscriber_id": 2713989869
+                    }
+                  },
+                  "properties": {
+                    "subscriber_id": {
+                      "type": "integer"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-addSubscriber",
+        "description": "Adds a subscriber to a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "merge_fields",
+            "required": true,
+            "description": "Object that contains the merge tags of the subscriber as keys and the value that will be added to the subscriber. For example, {\"email\": \"test@test.com\", \"name\": \"test\"}"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "double_optin",
+            "description": "Activates sending of confirmation email when adding the subscriber. By default=0"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "update_subscriber",
+            "description": "Modifies the fields in the case of a subscriber who is already on the list. By default=0"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "welcome_email",
+            "description": "Activates sending of the welcome email when adding a subscriber. As long as the user has been activated and configured in the list. By default=0"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "complete_json",
+            "description": "Returns a complete JSON with the format {'email': 'email@dominio.es', 'id': 555}. By default=0"
+          }
+        ]
+      }
+    },
+    "/batchAddSubscribers/": {
+      "post": {
+        "summary": "batchAddSubscribers",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-batchAddSubscribers",
+        "description": "Adds a group of subscribers to a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "required": true,
+            "description": "List identifier"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "update_subscriber",
+            "description": "Modifies the fields in the case of a subscriber who is already on the list. By default=0"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subscribers_data",
+            "description": "A list of users with dictionaries in JSON that contains the merge tags of the subscriber as keys and the value that will be added to the subscriber. At most you can send 1000 subscribers in one call. For example, [{\"email\":\"usuario1@prueba.es\"},{\"email\":\"usuario2@prueba.es\"}]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "complete_json",
+            "description": "Returns a complete JSON with the format {'email': 'email@dominio.es', 'id': 555}. By default=0"
+          }
+        ]
+      }
+    },
+    "/batchDeleteSubscribers/": {
+      "post": {
+        "summary": "batchDeleteSubscribers",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "deleted": [
+                        "[1] test8@test.com deleted",
+                        "[0] test9@test.com deleted"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-batchDeleteSubscribers",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "email_list",
+            "description": "Object of subscribers with the following configuration: { 0: 'email1', 1: 'email2' }",
+            "required": true
+          }
+        ],
+        "description": "Removes a group of subscribers from a list."
+      }
+    },
+    "/createList/": {
+      "post": {
+        "summary": "createList",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "list_id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-createList",
+        "description": "Creates a new subscribers list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sender_email",
+            "description": "Email address that will be used for list notifications",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "description": "List name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "company",
+            "description": "Company that the list belongs to"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country",
+            "description": "Country where the list comes from"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "city",
+            "description": "City of the company"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "address",
+            "description": "Address of the company"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "phone",
+            "description": "Phone number of the company"
+          }
+        ]
+      }
+    },
+    "/deleteAllSubscribers/": {
+      "post": {
+        "summary": "deleteAllSubscribers",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-deleteAllSubscribers",
+        "description": "Removes all subscribers from a list. This function runs in the background, as it can take a few minutes depending on the size of the list. You can check when you've finished by calling the getListStats function and see that the value of total_subscribers is 0.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "required": true,
+            "description": "List identifier"
+          }
+        ]
+      }
+    },
+    "/deleteList/": {
+      "post": {
+        "summary": "deleteList",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-deleteList",
+        "description": "Deletes a list of subscribers.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/deleteSubscriber/": {
+      "post": {
+        "summary": "deleteSubscriber",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-deleteSubscriber",
+        "description": "Removes a subscriber from a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "required": true,
+            "description": "List identifier"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "description": "Subscriber email address"
+          }
+        ]
+      }
+    },
+    "/getCreditsSMTP/": {
+      "get": {
+        "summary": "getCreditsSMTP",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Credits": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "Credits": "2000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCreditsSMTP",
+        "description": "Displays all the available SMTP credits from a client."
+      }
+    },
+    "/getFields/": {
+      "get": {
+        "summary": "getFields",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getFields",
+        "description": "Displays the fields of the list and their type.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier"
+          }
+        ]
+      }
+    },
+    "/getForms/": {
+      "get": {
+        "summary": "getForms",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getForms",
+        "description": "Displays forms associated to a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getInactiveSubscribers/": {
+      "get": {
+        "summary": "getInactiveSubscribers",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getInactiveSubscribers",
+        "description": "Displays all of the inactive subscribers from a client between two dates.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_from",
+            "required": true,
+            "description": "Start date of the range of campaigns. (Format: YYYY-MM-DD)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "name": "date_to",
+            "description": "End date of the range of campaigns. (Format: YYYY-MM-DD)"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "full_info",
+            "description": "Adds to the list of emails the type (hard: 1, complaint: 2, unsubscription: 3) and the date. For example: {'email': 'email@domain.com', 'reason': 1, 'reason_date': '2019/01/24 14:35:05'}. Default = 0"
+          }
+        ]
+      }
+    },
+    "/getLists/": {
+      "get": {
+        "summary": "getLists",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getLists",
+        "description": "Displays the available list of subscribers."
+      }
+    },
+    "/getListStats/": {
+      "get": {
+        "summary": "getListStats",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unsubscribed_subscribers": {
+                      "type": "integer"
+                    },
+                    "create_date": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "spam_subscribers": {
+                      "type": "integer"
+                    },
+                    "total_subscribers": {
+                      "type": "integer"
+                    },
+                    "hard_bounced_subscribers": {
+                      "type": "integer"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "unsubscribed_subscribers": 0,
+                      "create_date": "2022/07/13 11:06:42",
+                      "name": "name",
+                      "spam_subscribers": 0,
+                      "total_subscribers": 9,
+                      "hard_bounced_subscribers": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getListStats",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          }
+        ],
+        "description": "Displays general data about the list."
+      }
+    },
+    "/getListSubsStats/": {
+      "get": {
+        "summary": "getListSubsStats",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "subscribers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "shippings": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "action": {
+                                  "type": "string"
+                                },
+                                "time": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "email": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "subscribers": [
+                        {
+                          "shippings": [
+                            {
+                              "action": "Abierto",
+                              "time": "2022-07-13 11:13:18",
+                              "id": "1791736",
+                              "name": "Test"
+                            }
+                          ],
+                          "email": "test@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test3@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test4@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test5@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test6@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "usuario1@prueba.es"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test2@test.com"
+                        },
+                        {
+                          "shippings": [],
+                          "email": "test7@test.com"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getListSubsStats",
+        "description": "Gets data from the campaigns sent to each subscriber in the list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "block_index",
+            "description": "The result returns up to a maximum of 100, where 0 from subscriber 1 to 100, 1 from subscriber 101 to 200. Default=0"
+          }
+        ]
+      }
+    },
+    "/getMergeFields/": {
+      "get": {
+        "summary": "getMergeFields",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "[name: string]": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getMergeFields",
+        "description": "Displays the merge fields in the fields of the list and the type they have.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier"
+          }
+        ]
+      }
+    },
+    "/getSubscriberDetails/": {
+      "get": {
+        "summary": "getSubscriberDetails",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getSubscriberDetails",
+        "description": "Displays advanced information about a subscriber.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subscriber",
+            "description": "Subscriber email address",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getSubscribers/": {
+      "get": {
+        "summary": "getSubscribers",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getSubscribers",
+        "description": "Displays the list of subscribers from a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "required": true,
+            "description": "List identifier"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "status",
+            "description": "Segment the subscribers by status. 0: active subscribers. 1: non-verified subscribers. 2: subscribers who have unsubscribed. 3: hard bounced subscribers. 4: subscribers who have complained."
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "block_index",
+            "description": "The result returns up to a maximum of 10,000 blocks, where 0 from subscriber 1 to 10,000, 1 from subscriber 10,001 to 20,000. Default=0"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "all_fields",
+            "description": "Returns all the fields of each subscriber. By default=0"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "complete_json",
+            "description": "Returns a complete JSON. By default=0"
+          }
+        ]
+      }
+    },
+    "/searchSubscriber/": {
+      "post": {
+        "summary": "searchSubscriber",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-searchSubscriber",
+        "description": "Returns the subscriber's advanced data in each list to which they belong.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subscriber",
+            "description": "Subscriber email address",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/unsubscribeSubscriber/": {
+      "post": {
+        "summary": "unsubscribeSubscriber",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-unsubscribeSubscriber",
+        "description": "Unsubscribes a subscriber from a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "description": "Subscriber email address",
+            "name": "email"
+          }
+        ]
+      }
+    },
+    "/send/": {
+      "post": {
+        "summary": "send",
+        "tags": [
+          "SMTP"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-send",
+        "description": "Send one or more transactional emails.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "messages",
+            "required": true,
+            "description": "You must include in the BODY a list of messages with JSON dictionaries. Each message can contain: {'subject': subject, 'from_email': email_del_remitente, 'to_email': email_destinatario, 'template_id': id_de_la_plantilla} if you want to send an existing template in your account {'subject': subject, 'from_email': Email_del_remitente, 'to_email': email_destinatario, 'body': html_del_email} if you want to send your own html, it must contain"
+          }
+        ]
+      }
+    },
+    "/sendOne/": {
+      "post": {
+        "summary": "sendOne",
+        "tags": [
+          "SMTP"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Email password",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-sendOne",
+        "description": "Sends a transactional email.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from_email",
+            "required": true,
+            "description": "Email address"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "to_email",
+            "description": "Recipient",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "body",
+            "description": "Email content",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subject",
+            "description": "Subject",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "category",
+            "description": "Category"
+          }
+        ]
+      }
+    },
+    "/getEmailStatus/": {
+      "get": {
+        "summary": "getEmailStatus",
+        "tags": [
+          "SMTP"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "A numerical value that represents the status of the email. Possible values: 0 (not sent), 1 (sent), 2 (opened), 3 (sending error), -1 (soft bounce being resent), -2 (hard bounce), -3 (soft bounce completed), -4 (complaint from recipient)"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getEmailStatus",
+        "description": "Displays information about an already sent email.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "email_key",
+            "description": "Email password to check",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/createCampaign/": {
+      "post": {
+        "summary": "createCampaign",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Campaign ID sent or error message if campaign could not be sent"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-createCampaign",
+        "description": "Creates and sends a new campaign.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "description": "Name of campaign (not public)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from_name",
+            "required": true,
+            "description": "Name of campaign sender"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from_email",
+            "description": "Email address from which the campaign will be sent, Name <email@dominio.com> can be used",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subject",
+            "description": "Subject of the campaign",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "content",
+            "description": "The html that the campaign will contain",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "lists",
+            "description": "Identifiers of the lists to which the campaign will be sent",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_send",
+            "description": "(Optional) Campaign start date. Only for scheduled campaigns. (Format: YYYY-MM-DD HH:MM)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "tracking_urls",
+            "description": "(Optional) Replace links for click tracking. Default=1"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "complete_json",
+            "description": "To return a complete JSON with a complete format. By default=0"
+          }
+        ]
+      }
+    },
+    "/createTemplate/": {
+      "post": {
+        "summary": "createTemplate",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "Template ID or empty chain depending on whether the template has been created or not."
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-createTemplate",
+        "description": "Creates a template for the customer.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "template_name",
+            "required": true,
+            "description": "Template name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "name": "html_content",
+            "description": "The html that the template will contain"
+          }
+        ]
+      }
+    },
+    "/duplicateTemplate/": {
+      "post": {
+        "summary": "duplicateTemplate",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "template_id": "7346668"
+                    }
+                  },
+                  "properties": {
+                    "template_id": {
+                      "type": "string",
+                      "description": "Created template ID"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-duplicateTemplate",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "template_name",
+            "description": "Template name",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "origin_template_id",
+            "description": "Original template ID",
+            "required": true
+          }
+        ],
+        "description": "Duplicates a template for the customer."
+      }
+    },
+    "/getCampaignBasicInformation/": {
+      "get": {
+        "summary": "getCampaignBasicInformation",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "status": "Sent",
+                      "date_sent": "2022-07-13 11:13:15",
+                      "name": "Test",
+                      "date": "2022-07-13 11:06:11",
+                      "total_sent": 1,
+                      "email_from": "test@mtest.com",
+                      "lists": [
+                        635038
+                      ],
+                      "subject": "Test"
+                    }
+                  },
+                  "description": "Information about the campaign",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "date_sent": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "total_sent": {
+                      "type": "integer"
+                    },
+                    "email_from": {
+                      "type": "string"
+                    },
+                    "lists": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "subject": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignBasicInformation",
+        "description": "Displays the basic information about a campaign.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getCampaignClicks/": {
+      "get": {
+        "summary": "getCampaignClicks",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignClicks",
+        "description": "Displays the subscribers who have clicked the campaign and the date on which they did so.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "required": true,
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about"
+          }
+        ]
+      }
+    },
+    "/getCampaignInformationByISP/": {
+      "get": {
+        "summary": "getCampaignInformationByISP",
+        "tags": [
+          "Subscribers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Others": {
+                      "type": "object",
+                      "properties": {
+                        "unopened": {
+                          "type": "integer"
+                        },
+                        "opened": {
+                          "type": "integer"
+                        },
+                        "total_sent": {
+                          "type": "integer"
+                        },
+                        "soft_bounces": {
+                          "type": "integer"
+                        },
+                        "hard_bounces": {
+                          "type": "integer"
+                        },
+                        "complaints": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "Hotmail": {
+                      "type": "object",
+                      "properties": {
+                        "unopened": {
+                          "type": "integer"
+                        },
+                        "opened": {
+                          "type": "integer"
+                        },
+                        "total_sent": {
+                          "type": "integer"
+                        },
+                        "soft_bounces": {
+                          "type": "integer"
+                        },
+                        "hard_bounces": {
+                          "type": "integer"
+                        },
+                        "complaints": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "Yahoo": {
+                      "type": "object",
+                      "properties": {
+                        "unopened": {
+                          "type": "integer"
+                        },
+                        "opened": {
+                          "type": "integer"
+                        },
+                        "total_sent": {
+                          "type": "integer"
+                        },
+                        "soft_bounces": {
+                          "type": "integer"
+                        },
+                        "hard_bounces": {
+                          "type": "integer"
+                        },
+                        "complaints": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "Gmail": {
+                      "type": "object",
+                      "properties": {
+                        "unopened": {
+                          "type": "integer"
+                        },
+                        "opened": {
+                          "type": "integer"
+                        },
+                        "total_sent": {
+                          "type": "integer"
+                        },
+                        "soft_bounces": {
+                          "type": "integer"
+                        },
+                        "hard_bounces": {
+                          "type": "integer"
+                        },
+                        "complaints": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "Others": {
+                        "unopened": 0,
+                        "opened": 0,
+                        "total_sent": 0,
+                        "soft_bounces": 0,
+                        "hard_bounces": 0,
+                        "complaints": 0
+                      },
+                      "Hotmail": {
+                        "unopened": 0,
+                        "opened": 0,
+                        "total_sent": 0,
+                        "soft_bounces": 0,
+                        "hard_bounces": 0,
+                        "complaints": 0
+                      },
+                      "Yahoo": {
+                        "unopened": 0,
+                        "opened": 0,
+                        "total_sent": 0,
+                        "soft_bounces": 0,
+                        "hard_bounces": 0,
+                        "complaints": 0
+                      },
+                      "Gmail": {
+                        "unopened": -1,
+                        "opened": 1,
+                        "total_sent": 0,
+                        "soft_bounces": 0,
+                        "hard_bounces": 0,
+                        "complaints": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignInformationByISP",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ],
+        "description": "Displays information about a campaign divided between the different ISP."
+      }
+    },
+    "/getCampaignLinks/": {
+      "get": {
+        "summary": "getCampaignLinks",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "url": "http://www.example.com",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      },
+                      {
+                        "url": "https://www.facebook.com/",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      },
+                      {
+                        "url": "https://twitter.com/",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      },
+                      {
+                        "url": "https://instagram.com/",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      },
+                      {
+                        "url": "https://www.linkedin.com/",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      },
+                      {
+                        "url": "http://acumbamail.com/?refered=2&logo=144989",
+                        "total_clics": 0,
+                        "unique_clics": 0,
+                        "subscribers": ""
+                      }
+                    ]
+                  },
+                  "description": "A JSON file containing all the links and the subscribers who have clicked",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string"
+                      },
+                      "total_clics": {
+                        "type": "integer"
+                      },
+                      "unique_clics": {
+                        "type": "integer"
+                      },
+                      "subscribers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignLinks",
+        "description": "Displays the list of URLs and who clicked on each URL.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getCampaignOpeners/": {
+      "get": {
+        "summary": "Displays the subscribers who have opened the campaign and the date on which they did so.",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "email": "test@test.com",
+                        "open_datetime": "2022-07-13 11:13:18"
+                      }
+                    ]
+                  },
+                  "description": "List of subscribers who have opened the campaign",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "open_datetime": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignOpeners",
+        "description": "Displays the subscribers who have opened the campaign and the date on which they did so.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getCampaignOpenersByBrowser/": {
+      "get": {
+        "summary": "getCampaignOpenersByBrowser",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "total": "1",
+                        "browser": "Edge"
+                      }
+                    ]
+                  },
+                  "description": "Opened mails by browser",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "total": {
+                        "type": "string"
+                      },
+                      "browser": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignOpenersByBrowser",
+        "description": "Displays information about openers of a campaign by browser.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about"
+          }
+        ]
+      }
+    },
+    "/getCampaignOpenersByCountries/": {
+      "get": {
+        "summary": "getCampaignOpenersByCountries",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Opened mails by countries"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignOpenersByCountries",
+        "description": "Displays the number of opened campaign emails by countries.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getCampaignOpenersByOs/": {
+      "get": {
+        "summary": "getCampaignOpenersByOs",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {},
+        "operationId": "get-getCampaignOpenersByOs",
+        "description": "Displays information about openers of a campaign by operating system.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "x-examples": {
+                  "example-1": [
+                    {
+                      "total": "1",
+                      "browser": "Windows"
+                    }
+                  ]
+                },
+                "description": "Opened mails by operating system",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "string"
+                    },
+                    "browser": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCampaigns/": {
+      "get": {
+        "summary": "getCampaigns",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "total_delivered": 1,
+                        "opened": 1,
+                        "unopened": 0,
+                        "from_name": "Test",
+                        "name": "Test",
+                        "date": "2022-07-13 11:06:11",
+                        "subject": "Test",
+                        "id": 1791736,
+                        "from_email": "test@test.com"
+                      }
+                    ]
+                  },
+                  "description": "List of campaigns",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "total_delivered": {
+                        "type": "integer"
+                      },
+                      "opened": {
+                        "type": "integer"
+                      },
+                      "unopened": {
+                        "type": "integer"
+                      },
+                      "from_name": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "date": {
+                        "type": "string"
+                      },
+                      "subject": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "from_email": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaigns",
+        "description": "Displays the name and identifiers of created campaigns.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "complete_json",
+            "description": "To return a complete JSON with a complete format. By default=0"
+          }
+        ]
+      }
+    },
+    "/getCampaignSoftBounces/": {
+      "get": {
+        "summary": "getCampaignSoftBounces",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "List of soft bounces of a campaign",
+                  "items": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignSoftBounces",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ],
+        "description": "Displays the current soft bounces of a campaign."
+      }
+    },
+    "/getCampaignTotalInformation/": {
+      "get": {
+        "summary": "getCampaignTotalInformation",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "total_delivered": 1,
+                      "soft_bounces": 0,
+                      "campaign_url": "https://acumbamail.com/envio/ver/aa11e5c4-02cd-11ed-8d62-005056bd5094/",
+                      "unsubscribes": 0,
+                      "complaints": 0,
+                      "unique_clicks": 0,
+                      "unopened": 0,
+                      "emails_to_send": 8,
+                      "opened": 1,
+                      "hard_bounces": 7,
+                      "total_clicks": 0
+                    }
+                  },
+                  "description": "All the information of the campaign: total delivered, opened, unopened, hard bounces, soft bounces, complaints, unsubscribes, total sent, single click-throughs and total click-throughs",
+                  "properties": {
+                    "total_delivered": {
+                      "type": "integer"
+                    },
+                    "soft_bounces": {
+                      "type": "integer"
+                    },
+                    "campaign_url": {
+                      "type": "string"
+                    },
+                    "unsubscribes": {
+                      "type": "integer"
+                    },
+                    "complaints": {
+                      "type": "integer"
+                    },
+                    "unique_clicks": {
+                      "type": "integer"
+                    },
+                    "unopened": {
+                      "type": "integer"
+                    },
+                    "emails_to_send": {
+                      "type": "integer"
+                    },
+                    "opened": {
+                      "type": "integer"
+                    },
+                    "hard_bounces": {
+                      "type": "integer"
+                    },
+                    "total_clicks": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getCampaignTotalInformation",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "campaign_id",
+            "description": "Identifier of the campaign that you want to retrieve information about",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getStatsByDate/": {
+      "get": {
+        "summary": "getStatsByDate",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "unopened": 0,
+                      "opened": 0,
+                      "hard_bounces": 0,
+                      "complaints": 0,
+                      "total_sent": 0,
+                      "total_clicks": 0,
+                      "soft_bounces": 0,
+                      "unique_clicks": 0
+                    }
+                  },
+                  "description": "All the grouped information about the selected campaigns",
+                  "properties": {
+                    "unopened": {
+                      "type": "integer"
+                    },
+                    "opened": {
+                      "type": "integer"
+                    },
+                    "hard_bounces": {
+                      "type": "integer"
+                    },
+                    "complaints": {
+                      "type": "integer"
+                    },
+                    "total_sent": {
+                      "type": "integer"
+                    },
+                    "total_clicks": {
+                      "type": "integer"
+                    },
+                    "soft_bounces": {
+                      "type": "integer"
+                    },
+                    "unique_clicks": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getStatsByDate",
+        "description": "Displays the grouped statistics of the campaigns sent to the list provided on the selected date.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "list_id",
+            "description": "List identifier",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_from",
+            "description": "Start date of the range of campaigns. (Format: YYYY-MM-DD)",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date_to",
+            "description": "End date of the range of campaigns. (Format: YYYY-MM-DD)",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/getTemplates/": {
+      "get": {
+        "summary": "getTemplates",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "available": false,
+                        "id": 7345869,
+                        "name": "test"
+                      },
+                      {
+                        "available": true,
+                        "id": 7346663,
+                        "name": "test 3"
+                      },
+                      {
+                        "available": true,
+                        "id": 7346668,
+                        "name": "test 3"
+                      },
+                      {
+                        "available": false,
+                        "id": 7346714,
+                        "name": "test 2"
+                      }
+                    ]
+                  },
+                  "description": "List of templates with their ID, their name and if they are available",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "available": {
+                        "type": "boolean"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-getTemplates",
+        "description": "Displays the name and identifiers of created templates and if they are available."
+      }
+    },
+    "/sendTemplateCampaign/": {
+      "post": {
+        "summary": "sendTemplateCampaign",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Campaign ID sent or error message if campaign could not be sent"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-sendTemplateCampaign",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "Name of campaign (not public)",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from_name",
+            "description": "Name of campaign sender",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from_email",
+            "description": "Email address from which the campaign will be sent",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "subject",
+            "description": "Subject of the campaign",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "template_id",
+            "description": "Campaign ID to send",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "lists",
+            "description": "Identifiers of the lists to which the campaign will be sent",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "auth_token": {
+        "name": "auth_token",
+        "type": "apiKey",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "auth_token": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Campaigns"
+    },
+    {
+      "name": "SMS"
+    },
+    {
+      "name": "SMTP"
+    },
+    {
+      "name": "Subscribers"
+    }
+  ]
+}

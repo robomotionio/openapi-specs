@@ -1,0 +1,152 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Product Hunt",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.producthunt.com/v2/api"
+    }
+  ],
+  "paths": {
+    "/graphql": {
+      "post": {
+        "summary": "Get GraphQL",
+        "operationId": "post-graphql",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "data": {},
+                      "errors": []
+                    }
+                  },
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "errors"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "graph"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "{Post(id: \"XXX\") {votes {}}}"
+            },
+            "in": "query",
+            "name": "query",
+            "description": "Graph QL query. [See the official GraphQL documentation](https://graphql.org/learn/)."
+          }
+        ],
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "query": "...",
+                    "operationName": "...",
+                    "variables": {
+                      "myVariable": "someValue"
+                    }
+                  }
+                },
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "GraphQL query to be sent to the server"
+                  },
+                  "operationName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "operationName is only required if multiple operations are present in the query."
+                  },
+                  "variables": {
+                    "type": "object",
+                    "description": "Query variables encoded has an JSON Object"
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "query": "{Post(id: 'XXX') {votes {}}}",
+                    "operationName": "string",
+                    "variables": {
+                      "myVariable": "someValue"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "OAuth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://api.producthunt.com/v2/oauth/authorize",
+            "tokenUrl": "https://api.producthunt.com/v2/oauth/token",
+            "refreshUrl": "https://api.producthunt.com/v2/oauth/token",
+            "scopes": {
+              "public": "Get public information",
+              "private": "Get private information",
+              "write": "Get write access"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth": [
+        "public",
+        "private",
+        "write"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "graph"
+    }
+  ]
+}

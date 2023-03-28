@@ -1,0 +1,3155 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Eurecia API",
+    "description": "Here is the new Eurecia API allowing you to access all the data you\nare authorized to through our classic platform",
+    "version": "v1",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/Eurecia.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "events"
+    },
+    {
+      "name": "moods",
+      "description": "REST API to interact with moods for Well-being module"
+    },
+    {
+      "name": "payroll grids",
+      "description": "REST API to manage payroll grids"
+    }
+  ],
+  "paths": {
+    "/v1/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Events with params",
+        "description": "Get Events by user, status or before your oldest EventId and limit\nresult",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User's FullId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Event Status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW",
+                "READ",
+                "DONE",
+                "ARCHIVED",
+                "HIDDEN"
+              ]
+            }
+          },
+          {
+            "name": "isWithAction",
+            "in": "query",
+            "description": "Event have actions",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "application",
+            "in": "query",
+            "description": "Application called api",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Eurecia",
+                "MyEurecia"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page of result",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Events for the given parameters are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "userId or connected user's id is null"
+          }
+        }
+      }
+    },
+    "/v1/events/count": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Events Nb with params",
+        "description": "Get Events Nb by user, status",
+        "operationId": "countEvents",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User's FullId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW",
+                "READ",
+                "DONE",
+                "ARCHIVED",
+                "HIDDEN"
+              ]
+            }
+          },
+          {
+            "name": "application",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Eurecia",
+                "MyEurecia"
+              ]
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Count of Events for the given parameters are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "userId or connected user's id is null"
+          }
+        }
+      }
+    },
+    "/v1/events/status": {
+      "put": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Update status of Events",
+        "description": "Get all Events by recieverId and before an ObjectId (except immutable\nstatus), then update status",
+        "operationId": "updateAllStatus",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User's FullId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "The latest EventId retrieved, in order to get all Events before\nthat",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Event Status to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Events status are updated"
+          },
+          "400": {
+            "description": "eventId or before or status is null"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/events/{id}": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Event by Id",
+        "description": "Get Event by Id",
+        "operationId": "getEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Event id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The corresponding Event is returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "eventId is null"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Update status of Event",
+        "description": "Get Event by id and update status",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Event id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Event Status to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Event status is updated"
+          },
+          "400": {
+            "description": "eventId or status is null"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/fcm/token": {
+      "post": {
+        "operationId": "addToken",
+        "requestBody": {
+          "description": "DeviceToken to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "operationId": "removeToken",
+        "requestBody": {
+          "description": "DeviceToken to remove",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/fcm/{app}/token": {
+      "post": {
+        "operationId": "addToken",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "description": "App",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Eurecia",
+                "MyEurecia"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "DeviceToken to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "operationId": "removeToken",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "description": "App",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Eurecia",
+                "MyEurecia"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "DeviceToken to remove",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/moods": {
+      "post": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Create a new mood vote for today",
+        "description": "Create a new mood for today and a given user",
+        "operationId": "vote",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Mood"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Vote validated"
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/moods/companies/average": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get company average statistics for moods",
+        "description": "Get moods statistics by day for the company and user",
+        "operationId": "getAverageStatisticsByCompanies",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, company average statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodAverageStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get statistics for moods",
+        "description": "Get moods statistics by day for the company and user",
+        "operationId": "getStatisticsForCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/average": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get company average statistics for moods",
+        "description": "Get moods statistics by day for the company and user",
+        "operationId": "getAverageStatisticsByCompanies",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID to see",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, company average statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodAverageStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/departments/average": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get average departments statistics for moods",
+        "description": "Get average moods statistics by day for all departments",
+        "operationId": "getStatisticsForAllDepartments",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID to see",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, departments statistics for today and user's company are\nreturned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodAverageStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/departments/{departmentId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get department statistics for moods",
+        "description": "Get moods statistics by day for the company and department",
+        "operationId": "getStatisticsByUserAndDepartment",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "departmentId",
+            "in": "path",
+            "description": "Department's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, department statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/departments/{departmentId}/structures/{structureId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get department and structure statistics for moods",
+        "description": "Get moods statistics by day for the company, department and structure",
+        "operationId": "getStatisticsByUserAndDepartmentAndStructure",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "departmentId",
+            "in": "path",
+            "description": "Department's ID",
+            "required": true
+          },
+          {
+            "name": "structureId",
+            "in": "path",
+            "description": "Structure's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, department and structure statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/structures/average": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get average structures statistics for moods",
+        "description": "Get average moods statistics by day for all structures",
+        "operationId": "getStatisticsForAllStructures",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID to see",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, structures statistics for today and user's company are\nreturned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodAverageStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/companies/{companyId}/structures/{structureId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get structure statistics for moods",
+        "description": "Get moods statistics by day for the company and structure",
+        "operationId": "getStatisticsByUserAndStructure",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "structureId",
+            "in": "path",
+            "description": "Structure's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, structure statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/departments/{departmentId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get department statistics for moods",
+        "description": "Get moods statistics by day for the company and department",
+        "operationId": "getStatisticsByUserAndDepartment",
+        "parameters": [
+          {
+            "name": "departmentId",
+            "in": "path",
+            "description": "Department's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, department statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/departments/{departmentId}/structures/{structureId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get department and structure statistics for moods",
+        "description": "Get moods statistics by day for the company, department and structure",
+        "operationId": "getStatisticsByUserAndDepartmentAndStructure",
+        "parameters": [
+          {
+            "name": "departmentId",
+            "in": "path",
+            "description": "Department's ID",
+            "required": true
+          },
+          {
+            "name": "structureId",
+            "in": "path",
+            "description": "Structure's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, department and structure statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/moods/lastvote": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Provide the last date vote",
+        "description": "Provide the last date vote of the user",
+        "operationId": "getLastUserVote",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The last date vote",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LastMoodDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          },
+          "404": {
+            "description": "Not data found"
+          }
+        }
+      }
+    },
+    "/v1/moods/structures/{structureId}": {
+      "get": {
+        "tags": [
+          "moods"
+        ],
+        "summary": "Get structure statistics for moods",
+        "description": "Get moods statistics by day for the company and structure",
+        "operationId": "getStatisticsByUserAndStructure",
+        "parameters": [
+          {
+            "name": "structureId",
+            "in": "path",
+            "description": "Structure's ID",
+            "required": true
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Begin date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "companyId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of calculated statistics for the given period<br/>If\nno date is set, structure statistics for today are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoodStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/payrollGrids": {
+      "get": {
+        "tags": [
+          "payroll grids"
+        ],
+        "summary": "Get payroll grids information",
+        "description": "Get payroll grids information ordered by date of creation of grid",
+        "operationId": "getPayrollGrids",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status of the payroll grid<br>1: New<br>2: To be approved<br>3:\nApproved<br>4: Rejected<br>5: Payslips available",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Tag of the payroll grid<br>0: no tag<br>2: marked",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "Description of the payroll grid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "ID of the template of the payroll grid"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "description": "ID of the department of the payroll grid"
+          },
+          {
+            "name": "structureId",
+            "in": "query",
+            "description": "ID of the structure of the payroll grid"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start of the pagination<br>0 by default",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit for the pagination<br>50 by default<br>50 maximum",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of payroll grids",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Status is invalid or tag is invalid"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    },
+    "/v1/payrollGrids/companies/{companyId}": {
+      "get": {
+        "tags": [
+          "payroll grids"
+        ],
+        "summary": "Get payroll grids information for the company",
+        "description": "Get payroll grids information for the company ordered by date of\ncreation",
+        "operationId": "getPayrollGridsForCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status of the payroll grid<br>1: New<br>2: To be approved<br>3:\nApproved<br>4: Rejected<br>5: Payslips available",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Tag of the payroll grid<br>0: no tag<br>2: marked",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "Description of the payroll grid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "query",
+            "description": "ID of the template of the payroll grid"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "description": "ID of the department of the payroll grid"
+          },
+          {
+            "name": "structureId",
+            "in": "query",
+            "description": "ID of the structure of the payroll grid"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date of research"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date of research"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start of the pagination<br>0 by default",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit for the pagination<br>50 by default<br>50 maximum",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of payroll grids for the given company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Status is invalid or tag is invalid"
+          },
+          "401": {
+            "description": "Unauthorized user or company is not authorized"
+          }
+        }
+      }
+    },
+    "/v1/payrollGrids/companies/{companyId}/grids/{gridId}": {
+      "get": {
+        "tags": [
+          "payroll grids"
+        ],
+        "summary": "Get payroll grid information by Id",
+        "description": "Get payroll grid information by Id",
+        "operationId": "getPayrollGridById",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "gridId",
+            "in": "path",
+            "description": "Payroll grid's ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The payroll grid information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayrollGridDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user"
+          },
+          "404": {
+            "description": "The payroll grid is not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "payroll grids"
+        ],
+        "summary": "Update status or tag of payroll grid",
+        "description": "Update status or tag of payroll grid",
+        "operationId": "updatePayrollGrid",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "gridId",
+            "in": "path",
+            "description": "Payroll grid's ID",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Payroll grid information to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayrollGridUpdateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The payroll grid is updated"
+          },
+          "400": {
+            "description": "Status is invalid or tag is invalid"
+          },
+          "404": {
+            "description": "The payroll grid is not found"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/v1/payrollGrids/companies/{companyId}/grids/{gridId}/statuses": {
+      "get": {
+        "tags": [
+          "payroll grids"
+        ],
+        "summary": "Get payroll grid status",
+        "description": "Get payroll grid status information by payroll grid Id",
+        "operationId": "getPayrollGridStatusById",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company's ID",
+            "required": true
+          },
+          {
+            "name": "gridId",
+            "in": "path",
+            "description": "Payroll grid's ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The payroll grid status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayrollGridStatusDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user"
+          },
+          "404": {
+            "description": "The payroll grid is not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Action": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "ACCEPT",
+              "REFUSE",
+              "DOWNLOAD"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "click": {
+            "type": "string"
+          }
+        }
+      },
+      "AsyncContext": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/ServletRequest"
+          },
+          "timeout": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "response": {
+            "$ref": "#/components/schemas/ServletResponse"
+          }
+        }
+      },
+      "BufferedReader": {
+        "type": "object"
+      },
+      "ClassLoader": {
+        "type": "object",
+        "properties": {
+          "parent": {
+            "$ref": "#/components/schemas/ClassLoader"
+          }
+        }
+      },
+      "Cookie": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "maxAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "path": {
+            "type": "string"
+          },
+          "secure": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "httpOnly": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EmployeeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          }
+        }
+      },
+      "EmployeeGridDto": {
+        "type": "object",
+        "properties": {
+          "gridId": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusDescr": {
+            "type": "string"
+          },
+          "fieldValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldValueDto"
+            }
+          }
+        }
+      },
+      "EmployeeGridStatusDto": {
+        "type": "object",
+        "properties": {
+          "employee": {
+            "$ref": "#/components/schemas/EmployeeDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_SYNC",
+              "OK",
+              "ERROR"
+            ]
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayrollFieldValueStatusDto"
+            }
+          }
+        }
+      },
+      "Enumeration": {
+        "type": "object"
+      },
+      "EnumerationLocale": {
+        "type": "object"
+      },
+      "EnumerationServlet": {
+        "type": "object"
+      },
+      "EnumerationString": {
+        "type": "object"
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "READ",
+              "DONE",
+              "ARCHIVED",
+              "HIDDEN"
+            ]
+          },
+          "expireAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "module": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "PAYSLIP",
+              "VACATION",
+              "VACATION_TRANSFER",
+              "EXPENSES",
+              "TIMESHEET",
+              "OVERTIME_REQUEST",
+              "COMPANY_FILE",
+              "USER_DIRECTORY",
+              "RSE",
+              "GOOD_PLANS",
+              "COMPANY_FEED",
+              "GREEN_FEEDBACK"
+            ]
+          },
+          "type": {
+            "type": "string"
+          },
+          "refId": {
+            "type": "string"
+          },
+          "receiver": {
+            "$ref": "#/components/schemas/User"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/User"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/User"
+          },
+          "msgKey": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "actionRequired": {
+            "type": "boolean"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Action"
+            }
+          },
+          "link": {
+            "type": "string"
+          },
+          "serviceType": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "idHex": {
+            "type": "string"
+          },
+          "himself": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldDto": {
+        "type": "object",
+        "properties": {
+          "idCompany": {
+            "type": "string"
+          },
+          "idPayrollField": {
+            "type": "string"
+          },
+          "systemField": {
+            "type": "string"
+          },
+          "systemFieldName": {
+            "type": "string"
+          },
+          "fieldType": {
+            "type": "string"
+          },
+          "fieldTypeName": {
+            "type": "string"
+          },
+          "analyticalCode": {
+            "type": "string"
+          },
+          "categoryCode": {
+            "type": "string"
+          },
+          "natureCode": {
+            "type": "string"
+          },
+          "descriptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldValueDescriptionDto"
+            }
+          }
+        }
+      },
+      "FieldValueDescriptionDto": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "longDescription": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "FieldValueDto": {
+        "type": "object",
+        "properties": {
+          "idCompany": {
+            "type": "string"
+          },
+          "idPayrollGrid": {
+            "type": "string"
+          },
+          "idPayrollField": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "valueDetail": {
+            "type": "string"
+          }
+        }
+      },
+      "FilterRegistration": {
+        "type": "object",
+        "properties": {
+          "servletNameMappings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "urlPatternMappings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "initParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          }
+        }
+      },
+      "HttpServletRequest": {
+        "type": "object",
+        "properties": {
+          "headerNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "pathInfo": {
+            "type": "string"
+          },
+          "pathTranslated": {
+            "type": "string"
+          },
+          "contextPath": {
+            "type": "string"
+          },
+          "queryString": {
+            "type": "string"
+          },
+          "remoteUser": {
+            "type": "string"
+          },
+          "requestedSessionId": {
+            "type": "string"
+          },
+          "requestURI": {
+            "type": "string"
+          },
+          "requestURL": {
+            "$ref": "#/components/schemas/StringBuffer"
+          },
+          "servletPath": {
+            "type": "string"
+          },
+          "requestedSessionIdValid": {
+            "type": "boolean"
+          },
+          "requestedSessionIdFromCookie": {
+            "type": "boolean"
+          },
+          "requestedSessionIdFromURL": {
+            "type": "boolean"
+          },
+          "requestedSessionIdFromUrl": {
+            "type": "boolean"
+          },
+          "authType": {
+            "type": "string"
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cookie"
+            }
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Part"
+            }
+          },
+          "session": {
+            "$ref": "#/components/schemas/HttpSession"
+          },
+          "userPrincipal": {
+            "$ref": "#/components/schemas/Principal"
+          },
+          "method": {
+            "type": "string"
+          },
+          "serverPort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remoteAddr": {
+            "type": "string"
+          },
+          "remoteHost": {
+            "type": "string"
+          },
+          "locales": {
+            "$ref": "#/components/schemas/EnumerationLocale"
+          },
+          "remotePort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "localAddr": {
+            "type": "string"
+          },
+          "localPort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "servletContext": {
+            "$ref": "#/components/schemas/ServletContext"
+          },
+          "asyncStarted": {
+            "type": "boolean"
+          },
+          "asyncSupported": {
+            "type": "boolean"
+          },
+          "asyncContext": {
+            "$ref": "#/components/schemas/AsyncContext"
+          },
+          "dispatcherType": {
+            "type": "string",
+            "enum": [
+              "FORWARD",
+              "INCLUDE",
+              "REQUEST",
+              "ASYNC",
+              "ERROR"
+            ]
+          },
+          "characterEncoding": {
+            "type": "string"
+          },
+          "serverName": {
+            "type": "string"
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contentLengthLong": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "locale": {
+            "$ref": "#/components/schemas/Locale"
+          },
+          "attributeNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/BufferedReader"
+          },
+          "parameterMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "localName": {
+            "type": "string"
+          },
+          "secure": {
+            "type": "boolean"
+          },
+          "parameterNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "scheme": {
+            "type": "string"
+          },
+          "inputStream": {
+            "$ref": "#/components/schemas/ServletInputStream"
+          },
+          "protocol": {
+            "type": "string"
+          }
+        }
+      },
+      "HttpSession": {
+        "type": "object",
+        "properties": {
+          "servletContext": {
+            "$ref": "#/components/schemas/ServletContext"
+          },
+          "lastAccessedTime": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "valueNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "creationTime": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "attributeNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "new": {
+            "type": "boolean"
+          },
+          "maxInactiveInterval": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sessionContext": {
+            "$ref": "#/components/schemas/HttpSessionContext"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "HttpSessionContext": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "$ref": "#/components/schemas/EnumerationString"
+          }
+        }
+      },
+      "InputStream": {
+        "type": "object"
+      },
+      "JspConfigDescriptor": {
+        "type": "object",
+        "properties": {
+          "jspPropertyGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JspPropertyGroupDescriptor"
+            }
+          },
+          "taglibs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaglibDescriptor"
+            }
+          }
+        }
+      },
+      "JspPropertyGroupDescriptor": {
+        "type": "object",
+        "properties": {
+          "buffer": {
+            "type": "string"
+          },
+          "scriptingInvalid": {
+            "type": "string"
+          },
+          "urlPatterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "elIgnored": {
+            "type": "string"
+          },
+          "pageEncoding": {
+            "type": "string"
+          },
+          "isXml": {
+            "type": "string"
+          },
+          "includePreludes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "includeCodas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deferredSyntaxAllowedAsLiteral": {
+            "type": "string"
+          },
+          "trimDirectiveWhitespaces": {
+            "type": "string"
+          },
+          "defaultContentType": {
+            "type": "string"
+          },
+          "errorOnUndeclaredNamespace": {
+            "type": "string"
+          }
+        }
+      },
+      "LastMoodDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "1970-01-01T00:00:00.000Z"
+          }
+        }
+      },
+      "ListDto": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "totalSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Locale": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "script": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "variant": {
+            "type": "string"
+          },
+          "extensionKeys": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unicodeLocaleAttributes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unicodeLocaleKeys": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "iso3Language": {
+            "type": "string"
+          },
+          "iso3Country": {
+            "type": "string"
+          },
+          "displayLanguage": {
+            "type": "string"
+          },
+          "displayScript": {
+            "type": "string"
+          },
+          "displayCountry": {
+            "type": "string"
+          },
+          "displayVariant": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "Mood": {
+        "required": [
+          "vote"
+        ],
+        "type": "object",
+        "properties": {
+          "vote": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MoodAverageStatistics": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "participation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "parents": {
+            "type": "string"
+          }
+        }
+      },
+      "MoodDetailStatistics": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "participation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbSad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbHappy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbNeutral": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbAbstentions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "organizationName": {
+            "type": "string"
+          }
+        }
+      },
+      "MoodStatistics": {
+        "type": "object",
+        "properties": {
+          "average": {
+            "$ref": "#/components/schemas/MoodAverageStatistics"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MoodDetailStatistics"
+            }
+          }
+        }
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "counter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeSecond": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "time": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "machineIdentifier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "processIdentifier": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Part": {
+        "type": "object",
+        "properties": {
+          "headerNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "submittedFileName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inputStream": {
+            "$ref": "#/components/schemas/InputStream"
+          }
+        }
+      },
+      "PayrollFieldValueStatusDto": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SILAE"
+            ]
+          },
+          "date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_SYNC",
+              "OK",
+              "ERROR"
+            ]
+          },
+          "errorMsg": {
+            "type": "string"
+          },
+          "vacationItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayrollGridVacationItemStatusDto"
+            }
+          }
+        }
+      },
+      "PayrollGridDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gridId": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "userCreate": {
+            "type": "string"
+          },
+          "dateCreate": {
+            "type": "string"
+          },
+          "userUpdate": {
+            "type": "string"
+          },
+          "dateUpdate": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "modelId": {
+            "type": "string"
+          },
+          "modelName": {
+            "type": "string"
+          },
+          "departmentId": {
+            "type": "string"
+          },
+          "departmentName": {
+            "type": "string"
+          },
+          "structureId": {
+            "type": "string"
+          },
+          "structureName": {
+            "type": "string"
+          },
+          "dateStart": {
+            "type": "string"
+          },
+          "dateEnd": {
+            "type": "string"
+          },
+          "commentEmployee": {
+            "type": "string"
+          },
+          "commentValidator": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldDto"
+            }
+          },
+          "employeeGrids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeGridDto"
+            }
+          }
+        }
+      },
+      "PayrollGridStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gridId": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dateStart": {
+            "type": "string"
+          },
+          "dateEnd": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "countSent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countInSync": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countOk": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countError": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "employeeGrids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeGridStatusDto"
+            }
+          }
+        }
+      },
+      "PayrollGridUpdateDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          }
+        }
+      },
+      "PayrollGridVacationItemStatusDto": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "vacationType": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SILAE"
+            ]
+          },
+          "date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_SYNC",
+              "OK",
+              "ERROR"
+            ]
+          },
+          "errorMsg": {
+            "type": "string"
+          }
+        }
+      },
+      "Principal": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "PrintWriter": {
+        "type": "object"
+      },
+      "ServletContext": {
+        "type": "object",
+        "properties": {
+          "contextPath": {
+            "type": "string"
+          },
+          "attributeNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "minorVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "majorVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "effectiveMajorVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "effectiveMinorVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "servlets": {
+            "$ref": "#/components/schemas/EnumerationServlet"
+          },
+          "servletNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "serverInfo": {
+            "type": "string"
+          },
+          "initParameterNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "servletContextName": {
+            "type": "string"
+          },
+          "servletRegistrations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ServletRegistration"
+            }
+          },
+          "filterRegistrations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/FilterRegistration"
+            }
+          },
+          "sessionCookieConfig": {
+            "$ref": "#/components/schemas/SessionCookieConfig"
+          },
+          "defaultSessionTrackingModes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "COOKIE",
+                "URL",
+                "SSL"
+              ]
+            }
+          },
+          "effectiveSessionTrackingModes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "COOKIE",
+                "URL",
+                "SSL"
+              ]
+            }
+          },
+          "jspConfigDescriptor": {
+            "$ref": "#/components/schemas/JspConfigDescriptor"
+          },
+          "virtualServerName": {
+            "type": "string"
+          },
+          "classLoader": {
+            "$ref": "#/components/schemas/ClassLoader"
+          }
+        }
+      },
+      "ServletInputStream": {
+        "type": "object",
+        "properties": {
+          "finished": {
+            "type": "boolean"
+          },
+          "ready": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ServletOutputStream": {
+        "type": "object",
+        "properties": {
+          "ready": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ServletRegistration": {
+        "type": "object",
+        "properties": {
+          "mappings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "runAsRole": {
+            "type": "string"
+          },
+          "initParameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          }
+        }
+      },
+      "ServletRequest": {
+        "type": "object",
+        "properties": {
+          "serverPort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remoteAddr": {
+            "type": "string"
+          },
+          "remoteHost": {
+            "type": "string"
+          },
+          "locales": {
+            "$ref": "#/components/schemas/EnumerationLocale"
+          },
+          "remotePort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "localAddr": {
+            "type": "string"
+          },
+          "localPort": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "servletContext": {
+            "$ref": "#/components/schemas/ServletContext"
+          },
+          "asyncStarted": {
+            "type": "boolean"
+          },
+          "asyncSupported": {
+            "type": "boolean"
+          },
+          "asyncContext": {
+            "$ref": "#/components/schemas/AsyncContext"
+          },
+          "dispatcherType": {
+            "type": "string",
+            "enum": [
+              "FORWARD",
+              "INCLUDE",
+              "REQUEST",
+              "ASYNC",
+              "ERROR"
+            ]
+          },
+          "characterEncoding": {
+            "type": "string"
+          },
+          "serverName": {
+            "type": "string"
+          },
+          "contentLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contentLengthLong": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "locale": {
+            "$ref": "#/components/schemas/Locale"
+          },
+          "attributeNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/BufferedReader"
+          },
+          "parameterMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "localName": {
+            "type": "string"
+          },
+          "secure": {
+            "type": "boolean"
+          },
+          "parameterNames": {
+            "$ref": "#/components/schemas/EnumerationString"
+          },
+          "scheme": {
+            "type": "string"
+          },
+          "inputStream": {
+            "$ref": "#/components/schemas/ServletInputStream"
+          },
+          "protocol": {
+            "type": "string"
+          }
+        }
+      },
+      "ServletResponse": {
+        "type": "object",
+        "properties": {
+          "characterEncoding": {
+            "type": "string"
+          },
+          "locale": {
+            "$ref": "#/components/schemas/Locale"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "outputStream": {
+            "$ref": "#/components/schemas/ServletOutputStream"
+          },
+          "bufferSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "writer": {
+            "$ref": "#/components/schemas/PrintWriter"
+          },
+          "committed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionCookieConfig": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "secure": {
+            "type": "boolean"
+          },
+          "httpOnly": {
+            "type": "boolean"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "maxAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "READ",
+              "DONE",
+              "ARCHIVED",
+              "HIDDEN"
+            ]
+          }
+        }
+      },
+      "StringBuffer": {
+        "type": "object"
+      },
+      "TaglibDescriptor": {
+        "type": "object",
+        "properties": {
+          "taglibLocation": {
+            "type": "string"
+          },
+          "taglibURI": {
+            "type": "string"
+          }
+        }
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "deviceToken": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "img": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "userId": {
+            "$ref": "#/components/schemas/UserId"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "fullName2": {
+            "type": "string"
+          },
+          "idCompany": {
+            "type": "string"
+          },
+          "idUser": {
+            "type": "string"
+          }
+        }
+      },
+      "UserId": {
+        "type": "object",
+        "properties": {
+          "restUrlAccess": {
+            "type": "string",
+            "xml": {
+              "name": "accessUrl"
+            }
+          }
+        },
+        "xml": {
+          "name": "userId"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,3684 @@
+{
+  "openapi": "3.1.0",
+  "x-stoplight": {
+    "id": "p93u5zm7v57vw"
+  },
+  "info": {
+    "version": "1.0.0",
+    "title": "Ankorstore Public API v1",
+    "description": "Ankorstore Public API documentation",
+    "contact": {
+      "name": "Ankorstore Support",
+      "email": "api@ankorstore.com",
+      "url": "https://www.ankorstore.com"
+    },
+    "license": {
+      "name": "CC0 1.0 Universal",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    }
+  },
+  "externalDocs": {
+    "description": "Read more about JSON:API here",
+    "url": "https://jsonapi.org/"
+  },
+  "servers": [
+    {
+      "url": "https://www.public.sandbox.ankorstore.com/api/v1",
+      "description": "Staging Environment"
+    },
+    {
+      "url": "https://www.ankorstore.com/api/v1",
+      "description": "Prod Environment"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Order"
+    },
+    {
+      "name": "Shipping"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "get": {
+        "summary": "List Orders",
+        "description": "Returns all orders, can be filtered by retailer ID or by order `status`.",
+        "operationId": "list-orders",
+        "tags": [
+          "Order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          },
+          {
+            "name": "filter[retailer]",
+            "in": "query",
+            "description": "Retailer Id",
+            "allowEmptyValue": true,
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "23e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "filter[status]",
+            "in": "query",
+            "description": "Order Status",
+            "allowEmptyValue": true,
+            "required": false,
+            "schema": {
+              "type": "string",
+              "x-sl-internally-excluded": true,
+              "x-sl-error-message": "You do not have permission to view this reference"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageBefore"
+          },
+          {
+            "$ref": "#/components/parameters/pageAfter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "[OK](https://jsonapi.org/format/#fetching-resources-responses-200)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCollection"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "meta": {
+                        "page": {
+                          "from": "123e4567-e89b-12d3-a456-426614174000",
+                          "hasMore": true,
+                          "perPage": 2,
+                          "to": "1ecb023e-7ec0-6d5c-a477-0242ac170008"
+                        }
+                      },
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "links": {
+                        "first": "https://www.ankorstore.com/api/v1/orders?include=&page%5Blimit%5D=2",
+                        "next": "https://www.ankorstore.com/api/v1/orders?include=&page%5Bafter%5D=797910&page%5Blimit%5D=2",
+                        "prev": "https://www.ankorstore.com/api/v1/orders?include=&page%5Bbefore%5D=904234&page%5Blimit%5D=2"
+                      },
+                      "data": [
+                        {
+                          "type": "orders",
+                          "id": "123e4567-e89b-12d3-a456-426614174000",
+                          "attributes": {
+                            "status": "invoiced",
+                            "reference": 3434273911,
+                            "brandCurrency": "EUR",
+                            "brandNetAmount": 20596,
+                            "brandTotalAmount": 23405,
+                            "brandTotalAmountVat": 0,
+                            "brandTotalAmountWithVat": 23405,
+                            "brandRejectReason": null,
+                            "retailerRejectReason": null,
+                            "retailerCancellationRequestReason": null,
+                            "billingName": "Charles Attan",
+                            "billingOrganisationName": "Jumbo",
+                            "billingStreet": "Kortricklaan 101",
+                            "billingPostalCode": "8121 GW",
+                            "billingCity": "Arnhem",
+                            "billingCountryCode": "NL",
+                            "submittedAt": "2022-03-15T10:05:09+00:00",
+                            "shippedAt": "2022-03-17T15:05:19+00:00",
+                            "brandPaidAt": null,
+                            "createdAt": "2022-03-13T16:36:24+00:00",
+                            "updatedAt": "2022-03-31T11:57:13+00:00",
+                            "shippingMethod": "ankorstore"
+                          },
+                          "relationships": {
+                            "retailer": {
+                              "data": {
+                                "type": "retailers",
+                                "id": "1ecba0f4-adf0-6fbe-badf-9eb2e4c4d56c"
+                              }
+                            },
+                            "billingItems": {
+                              "data": [
+                                {
+                                  "type": "billing-items",
+                                  "id": "1ece8a8c-55b9-63c6-95c3-0242ac160007"
+                                }
+                              ]
+                            },
+                            "orderItems": {
+                              "data": [
+                                {
+                                  "type": "order-items",
+                                  "id": "1ece8a8c-73ad-6ae4-a4ab-0242ac160007"
+                                },
+                                {
+                                  "type": "order-items",
+                                  "id": "1ece8a8c-623e-6ccc-aa2e-0242ac160007"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "orders",
+                          "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+                          "attributes": {
+                            "status": "ankor_confirmed",
+                            "reference": 3434273911,
+                            "brandCurrency": "EUR",
+                            "brandNetAmount": 10229,
+                            "brandTotalAmount": 10940,
+                            "brandTotalAmountVat": 602,
+                            "brandTotalAmountWithVat": 11542,
+                            "brandRejectReason": null,
+                            "retailerRejectReason": null,
+                            "retailerCancellationRequestReason": null,
+                            "billingName": "Charles Attan",
+                            "billingOrganisationName": "Jumbo",
+                            "billingStreet": "Kortricklaan 101",
+                            "billingPostalCode": "8121 GW",
+                            "billingCity": "Arnhem",
+                            "billingCountryCode": "NL",
+                            "submittedAt": "2022-03-17T13:19:33+00:00",
+                            "shippedAt": null,
+                            "brandPaidAt": null,
+                            "createdAt": "2022-02-01T14:37:10+00:00",
+                            "updatedAt": "2022-03-31T11:56:01+00:00",
+                            "shippingMethod": null
+                          },
+                          "relationships": {
+                            "retailer": {
+                              "data": {
+                                "type": "retailers",
+                                "id": "1ecba0f4-adf0-6fbe-badf-9eb2e4c4d56c"
+                              }
+                            },
+                            "billingItems": {
+                              "data": [
+                                {
+                                  "type": "billing-items",
+                                  "id": "1ece8a8c-55b9-63c6-95c3-0242ac160007"
+                                }
+                              ]
+                            },
+                            "orderItems": {
+                              "data": [
+                                {
+                                  "type": "order-items",
+                                  "id": "1ece8a8c-73ad-6ae4-a4ab-0242ac160007"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "x-examples": {
+                  "example": {
+                    "jsonapi": {
+                      "version": "1.0"
+                    },
+                    "errors": [
+                      {
+                        "detail": "Unauthorized",
+                        "status": "401"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Order",
+        "description": "Retrieve a specific order",
+        "operationId": "get-order",
+        "tags": [
+          "Order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "[OK](https://jsonapi.org/format/#fetching-resources-responses-200)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-7ec0-6d5c-a477-0242ac170009",
+                        "attributes": {
+                          "status": "invoiced",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 20596,
+                          "brandTotalAmount": 23405,
+                          "brandTotalAmountVat": 0,
+                          "brandTotalAmountWithVat": 23405,
+                          "brandRejectReason": null,
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-15T10:05:09+00:00",
+                          "shippedAt": "2022-03-17T15:05:19+00:00",
+                          "brandPaidAt": null,
+                          "createdAt": "2022-03-13T16:36:24+00:00",
+                          "updatedAt": "2022-03-31T11:57:13+00:00",
+                          "shippingMethod": "ankorstore",
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "TEST RETAILER",
+                              "street": "Test Street 14",
+                              "city": "DEN HAAG",
+                              "postalCode": "3333HC",
+                              "countryCode": "NL"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-18T00:00:00+00:00",
+                              "maximum": "2022-03-22T23:59:59+00:00"
+                            },
+                            "provider": "ups",
+                            "tracking": null,
+                            "latestQuote": {
+                              "id": "5cc76f26-0f5d-1ecb-a0d6-0242ac170009",
+                              "provider": "ups",
+                              "rateAmount": {
+                                "amount": 1359,
+                                "currency": "EUR"
+                              },
+                              "rateProvider": "ankorstore",
+                              "shippingCostsOverview": {
+                                "amount": 1037,
+                                "currency": "EUR",
+                                "type": "fee"
+                              }
+                            },
+                            "parcels": [
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 16500,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": {
+                                  "labelUrl": null,
+                                  "eta": null,
+                                  "trackingNumber": "1Z8A76119134110028",
+                                  "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76119134110028&requester=WT/trackdetails",
+                                  "currentStatus": {
+                                    "status": "DELIVERED",
+                                    "statusDetails": "Delivered",
+                                    "updatedAt": "2022-03-21T10:36:46+00:00",
+                                    "location": {
+                                      "city": "DEN HAAG",
+                                      "state": null,
+                                      "zip": "3333HC",
+                                      "country": "NL"
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "transaction": {
+                              "pickup": {
+                                "pickupDate": "2022-03-18T00:00:00+00:00",
+                                "closeTime": "15:00:00",
+                                "readyTime": "09:00:00",
+                                "externalReferenceId": "29QGCN35P8R"
+                              },
+                              "tracking": {
+                                "eta": null,
+                                "trackingNumber": "1Z8A76E493544110028",
+                                "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E493544110028&requester=WT/trackdetails",
+                                "currentStatus": {
+                                  "status": "DELIVERED",
+                                  "statusDetails": "Delivered",
+                                  "updatedAt": "2022-03-21T10:36:46+00:00",
+                                  "location": {
+                                    "city": "DEN HAAG",
+                                    "state": null,
+                                    "zip": "3333HC",
+                                    "country": "NL"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "type": "retailer",
+                          "id": "3b656e82-0260-1ecb-9e4c-0242ac170007",
+                          "attributes": {
+                            "companyName": null,
+                            "storeName": "TEST RETAILER",
+                            "storeUrl": null,
+                            "email": "test_retailer@gmail.com",
+                            "firstName": "Test",
+                            "lastName": "Retailer",
+                            "taxNumber": "222270824",
+                            "vatNumber": "FR52222470824",
+                            "eoriNumber": null,
+                            "phoneNumberE164": "+33688615666",
+                            "businessIdentifier": "819470111",
+                            "createdAt": "2020-06-19T11:59:30.000000Z",
+                            "updatedAt": "2020-06-21T15:27:39.000000Z"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "[Not found](https://jsonapi.org/format/#fetching-resources-responses-404)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}/accept": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Accept Order",
+        "operationId": "brand-accept-order",
+        "description": "Accept a particular order by a brand (if in a valid state)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "[OK](https://jsonapi.org/format/#fetching-resources-responses-200)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-8ec0-6d5c-a477-0242ac170007",
+                        "attributes": {
+                          "status": "brand_confirmed",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 10229,
+                          "brandTotalAmount": 10940,
+                          "brandTotalAmountVat": 602,
+                          "brandTotalAmountWithVat": 11542,
+                          "brandRejectReason": null,
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-17T13:19:33+00:00",
+                          "shippedAt": null,
+                          "brandPaidAt": null,
+                          "createdAt": "2022-02-01T14:37:10+00:00",
+                          "updatedAt": "2022-03-31T15:10:07+00:00",
+                          "shippingMethod": null,
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "Test",
+                              "street": "Test Street",
+                              "city": "Commentry",
+                              "postalCode": "03633",
+                              "countryCode": "FR"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-22T00:00:00+00:00",
+                              "maximum": "2022-03-24T23:59:59+00:00"
+                            },
+                            "provider": null,
+                            "tracking": null,
+                            "latestQuote": null,
+                            "parcels": [],
+                            "transaction": null
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Forbidden](https://jsonapi.org/format/#crud-creating-responses-403)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Forbidden",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "[Not found](https://jsonapi.org/format/#fetching-resources-responses-404)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Not found",
+                          "status": "404"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "code": "ORDER_ACTION_ACCEPT_FAILED",
+                          "detail": "Order cannot be accepted from this state",
+                          "status": "409"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/orders/{id}/reject": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Reject Order",
+        "operationId": "brand-reject-order",
+        "description": "Reject an order (if in a valid state)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "[OK](https://jsonapi.org/format/#fetching-resources-responses-200)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+                        "attributes": {
+                          "status": "rejected",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 10229,
+                          "brandTotalAmount": 10940,
+                          "brandTotalAmountVat": 602,
+                          "brandTotalAmountWithVat": 11542,
+                          "brandRejectReason": "Products not in stock.",
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-17T13:19:33+00:00",
+                          "shippedAt": null,
+                          "brandPaidAt": null,
+                          "createdAt": "2022-02-01T14:37:10+00:00",
+                          "updatedAt": "2022-03-31T15:10:07+00:00",
+                          "shippingMethod": null,
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "Test",
+                              "street": "Test Street",
+                              "city": "Commentry",
+                              "postalCode": "03633",
+                              "countryCode": "FR"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-22T00:00:00+00:00",
+                              "maximum": "2022-03-24T23:59:59+00:00"
+                            },
+                            "provider": null,
+                            "tracking": null,
+                            "latestQuote": null,
+                            "parcels": [],
+                            "transaction": null
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Forbidden](https://jsonapi.org/format/#crud-creating-responses-403)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "[Not found](https://jsonapi.org/format/#fetching-resources-responses-404)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "State update failed": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "code": "ORDER_ACTION_REJECT_FAILED",
+                          "detail": "Order cannot be rejected from this state",
+                          "status": "409"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity : Data provided are invalid",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "example": {
+                  "jsonapi": {
+                    "version": "string"
+                  },
+                  "errors": [
+                    {
+                      "detail": "The order.reject reason is required.",
+                      "source": {
+                        "pointer": "order.rejectReason"
+                      },
+                      "status": "422",
+                      "title": "Unprocessable Content"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "description": "Reject payload",
+                "type": "object",
+                "properties": {
+                  "order": {
+                    "type": "object",
+                    "required": [
+                      "rejectReason"
+                    ],
+                    "properties": {
+                      "rejectReason": {
+                        "description": "The reason for the order rejection",
+                        "type": "string",
+                        "maximum": 1000
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "order"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "order": {
+                      "rejectReason": "Products not in stock."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/orders/{id}/ship/custom": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Ship Order With Custom",
+        "operationId": "brand-ship-order-custom",
+        "description": "Ship using the brands own method",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order Resource",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+                        "attributes": {
+                          "status": "brand_confirmed",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 10229,
+                          "brandTotalAmount": 10940,
+                          "brandTotalAmountVat": 602,
+                          "brandTotalAmountWithVat": 11542,
+                          "brandRejectReason": null,
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-17T13:19:33+00:00",
+                          "shippedAt": null,
+                          "brandPaidAt": null,
+                          "createdAt": "2022-02-01T14:37:10+00:00",
+                          "updatedAt": "2022-03-31T15:10:07+00:00",
+                          "shippingMethod": "custom",
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "Test",
+                              "street": "Test Street",
+                              "city": "Commentry",
+                              "postalCode": "03633",
+                              "countryCode": "FR"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-22T00:00:00+00:00",
+                              "maximum": "2022-03-24T23:59:59+00:00"
+                            },
+                            "provider": null,
+                            "tracking": null,
+                            "latestQuote": {
+                              "id": "5cc76f26-0f5d-1ecb-a0d6-0242ac170009",
+                              "provider": "custom",
+                              "rateAmount": {
+                                "amount": 1359,
+                                "currency": "EUR"
+                              },
+                              "rateProvider": "ankorstore",
+                              "shippingCostsOverview": {
+                                "amount": 1037,
+                                "currency": "EUR",
+                                "type": "refund"
+                              }
+                            },
+                            "parcels": [
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 16500,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              },
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 20000,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              }
+                            ],
+                            "transaction": null
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Forbidden](https://jsonapi.org/format/#crud-creating-responses-403)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "[Not found](https://jsonapi.org/format/#fetching-resources-responses-404)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Not found",
+                          "status": "404"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "code": "STATE_UPDATE_FAILED",
+                          "detail": "Order cannot be shipped from this state",
+                          "status": "409"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity : Data provided are invalid",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "detail": "The field is required.",
+                          "source": {
+                            "pointer": "field"
+                          },
+                          "status": "422",
+                          "title": "Unprocessable Content"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "shipping": {
+                    "type": "object",
+                    "properties": {
+                      "parcels": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "minItems": 1,
+                        "items": {
+                          "type": "object",
+                          "x-sl-internally-excluded": true,
+                          "x-sl-error-message": "You do not have permission to view this reference"
+                        }
+                      }
+                    },
+                    "required": [
+                      "parcels"
+                    ]
+                  }
+                },
+                "required": [
+                  "shipping"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "shipping": {
+                      "parcels": [
+                        {
+                          "length": 100,
+                          "width": 10,
+                          "height": 10,
+                          "distanceUnit": "cm",
+                          "weight": 2000,
+                          "massUnit": "g"
+                        },
+                        {
+                          "length": 120,
+                          "width": 20,
+                          "height": 20,
+                          "distanceUnit": "cm",
+                          "weight": 2000,
+                          "massUnit": "g"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "tags": [
+          "Shipping"
+        ]
+      }
+    },
+    "/orders/{id}/ship/ankorstore": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Ship Order with Ankorstore",
+        "operationId": "brand-ship-order-ankorstore",
+        "responses": {
+          "200": {
+            "description": "Order Resource",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+                        "attributes": {
+                          "status": "brand_confirmed",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 10229,
+                          "brandTotalAmount": 10940,
+                          "brandTotalAmountVat": 602,
+                          "brandTotalAmountWithVat": 11542,
+                          "brandRejectReason": null,
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-17T13:19:33+00:00",
+                          "shippedAt": null,
+                          "brandPaidAt": null,
+                          "createdAt": "2022-02-01T14:37:10+00:00",
+                          "updatedAt": "2022-03-31T15:10:07+00:00",
+                          "shippingMethod": "ankorstore",
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "Test",
+                              "street": "Test Street",
+                              "city": "Commentry",
+                              "postalCode": "03633",
+                              "countryCode": "FR"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-22T00:00:00+00:00",
+                              "maximum": "2022-03-24T23:59:59+00:00"
+                            },
+                            "provider": null,
+                            "tracking": null,
+                            "latestQuote": {
+                              "id": "5cc76f26-0f5d-1ecb-a0d6-0242ac170009",
+                              "provider": "ups",
+                              "rateAmount": {
+                                "amount": 1359,
+                                "currency": "EUR"
+                              },
+                              "rateProvider": "ankorstore",
+                              "shippingCostsOverview": {
+                                "amount": 1037,
+                                "currency": "EUR",
+                                "type": "fee"
+                              }
+                            },
+                            "parcels": [
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 16500,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              },
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 20000,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              }
+                            ],
+                            "transaction": null
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Forbidden](https://jsonapi.org/format/#crud-creating-responses-403)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "code": "UNAUTHORIZED",
+                          "detail": "You are not authorized to ship this order",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity : Data provided are invalid",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "detail": "The field is required.",
+                          "source": {
+                            "pointer": "field"
+                          },
+                          "status": "422",
+                          "title": "Unprocessable Content"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "shipping": {
+                    "type": "object",
+                    "required": [
+                      "parcels"
+                    ],
+                    "properties": {
+                      "parcels": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "minItems": 1,
+                        "items": {
+                          "type": "object",
+                          "x-sl-internally-excluded": true,
+                          "x-sl-error-message": "You do not have permission to view this reference"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "shipping"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "shipping": {
+                      "parcels": [
+                        {
+                          "length": 100,
+                          "width": 10,
+                          "height": 10,
+                          "distanceUnit": "cm",
+                          "weight": 2000,
+                          "massUnit": "g"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Ship Order with Ankorstore's shipping service (UPS only)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "tags": [
+          "Shipping"
+        ]
+      }
+    },
+    "/orders/{id}/ship/confirm": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Confirm Order Shipping",
+        "operationId": "brand-ship-order-confirm",
+        "responses": {
+          "200": {
+            "description": "Order Resource",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderGet"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "data": {
+                        "type": "order",
+                        "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+                        "attributes": {
+                          "status": "brand_confirmed",
+                          "reference": 3434273911,
+                          "brandCurrency": "EUR",
+                          "brandNetAmount": 10229,
+                          "brandTotalAmount": 10940,
+                          "brandTotalAmountVat": 602,
+                          "brandTotalAmountWithVat": 11542,
+                          "brandRejectReason": null,
+                          "retailerRejectReason": null,
+                          "retailerCancellationRequestReason": null,
+                          "billingName": "Charles Attan",
+                          "billingOrganisationName": "Jumbo",
+                          "billingStreet": "Kortricklaan 101",
+                          "billingPostalCode": "8121 GW",
+                          "billingCity": "Arnhem",
+                          "billingCountryCode": "NL",
+                          "submittedAt": "2022-03-17T13:19:33+00:00",
+                          "shippedAt": null,
+                          "brandPaidAt": null,
+                          "createdAt": "2022-02-01T14:37:10+00:00",
+                          "updatedAt": "2022-03-31T15:10:07+00:00",
+                          "shippingMethod": "custom",
+                          "shippingOverview": {
+                            "availableShippingMethods": [
+                              "custom",
+                              "ankorstore"
+                            ],
+                            "shipToAddress": {
+                              "organisationName": "Test",
+                              "street": "Test Street",
+                              "city": "Commentry",
+                              "postalCode": "03633",
+                              "countryCode": "FR"
+                            },
+                            "expectedShippingDates": {
+                              "minimum": "2022-03-22T00:00:00+00:00",
+                              "maximum": "2022-03-24T23:59:59+00:00"
+                            },
+                            "provider": "ups",
+                            "tracking": {
+                              "number": "12345",
+                              "link": "https://www.ups.com/track?tracknum=123456&requester=WT/trackdetails"
+                            },
+                            "latestQuote": {
+                              "id": "5cc76f26-0f5d-1ecb-a0d6-0242ac170009",
+                              "provider": "custom",
+                              "rateAmount": {
+                                "amount": 1359,
+                                "currency": "EUR"
+                              },
+                              "rateProvider": "ankorstore",
+                              "shippingCostsOverview": {
+                                "amount": 1037,
+                                "currency": "EUR",
+                                "type": "refund"
+                              }
+                            },
+                            "parcels": [
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 16500,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              },
+                              {
+                                "length": 30,
+                                "width": 60,
+                                "height": 40,
+                                "weight": 20000,
+                                "distanceUnit": "cm",
+                                "massUnit": "g",
+                                "trackedPackage": null
+                              }
+                            ],
+                            "transaction": null
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "1.0"
+                      },
+                      "errors": [
+                        {
+                          "detail": "Unauthorized",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "[Forbidden](https://jsonapi.org/format/#crud-creating-responses-403)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "code": "UNAUTHORIZED",
+                          "detail": "You are not authorized to confirm this order shipping",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity : Data provided are invalid",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "detail": "The field is required.",
+                          "source": {
+                            "pointer": "field"
+                          },
+                          "status": "422",
+                          "title": "Unprocessable Content"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "order": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "description": "Tracking Provider + Number",
+                        "required": [
+                          "trackingProvider",
+                          "trackingNumber"
+                        ],
+                        "properties": {
+                          "trackingProvider": {
+                            "type": "string",
+                            "description": "Tracking provider is required with trackingNumber if your define an order key in your payload. You can define trackingLink instead of define trackingProvider & trackingNumber"
+                          },
+                          "trackingNumber": {
+                            "description": "The tracking number (may contain characters as well)",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "description": "Tracking Link",
+                        "required": [
+                          "trackingLink"
+                        ],
+                        "properties": {
+                          "trackingLink": {
+                            "type": "string",
+                            "format": "url",
+                            "description": "Tracking link is required if your define an order key in your payload"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "examples": {
+                "example-with-provider-and-number": {
+                  "value": {
+                    "order": {
+                      "trackingProvider": "ups",
+                      "trackingNumber": "123456"
+                    }
+                  }
+                },
+                "example-with-link": {
+                  "value": {
+                    "order": {
+                      "trackingLink": "https://www.dhl.com/fr-en/home/tracking/tracking-parcel.html?submit=1&tracking-id=1Z8A76E46801183396"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Use this endpoint to confirm your last generated quote for your selected shipping method (Ankorstore or Custom).\n\nIf you are shipping with custom (your own carrier) you may provide the tracking details that will then be passed onto the retailer.",
+        "tags": [
+          "Shipping"
+        ]
+      }
+    },
+    "/orders/{id}/ship/schedule-pickup": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The unique order id to operate"
+        },
+        {
+          "name": "include",
+          "in": "query",
+          "description": "Includes (comma delimited string eg. `include=retailer,billingItems,orderItems.productOption.product`)",
+          "allowEmptyValue": true,
+          "required": false,
+          "schema": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Schedule Pickup for order",
+        "operationId": "brand-ship-order-schedule-pickup",
+        "description": "Use this endpoint for scheduling a pickup for the order",
+        "tags": [
+          "Shipping"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Accept",
+            "description": "application/vnd.api+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order Resource",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResource"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "jsonapi": {
+                        "version": "string"
+                      },
+                      "errors": [
+                        {
+                          "code": "UNAUTHORIZED",
+                          "detail": "You are not authorized to ship this order",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity : Data provided are invalid",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "example": {
+                  "jsonapi": {
+                    "version": "string"
+                  },
+                  "errors": [
+                    {
+                      "detail": "The field is required.",
+                      "source": {
+                        "pointer": "field"
+                      },
+                      "status": "422",
+                      "title": "Unprocessable Content"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "x-sl-internally-excluded": true,
+                  "x-sl-error-message": "You do not have permission to view this reference"
+                },
+                "example": {
+                  "jsonapi": {
+                    "version": "string"
+                  },
+                  "errors": [
+                    {
+                      "code": "INTERNAL_ERROR",
+                      "detail": "Cannot ship the order: {...}",
+                      "status": "500"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "order": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "description": "Tracking Provider + Number",
+                        "required": [
+                          "pickupDate",
+                          "pickupTime",
+                          "pickupAddress"
+                        ],
+                        "properties": {
+                          "pickupDate": {
+                            "type": "string",
+                            "description": "Requested date for the pickup"
+                          },
+                          "pickupTime": {
+                            "description": "Time period for the pickup (9-15 or 11-17)",
+                            "type": "string"
+                          },
+                          "pickupAddress": {
+                            "description": "Adress for the pickup",
+                            "type": "object"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "pickupDate": "07-04-2022",
+                    "pickupTime": "9-15",
+                    "pickupAddress": {
+                      "name": "John Doe",
+                      "contactName": "John Doe",
+                      "countryCode": "FR",
+                      "city": "Rennes",
+                      "postalCode": "35000",
+                      "street": "1 rue des lilas",
+                      "phoneNumber": "+33700000000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OrderCollection": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "description": "List of Order resource objects",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderResource"
+            }
+          },
+          "included": {
+            "description": "To reduce the number of HTTP requests, servers **MAY** allow responses that include related resources along with the requested primary resources. Such responses are called `compound documents`.",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RetailerResource"
+                },
+                {
+                  "$ref": "#/components/schemas/OrderItemResource"
+                },
+                {
+                  "$ref": "#/components/schemas/BillingItemResource"
+                },
+                {
+                  "$ref": "#/components/schemas/ProductOptionResource"
+                },
+                {
+                  "$ref": "#/components/schemas/ProductResource"
+                }
+              ]
+            },
+            "uniqueItems": true
+          },
+          "meta": {
+            "type": "object",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "links": {
+            "type": "object",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "jsonapi": {
+            "type": "object",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        "additionalProperties": false,
+        "x-internal": false,
+        "title": "Order Collection"
+      },
+      "OrderGet": {
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "x-examples": {
+          "example": {
+            "jsonapi": {
+              "version": "1.0"
+            },
+            "data": {
+              "type": "order",
+              "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+              "attributes": {
+                "status": "shipped",
+                "reference": 3434273911,
+                "brandCurrency": "EUR",
+                "brandTotalAmount": 12588,
+                "brandTotalAmountVat": 693,
+                "brandTotalAmountWithVat": 13281,
+                "shippingMethod": "ankorstore",
+                "shippingOverview": {
+                  "availableShippingMethods": [
+                    "custom",
+                    "ankorstore"
+                  ],
+                  "shipToAddress": {
+                    "organisationName": "Test Retailer",
+                    "street": "Test Street",
+                    "city": "Roma",
+                    "postalCode": "00222",
+                    "countryCode": "IT"
+                  },
+                  "expectedShippingDates": {
+                    "minimum": "2022-03-28T00:00:00+00:00",
+                    "maximum": "2022-03-30T23:59:59+00:00"
+                  },
+                  "provider": "ups",
+                  "tracking": null,
+                  "latestQuote": {
+                    "id": "5cc76f26-0f5d-1ecb-a0d6-0242ac170009",
+                    "provider": "ups"
+                  },
+                  "parcels": [
+                    {
+                      "length": 50,
+                      "width": 100,
+                      "height": 50,
+                      "weight": 10000,
+                      "distanceUnit": "cm",
+                      "massUnit": "g",
+                      "trackedPackage": {
+                        "labelUrl": "https://www.ankorstore.com/api/v1/orders/1ecb023e-7ec0-6d5c-a477-0242ac170007/shipping-labels/335654/pdf",
+                        "eta": null,
+                        "trackingNumber": "1Z8A76E49136380279",
+                        "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49136380279&requester=WT/trackdetails",
+                        "currentStatus": {
+                          "status": "UNKNOWN",
+                          "statusDetails": null,
+                          "updatedAt": "2022-03-28T15:35:19+00:00",
+                          "location": {
+                            "city": null,
+                            "state": null,
+                            "zip": null,
+                            "country": null
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "length": 75,
+                      "width": 50,
+                      "height": 50,
+                      "weight": 5200,
+                      "distanceUnit": "cm",
+                      "massUnit": "g",
+                      "trackedPackage": {
+                        "labelUrl": "https://www.ankorstore.com/api/v1/orders/1ecb023e-7ec0-6d5c-a477-0242ac170007/shipping-labels/335655/pdf",
+                        "eta": null,
+                        "trackingNumber": "1Z8A76E49137225882",
+                        "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49137225882&requester=WT/trackdetails",
+                        "currentStatus": {
+                          "status": "UNKNOWN",
+                          "statusDetails": null,
+                          "updatedAt": "2022-03-28T15:35:19+00:00",
+                          "location": {
+                            "city": null,
+                            "state": null,
+                            "zip": null,
+                            "country": null
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "transaction": {
+                    "pickup": {
+                      "pickupDate": "2022-03-30T00:00:00+00:00",
+                      "closeTime": "15:00:00",
+                      "readyTime": "09:00:00",
+                      "externalReferenceId": "2929602E9CP"
+                    },
+                    "tracking": {
+                      "eta": null,
+                      "trackingNumber": "1Z8A76E49136380279",
+                      "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49136380279&requester=WT/trackdetails",
+                      "currentStatus": {
+                        "status": "UNKNOWN",
+                        "statusDetails": null,
+                        "updatedAt": "2022-03-28T15:35:19+00:00",
+                        "location": {
+                          "city": null,
+                          "state": null,
+                          "zip": null,
+                          "country": null
+                        }
+                      }
+                    }
+                  }
+                },
+                "brandRejectReason": null,
+                "retailerRejectReason": null,
+                "retailerCancellationRequestReason": null,
+                "billingName": "Charles Attan",
+                "billingOrganisationName": "Jumbo",
+                "billingStreet": "Kortricklaan 101",
+                "billingPostalCode": "8121 GW",
+                "billingCity": "Arnhem",
+                "billingCountryCode": "NL",
+                "submittedAt": "2022-02-02T20:15:05.000000Z",
+                "shippedAt": "2022-02-09T15:05:27.000000Z",
+                "brandPaidAt": null,
+                "createdAt": "2022-02-02T19:42:31.000000Z",
+                "updatedAt": "2022-03-11T08:57:56.000000Z"
+              },
+              "relationships": {
+                "retailer": {
+                  "data": {
+                    "type": "retailer",
+                    "id": "092b63ce-c5b9-1eca-b05f-0242ac170007"
+                  }
+                }
+              }
+            },
+            "included": [
+              {
+                "type": "retailer",
+                "id": "092b63ce-c5b9-1eca-b05f-0242ac170007",
+                "attributes": {
+                  "companyName": null,
+                  "storeName": "TEST RETAILER",
+                  "storeUrl": null,
+                  "email": "test-retailer@gmail.com",
+                  "firstName": "Marie-France",
+                  "lastName": "DESCHAMPS",
+                  "taxNumber": "819470824",
+                  "vatNumber": "FR58819470824",
+                  "eoriNumber": null,
+                  "phoneNumberE164": "+33688615593",
+                  "businessIdentifier": "819470824",
+                  "createdAt": "2020-06-19T11:59:30.000000Z",
+                  "updatedAt": "2020-06-21T15:27:39.000000Z"
+                }
+              }
+            ]
+          }
+        },
+        "title": "Order Get",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OrderResource"
+          },
+          "included": {
+            "description": "To reduce the number of HTTP requests, servers **MAY** allow responses that include related resources along with the requested primary resources. Such responses are called `compound documents`.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RetailerResource"
+                },
+                {
+                  "$ref": "#/components/schemas/OrderItemResource"
+                },
+                {
+                  "$ref": "#/components/schemas/BillingItemResource"
+                },
+                {
+                  "$ref": "#/components/schemas/ProductOptionResource"
+                },
+                {
+                  "$ref": "#/components/schemas/ProductResource"
+                }
+              ]
+            }
+          },
+          "jsonapi": {
+            "type": "object",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "OrderResource": {
+        "description": "The resource object for Order",
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "title": "Order Resource",
+        "x-examples": {
+          "example": {
+            "type": "order",
+            "id": "1ecb023e-7ec0-6d5c-a477-0242ac170007",
+            "attributes": {
+              "status": "shipped",
+              "reference": 3434273911,
+              "brandCurrency": "EUR",
+              "brandTotalAmount": 12588,
+              "brandTotalAmountVat": 693,
+              "brandTotalAmountWithVat": 13281,
+              "shippingMethod": "label",
+              "shippingOverview": {
+                "availableShippingMethods": [
+                  "custom",
+                  "ankorstore"
+                ],
+                "shipToAddress": {
+                  "organisationName": "Test Retailer",
+                  "street": "Test Street",
+                  "city": "Roma",
+                  "postalCode": "00222",
+                  "countryCode": "IT"
+                },
+                "expectedShippingDates": {
+                  "minimum": "2022-03-28T00:00:00+00:00",
+                  "maximum": "2022-03-30T23:59:59+00:00"
+                },
+                "provider": "ups",
+                "tracking": null,
+                "latestQuote": {
+                  "id": 387033,
+                  "provider": "ups"
+                },
+                "parcels": [
+                  {
+                    "length": 50,
+                    "width": 100,
+                    "height": 50,
+                    "weight": 10000,
+                    "distanceUnit": "cm",
+                    "massUnit": "g",
+                    "trackedPackage": {
+                      "labelUrl": "https://www.ankorstore.com/api/v1/orders/1ecb023e-7ec0-6d5c-a477-0242ac170007/shipping-labels/335654/pdf",
+                      "eta": null,
+                      "trackingNumber": "1Z8A76E49136380279",
+                      "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49136380279&requester=WT/trackdetails",
+                      "currentStatus": {
+                        "status": "UNKNOWN",
+                        "statusDetails": null,
+                        "updatedAt": "2022-03-28T15:35:19+00:00",
+                        "location": {
+                          "city": null,
+                          "state": null,
+                          "zip": null,
+                          "country": null
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "length": 75,
+                    "width": 50,
+                    "height": 50,
+                    "weight": 5200,
+                    "distanceUnit": "cm",
+                    "massUnit": "g",
+                    "trackedPackage": {
+                      "labelUrl": "https://www.ankorstore.com/api/v1/orders/1ecb023e-7ec0-6d5c-a477-0242ac170007/shipping-labels/335655/pdf",
+                      "eta": null,
+                      "trackingNumber": "1Z8A76E49137225882",
+                      "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49137225882&requester=WT/trackdetails",
+                      "currentStatus": {
+                        "status": "UNKNOWN",
+                        "statusDetails": null,
+                        "updatedAt": "2022-03-28T15:35:19+00:00",
+                        "location": {
+                          "city": null,
+                          "state": null,
+                          "zip": null,
+                          "country": null
+                        }
+                      }
+                    }
+                  }
+                ],
+                "transaction": {
+                  "pickup": {
+                    "pickupDate": "2022-03-30T00:00:00+00:00",
+                    "closeTime": "15:00:00",
+                    "readyTime": "09:00:00",
+                    "externalReferenceId": "2929602E9CP"
+                  },
+                  "tracking": {
+                    "eta": null,
+                    "trackingNumber": "1Z8A76E49136380279",
+                    "trackingLink": "https://www.ups.com/track?tracknum=1Z8A76E49136380279&requester=WT/trackdetails",
+                    "currentStatus": {
+                      "status": "UNKNOWN",
+                      "statusDetails": null,
+                      "updatedAt": "2022-03-28T15:35:19+00:00",
+                      "location": {
+                        "city": null,
+                        "state": null,
+                        "zip": null,
+                        "country": null
+                      }
+                    }
+                  }
+                }
+              },
+              "brandRejectReason": null,
+              "retailerRejectReason": null,
+              "retailerCancellationRequestReason": null,
+              "billingName": "Charles Attan",
+              "billingOrganisationName": "Jumbo",
+              "billingStreet": "Kortricklaan 101",
+              "billingPostalCode": "8121 GW",
+              "billingCity": "Arnhem",
+              "billingCountryCode": "NL",
+              "submittedAt": "2022-02-02T20:15:05.000000Z",
+              "shippedAt": "2022-02-09T15:05:27.000000Z",
+              "brandPaidAt": null,
+              "createdAt": "2022-02-02T19:42:31.000000Z",
+              "updatedAt": "2022-03-11T08:57:56.000000Z"
+            },
+            "relationships": {
+              "data": [
+                {
+                  "type": "order-items",
+                  "id": "40686f70-c5d3-1eca-a182-0242ac170007"
+                },
+                {
+                  "type": "order-items",
+                  "id": "f2326fa6-c5f8-1eca-8108-0242ac170007"
+                },
+                {
+                  "type": "order-items",
+                  "id": "6322657c-00e1-1ecb-8661-0242ac170007"
+                }
+              ]
+            }
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "reference": {
+                "type": "integer",
+                "description": "The order reference used on shipping labels, communication etc"
+              },
+              "brandCurrency": {
+                "type": "string",
+                "description": "The currency the brand is paid in"
+              },
+              "brandNetAmount": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandTotalAmount": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandTotalAmountVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandTotalAmountWithVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "shippingMethod": {
+                "type": "string",
+                "description": "The chosen shipping method after going through the shipping process",
+                "nullable": true,
+                "enum": [
+                  "ankorstore",
+                  "custom",
+                  null
+                ]
+              },
+              "shippingOverview": {
+                "$ref": "#/components/schemas/orderShippingOverview"
+              },
+              "brandRejectReason": {
+                "type": "string",
+                "description": "The reason the brand has given for rejecting the order",
+                "nullable": true
+              },
+              "retailerRejectReason": {
+                "type": "string",
+                "description": "The reason the retailer rejected the reception of the order",
+                "nullable": true
+              },
+              "retailerCancellationRequestReason": {
+                "type": "string",
+                "description": "The reason the retailer has given for a cancellation request",
+                "nullable": true
+              },
+              "billingName": {
+                "type": "string",
+                "description": "The billing address name",
+                "nullable": true
+              },
+              "billingOrganisationName": {
+                "type": "string",
+                "description": "The billing address organisation name",
+                "nullable": true
+              },
+              "billingStreet": {
+                "type": "string",
+                "description": "The billing address street name",
+                "nullable": true
+              },
+              "billingPostalCode": {
+                "type": "string",
+                "description": "The billing address postal code",
+                "nullable": true
+              },
+              "billingCity": {
+                "type": "string",
+                "description": "The billing address city",
+                "nullable": true
+              },
+              "billingCountryCode": {
+                "type": "string",
+                "description": "The billing address country code - ISO format",
+                "nullable": true
+              },
+              "submittedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp of when the order was submitted"
+              },
+              "shippedAt": {
+                "type": "string",
+                "format": "datetime",
+                "nullable": true,
+                "description": "The timestamp of when the order was shipped"
+              },
+              "brandPaidAt": {
+                "type": "string",
+                "format": "datetime",
+                "nullable": true,
+                "description": "The timestamp of when the brand was paid"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp of when the order was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp of when the order was updated (does not include other resources)"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "retailer": {
+                "description": "Schema: Retailer Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/RetailerResource"
+                  }
+                }
+              },
+              "billingItems": {
+                "description": "Schema: Billing Item Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              },
+              "orderItems": {
+                "description": "Schema: Order Item Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              },
+              "orderItems.productOption": {
+                "description": "Schema: Order Item -> Product Option Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              },
+              "orderItems.productOption.product": {
+                "description": "Schema: Order Item -> Product Option Resource -> Product",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "orderShippingOverview": {
+        "title": "Order Resource -> Shipping Overview",
+        "description": "Contains all information related to either shipping method (`ankorstore` or `custom`). This field is ONLY included when fetching a single order at a time.",
+        "type": "object",
+        "properties": {
+          "availableShippingMethods": {
+            "type": "array",
+            "description": "Available shipping methods to use. Custom is ship with your own carrier outside of Ankorstore.",
+            "items": {
+              "enum": [
+                "ankorstore",
+                "custom"
+              ]
+            }
+          },
+          "shipToAddress": {
+            "type": "object",
+            "description": "The address the order needs to be shipped to",
+            "required": [
+              "street",
+              "city",
+              "postalCode"
+            ],
+            "properties": {
+              "organisationName": {
+                "type": "string",
+                "nullable": true
+              },
+              "street": {
+                "type": "string",
+                "nullable": true
+              },
+              "city": {
+                "type": "string",
+                "nullable": true
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true
+              },
+              "countryCode": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "expectedShippingDates": {
+            "type": "object",
+            "description": "The minimum and maximum expected shipping dates",
+            "required": [
+              "minimum",
+              "maximum"
+            ],
+            "properties": {
+              "minimum": {
+                "type": "string",
+                "format": "datetime"
+              },
+              "maximum": {
+                "type": "string",
+                "format": "datetime"
+              }
+            }
+          },
+          "provider": {
+            "type": "string",
+            "description": "The company providing the shipping service",
+            "enum": [
+              "ups",
+              "tnt",
+              "gls",
+              "dpd",
+              "dhl",
+              "dhl_express",
+              "colissimo",
+              "chronopost",
+              null
+            ],
+            "nullable": true
+          },
+          "tracking": {
+            "type": "object",
+            "description": "Tracking details of the order",
+            "nullable": true,
+            "properties": {
+              "number": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string",
+                "format": "url",
+                "description": "A URL to view the tracking status"
+              }
+            }
+          },
+          "latestQuote": {
+            "description": "The quote is the price of the parcel(s) shipping.\nIf this object is null then no quote has been generated.",
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id of the last quote generated. Every time a ship call is done, a new calculation is made based on parcels dimensions and weight sent"
+              },
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "custom",
+                  "ups"
+                ],
+                "description": "Provider responsible for the calculation. If custom, the calculation is done by Ankorstore and refunded.\nIf any other, the calculation is done by the provider and the shipping price is covered by Ankorstore (most of the case, see shippingCostsOverview section)."
+              },
+              "rateProvider": {
+                "type": "string",
+                "description": "The provider of the rate for `rateAmount`.",
+                "enum": [
+                  "ups",
+                  "ankorstore"
+                ]
+              },
+              "rateAmount": {
+                "type": "object",
+                "description": "Amount calculated for the parcels provided.",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  },
+                  "currency": {
+                    "type": "string"
+                  }
+                }
+              },
+              "shippingCostsOverview": {
+                "type": "object",
+                "description": "Overview of costs related to shipping. This object is displayed only if a shipping cost fee or a refund exists",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "refund",
+                      "fee"
+                    ],
+                    "description": "Type of shipping costs:\nIf type = `refund` the amount will be refunded to the brand (added to brand net amount).\nif type = `fee` the amount will be subtracted from brand net amount as a contribution to shipping costs."
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "provider"
+            ]
+          },
+          "parcels": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "x-sl-internally-excluded": true,
+              "x-sl-error-message": "You do not have permission to view this reference"
+            }
+          },
+          "transaction": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "pickup": {
+                "description": "The scheduled pickup, requires an API call to be made after the shipping labels have been generated.",
+                "type": "object",
+                "required": [
+                  "pickupDate",
+                  "closeTime",
+                  "readyTime",
+                  "externalReferenceId"
+                ],
+                "nullable": true,
+                "properties": {
+                  "pickupDate": {
+                    "type": "string",
+                    "format": "datetime",
+                    "description": "The date of the pickup"
+                  },
+                  "readyTime": {
+                    "type": "string",
+                    "description": "Opening time of pickup Eg: 10:00:00"
+                  },
+                  "closeTime": {
+                    "type": "string",
+                    "description": "Close time (pickup required to happen before this time) Eg: 13:00:00"
+                  },
+                  "externalReferenceId": {
+                    "type": "string",
+                    "description": "The reference number for this pickup"
+                  }
+                }
+              },
+              "tracking": {
+                "description": "The tracking details for the overall shipment",
+                "type": "object",
+                "properties": {
+                  "eta": {
+                    "type": "string",
+                    "format": "datetime",
+                    "nullable": true,
+                    "description": "The estimated time of arrival for the order"
+                  },
+                  "trackingNumber": {
+                    "type": "string",
+                    "description": "The tracking number of the order"
+                  },
+                  "trackingLink": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "The tracking link for the order"
+                  },
+                  "currentStatus": {
+                    "type": "object",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            },
+            "required": [
+              "pickup",
+              "tracking"
+            ]
+          }
+        },
+        "required": [
+          "availableShippingMethods",
+          "shipToAddress",
+          "expectedShippingDates"
+        ]
+      },
+      "OrderItemResource": {
+        "title": "Order Item Resource",
+        "description": "",
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "x-examples": {
+          "example": {
+            "type": "order-items",
+            "id": "62b263a8-00e1-1ecb-98d2-0242ac170007",
+            "attributes": {
+              "brandCurrency": "EUR",
+              "quantity": 1,
+              "multipliedQuantity": 12,
+              "vatRate": 5.5,
+              "brandAmount": 3996,
+              "brandAmountVat": 220,
+              "brandAmountWithVat": 4216,
+              "brandUnitPrice": 333,
+              "createdAt": "2022-02-02T19:43:14.000000Z",
+              "updatedAt": "2022-02-02T19:43:14.000000Z"
+            },
+            "relationships": {
+              "productOption": {
+                "data": {
+                  "type": "productOption",
+                  "id": "114135"
+                }
+              }
+            }
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "brandCurrency": {
+                "type": "string",
+                "description": "The currency of the amounts for the brand"
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "The ordered quantity of the product"
+              },
+              "multipliedQuantity": {
+                "type": "integer",
+                "description": "Some products are sold in fixed quantities, e.g a case of 6 wine bottles. If the quantity was 2, the multiplied quantity of wine bottles would be 12 (6 x 2). This \"unitMultiplier\" can be found on the product."
+              },
+              "vatRate": {
+                "type": "number",
+                "format": "float",
+                "description": "The VAT percentage rate of the order item (0-100)"
+              },
+              "brandAmount": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandAmountVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandAmountWithVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "brandUnitPrice": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp this order item was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp this order item was updated"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "productOptions": {
+                "description": "Reference: Product Option Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "BillingItemResource": {
+        "title": "Billing Item Resource",
+        "description": "",
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "x-examples": {
+          "example": {
+            "type": "billing-items",
+            "id": "f1dd6498-c5f8-1eca-a6b7-0242ac170007",
+            "attributes": {
+              "type": "ankorstore_fees",
+              "currency": "EUR",
+              "vatRate": 20,
+              "currencyRate": 1,
+              "amount": -1259,
+              "amountVat": -252,
+              "amountWithVat": -1511,
+              "createdAt": "2022-02-02T19:42:32.000000Z",
+              "updatedAt": "2022-02-02T20:15:06.000000Z"
+            }
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "The `ankorstore_fees` type will be a negative amount which reduces the total amount paid to the brand.\nThe `shipping_fees` type also reduces the amount paid to the brand (but will be a positive value).\nThe `brand_shipping_fees_refund` type is positive and adds to the total amount paid.",
+                "type": "string",
+                "enum": [
+                  "ankorstore_fees",
+                  "shipping_fees",
+                  "brand_shipping_fees_refund"
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "description": "The currency of the billing item"
+              },
+              "vatRate": {
+                "type": "number",
+                "format": "float",
+                "description": "The VAT percentage rate of the billing item, (from 0 - 100)."
+              },
+              "currencyRate": {
+                "type": "number",
+                "format": "float",
+                "description": "If the currency is not in EUR, this is the conversion rate used"
+              },
+              "amount": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "amountVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "amountWithVat": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the billing item was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the billing item was updated"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "ProductOptionResource": {
+        "title": "Product Option Resource",
+        "description": "A unique option for a product",
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "examples": {
+          "example": {
+            "value": {
+              "type": "productOption",
+              "id": "7ec06d5c-023e-1ecb-a477-0242ac170007",
+              "attributes": {
+                "name": "Test Product Option",
+                "sku": "051100",
+                "ian": "3770005999506",
+                "outOfStock": false,
+                "createdAt": "2020-08-27T14:29:15.000000Z",
+                "updatedAt": "2021-10-04T12:03:31.000000Z",
+                "archivedAt": null
+              },
+              "relationships": {
+                "product": {
+                  "data": {
+                    "type": "product",
+                    "id": "7f4665f6-023e-1ecb-a4b2-0242ac170007"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the option"
+              },
+              "sku": {
+                "type": "string",
+                "description": "The SKU of the option"
+              },
+              "ian": {
+                "type": "string",
+                "nullable": true,
+                "description": "The IAN (EAN) of the option, can be null"
+              },
+              "outOfStock": {
+                "type": "boolean",
+                "description": "Whether the product is in stock or not"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "Timestamp of when this option was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "Timestamp of when this option was updated"
+              },
+              "archivedAt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Timestamp of when this option was archived"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "product": {
+                "description": "Reference: Product Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "ProductResource": {
+        "title": "Product Resource",
+        "description": "",
+        "type": "object",
+        "additionalProperties": false,
+        "x-internal": false,
+        "x-examples": {
+          "type": "product",
+          "id": "0c5e6540-0da9-1ecb-bf59-0242ac170007",
+          "attributes": {
+            "name": "Example Product",
+            "description": "Example description of product",
+            "language": "fr",
+            "dimensions": "5,5x5,5x6",
+            "netWeight": "100G",
+            "capacity": null,
+            "position": 34,
+            "unitMultiplier": 12,
+            "vatRate": "5.5",
+            "discountRate": 0,
+            "active": true,
+            "outOfStock": false,
+            "archived": false,
+            "retailPrice": 750,
+            "wholesalePrice": 426,
+            "originalWholesalePrice": 426,
+            "createdAt": "2020-08-27T14:26:38.000000Z",
+            "indexedAt": "2022-02-10T03:26:11.000000Z",
+            "updatedAt": "2022-02-09T14:49:09.000000Z"
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the product"
+              },
+              "description": {
+                "type": "string",
+                "description": "The description of the product"
+              },
+              "language": {
+                "type": "string",
+                "description": "The language of the title and description"
+              },
+              "dimensions": {
+                "type": "string",
+                "description": "The human readable dimensions of the product"
+              },
+              "netWeight": {
+                "type": "string",
+                "description": "The weight of the product itself"
+              },
+              "capacity": {
+                "type": "string",
+                "description": "eg. Capacity in weight eg 100g"
+              },
+              "position": {
+                "type": "number",
+                "description": "The position of the product in the brands catalog, lower the higher it is"
+              },
+              "unitMultiplier": {
+                "type": "integer",
+                "description": "How many products are shipped together, ie a case of 6 wine bottles. Presented options then would be 6, 12, 18 etc."
+              },
+              "vatRate": {
+                "type": "number",
+                "format": "float",
+                "description": "The VAT rate of the product"
+              },
+              "discountRate": {
+                "description": "The percentage discount if a brand is offering one (0 - 1)",
+                "type": "number",
+                "format": "float"
+              },
+              "active": {
+                "type": "boolean",
+                "description": "Whether the product is active or not"
+              },
+              "outOfStock": {
+                "type": "boolean",
+                "description": "Whether the product is out of stock or not"
+              },
+              "archived": {
+                "type": "boolean",
+                "description": "Whether the product is archived or not"
+              },
+              "retailPrice": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "wholesalePrice": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "originalWholesalePrice": {
+                "type": "integer",
+                "x-sl-internally-excluded": true,
+                "x-sl-error-message": "You do not have permission to view this reference"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the product was created"
+              },
+              "indexedAt": {
+                "type": "string",
+                "format": "datetime",
+                "nullable": true,
+                "description": "The timestamp when the product was indexed"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the product was updated"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "productOption": {
+                "description": "Reference: Product Option Resource",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "RetailerResource": {
+        "x-internal": false,
+        "title": "Retailer Resource",
+        "type": "object",
+        "additionalProperties": false,
+        "x-examples": {
+          "example": {
+            "data": {
+              "type": "retailer",
+              "id": "092b63ce-c5b9-1eca-b05f-0242ac170007",
+              "attributes": {
+                "companyName": null,
+                "storeName": "TEST RETAILER",
+                "storeUrl": null,
+                "email": "retailer@example.com",
+                "firstName": "John",
+                "lastName": "Smith",
+                "taxNumber": "12345678",
+                "vatNumber": "FR123456789",
+                "eoriNumber": null,
+                "phoneNumberE164": "+3345656456456",
+                "businessIdentifier": "3454353455",
+                "createdAt": "2020-06-19T11:59:30.000000Z",
+                "updatedAt": "2020-06-21T15:27:39.000000Z"
+              }
+            }
+          }
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "id": {
+            "type": "string",
+            "x-sl-internally-excluded": true,
+            "x-sl-error-message": "You do not have permission to view this reference"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "companyName": {
+                "type": "string",
+                "description": "The registered company of the retailer"
+              },
+              "storeName": {
+                "type": "string",
+                "description": "The name of the store"
+              },
+              "storeUrl": {
+                "type": "string",
+                "format": "url",
+                "description": "The store's website"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Contact email for the retailer"
+              },
+              "firstName": {
+                "type": "string",
+                "description": "Retailer's first name"
+              },
+              "lastName": {
+                "type": "string",
+                "description": "Retailer's last name"
+              },
+              "taxNumber": {
+                "type": "string",
+                "description": "Retailer's tax number"
+              },
+              "vatNumber": {
+                "type": "string",
+                "description": "Retailer's VAT number"
+              },
+              "eoriNumber": {
+                "type": "string",
+                "description": "Retailer's EORI number"
+              },
+              "phoneNumberE164": {
+                "type": "string",
+                "description": "Retailer's phone number (E164 format)"
+              },
+              "businessIdentifier": {
+                "type": "string",
+                "description": "The tax field to use - tax or vat number. If the retailer is a sole trader, this field will instead be their sole trading number"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the retailer was created"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "datetime",
+                "description": "The timestamp when the retailer was updated"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "orders": {
+                "description": "The order's belonging to a retailer. See [Order Resource](https://ankorstore.stoplight.io/docs/ankorstore-api/6d08d00d79434-order-resource)",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "x-sl-internally-excluded": true,
+                    "x-sl-error-message": "You do not have permission to view this reference"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "paginationMeta": {
+        "type": "object",
+        "description": "Meta with Pagination Details",
+        "required": [
+          "page"
+        ],
+        "properties": {
+          "page": {
+            "description": "Cursor pagination details",
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "hasMore": {
+                "type": "boolean"
+              },
+              "perPage": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "hasMore",
+              "perPage"
+            ]
+          }
+        }
+      },
+      "paginationLinks": {
+        "description": "Pagination navigation links. If a link does not exist then you cannot paginate any further in that direction.",
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "string",
+            "format": "url"
+          },
+          "next": {
+            "type": "string",
+            "format": "url"
+          },
+          "prev": {
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "include": {
+        "name": "include",
+        "in": "query",
+        "description": "[list of included related resources](https://jsonapi.org/format/#fetching-includes)",
+        "required": false,
+        "style": "form",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "description": "[fields to sort by](https://jsonapi.org/format/#fetching-sorting)",
+        "required": false,
+        "style": "form",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageLimit": {
+        "name": "page[limit]",
+        "in": "query",
+        "description": "limit the amount of results returned",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "pageBefore": {
+        "name": "page[before]",
+        "in": "query",
+        "description": "show items before the provided ID",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "pageAfter": {
+        "name": "page[after]",
+        "in": "query",
+        "description": "show items after the provided ID",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "fields": {
+        "name": "fields",
+        "in": "query",
+        "description": "sparse fieldsets: `fields[TYPE]=field1,field2,...`",
+        "required": false,
+        "style": "deepObject",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "filter": {
+        "name": "filter",
+        "in": "query",
+        "description": "filter[NAME]=value(s)",
+        "required": false,
+        "style": "deepObject",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "ProductionOAuth2ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://www.ankorstore.com/oauth/token",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": ""
+      },
+      "TestOauth2ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://www.public.sandbox.ankorstore.com/oauth/token",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ProductionOAuth2ClientCredentials": []
+    }
+  ]
+}

@@ -1,0 +1,1116 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LinkedIn Sales Navigator",
+    "version": "1.0",
+    "description": "LinkedIn Sales Navigator is a leading social selling tool that builds and nurtures customer relationships to lead to increased sales performance. By leveraging the power of LinkedIn's Sales Navigator, you can add exposure to sales leaders who are already engaged on LinkedIn and increase your product's engagement by integrating LinkedIn Sales Navigator seamlessly into your customers' workflow.\n\nWith the Sales Navigator Application Platform (SNAP) your customers can:\n\n- target people and companies with a search experience that delivers relevant prospects\n- understand key lead and company changes with suggestions customized for you\n- engage with leads and prospects from directly within your application\n\nRead on to learn more about the UI and API-based services that can help you maximize sales performance for your customers.",
+    "contact": {
+      "url": "https://docs.microsoft.com/en-us/linkedin/sales/",
+      "name": "LinkedIn"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.linkedin.com/v2"
+    }
+  ],
+  "paths": {
+    "/salesContracts": {
+      "get": {
+        "summary": "Sales Contracts",
+        "tags": [
+          "salesContracts"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "elements": [
+                        {
+                          "contract": "urn:li:contract:123456",
+                          "name": "North America Sales Team",
+                          "description": "Organic american apparel eiusmod, high life craft beer mollit polaroid lo-fi sed culpa.",
+                          "hasReportingAccess": true
+                        },
+                        {
+                          "contract": "urn:li:contract:1234560",
+                          "name": "EMEA Sales-EnterpriseLicense",
+                          "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                          "hasReportingAccess": false
+                        }
+                      ],
+                      "paging": {
+                        "count": 10,
+                        "start": 0,
+                        "links": []
+                      }
+                    }
+                  },
+                  "properties": {
+                    "elements": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "contract": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The urn of this Sales navigator contract"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The name of this contract, appropriate for display to an end-user"
+                          },
+                          "description": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "A description providing additional information about the contract"
+                          },
+                          "hasReportingAccess": {
+                            "type": "boolean",
+                            "description": "Indicates whether the user can export data for this contract"
+                          }
+                        },
+                        "required": [
+                          "contract",
+                          "name",
+                          "description",
+                          "hasReportingAccess"
+                        ]
+                      }
+                    },
+                    "paging": {
+                      "type": "object",
+                      "required": [
+                        "count",
+                        "start",
+                        "links"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "start": {
+                          "type": "number"
+                        },
+                        "links": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "elements",
+                    "paging"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "elements": [
+                        {
+                          "contract": "urn:li:contract:123456",
+                          "name": "North America Sales Team",
+                          "description": "Organic american apparel eiusmod, high life craft beer mollit polaroid lo-fi sed culpa.",
+                          "hasReportingAccess": true
+                        },
+                        {
+                          "contract": "urn:li:contract:1234560",
+                          "name": "EMEA Sales-EnterpriseLicense",
+                          "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                          "hasReportingAccess": false
+                        }
+                      ],
+                      "paging": {
+                        "count": 10,
+                        "start": 0,
+                        "links": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "salesContracts",
+        "description": "contractsByMember: Find all contracts where user has an active seat.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "contractsByMember",
+              "default": "contractsByMember"
+            },
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "description": "contractsByMember"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "3-legged OAuth": [
+              "r_sales_nav_analytics"
+            ]
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/salesAnalyticsExportJobs/{jobId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "jobId",
+          "in": "path",
+          "required": true,
+          "description": "The id of the export job created"
+        }
+      ],
+      "get": {
+        "summary": "Sales Analytics Export Jobs by Id",
+        "tags": [
+          "salesAnalyticsExportJobs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "downloadUrl": "https://www.linkedin.com/ambry/?x-li-ambry-ep=AQHk36gQOsHNTgAAAWWmqEE6ktywQjxy2pQSK2sJkLqme2jFV-a_XRc_wU3VtSYv9jMaehkEyVhld4sJcPB8FyMChpNiAl6GpyRrotD68pS55hd7pXNlkXgnpckmNxWJG6xIZv80N6XB9fTa9FibL3b6ivQ6iZezN2Xq6bBz_g3hwvfUQ6EH-fVrj1cBy8",
+                      "id": 100004,
+                      "rowCount": 3999,
+                      "expireAt": 1536102969282,
+                      "status": "COMPLETED"
+                    }
+                  },
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "description": "A job identifier that will uniquely identify the job created by sales users. Users can track the progress of their job using this id"
+                    },
+                    "status": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Represents job status, namely, in a typical job lifecycle"
+                    },
+                    "downloadUrl": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Publicly accessible URL of the generated CSV file. Users retrieve the CSV file using this downloadUrl. The field will present when status is COMPLETED"
+                    },
+                    "rowCount": {
+                      "type": "number",
+                      "description": "When the downloadUrl will expire. The field will present when downloadUrl is available"
+                    },
+                    "expireAt": {
+                      "type": "number",
+                      "description": "Row count of the exported data in CSV format. The row count does not include the header row. The field will present when downloadUrl is available"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "downloadUrl": "https://www.linkedin.com/ambry/?x-li-ambry-ep=AQHk36gQOsHNTgAAAWWmqEE6ktywQjxy2pQSK2sJkLqme2jFV-a_XRc_wU3VtSYv9jMaehkEyVhld4sJcPB8FyMChpNiAl6GpyRrotD68pS55hd7pXNlkXgnpckmNxWJG6xIZv80N6XB9fTa9FibL3b6ivQ6iZezN2Xq6bBz_g3hwvfUQ6EH-fVrj1cBy8",
+                      "id": 100004,
+                      "rowCount": 3999,
+                      "expireAt": 1536102969282,
+                      "status": "COMPLETED"
+                    }
+                  },
+                  "example-2": {
+                    "value": {
+                      "id": 100004,
+                      "status": "ENQUEUED"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "salesAnalyticsExportJobsById",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "contract",
+            "description": "Sales Navigator contract URN",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "description": "Fetches the SalesAnalyticsExportJob object corresponding to the job id with the latest status",
+        "security": [
+          {
+            "3-legged OAuth": [
+              "r_sales_nav_analytics"
+            ]
+          }
+        ]
+      }
+    },
+    "/salesAnalyticsExportJobs": {
+      "post": {
+        "summary": "Sales Analytics Export Jobs",
+        "operationId": "salesAnalyticsExportJobs",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "status": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "value": {
+                        "id": 100002,
+                        "status": "ENQUEUED"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "value": {
+                        "id": 100002,
+                        "status": "ENQUEUED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "exportSeatData",
+                "exportActivityOutcomeData",
+                "exportActivityData"
+              ]
+            },
+            "in": "query",
+            "name": "action",
+            "required": true,
+            "description": "export type"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "description": "exportSeatData: Export data about seat holders. For example, seat holder name, seat status, Social Selling Index scores, total connections.\n\nexportActivityOutcomeData: Export results of performed activities. For example InMails accepted and rejected.\n\nexportActivityData: Export activities performed by seat holders. For example, saving leads, performing searches, and sending InMail.\n\nA new SalesAnalyticsExportJob with jobId and status as ENQUEUED will be returned.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "contract": "urn:li:contract:123456",
+                    "endAt": 1527854400000,
+                    "startAt": 1525176000000
+                  }
+                },
+                "properties": {
+                  "contract": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Sales Navigator contract URN"
+                  },
+                  "startAt": {
+                    "type": "number",
+                    "description": "Start date of exported data"
+                  },
+                  "endAt": {
+                    "type": "number",
+                    "description": "End date of exported data"
+                  }
+                },
+                "required": [
+                  "contract",
+                  "startAt",
+                  "endAt"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "contract": "urn:li:contract:123456",
+                    "endAt": 1527854400000,
+                    "startAt": 1525176000000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "salesAnalyticsExportJobs"
+        ],
+        "security": [
+          {
+            "3-legged OAuth": [
+              "r_sales_nav_analytics"
+            ]
+          }
+        ]
+      }
+    },
+    "/salesAccessTokens": {
+      "get": {
+        "summary": "Sales Access Tokens",
+        "tags": [
+          "salesAccessTokens"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "elements": [
+                        {
+                          "expiryTime": 1535414193,
+                          "token": "AQXBVi8RMGFWtvBg4pkR0HE8Myt5Dehp0b0xHtjRFyHBmmZIkSQEUYlYhMthjaqVhWNxWY01RFHaJcGPT14lJWE3nddlne2VV5H4fNwpUdhJx546dz0d3WsfZmXevb"
+                        }
+                      ],
+                      "paging": {
+                        "count": 10,
+                        "start": 0,
+                        "links": []
+                      }
+                    }
+                  },
+                  "properties": {
+                    "elements": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "description": "Represents a degraded access token (a short lived, limited scope oauth token for use in Sales Navigator Display Services iframe).",
+                        "properties": {
+                          "expiryTime": {
+                            "type": "number",
+                            "description": "Time at which this token will become invalid. Seconds since epoch"
+                          },
+                          "token": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Short-lived, limited-scope oauth token"
+                          }
+                        },
+                        "required": [
+                          "expiryTime",
+                          "token"
+                        ]
+                      }
+                    },
+                    "paging": {
+                      "type": "object",
+                      "required": [
+                        "count",
+                        "start",
+                        "links"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "start": {
+                          "type": "number"
+                        },
+                        "links": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "elements",
+                    "paging"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "elements": [
+                        {
+                          "expiryTime": 1535414193,
+                          "token": "AQXBVi8RMGFWtvBg4pkR0HE8Myt5Dehp0b0xHtjRFyHBmmZIkSQEUYlYhMthjaqVhWNxWY01RFHaJcGPT14lJWE3nddlne2VV5H4fNwpUdhJx546dz0d3WsfZmXevb"
+                        }
+                      ],
+                      "paging": {
+                        "count": 10,
+                        "start": 0,
+                        "links": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-salesAccessTokens",
+        "description": "This resource returns a Sales Access Token to be used in Sales Navigator Display Services iframe for creating authenticated iframe session.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "viewerAndDeveloperApp",
+              "example": "viewerAndDeveloperApp"
+            },
+            "in": "query",
+            "name": "q",
+            "description": "viewerAndDeveloperApp",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "3-legged OAuth": [
+              "r_sales_nav_display"
+            ]
+          }
+        ]
+      }
+    },
+    "/salesNavigatorProfileAssociations/(instanceId:{instanceId},partner:{partner},recordId:{recordId})": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "instanceId",
+          "in": "path",
+          "required": true,
+          "description": "ID of the CRM partner that synced with Sales Navigator"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "partner",
+          "in": "path",
+          "required": true,
+          "description": "ID of the CRM instance that synced with Sales Navigator"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "recordId",
+          "in": "path",
+          "required": true,
+          "description": "ID of the CRM record"
+        }
+      ],
+      "get": {
+        "summary": "Get Sales Navigator Profile Associations",
+        "tags": [
+          "salesNavigatorProfileAssociations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "profilePhoto": "bar",
+                      "profile": "foo",
+                      "member": "urn:li:person:bar"
+                    }
+                  },
+                  "properties": {
+                    "profilePhoto": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The absolute url for a LinkedIn profile photo. If the user has not uploaded their own profile photo or if their privacy settings preclude us from showing the profile photo to the public, then this field will not be present"
+                    },
+                    "profile": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The absolute URL of a single Sales Navigator profile"
+                    },
+                    "member": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Represents a LinkedIn Person URN"
+                    }
+                  },
+                  "required": [
+                    "profilePhoto",
+                    "profile",
+                    "member"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "profilePhoto": "bar",
+                      "profile": "foo",
+                      "member": "urn:li:person:bar"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getSalesNavigatorProfileAssociations",
+        "description": "Fetches the corresponding match when provided with a SalesNavigatorProfileAssociationKey.",
+        "security": [
+          {
+            "2-legged OAuth": [
+              "r_sales_nav_profiles"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/salesNavigatorProfileAssociations": {
+      "get": {
+        "summary": "Get Batch Sales Navigator Profile Associations",
+        "tags": [
+          "salesNavigatorProfileAssociations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "statuses": {},
+                      "results": {
+                        "(instanceId:foo,partner:bar,recordId:foo)": {
+                          "profilePhoto": "baz",
+                          "profile": "baz",
+                          "member": "urn:li:person:foo"
+                        },
+                        "(instanceId:foo,partner:bar,recordId:bar)": {
+                          "profilePhoto": "foo",
+                          "profile": "bar",
+                          "member": "urn:li:person:bar"
+                        }
+                      },
+                      "errors": {}
+                    }
+                  },
+                  "properties": {
+                    "statuses": {
+                      "type": "object"
+                    },
+                    "results": {
+                      "type": "object"
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "statuses",
+                    "results",
+                    "errors"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "statuses": {},
+                      "results": {
+                        "(instanceId:foo,partner:bar,recordId:foo)": {
+                          "profilePhoto": "baz",
+                          "profile": "baz",
+                          "member": "urn:li:person:foo"
+                        },
+                        "(instanceId:foo,partner:bar,recordId:bar)": {
+                          "profilePhoto": "foo",
+                          "profile": "bar",
+                          "member": "urn:li:person:bar"
+                        }
+                      },
+                      "errors": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getBatchSalesNavigatorProfileAssociations",
+        "description": "Batch fetches the corresponding match when provided with multiple SalesNavigatorProfileAssociationKeys.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "List((instanceId:foo,partner:bar,recordId:foo),(instanceId:foo,partner:bar,recordId:bar))"
+            },
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "description": "List of SalesNavigatorProfileAssociationKey"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "2-legged OAuth": [
+              "r_sales_nav_profiles"
+            ]
+          }
+        ]
+      }
+    },
+    "/crmDataValidationExportJobs": {
+      "post": {
+        "summary": "Create CRM data validation export jobs",
+        "operationId": "post-crmDataValidationExportJobs",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "Location": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "X-RestLi-Id": {
+                      "type": "number"
+                    },
+                    "X-RestLi-Protocol-Version": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "Date": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "Location",
+                    "X-RestLi-Id",
+                    "X-RestLi-Protocol-Version",
+                    "Date"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "Location": "/crmDataValidationExportJobs/148",
+                      "X-RestLi-Id": 148,
+                      "X-RestLi-Protocol-Version": "2.0.0",
+                      "Date": "Tue, 06 Nov 2018 21:19:13 GMT"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "Location": "/crmDataValidationExportJobs/148",
+                      "X-RestLi-Id": 148,
+                      "X-RestLi-Protocol-Version": "2.0.0",
+                      "Date": "Tue, 06 Nov 2018 21:19:13 GMT"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "urn%3Ali%3AcrmInstance%3A%28DYNAMICS%2C362a3584-0d9b-44a1-a547-25de5cd95d08%29"
+            },
+            "in": "query",
+            "name": "crmInstanceId",
+            "description": "An URN containing the instance ID of the CRM you want the job to execute against and the CRM type in the format urn:li:crmInstance:(CRM_KEY,VALUE). The URN must be URL encoded in the query string.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "description": "Allows creation of CRM data validation export jobs.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "exportStartAt": 1539027618223
+                  }
+                },
+                "properties": {
+                  "exportStartAt": {
+                    "type": "number",
+                    "description": "The time at which the export was started from (provided in initial request)"
+                  }
+                },
+                "required": [
+                  "exportStartAt"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "exportStartAt": 1539027618223
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "crmDataValidationExportJobs"
+        ],
+        "security": [
+          {
+            "2-legged OAuth": [
+              "r_sales_nav_validation"
+            ]
+          }
+        ]
+      }
+    },
+    "/crmDataValidationExportJobs/{jobId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "jobId",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the export job. Job IDs will expire 1 week after they are created"
+        }
+      ],
+      "get": {
+        "summary": "Get CRM data validation export jobs",
+        "tags": [
+          "crmDataValidationExportJobs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Contains response details of a crm data validation export. The job will be issued by customers in the LinkedIn Partner Program and their desire is to validate the data, such as if the job title is out-of-date, in their CRM system.",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "jobId": 148,
+                      "exportStartAt": 1538947151337,
+                      "exportEndAt": 1541539151570,
+                      "downloadUrls": [
+                        "https://www.linkedin.com/ambry/?x-li-ambry-ep=AQFVMzGy8qJVMQAAAWbwbeHrHZG5mJkIDr2xq_Z3znIfOzp1FvApV-oL3Jd0ck"
+                      ],
+                      "nextExportStartAt": 1538947151337,
+                      "expireAt": 1541635625000,
+                      "status": "COMPLETED"
+                    }
+                  },
+                  "properties": {
+                    "jobId": {
+                      "type": "number",
+                      "description": "The ID of the export job. Job IDs will expire 1 week after they are created"
+                    },
+                    "exportStartAt": {
+                      "type": "number",
+                      "description": "The time at which the export was started from (provided in initial request)"
+                    },
+                    "exportEndAt": {
+                      "type": "number",
+                      "description": "The time for the end bound of the export (provided in initial request). Defaults to current time of the initial request"
+                    },
+                    "downloadUrls": {
+                      "type": "array",
+                      "description": "An array of download URLs for the requested export. Displayed when the status is COMPLETED. URLs will expire 1 hour after they are created. Download all URLs to retrieve the entirety of the export",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "nextExportStartAt": {
+                      "type": "number",
+                      "description": "The time at which the next export's exportStartAt should be set to ensure continuity across jobs"
+                    },
+                    "expireAt": {
+                      "type": "number",
+                      "description": "The time when the downloadUrls expire. Displayed when the status is COMPLETED"
+                    },
+                    "status": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The status of the export. A list of possible statuses is in the Export Job Statuses table below",
+                      "enum": [
+                        "PROCESSING",
+                        "COMPLETED",
+                        "FAILED_DUE_TO_INTERNAL_ERROR"
+                      ],
+                      "example": "PROCESSING"
+                    }
+                  },
+                  "required": [
+                    "jobId",
+                    "exportStartAt",
+                    "status"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "jobId": 148,
+                      "exportStartAt": 1538947151337,
+                      "exportEndAt": 1541539151570,
+                      "downloadUrls": [
+                        "https://www.linkedin.com/ambry/?x-li-ambry-ep=AQFVMzGy8qJVMQAAAWbwbeHrHZG5mJkIDr2xq_Z3znIfOzp1FvApV-oL3Jd0ck"
+                      ],
+                      "nextExportStartAt": 1538947151337,
+                      "expireAt": 1541635625000,
+                      "status": "COMPLETED"
+                    }
+                  },
+                  "example-2": {
+                    "value": {
+                      "jobId": 148,
+                      "exportStartAt": 1538947151337,
+                      "exportEndAt": 1541539151570,
+                      "status": "PROCESSING"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-crmDataValidationExportJobs-jobId",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "urn:li:crmInstance:(CRM_KEY,VALUE)"
+            },
+            "in": "query",
+            "name": "crmInstanceId",
+            "description": "An URN containing the instance ID of the CRM you want the job to execute against and the CRM type in the format urn:li:crmInstance:(CRM_KEY,VALUE). The URN must be URL encoded in the query string.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "2.0.0",
+              "example": "2.0.0"
+            },
+            "in": "header",
+            "name": "X-RestLi-Protocol-Version",
+            "description": "2.0.0",
+            "required": true
+          }
+        ],
+        "description": "Get the CRM data validation export based on the export job id.",
+        "security": [
+          {
+            "2-legged OAuth": [
+              "r_sales_nav_validation"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "3-legged OAuth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://www.linkedin.com/oauth/v2/authorization",
+            "tokenUrl": "https://www.linkedin.com/oauth/v2/accessToken",
+            "refreshUrl": "https://www.linkedin.com/oauth/v2/accessToken",
+            "scopes": {
+              "r_sales_nav_analytics": "",
+              "r_sales_nav_display": ""
+            }
+          }
+        },
+        "description": "The Authorization Code Flow is used for applications to request permission from a LinkedIn member to access their account data."
+      },
+      "2-legged OAuth": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://www.linkedin.com/oauth/v2/accessToken",
+            "refreshUrl": "https://www.linkedin.com/oauth/v2/accessToken",
+            "scopes": {
+              "r_sales_nav_profiles": "",
+              "r_sales_nav_validation": ""
+            }
+          }
+        },
+        "description": "If your application needs to access APIs that are not member specific, use the Client Credential Flow. Your application cannot access these APIs by default."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "crmDataValidationExportJobs"
+    },
+    {
+      "name": "salesAccessTokens"
+    },
+    {
+      "name": "salesAnalyticsExportJobs"
+    },
+    {
+      "name": "salesContracts"
+    },
+    {
+      "name": "salesNavigatorProfileAssociations"
+    }
+  ]
+}

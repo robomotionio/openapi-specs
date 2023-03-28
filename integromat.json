@@ -1,0 +1,4203 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Integromat API",
+    "description": "> The `scenario:*` and the `organization:*` scopes are currently private only. We're working on a new full-featured API for the general public. For mode updates, please follow [this thread](https://www.integromat.com/en/requests/new-app-requests/p/integromat-api).\n\n# Authorization\n\nBefore you start using Integromat API, you need to obtain an API key. To do so, please navigate to [your profile settings](https://www.integromat.com/user#tab:api) in Integromat and choose tab named **API**. Then click **Add token** button.\n\n![](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LC12sgBWZWwjEbbd84M%2F-LNLnY1qvUESOEuLXw8C%2F-LNLoMebYeUfvGgiSqpo%2Fimage.png?alt=media&token=8df6b750-7098-49db-aa3f-ed688a9426a4)\n\nA dialog will show up. You can set permissions for the newly generated API key.\n\n![](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LC12sgBWZWwjEbbd84M%2F-LNLnY1qvUESOEuLXw8C%2F-LNLoqnBFyfrYfyW5YCn%2Fimage.png?alt=media&token=4bf24ac0-ab52-40ac-8aec-7adc24b43ac6)\n\nThen click the **Add** button. Your new API key will be generated and will be displayed in the **Tokens** section. Write the token down or copy it to you clipboard. This is the only time when you can see whole API key.",
+    "contact": {},
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.integromat.com/v1",
+      "variables": {},
+      "description": "v1"
+    }
+  ],
+  "paths": {
+    "/organization": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Get list of organizations",
+        "description": "Required scope: **`organizations:read`**.",
+        "operationId": "Getlistoforganizations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/organization/{organization}": {
+      "delete": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Delete organization",
+        "description": "Required scope: **`organizations:write`**.",
+        "operationId": "Deleteorganization",
+        "parameters": [
+          {
+            "name": "organization",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario": {
+      "get": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Get list of scenarios",
+        "description": "Required scope: **`scenarios:read`**.",
+        "operationId": "Getlistofscenarios",
+        "parameters": [
+          {
+            "name": "organization",
+            "in": "query",
+            "description": "Return scenarios where organization is equal to this value. Optional.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{organization}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario/{scenario}": {
+      "get": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Get scenario details",
+        "description": "Required scope: **`scenarios:read`**.",
+        "operationId": "Getscenariodetails",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Delete scenario",
+        "description": "Required scope: **`scenarios:write`**.",
+        "operationId": "Deletescenario",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario/{scenario}/log": {
+      "get": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Get scenario executions",
+        "description": "Required scope: **`scenarios:read`**.",
+        "operationId": "Getscenarioexecutions",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number. Must be higher or equal to 1, and the default is 1.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{page}}"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "A limit on the number of executions to be returned. Limit can range between 1 and 1000, and the default is 50.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{limit}}"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Return results where the status is equal to this value. 1 = success, 2 = warning, 3 = error. Optional.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{status}}"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Return results where the date is greater than or equal to this value. ISO 8601 format. Optional.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{from}}"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Return results where the date is less than or equal to this value. ISO 8601 format. Optional.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "{{to}}"
+            }
+          },
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario/{scenario}/log/{execution}": {
+      "get": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Get scenario execution details",
+        "description": "Required scope: **`scenarios:read`**.",
+        "operationId": "Getscenarioexecutiondetails",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "execution",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario/{scenario}/start": {
+      "post": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Activate scenario",
+        "description": "Required scope: **`scenarios:write`**.",
+        "operationId": "Activatescenario",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/scenario/{scenario}/stop": {
+      "post": {
+        "tags": [
+          "Scenarios"
+        ],
+        "summary": "Deactivate scenario",
+        "description": "Required scope: **`scenarios:write`**.",
+        "operationId": "Deactivatescenario",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app": {
+      "post": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Create a new app",
+        "description": "Creates a new app",
+        "operationId": "Createanewapp",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewappRequest"
+              },
+              "example": {
+                "name": "apitest-postman",
+                "label": "APITEST_POSTMAN",
+                "theme": "#FD602F",
+                "language": "cs",
+                "private": true,
+                "countries": [
+                  "ar",
+                  "en"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get list of apps",
+        "operationId": "Getlistofapps",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/icon": {
+      "put": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Change app icon",
+        "operationId": "Changeappicon",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "image/png"
+              ],
+              "type": "string",
+              "example": "image/png"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "encoding": {},
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/icon/512": {
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get app icon",
+        "operationId": "Getappicon",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}": {
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get app details",
+        "operationId": "Getappdetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Delete app",
+        "operationId": "Deleteapp",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/1": {
+      "put": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Change app details",
+        "operationId": "Changeappdetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeappdetailsRequest"
+              },
+              "example": {
+                "label": "New name",
+                "theme": "#FF6F00",
+                "language": "cs",
+                "private": true,
+                "countries": [
+                  "en",
+                  "de"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/common": {
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get app common data",
+        "operationId": "Getappcommondata",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Change app common data",
+        "operationId": "Changeappcommondata",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeappcommondataRequest"
+              },
+              "example": {
+                "testing_entry": "Hello World"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/docs": {
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get app docs",
+        "operationId": "Getappdocs",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Change app docs",
+        "operationId": "Changeappdocs",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string",
+                "example": "# This is a test\n\n- Fast\n- Simple\n- Powerful\n\nThis is a [link](https://www.integromat.com)."
+              },
+              "example": "# This is a test\n\n- Fast\n- Simple\n- Powerful\n\nThis is a [link](https://www.integromat.com)."
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/base": {
+      "get": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Get app section",
+        "operationId": "Getappsection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Change app section",
+        "operationId": "Changeappsection",
+        "parameters": [
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeappsectionRequest"
+              },
+              "example": {
+                "baseUrl": "https://www.zapier.com/",
+                "log": {
+                  "sanitize": [
+                    "request.headers.authorization"
+                  ]
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/public": {
+      "post": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Publish app",
+        "description": "Creates a new app",
+        "operationId": "Publishapp",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/private": {
+      "post": {
+        "tags": [
+          "Apps"
+        ],
+        "summary": "Privatize app",
+        "description": "Creates a new app",
+        "operationId": "Privatizeapp",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module": {
+      "post": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Create a new module",
+        "operationId": "Createanewmodule",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewmoduleRequest"
+              },
+              "example": {
+                "name": "testingModule",
+                "label": "Testing Module",
+                "type_id": 9,
+                "description": "It looks it works."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Get list of modules",
+        "operationId": "Getlistofmodules",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module/{module}": {
+      "get": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Get module details",
+        "operationId": "Getmoduledetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Change module details",
+        "operationId": "Changemoduledetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangemoduledetailsRequest"
+              },
+              "example": {
+                "label": "Renamed module",
+                "description": "This is a renamed module",
+                "type_id": 4,
+                "public": true,
+                "approved": false,
+                "connection": null,
+                "webhook": null
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Delete module",
+        "operationId": "Deletemodule",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module/{module}/interface": {
+      "put": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Change module section",
+        "operationId": "Changemodulesection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/jsonc": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChangemodulesectionRequest"
+                },
+                "description": "",
+                "example": [
+                  {
+                    "name": "id",
+                    "type": "uinteger",
+                    "label": "User ID"
+                  },
+                  {
+                    "name": "email",
+                    "type": "email",
+                    "label": "Email address"
+                  },
+                  {
+                    "name": "name",
+                    "type": "text",
+                    "label": "Name"
+                  },
+                  {
+                    "name": "created",
+                    "type": "date",
+                    "label": "Date created"
+                  }
+                ]
+              },
+              "example": [
+                {
+                  "name": "id",
+                  "type": "uinteger",
+                  "label": "User ID"
+                },
+                {
+                  "name": "email",
+                  "type": "email",
+                  "label": "Email address"
+                },
+                {
+                  "name": "name",
+                  "type": "text",
+                  "label": "Name"
+                },
+                {
+                  "name": "created",
+                  "type": "date",
+                  "label": "Date created"
+                }
+              ]
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Get module section",
+        "operationId": "Getmodulesection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module/{module}/alt_connection": {
+      "put": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Change module parameters",
+        "operationId": "Changemoduleparameters",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "text/plain"
+              ],
+              "type": "string",
+              "example": "text/plain"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module/{module}/public": {
+      "post": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Publish module",
+        "description": "Publishes the module",
+        "operationId": "Publishmodule",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/module/{module}/private": {
+      "post": {
+        "tags": [
+          "Modules"
+        ],
+        "summary": "Privatize module",
+        "description": "Hides the module",
+        "operationId": "Privatizemodule",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/rpc": {
+      "post": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Create a new RPC",
+        "operationId": "CreateanewRPC",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewRPCRequest"
+              },
+              "example": {
+                "name": "testingRPC",
+                "label": "Testing RPC"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Get list of RPCs",
+        "operationId": "GetlistofRPCs",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/rpc/{rpc}": {
+      "get": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Get RPC details",
+        "operationId": "GetRPCdetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpc",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Delete RPC",
+        "operationId": "DeleteRPC",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpc",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/rpc/{rpc}/api": {
+      "get": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Get RPC section",
+        "operationId": "GetRPCsection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpc",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Change RPC section",
+        "operationId": "ChangeRPCsection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpc",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/jsonc": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRPCsectionRequest"
+              },
+              "example": {
+                "url": "/api/users",
+                "method": "GET",
+                "qs": {},
+                "body": {},
+                "headers": {},
+                "response": {
+                  "iterate": "{{body.users}}",
+                  "output": {
+                    "label": "{{item.name}}",
+                    "value": "{{item.id}}"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/rpc/{rpc}/connection": {
+      "put": {
+        "tags": [
+          "RPCs"
+        ],
+        "summary": "Change RPC parameters",
+        "operationId": "ChangeRPCparameters",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpc",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "example": "test-app2545445"
+              },
+              "example": "test-app2545445"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/function": {
+      "post": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Create a new function",
+        "operationId": "Createanewfunction",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewfunctionRequest"
+              },
+              "example": {
+                "name": "testingFunction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Get list of functions",
+        "operationId": "Getlistoffunctions",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/function/{function}": {
+      "get": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Get function details",
+        "operationId": "Getfunctiondetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "function",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Delete function",
+        "operationId": "Deletefunction",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "function",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/function/{function}/code": {
+      "get": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Get function code",
+        "operationId": "Getfunctioncode",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "function",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Functions"
+        ],
+        "summary": "Change function code",
+        "operationId": "Changefunctioncode",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "function",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/javascript": {
+              "schema": {
+                "type": "string",
+                "example": "function testingFunction(c) {\n\tlet a = 10;\n\tlet b = 20;\n\treturn a+b+c;\n}"
+              },
+              "example": "function testingFunction(c) {\n\tlet a = 10;\n\tlet b = 20;\n\treturn a+b+c;\n}"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/connection": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get list of connections",
+        "operationId": "Getlistofconnections",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Create a new connection",
+        "operationId": "Createanewconnection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewconnectionRequest"
+              },
+              "example": {
+                "label": "Testing Connection",
+                "type": "oauth-refresh"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/connection/{connection}": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get connection details",
+        "operationId": "Getconnectiondetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Delete connection",
+        "operationId": "Deleteconnection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/connection/{connection}/common": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get connection common data",
+        "operationId": "Getconnectioncommondata",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Change connection common data",
+        "operationId": "Changeconnectioncommondata",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeconnectioncommondataRequest"
+              },
+              "example": {
+                "commonKey": "commonValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/connection/{connection}/parameters": {
+      "put": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Change connection section",
+        "operationId": "Changeconnectionsection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/jsonc": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChangeconnectionsectionRequest"
+                },
+                "description": "",
+                "example": [
+                  {
+                    "name": "clientId",
+                    "type": "text",
+                    "label": "Client ID",
+                    "advanced": true
+                  },
+                  {
+                    "name": "clientSecret",
+                    "type": "text",
+                    "label": "Client Secret",
+                    "advanced": true
+                  }
+                ]
+              },
+              "example": [
+                {
+                  "name": "clientId",
+                  "type": "text",
+                  "label": "Client ID",
+                  "advanced": true
+                },
+                {
+                  "name": "clientSecret",
+                  "type": "text",
+                  "label": "Client Secret",
+                  "advanced": true
+                }
+              ]
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get connection section",
+        "operationId": "Getconnectionsection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/connection/{connection}/label": {
+      "put": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Change connection parameters",
+        "operationId": "Changeconnectionparameters",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connection",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "example": "Renamed Connection"
+              },
+              "example": "Renamed Connection"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/webhook": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Create a new webhook",
+        "operationId": "Createanewwebhook",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateanewwebhookRequest"
+              },
+              "example": {
+                "label": "testingWebhook",
+                "type": "web"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get list of webhooks",
+        "operationId": "Getlistofwebhooks",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/webhook/{webhook}": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get webhook details",
+        "operationId": "Getwebhookdetails",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhook",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Delete webhook",
+        "operationId": "Deletewebhook",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhook",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/webhook/{webhook}/parameters": {
+      "put": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Change webhook section",
+        "operationId": "Changewebhooksection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhook",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/jsonc": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChangewebhooksectionRequest"
+                },
+                "description": "",
+                "example": [
+                  {
+                    "label": "Test",
+                    "type": "text",
+                    "name": "text"
+                  }
+                ]
+              },
+              "example": [
+                {
+                  "label": "Test",
+                  "type": "text",
+                  "name": "text"
+                }
+              ]
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get webhook section",
+        "operationId": "Getwebhooksection",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhook",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/webhook/{webhook}/connection": {
+      "put": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Change webhook parameters",
+        "operationId": "Changewebhookparameters",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhook",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "example": "test-app"
+              },
+              "example": "test-app"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/whoami": {
+      "get": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Get user information",
+        "description": "Gets a currently logged user info",
+        "operationId": "Getuserinformation",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/change/{change}": {
+      "get": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Get changes",
+        "operationId": "Getchanges",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "change",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/app/{app}/{version}/commit": {
+      "post": {
+        "tags": [
+          "Changes"
+        ],
+        "summary": "Commit or rollback changes",
+        "description": "Commits or rolls back changes",
+        "operationId": "Commitorrollbackchanges",
+        "parameters": [
+          {
+            "name": "x-imt-apps-sdk-version",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "{{sdkVersion}}"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateanewappRequest": {
+        "title": "CreateanewappRequest",
+        "required": [
+          "name",
+          "label",
+          "theme",
+          "language",
+          "private",
+          "countries"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "private": {
+            "type": "boolean"
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        },
+        "example": {
+          "name": "apitest-postman",
+          "label": "APITEST_POSTMAN",
+          "theme": "#FD602F",
+          "language": "cs",
+          "private": true,
+          "countries": [
+            "ar",
+            "en"
+          ]
+        }
+      },
+      "ChangeappdetailsRequest": {
+        "title": "ChangeappdetailsRequest",
+        "required": [
+          "label",
+          "theme",
+          "language",
+          "private",
+          "countries"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "private": {
+            "type": "boolean"
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        },
+        "example": {
+          "label": "New name",
+          "theme": "#FF6F00",
+          "language": "cs",
+          "private": true,
+          "countries": [
+            "en",
+            "de"
+          ]
+        }
+      },
+      "ChangeappcommondataRequest": {
+        "title": "ChangeappcommondataRequest",
+        "required": [
+          "testing_entry"
+        ],
+        "type": "object",
+        "properties": {
+          "testing_entry": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "testing_entry": "Hello World"
+        }
+      },
+      "ChangeappsectionRequest": {
+        "title": "ChangeappsectionRequest",
+        "required": [
+          "baseUrl",
+          "log"
+        ],
+        "type": "object",
+        "properties": {
+          "baseUrl": {
+            "type": "string"
+          },
+          "log": {
+            "$ref": "#/components/schemas/Log"
+          }
+        },
+        "example": {
+          "baseUrl": "https://www.zapier.com/",
+          "log": {
+            "sanitize": [
+              "request.headers.authorization"
+            ]
+          }
+        }
+      },
+      "Log": {
+        "title": "Log",
+        "required": [
+          "sanitize"
+        ],
+        "type": "object",
+        "properties": {
+          "sanitize": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        },
+        "example": {
+          "sanitize": [
+            "request.headers.authorization"
+          ]
+        }
+      },
+      "CreateanewmoduleRequest": {
+        "title": "CreateanewmoduleRequest",
+        "required": [
+          "name",
+          "label",
+          "type_id",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "type_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "testingModule",
+          "label": "Testing Module",
+          "type_id": 9,
+          "description": "It looks it works."
+        }
+      },
+      "ChangemoduledetailsRequest": {
+        "title": "ChangemoduledetailsRequest",
+        "required": [
+          "label",
+          "description",
+          "type_id",
+          "public",
+          "approved",
+          "connection",
+          "webhook"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "connection": {
+            "type": "string",
+            "nullable": true
+          },
+          "webhook": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "example": {
+          "label": "Renamed module",
+          "description": "This is a renamed module",
+          "type_id": 4,
+          "public": true,
+          "approved": false,
+          "connection": null,
+          "webhook": null
+        }
+      },
+      "ChangemodulesectionRequest": {
+        "title": "ChangemodulesectionRequest",
+        "required": [
+          "name",
+          "type",
+          "label"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "id",
+          "type": "uinteger",
+          "label": "User ID"
+        }
+      },
+      "CreateanewRPCRequest": {
+        "title": "CreateanewRPCRequest",
+        "required": [
+          "name",
+          "label"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "testingRPC",
+          "label": "Testing RPC"
+        }
+      },
+      "ChangeRPCsectionRequest": {
+        "title": "ChangeRPCsectionRequest",
+        "required": [
+          "url",
+          "method",
+          "qs",
+          "body",
+          "headers",
+          "response"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "qs": {
+            "type": "object"
+          },
+          "body": {
+            "type": "object"
+          },
+          "headers": {
+            "type": "object"
+          },
+          "response": {
+            "$ref": "#/components/schemas/Response"
+          }
+        },
+        "example": {
+          "url": "/api/users",
+          "method": "GET",
+          "qs": {},
+          "body": {},
+          "headers": {},
+          "response": {
+            "iterate": "{{body.users}}",
+            "output": {
+              "label": "{{item.name}}",
+              "value": "{{item.id}}"
+            }
+          }
+        }
+      },
+      "Response": {
+        "title": "Response",
+        "required": [
+          "iterate",
+          "output"
+        ],
+        "type": "object",
+        "properties": {
+          "iterate": {
+            "type": "string"
+          },
+          "output": {
+            "$ref": "#/components/schemas/Output"
+          }
+        },
+        "example": {
+          "iterate": "{{body.users}}",
+          "output": {
+            "label": "{{item.name}}",
+            "value": "{{item.id}}"
+          }
+        }
+      },
+      "Output": {
+        "title": "Output",
+        "required": [
+          "label",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "label": "{{item.name}}",
+          "value": "{{item.id}}"
+        }
+      },
+      "CreateanewfunctionRequest": {
+        "title": "CreateanewfunctionRequest",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "testingFunction"
+        }
+      },
+      "CreateanewconnectionRequest": {
+        "title": "CreateanewconnectionRequest",
+        "required": [
+          "label",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "label": "Testing Connection",
+          "type": "oauth-refresh"
+        }
+      },
+      "ChangeconnectioncommondataRequest": {
+        "title": "ChangeconnectioncommondataRequest",
+        "required": [
+          "commonKey"
+        ],
+        "type": "object",
+        "properties": {
+          "commonKey": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "commonKey": "commonValue"
+        }
+      },
+      "ChangeconnectionsectionRequest": {
+        "title": "ChangeconnectionsectionRequest",
+        "required": [
+          "name",
+          "type",
+          "label",
+          "advanced"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "advanced": {
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "name": "clientId",
+          "type": "text",
+          "label": "Client ID",
+          "advanced": true
+        }
+      },
+      "CreateanewwebhookRequest": {
+        "title": "CreateanewwebhookRequest",
+        "required": [
+          "label",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "label": "testingWebhook",
+          "type": "web"
+        }
+      },
+      "ChangewebhooksectionRequest": {
+        "title": "ChangewebhooksectionRequest",
+        "required": [
+          "label",
+          "type",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "label": "Test",
+          "type": "text",
+          "name": "text"
+        }
+      }
+    },
+    "securitySchemes": {
+      "Token": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Token",
+        "description": "Before you start using Integromat API, you need to obtain an API key. To do so, please navigate to your profile settings in Integromat and choose tab named API. Then click Add token button. A dialog will show up. You can set permissions for the newly generated API key. Then click the Add button. Your new API key will be generated and will be displayed in the Tokens section. Write the token down or copy it to you clipboard. This is the only time when you can see whole API key."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Organizations"
+    },
+    {
+      "name": "Scenarios"
+    },
+    {
+      "name": "Apps"
+    },
+    {
+      "name": "Modules"
+    },
+    {
+      "name": "RPCs"
+    },
+    {
+      "name": "Functions"
+    },
+    {
+      "name": "Connections"
+    },
+    {
+      "name": "Webhooks"
+    },
+    {
+      "name": "Basic"
+    },
+    {
+      "name": "Changes"
+    }
+  ],
+  "security": [
+    {
+      "Token": []
+    }
+  ]
+}

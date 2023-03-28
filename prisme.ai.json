@@ -1,0 +1,6531 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Prisme.ai APIs",
+    "description": "Prisme.ai APIs specifications",
+    "termsOfService": "https://www.prisme.ai/mentions-legales",
+    "contact": {
+      "name": "Prisme.ai Support Team",
+      "email": "support@prisme.ai",
+      "url": "https://www.prisme.ai"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.eda.prisme.ai"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": [],
+      "CookieAuth": []
+    },
+    {
+      "SessionHeaderAuth": [],
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v2/login": {
+      "post": {
+        "description": "Email / Password authentication",
+        "operationId": "credentialsAuth",
+        "tags": [
+          "API Gateway"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "token"
+                      ],
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/login/anonymous": {
+      "post": {
+        "description": "Anonymous authentication",
+        "operationId": "anonymousAuth",
+        "tags": [
+          "API Gateway"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "token"
+                      ],
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/me": {
+      "get": {
+        "description": "Retrieve current authenticated user",
+        "operationId": "getMyProfile",
+        "tags": [
+          "API Gateway"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/{contactId}": {
+      "get": {
+        "description": "Retrieve some public contact",
+        "operationId": "getThisContact",
+        "tags": [
+          "API Gateway"
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "Contact ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/signup": {
+      "post": {
+        "description": "Signup",
+        "operationId": "signup",
+        "tags": [
+          "API Gateway"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "email",
+                  "password",
+                  "firstName",
+                  "lastName"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/logout": {
+      "post": {
+        "description": "Log out",
+        "operationId": "logout",
+        "tags": [
+          "API Gateway"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          }
+        }
+      }
+    },
+    "/v2/{subjectType}/{subjectId}/permissions": {
+      "post": {
+        "description": "Share the object with someone via a given role or specific permission",
+        "operationId": "share",
+        "tags": [
+          "permissions"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPermissions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Retrieve permissions for the 'subjectType' 'subjectId'",
+        "operationId": "getPermissions",
+        "tags": [
+          "permissions"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "result"
+                  ],
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/PermissionsList"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/{subjectType}/{subjectId}/permissions/{userId}": {
+      "delete": {
+        "description": "Revoke all role & permissions from a user",
+        "operationId": "revokePermissions",
+        "tags": [
+          "permissions"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The target user id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/{subjectType}/{subjectId}/apikeys": {
+      "get": {
+        "description": "List api keys",
+        "operationId": "listApiKeys",
+        "tags": [
+          "ApiKeys"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKey"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create an api key",
+        "operationId": "createApiKey",
+        "tags": [
+          "ApiKeys"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "rules"
+                ],
+                "properties": {
+                  "rules": {
+                    "$ref": "#/components/schemas/ApiKeyRules"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKey"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/{subjectType}/{subjectId}/apikeys/{apiKey}": {
+      "put": {
+        "description": "Update an api key",
+        "operationId": "updateApiKey",
+        "tags": [
+          "ApiKeys"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apiKey",
+            "in": "path",
+            "description": "The target api key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "rules"
+                ],
+                "properties": {
+                  "rules": {
+                    "$ref": "#/components/schemas/ApiKeyRules"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKey"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an api key",
+        "operationId": "deleteApiKey",
+        "tags": [
+          "ApiKeys"
+        ],
+        "parameters": [
+          {
+            "name": "subjectType",
+            "in": "path",
+            "description": "The target subject type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspaces",
+                "pages"
+              ]
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "path",
+            "description": "The target subject id (i.e workspaceId if subjectType is 'workspace')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apiKey",
+            "in": "path",
+            "description": "The target api key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiKey": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/events": {
+      "get": {
+        "description": "Retrieve events filtered with any JSON path specified in GET parameters. Can be called as websocket.",
+        "operationId": "eventsLongpolling",
+        "tags": [
+          "Prisme.ai Events"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "ID of workspace to listen to",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Search these keywords",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beforeId",
+            "in": "query",
+            "description": "Match every events created before given eventId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "example": "message,notification",
+            "description": "Comma separated list of listened event types ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "afterDate",
+            "in": "query",
+            "description": "Retrieve events created after this ISO8601 formatted date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beforeDate",
+            "in": "query",
+            "description": "Retrieve events created before this ISO8601 formatted date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "events": {
+                          "$ref": "#/components/schemas/AllEventResponses"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Emit a new event in this workspace",
+        "operationId": "sendWorkspaceEvent",
+        "tags": [
+          "Prisme.ai Events"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "ID of workspace to listen to",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "events"
+                ],
+                "properties": {
+                  "events": {
+                    "$ref": "#/components/schemas/AllEventRequests"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllEventResponses"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/events/values": {
+      "get": {
+        "description": "Retrieve distinct values for one or many fields",
+        "operationId": "eventsValues",
+        "tags": [
+          "Prisme.ai Events"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "ID of workspace to listen to",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Search these keywords",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beforeId",
+            "in": "query",
+            "description": "Match every events created before given eventId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "example": "message,notification",
+            "description": "Comma separated list of listened event types ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "afterDate",
+            "in": "query",
+            "description": "Retrieve events created after this ISO8601 formatted date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beforeDate",
+            "in": "query",
+            "description": "Retrieve events created before this ISO8601 formatted date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": true,
+            "example": "type,source.appSlug",
+            "description": "Comma separated list of event fields we want to retrieve distinct values",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "result"
+                  ],
+                  "properties": {
+                    "result": {
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "value",
+                            "count"
+                          ],
+                          "properties": {
+                            "value": {},
+                            "count": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/webhooks/{automationSlug}": {
+      "post": {
+        "description": "Trigger some automation from HTTP. GET/POST/PUT/PATCH/DELETE methods can all be used",
+        "operationId": "automationWebhook",
+        "tags": [
+          "Prisme.ai Runtime"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug we will trigger",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyValue"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Trigger some automation from HTTP. GET/POST/PUT/PATCH/DELETE methods can all be used",
+        "operationId": "automationWebhook",
+        "tags": [
+          "Prisme.ai Runtime"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug we will trigger",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyValue"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Trigger some automation from HTTP. GET/POST/PUT/PATCH/DELETE methods can all be used",
+        "operationId": "automationWebhook",
+        "tags": [
+          "Prisme.ai Runtime"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug we will trigger",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyValue"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Trigger some automation from HTTP. GET/POST/PUT/PATCH/DELETE methods can all be used",
+        "operationId": "automationWebhook",
+        "tags": [
+          "Prisme.ai Runtime"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug we will trigger",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyValue"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Trigger some automation from HTTP. GET/POST/PUT/PATCH/DELETE methods can all be used",
+        "operationId": "automationWebhook",
+        "tags": [
+          "Prisme.ai Runtime"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug we will trigger",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "style": "form",
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "Entire body will be passed as a payload to the triggered automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyValue"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces": {
+      "get": {
+        "description": "Fetch my workspaces (those I own and shared ones)",
+        "operationId": "getWorkspaces",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new workspace",
+        "operationId": "createWorkspace",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workspace"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workspace"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}": {
+      "get": {
+        "description": "Fetch a workspace",
+        "operationId": "getWorkspace",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workspace"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a workspace",
+        "operationId": "updateWorkspace",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workspace"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workspace"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a workspace",
+        "operationId": "deleteWorkspace",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/automations": {
+      "post": {
+        "description": "Create a new automation",
+        "operationId": "createAutomation",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Automation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/automations/{automationSlug}": {
+      "get": {
+        "description": "Fetch an automation",
+        "operationId": "getAutomation",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Automation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update an automation",
+        "operationId": "updateAutomation",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Automation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Automation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an automation",
+        "operationId": "deleteAutomation",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "automationSlug",
+            "in": "path",
+            "description": "Automation slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/pages": {
+      "post": {
+        "description": "Create a new page",
+        "operationId": "createPage",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "List workspace pages",
+        "operationId": "listPages",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Page"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/pages/{id}": {
+      "get": {
+        "description": "Fetch a page",
+        "operationId": "getPage",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Page id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a page",
+        "operationId": "updatePage",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Page id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a Page",
+        "operationId": "deletePage",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Page id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/pages/{slug}": {
+      "get": {
+        "description": "Fetch a page by slug",
+        "operationId": "getPageBySlug",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/apps": {
+      "get": {
+        "description": "Search for an app inside the app store (or retrieve full app store)",
+        "operationId": "searchApps",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Search these keywords",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspaceId",
+            "in": "query",
+            "description": "Find apps published from this workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/App"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Publish a workspace as a new app version",
+        "operationId": "publishApp",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/apps/{appSlug}": {
+      "get": {
+        "description": "Fetch an app DSUL",
+        "operationId": "getApp",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "appSlug",
+            "in": "path",
+            "description": "App unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "App version",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DSUL"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an app",
+        "operationId": "deleteApp",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "appSlug",
+            "in": "path",
+            "description": "App unique id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/apps": {
+      "post": {
+        "description": "Install a new app",
+        "operationId": "installAppInstance",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppInstance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get installed aps",
+        "operationId": "listAppInstances",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstanceDetailedList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/apps/{slug}/config": {
+      "get": {
+        "description": "Get the config of an appInstance",
+        "operationId": "getAppInstanceConfig",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "App instance slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update the config of an appInstance",
+        "operationId": "updateAppInstanceConfig",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "App instance slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/apps/{slug}": {
+      "get": {
+        "description": "Fetch this appInstance",
+        "operationId": "getAppInstance",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "App instance slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Configure an app",
+        "operationId": "configureAppInstance",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "App instance slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppInstancePatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Uninstall an app",
+        "operationId": "uninstallAppInstance",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "App instance slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/files/{id}": {
+      "get": {
+        "description": "Get a file metadata",
+        "operationId": "getFile",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "File id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a file",
+        "operationId": "deleteFile",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "File id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Object not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/workspaces/{workspaceId}/files/": {
+      "post": {
+        "description": "Upload one or more file(s)",
+        "operationId": "uploadFile",
+        "tags": [
+          "Prisme.ai Workspaces"
+        ],
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "description": "Workspace id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/File"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadParametersError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "AuthenticationError",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "CookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid"
+      },
+      "SessionHeaderAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-prismeai-session-token"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Prismeai-API-Key"
+      }
+    },
+    "schemas": {
+      "AnyValue": {},
+      "Object": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique id"
+          }
+        }
+      },
+      "Contact": {
+        "allOf": [
+          {
+            "required": [
+              "firstName"
+            ],
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string",
+                "description": "Name"
+              },
+              "lastName": {
+                "type": "string",
+                "description": "Name"
+              },
+              "photo": {
+                "type": "string",
+                "description": "Profile picture URL"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Object"
+          }
+        ]
+      },
+      "User": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "foo@prisme.ai"
+              },
+              "authData": {
+                "type": "object",
+                "properties": {
+                  "facebook": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Contact"
+          }
+        ]
+      },
+      "App": {
+        "type": "object",
+        "required": [
+          "workspaceId"
+        ],
+        "properties": {
+          "workspaceId": {
+            "type": "string"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "photo": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "AppInstance": {
+        "type": "object",
+        "required": [
+          "appSlug"
+        ],
+        "properties": {
+          "appSlug": {
+            "type": "string",
+            "description": "App unique id"
+          },
+          "appName": {
+            "type": "string",
+            "description": "App name"
+          },
+          "appVersion": {
+            "type": "string",
+            "description": "Defaults to the latest known app version"
+          },
+          "config": {},
+          "slug": {
+            "type": "string",
+            "description": "Unique & human readable id across current workspace's appInstances, which will be used to call this app automations"
+          }
+        }
+      },
+      "AppDetails": {
+        "type": "object",
+        "required": [
+          "automations",
+          "widgets"
+        ],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/Config"
+          },
+          "widgets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "slug"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "name": {
+                  "$ref": "#/components/schemas/LocalizedText"
+                },
+                "description": {
+                  "$ref": "#/components/schemas/LocalizedText"
+                },
+                "arguments": {
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/TypedArgument"
+                  }
+                }
+              }
+            }
+          },
+          "automations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "slug",
+                "name"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "$ref": "#/components/schemas/LocalizedText"
+                },
+                "description": {
+                  "$ref": "#/components/schemas/LocalizedText"
+                }
+              }
+            }
+          },
+          "photo": {
+            "type": "string"
+          }
+        }
+      },
+      "AppInstancePatch": {
+        "type": "object",
+        "properties": {
+          "appSlug": {
+            "type": "string",
+            "description": "App unique id"
+          },
+          "appName": {
+            "type": "string",
+            "description": "App name"
+          },
+          "appVersion": {
+            "type": "string",
+            "description": "Defaults to the latest known app version"
+          },
+          "config": {},
+          "slug": {
+            "type": "string",
+            "description": "Unique & human readable id across current workspace's appInstances, which will be used to call this app automations"
+          }
+        }
+      },
+      "DetailedAppInstance": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AppInstance"
+          },
+          {
+            "$ref": "#/components/schemas/AppDetails"
+          }
+        ]
+      },
+      "AppInstanceDetailedList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/DetailedAppInstance"
+        }
+      },
+      "Workspace": {
+        "$ref": "#/components/schemas/DSUL"
+      },
+      "DSUL": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "photo": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          },
+          "imports": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/AppInstance"
+            }
+          },
+          "config": {
+            "$ref": "#/components/schemas/Config"
+          },
+          "automations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Automation"
+            }
+          },
+          "widgets": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Widget"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Config": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TypedArgument"
+            }
+          },
+          "widget": {
+            "type": "string"
+          },
+          "value": {}
+        }
+      },
+      "When": {
+        "type": "object",
+        "anyOf": [
+          {
+            "required": [
+              "events"
+            ]
+          },
+          {
+            "required": [
+              "dates"
+            ]
+          },
+          {
+            "required": [
+              "endpoint"
+            ]
+          }
+        ],
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "prismeaiMessenger.event"
+            ]
+          },
+          "dates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "2021-12-25T00:00",
+              "* * 1 * *"
+            ]
+          },
+          "endpoint": {
+            "oneOf": [
+              {
+                "type": "boolean",
+                "example": "Set to true in order to activate HTTP endpoint. Slug will be trigger name by default"
+              },
+              {
+                "type": "string",
+                "example": "Slug name"
+              }
+            ]
+          }
+        }
+      },
+      "LocalizedText": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "fr": "Bonjour",
+              "en": "Hello"
+            }
+          },
+          {
+            "type": "string",
+            "example": "Bonjour"
+          }
+        ]
+      },
+      "TypedArgument": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "object",
+              "array",
+              "boolean"
+            ]
+          },
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "items": {
+            "$ref": "#/components/schemas/TypedArgument"
+          },
+          "ui:widget": {
+            "type": "string"
+          },
+          "ui:options": {
+            "type": "object"
+          }
+        }
+      },
+      "InstructionList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Instruction"
+        }
+      },
+      "Automation": {
+        "type": "object",
+        "required": [
+          "do",
+          "name"
+        ],
+        "description": "Full description at (TODO swagger url)",
+        "additionalProperties": false,
+        "properties": {
+          "when": {
+            "$ref": "#/components/schemas/When"
+          },
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "arguments": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TypedArgument"
+            }
+          },
+          "do": {
+            "$ref": "#/components/schemas/InstructionList"
+          },
+          "output": {
+            "description": "Automation result expression. Might be a variable reference, an object/array with variables inside ...",
+            "example": "{{result}}"
+          },
+          "private": {
+            "description": "Set this to true if you don't want your automation to be accessible outside of your app. Default is false.",
+            "example": false
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Set this to true if you want to turn off this automation.",
+            "example": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Unique & human readable id across current workspace's automations"
+          }
+        }
+      },
+      "Widget": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "description": "Widget",
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "name": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "required": [
+          "name",
+          "widgets"
+        ],
+        "description": "Page",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "description": {
+            "$ref": "#/components/schemas/LocalizedText"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "widgets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "height": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/PermissionsMap"
+          }
+        }
+      },
+      "DetailedPage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Page"
+          },
+          {
+            "properties": {
+              "widgets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "appInstance": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "File": {
+        "type": "object",
+        "required": [
+          "name",
+          "url",
+          "contentType"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
+      "Emit": {
+        "type": "object",
+        "required": [
+          "emit"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "emit": {
+            "type": "object",
+            "required": [
+              "event"
+            ],
+            "properties": {
+              "event": {
+                "type": "string",
+                "example": "prismeaiMessenger.message"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      },
+      "Wait": {
+        "type": "object",
+        "required": [
+          "wait"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "wait": {
+            "type": "object",
+            "required": [
+              "oneOf"
+            ],
+            "properties": {
+              "oneOf": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "event"
+                  ],
+                  "properties": {
+                    "event": {
+                      "type": "string",
+                      "example": "prismeaiMessenger.message"
+                    },
+                    "filters": {
+                      "type": "object",
+                      "description": "Only match the next event fulfilling these filters. Multiple filters will be joined with an 'AND' operator ",
+                      "additionalProperties": true,
+                      "example": {
+                        "automationSlug": "someId",
+                        "someObjectField.someNestedField": "foo"
+                      }
+                    },
+                    "cancelTriggers": {
+                      "type": "boolean",
+                      "description": "If true, do not send this event to the the usual triggers"
+                    }
+                  }
+                }
+              },
+              "timeout": {
+                "type": "number",
+                "description": "After N seconds, timeout & outputs an empty result. Defaults to 20"
+              },
+              "output": {
+                "type": "string",
+                "description": "Will save the caught event inside this variable",
+                "example": "nameOfResultVariable"
+              }
+            }
+          }
+        }
+      },
+      "VariableLifespan": {
+        "description": "Rules defining when a variable should be automatically removed",
+        "properties": {
+          "messages": {
+            "type": "number",
+            "description": "Number of user messages sent before automatically removing this variable"
+          },
+          "seconds": {
+            "type": "number",
+            "description": "Number of seconds elapsed since this variable initialization, before automatically removing it"
+          }
+        }
+      },
+      "Set": {
+        "type": "object",
+        "required": [
+          "set"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "set": {
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Variable name, might be \"foo\", \"session.sessionScopedFoo\", \"global.globalScopedFoo\", \"user.userScopedFoo\", ..."
+              },
+              "value": {
+                "$ref": "#/components/schemas/AnyValue",
+                "description": "variable value"
+              },
+              "lifespan": {
+                "type": "object",
+                "$ref": "#/components/schemas/VariableLifespan"
+              }
+            }
+          }
+        }
+      },
+      "Delete": {
+        "type": "object",
+        "required": [
+          "delete"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "delete": {
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Variable name to remove"
+              }
+            }
+          }
+        }
+      },
+      "Conditions": {
+        "type": "object",
+        "required": [
+          "default"
+        ],
+        "properties": {
+          "default": {
+            "$ref": "#/components/schemas/InstructionList"
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/InstructionList"
+        },
+        "minProperties": 2
+      },
+      "Repeat": {
+        "type": "object",
+        "required": [
+          "repeat"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "repeat": {
+            "oneOf": [
+              {
+                "required": [
+                  "on",
+                  "do"
+                ]
+              },
+              {
+                "required": [
+                  "until",
+                  "do"
+                ]
+              }
+            ],
+            "description": "One of \"on\" or \"until\" is required",
+            "properties": {
+              "on": {
+                "type": "string"
+              },
+              "until": {
+                "type": "number"
+              },
+              "do": {
+                "$ref": "#/components/schemas/InstructionList"
+              }
+            }
+          }
+        }
+      },
+      "All": {
+        "type": "object",
+        "required": [
+          "all"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "all": {
+            "description": "Execute each instruction in parallel. Pause current automation execution until all instructions are processed.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Instruction"
+            }
+          }
+        }
+      },
+      "Break": {
+        "type": "object",
+        "required": [
+          "break"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "break": {
+            "description": "Stop current automation execution. Have one option that allow a break to break all parent automations.",
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "automation"
+                ],
+                "description": "The scope argument defines in which scope the break will take effect. It only breaks the current automation by default, it can also break all parent automations. More options might become available in the future."
+              }
+            }
+          }
+        }
+      },
+      "Fetch": {
+        "type": "object",
+        "required": [
+          "fetch"
+        ],
+        "maxProperties": 1,
+        "properties": {
+          "fetch": {
+            "description": "Send an HTTP request",
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "get",
+                  "post",
+                  "put",
+                  "patch",
+                  "delete"
+                ]
+              },
+              "headers": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "body": {
+                "type": "object",
+                "description": "HTTP request body",
+                "additionalProperties": true
+              },
+              "output": {
+                "type": "string",
+                "description": "Name of the variable which will hold the result"
+              }
+            }
+          }
+        }
+      },
+      "Instruction": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/Emit"
+          },
+          {
+            "$ref": "#/components/schemas/Wait"
+          },
+          {
+            "$ref": "#/components/schemas/Set"
+          },
+          {
+            "$ref": "#/components/schemas/Delete"
+          },
+          {
+            "$ref": "#/components/schemas/Conditions"
+          },
+          {
+            "$ref": "#/components/schemas/Repeat"
+          },
+          {
+            "$ref": "#/components/schemas/All"
+          },
+          {
+            "$ref": "#/components/schemas/Break"
+          },
+          {
+            "$ref": "#/components/schemas/Fetch"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "minProperties": 1,
+            "maxProperties": 1
+          }
+        ]
+      },
+      "AutomationResult": {
+        "type": "object",
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "output": {
+            "$ref": "#/components/schemas/AnyValue"
+          }
+        }
+      },
+      "PermissionsList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserPermissions"
+        },
+        "example": [
+          {
+            "email": "admin@prisme.ai",
+            "role": "admin"
+          },
+          {
+            "email": "readonly@prisme.ai",
+            "policies": {
+              "read": true
+            }
+          },
+          {
+            "public": true,
+            "policies": {
+              "read": true
+            }
+          }
+        ]
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "owner",
+          "editor"
+        ]
+      },
+      "Policies": {
+        "properties": {
+          "read": {
+            "type": "boolean"
+          },
+          "write": {
+            "type": "boolean"
+          },
+          "update": {
+            "type": "boolean"
+          },
+          "create": {
+            "type": "boolean"
+          },
+          "manage_permissions": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserPermissions": {
+        "type": "object",
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "email"
+            ]
+          },
+          {
+            "required": [
+              "public"
+            ]
+          }
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "policies": {
+            "$ref": "#/components/schemas/Policies"
+          }
+        }
+      },
+      "PermissionsMap": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "policies": {
+              "$ref": "#/components/schemas/Policies"
+            }
+          }
+        }
+      },
+      "ApiKeyRules": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "allowedEvent1",
+              "allowedEvent2"
+            ]
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "apiKey",
+          "rules",
+          "subjectType",
+          "subjectId"
+        ],
+        "properties": {
+          "apiKey": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ApiKeyRules"
+          }
+        }
+      },
+      "PrismeEvent": {
+        "type": "object",
+        "required": [
+          "type",
+          "source",
+          "createdAt",
+          "id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apps.someApp.someCustomEvent"
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "correlationId",
+              "host"
+            ],
+            "properties": {
+              "appSlug": {
+                "type": "string"
+              },
+              "appInstanceFullSlug": {
+                "type": "string"
+              },
+              "appInstanceDepth": {
+                "type": "number"
+              },
+              "automationSlug": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              },
+              "host": {
+                "type": "object",
+                "required": [
+                  "service"
+                ],
+                "properties": {
+                  "service": {
+                    "type": "string"
+                  }
+                }
+              },
+              "correlationId": {
+                "type": "string"
+              }
+            }
+          },
+          "payload": {
+            "$ref": "#/components/schemas/AnyValue"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "$ref": "#/components/schemas/AnyValue"
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "warning",
+                  "error",
+                  "fatal"
+                ],
+                "example": "warning"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Creation date (ISO8601)"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "AllEventRequests": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/GenericErrorEvent"
+            },
+            {
+              "$ref": "#/components/schemas/FailedLogin"
+            },
+            {
+              "$ref": "#/components/schemas/SucceededLogin"
+            },
+            {
+              "$ref": "#/components/schemas/ExecutedAutomation"
+            },
+            {
+              "$ref": "#/components/schemas/UpdatedContexts"
+            },
+            {
+              "$ref": "#/components/schemas/CreatedWorkspace"
+            },
+            {
+              "$ref": "#/components/schemas/UpdatedWorkspace"
+            },
+            {
+              "$ref": "#/components/schemas/DeletedWorkspace"
+            },
+            {
+              "$ref": "#/components/schemas/InstalledAppInstance"
+            },
+            {
+              "$ref": "#/components/schemas/UninstalledAppInstance"
+            },
+            {
+              "$ref": "#/components/schemas/ConfiguredAppInstance"
+            },
+            {
+              "$ref": "#/components/schemas/CreatedAutomation"
+            },
+            {
+              "$ref": "#/components/schemas/UpdatedAutomation"
+            },
+            {
+              "$ref": "#/components/schemas/DeletedAutomation"
+            },
+            {
+              "$ref": "#/components/schemas/CreatedPage"
+            },
+            {
+              "$ref": "#/components/schemas/UpdatedPage"
+            },
+            {
+              "$ref": "#/components/schemas/DeletedPage"
+            },
+            {
+              "$ref": "#/components/schemas/AppEvent"
+            }
+          ]
+        }
+      },
+      "AllEventResponses": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/PrismeEvent"
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/GenericErrorEvent"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/FailedLogin"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/SucceededLogin"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/ExecutedAutomation"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdatedContexts"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/CreatedWorkspace"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdatedWorkspace"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/DeletedWorkspace"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/AppInstance"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfiguredAppInstance"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/InstalledAppInstance"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/UninstalledAppInstance"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/CreatedAutomation"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdatedAutomation"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/DeletedAutomation"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/CreatedPage"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdatedPage"
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PrismeEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/DeletedPage"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "GenericErrorEvent": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "error"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "CreatedApiKey": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apikeys.created",
+            "enum": [
+              "apikeys.created"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "apiKey",
+              "subjectType",
+              "subjectId",
+              "rules"
+            ],
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "subjectType": {
+                "type": "string",
+                "enum": [
+                  "workspaces",
+                  "pages"
+                ]
+              },
+              "subjectId": {
+                "type": "string"
+              },
+              "rules": {
+                "$ref": "#/components/schemas/ApiKeyRules"
+              }
+            }
+          }
+        }
+      },
+      "UpdatedApiKey": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apikeys.updated",
+            "enum": [
+              "apikeys.updated"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "apiKey",
+              "subjectType",
+              "subjectId",
+              "rules"
+            ],
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "subjectType": {
+                "type": "string",
+                "enum": [
+                  "workspaces",
+                  "pages"
+                ]
+              },
+              "subjectId": {
+                "type": "string"
+              },
+              "rules": {
+                "$ref": "#/components/schemas/ApiKeyRules"
+              }
+            }
+          }
+        }
+      },
+      "DeletedApiKey": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apikeys.deleted",
+            "enum": [
+              "apikeys.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "apiKey",
+              "subjectType",
+              "subjectId"
+            ],
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "subjectType": {
+                "type": "string",
+                "enum": [
+                  "workspaces",
+                  "pages"
+                ]
+              },
+              "subjectId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "FailedLogin": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "gateway.login.failed",
+            "enum": [
+              "gateway.login.failed"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "ip",
+              "email"
+            ],
+            "properties": {
+              "ip": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "SucceededLogin": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "gateway.login.succeeded",
+            "enum": [
+              "gateway.login.succeeded"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "ip",
+              "email",
+              "id"
+            ],
+            "properties": {
+              "ip": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "PublishedApp": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apps.published",
+            "enum": [
+              "apps.published"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "app"
+            ],
+            "properties": {
+              "app": {
+                "$ref": "#/components/schemas/App"
+              }
+            }
+          }
+        }
+      },
+      "DeletedApp": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "apps.deleted",
+            "enum": [
+              "apps.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "appSlug"
+            ],
+            "properties": {
+              "appSlug": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CreatedWorkspace": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.created",
+            "enum": [
+              "workspaces.created"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "workspace"
+            ],
+            "properties": {
+              "workspace": {
+                "$ref": "#/components/schemas/Workspace"
+              }
+            }
+          }
+        }
+      },
+      "DeletedWorkspace": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.deleted",
+            "enum": [
+              "workspaces.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "workspaceId"
+            ],
+            "properties": {
+              "workspaceId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "UpdatedWorkspace": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.updated",
+            "enum": [
+              "workspaces.updated"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "workspace"
+            ],
+            "properties": {
+              "workspace": {
+                "$ref": "#/components/schemas/Workspace"
+              }
+            }
+          }
+        }
+      },
+      "ConfiguredWorkspace": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.configured",
+            "enum": [
+              "workspaces.configured"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "config"
+            ],
+            "properties": {
+              "config": {
+                "$ref": "#/components/schemas/Config"
+              }
+            }
+          }
+        }
+      },
+      "WorkspacePermissionsShared": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.permissions.shared",
+            "enum": [
+              "workspaces.permissions.shared"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "subjectId",
+              "permissions"
+            ],
+            "properties": {
+              "subjectId": {
+                "type": "string"
+              },
+              "permissions": {
+                "$ref": "#/components/schemas/UserPermissions"
+              }
+            }
+          }
+        }
+      },
+      "WorkspacePermissionsDeleted": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.permissions.deleted",
+            "enum": [
+              "workspaces.permissions.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "subjectId",
+              "userId"
+            ],
+            "properties": {
+              "subjectId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "UninstalledAppInstance": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.apps.uninstalled",
+            "enum": [
+              "workspaces.apps.uninstalled"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "appInstance",
+              "slug"
+            ],
+            "properties": {
+              "appInstance": {
+                "$ref": "#/components/schemas/AppInstance"
+              },
+              "slug": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "InstalledAppInstance": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.apps.installed",
+            "enum": [
+              "workspaces.apps.installed"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "appInstance",
+              "slug"
+            ],
+            "properties": {
+              "appInstance": {
+                "$ref": "#/components/schemas/AppInstance"
+              },
+              "slug": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ConfiguredAppInstance": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.apps.configured",
+            "enum": [
+              "workspaces.apps.configured"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "appInstance",
+              "slug"
+            ],
+            "properties": {
+              "appInstance": {
+                "$ref": "#/components/schemas/AppInstance"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "oldSlug": {
+                "type": "string",
+                "description": "Filled with the previous appInstance slug when renamed"
+              }
+            }
+          }
+        }
+      },
+      "CreatedAutomation": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.automations.created",
+            "enum": [
+              "workspaces.automations.created"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "automation",
+              "slug"
+            ],
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "automation": {
+                "$ref": "#/components/schemas/Automation"
+              }
+            }
+          }
+        }
+      },
+      "UpdatedAutomation": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.automations.updated",
+            "enum": [
+              "workspaces.automations.updated"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "automation",
+              "slug"
+            ],
+            "properties": {
+              "automation": {
+                "$ref": "#/components/schemas/Automation"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "oldSlug": {
+                "type": "string",
+                "description": "Filled with the previous automation slug when renamed"
+              }
+            }
+          }
+        }
+      },
+      "DeletedAutomation": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.automations.deleted",
+            "enum": [
+              "workspaces.automations.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "automation"
+            ],
+            "properties": {
+              "automation": {
+                "type": "object",
+                "required": [
+                  "slug",
+                  "name"
+                ],
+                "properties": {
+                  "slug": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/LocalizedText"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreatedPage": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.pages.created",
+            "enum": [
+              "workspaces.pages.created"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "page"
+            ],
+            "properties": {
+              "page": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        }
+      },
+      "UpdatedPage": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.pages.updated",
+            "enum": [
+              "workspaces.pages.updated"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "page"
+            ],
+            "properties": {
+              "page": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        }
+      },
+      "DeletedPage": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.pages.deleted",
+            "enum": [
+              "workspaces.pages.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "page"
+            ],
+            "properties": {
+              "page": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        }
+      },
+      "PagePermissionsShared": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.pages.permissions.shared",
+            "enum": [
+              "workspaces.pages.permissions.shared"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "subjectId",
+              "permissions"
+            ],
+            "properties": {
+              "subjectId": {
+                "type": "string"
+              },
+              "permissions": {
+                "$ref": "#/components/schemas/UserPermissions"
+              }
+            }
+          }
+        }
+      },
+      "PagePermissionsDeleted": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "workspaces.pages.permissions.deleted",
+            "enum": [
+              "workspaces.pages.permissions.deleted"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "subjectId",
+              "userId"
+            ],
+            "properties": {
+              "subjectId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ExecutedAutomation": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "runtime.automations.executed",
+            "enum": [
+              "runtime.automations.executed"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "slug",
+              "payload",
+              "output",
+              "duration"
+            ],
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object"
+              },
+              "output": {
+                "$ref": "#/components/schemas/AnyValue"
+              },
+              "duration": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "TriggeredWebhook": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "runtime.webhooks.triggered",
+            "enum": [
+              "runtime.webhooks.triggered"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "workspaceId",
+              "automationSlug",
+              "query",
+              "method",
+              "headers",
+              "body"
+            ],
+            "properties": {
+              "workspaceId": {
+                "type": "string"
+              },
+              "automationSlug": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "example": "post"
+              },
+              "headers": {
+                "type": "object"
+              },
+              "query": {
+                "type": "object"
+              },
+              "body": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "UpdatedContexts": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "runtime.contexts.updated",
+            "enum": [
+              "runtime.contexts.updated"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "contexts"
+            ],
+            "properties": {
+              "contexts": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "PendingWait": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "runtime.waits.pending",
+            "enum": [
+              "runtime.waits.pending"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "id",
+              "expiresAt",
+              "wait"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "expiresAt": {
+                "type": "number"
+              },
+              "wait": {
+                "$ref": "#/components/schemas/Wait/properties/wait"
+              }
+            }
+          }
+        }
+      },
+      "FulfilledWait": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "runtime.waits.fulfilled.{{id}}",
+            "enum": [
+              "runtime.waits.fulfilled.{{id}}"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "wait",
+              "event"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "event": {
+                "$ref": "#/components/schemas/PrismeEvent"
+              }
+            }
+          }
+        }
+      },
+      "AppEvent": {
+        "type": "object",
+        "required": [
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "someCustomEvent"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/AnyValue"
+          }
+        }
+      },
+      "GenericError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "ObjectNotFound"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "$ref": "#/components/schemas/AnyValue"
+          }
+        }
+      },
+      "ObjectNotFoundError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "ObjectNotFound"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "BadParametersError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "BadParameters"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "AuthenticationError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "AuthenticationError"
+          },
+          "message": {
+            "type": "string",
+            "example": "Unauthenticated"
+          }
+        }
+      },
+      "ForbiddenError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "ForbiddenError"
+          },
+          "message": {
+            "type": "string",
+            "example": "Forbidden"
+          }
+        }
+      }
+    }
+  }
+}

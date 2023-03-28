@@ -1,0 +1,1202 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Time In Transit",
+    "description": "The Time In Transit API is used to determine the length of time required to ship a particular package, and compare  delivery times for various UPS services.",
+    "termsOfService": "https://www.ups.com/upsdeveloperkit/assets/html/serviceAgreement.html",
+    "version": "1.0.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about TimeInTransit , Error Codes and Appendix",
+    "url": "https://www.ups.com/upsdeveloperkit/assets/html/TntStatic.html"
+  },
+  "servers": [
+    {
+      "url": "https://wwwcie.ups.com/rest"
+    },
+    {
+      "url": "https://onlinetools.ups.com/rest"
+    }
+  ],
+  "paths": {
+    "/TimeInTransit": {
+      "post": {
+        "summary": "Get Time and Transit Response",
+        "operationId": "TimeInTransit",
+        "requestBody": {
+          "description": "Get Time and Transit Response",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TIMEINTRANSITRequestWrapper"
+              },
+              "examples": {
+                "json": {
+                  "summary": "A sample JSON request",
+                  "value": "{\r\n \"TimeInTransitRequest\": {\r\n \"Request\": {\r\n \"RequestOption\": \"TNT\",\r\n \"TransactionReference\": {\r\n \"CustomerContext\": \"\",\r\n \"TransactionIdentifier\": \"\"\r\n }\r\n },\r\n \"ShipFrom\": {\r\n \"Address\": {\r\n \"StateProvinceCode\": \"StateProvinceCode\",\r\n \"CountryCode\": \"CountryCode\",\r\n \"PostalCode\": \"PostalCode\"\r\n }\r\n },\r\n \"ShipTo\": {\r\n \"Address\": {\r\n \"StateProvinceCode\": \"StateProvinceCode\",\r\n \"CountryCode\": \"CountryCode\",\r\n \"PostalCode\": \"PostalCode\"\r\n }\r\n },\r\n \"Pickup\": {\r\n \"Date\": \"Date\"\r\n },\r\n \"ShipmentWeight\": {\r\n \"UnitOfMeasurement\": {\r\n \"Code\": \"Code\",\r\n \"Description\": \"Description\"\r\n },\r\n \"Weight\": \"Weight\"\r\n },\r\n \"MaximumListSize\": \"MaximumListSize\"\r\n }\r\n}\r\n"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/TIMEINTRANSITRequestWrapper"
+              },
+              "examples": {
+                "xml": {
+                  "summary": "A sample XML request",
+                  "value": "<TimeInTransitRequest xmlns=\"http://www.ups.com/XMLSchema/XOLTWS/tnt/v1.0\" \r\nxmlns:common=\"http://www.ups.com/XMLSchema/XOLTWS/Common/v1.0\" \r\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\nxsi:schemaLocation=\"http://www.ups.com/XMLSchema/XOLTWS/tnt/v1.0\">\r\n<common:Request>\r\n<common:RequestOption>TNT</common:RequestOption>\r\n<common:TransactionReference>\r\n<common:CustomerContext/>\r\n<common:TransactionIdentifier/>\r\n</common:TransactionReference>\r\n</common:Request>\r\n<ShipFrom>\r\n<Address>\r\n<StateProvinceCode>StateProvinceCode</StateProvinceCode>\r\n<CountryCode>CountryCode</CountryCode>\r\n<PostalCode>PostalCode</PostalCode>\r\n</Address>\r\n</ShipFrom>\r\n<ShipTo>\r\n<Address>\r\n<StateProvinceCode>StateProvinceCode</StateProvinceCode>\r\n<CountryCode>CountryCode</CountryCode>\r\n<PostalCode>PostalCode</PostalCode>\r\n</Address>\r\n</ShipTo>\r\n<Pickup>\r\n<Date>Date</Date>\r\n</Pickup>\r\n<ShipmentWeight>\r\n<UnitOfMeasurement>\r\n<Code>Code</Code>\r\n<Description>Description</Description>\r\n</UnitOfMeasurement>\r\n<Weight>Weight</Weight>\r\n</ShipmentWeight>\r\n<MaximumListSize>MaximumListSize</MaximumListSize>\r\n</TimeInTransitRequest>\r\n"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TIMEINTRANSITResponseWrapper"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TIMEINTRANSITResponseWrapper"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TIMEINTRANSITRequestWrapper": {
+        "xml": {
+          "name": "TimeInTransitRequest"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "TimeInTransitRequest"
+        ],
+        "properties": {
+          "TimeInTransitRequest": {
+            "$ref": "#/components/schemas/TimeInTransitRequest"
+          }
+        }
+      },
+      "TIMEINTRANSITResponseWrapper": {
+        "xml": {
+          "name": "TimeInTransitResponse"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "TimeInTransitResponse"
+        ],
+        "properties": {
+          "TimeInTransitResponse": {
+            "$ref": "#/components/schemas/TimeInTransitResponse"
+          }
+        }
+      },
+      "TimeInTransitRequest": {
+        "type": "object",
+        "required": [
+          "ShipFrom",
+          "Pickup",
+          "Request",
+          "ShipTo"
+        ],
+        "properties": {
+          "Request": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_Request"
+          },
+          "ShipFrom": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_ShipFrom"
+          },
+          "ShipTo": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_ShipTo"
+          },
+          "Pickup": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_Pickup"
+          },
+          "ShipmentWeight": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_ShipmentWeight"
+          },
+          "TotalPackagesInShipment": {
+            "description": "Total number of packages in shipment.   Default value is 1.",
+            "type": "string"
+          },
+          "InvoiceLineTotal": {
+            "$ref": "#/components/schemas/TimeInTransitRequest_InvoiceLineTotal"
+          },
+          "DocumentsOnlyIndicator": {
+            "description": "If DocumentsOnlyIndicator is present then Document value \"02\" will be passed to downsteam systems.",
+            "type": "string"
+          },
+          "BillType": {
+            "description": "Valid Values:\n04 - WWEF Pallet\n07 - Domestic Pallet\nThis field needs to be populated when UPS WorldWide Express Freight Shipment and UPS Worldwide Express Freight Midday Service is needed to be returned in response. The valid value is 04.\nIf BillType field is populated and DocumentsOnlyIndicator is present, BillType field value would gain precedence over DocumentsOnlyIndicator and 04 value will be passed to downsteam systems. \nIf BillType is not populated and DocumentsOnlyIndicator is not present, then Non-Document value \"03\" will be passed to downstream systems. \nIf BillType is not populated and DocumentsOnlyIndicator is present, then Document value \"02\" will be passed to downsteam systems.",
+            "type": "string"
+          },
+          "MaximumListSize": {
+            "description": "Allows for the user to input the number candidates he/she wishes to receive. Valid values are 1 through 50.If the user chooses not to provide a value, the default value is 35.",
+            "type": "string"
+          },
+          "SaturdayDeliveryInfoRequestIndicator": {
+            "description": "Presence/Absence indicator. Presence indicates that SaturdayDelivery and SaturdayDeliveryDisclaimer will be returned in the response to indicate if a service is eligible for Saturday Delivery and if there are additional charges for Saturday Delivery.\n\nPlease see Saturday Delivery business rules section for more information.",
+            "type": "string"
+          },
+          "SundayDeliveryInfoRequestIndicator": {
+            "description": "Presence/Absence indicator. Presence indicates that SundayDelivery and SundayDeliveryDisclaimer will be returned in the response to indicate if a service is eligible for Sunday Delivery and if there are additional charges for Sunday Delivery.\n\nPlease see Sunday Delivery business rules section for more information.",
+            "type": "string"
+          },
+          "DropOffAtFacilityIndicator": {
+            "description": "If indicator is present indicates shipper will drop off at UPS facility and if absent indicates pick by UPS. This accessorial is valid if Bill Type is 04",
+            "type": "string"
+          },
+          "HoldForPickupIndicator": {
+            "description": "If indicator is present indicates pickup by cosignee and if absent indicates delivery by UPS.This accessorial is valid if Bill Type is 04",
+            "type": "string"
+          },
+          "IncludeAllServicesIndicator": {
+            "description": "If included, will return all unfiltered transit times for a given origin and destination.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TimeInTransitRequest"
+        },
+        "maximum": 1,
+        "description": "N/A"
+      },
+      "TimeInTransitRequest_Request": {
+        "type": "object",
+        "properties": {
+          "RequestOption": {
+            "description": "Request Option",
+            "type": "string"
+          },
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Request_TransactionReference"
+          }
+        },
+        "xml": {
+          "name": "Request"
+        },
+        "description": "Request container"
+      },
+      "Request_RequestOption": {
+        "description": "Request Option",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "Request_TransactionReference": {
+        "type": "object",
+        "properties": {
+          "CustomerContext": {
+            "description": "The CustomerContext Information which will be echoed during response.",
+            "type": "string"
+          },
+          "TransactionIdentifier": {
+            "description": "The Unique TransactionIdentifier Information for that transaction",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "TransactionReference identifies transactions between client and server."
+      },
+      "TransactionReference_CustomerContext": {
+        "description": "The CustomerContext Information which will be echoed during response.",
+        "type": "string",
+        "maxLength": 512
+      },
+      "TransactionReference_TransactionIdentifier": {
+        "description": "The Unique TransactionIdentifier Information for that transaction",
+        "type": "string",
+        "minLength": 35,
+        "maxLength": 35
+      },
+      "TimeInTransitRequest_ShipFrom": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipFrom_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipFrom"
+        },
+        "description": "Contains Information on origin of shipment."
+      },
+      "ShipFrom_Address": {
+        "type": "object",
+        "properties": {
+          "Town": {
+            "description": "Town",
+            "type": "string"
+          },
+          "City": {
+            "description": "City",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "State/Province",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Country or Territory code",
+            "type": "string"
+          },
+          "Country": {
+            "description": "Country or Territory Name If the Country or Territory Code is valid, the corresponding Country or Territory name will be returned. Valid values are available in the Country or Territory Information table.",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Required for countries or territories with Postal Codes. May be alphanumeric",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "required": [
+          "Country",
+          "CountryCode"
+        ],
+        "description": "Address container for the origin of the shipment."
+      },
+      "Address_Town": {
+        "description": "Town",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_City": {
+        "description": "City",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_StateProvinceCode": {
+        "description": "State/Province",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_CountryCode": {
+        "description": "Country or Territory code",
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Address_PostalCode": {
+        "description": "Required for countries or territories with Postal Codes. May be alphanumeric",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "TimeInTransitRequest_ShipTo": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipTo_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipTo"
+        },
+        "description": "Contains information on destination shipment."
+      },
+      "ShipTo_Address": {
+        "type": "object",
+        "properties": {
+          "Town": {
+            "description": "Town",
+            "type": "string"
+          },
+          "City": {
+            "description": "City",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "State/Province",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Country or Territory code",
+            "type": "string"
+          },
+          "Country": {
+            "description": "Country or Territory Name If the Country or Territory Code is valid, the corresponding Country or Territory name will be returned. Valid values are available in the Country or Territory Information table.",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Required for countries or territories with Postal Codes. May be alphanumeric",
+            "type": "string"
+          },
+          "ResidentialAddressIndicator": {
+            "description": "This is an Empty Tag. The Residential Address Indicator in the address container shows address is residential otherwise its commercial.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "required": [
+          "Country",
+          "CountryCode"
+        ],
+        "description": "Address container for the destination of the shipment"
+      },
+      "Address_ResidentialAddressIndicator": {
+        "description": "This is an Empty Tag. The Residential Address Indicator in the address container shows address is residential otherwise its commercial.",
+        "type": "string"
+      },
+      "TimeInTransitRequest_Pickup": {
+        "type": "object",
+        "required": [
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "The date UPS picks up the package from the origin. \nFormat: YYYYMMDD. \nIn the event the Pickup date differs from the Ship On Date, provided in the request, a warning message will be returned.",
+            "type": "string"
+          },
+          "Time": {
+            "description": "The time UPS will pick up the shipment. Military Time Format HHMMSS or HHMM",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Pickup"
+        },
+        "description": "Shipment Pick up contains date and time"
+      },
+      "Pickup_Date": {
+        "description": "The date UPS picks up the package from the origin. \nFormat: YYYYMMDD. \nIn the event the Pickup date differs from the Ship On Date, provided in the request, a warning message will be returned.",
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Pickup_Time": {
+        "description": "The time UPS will pick up the shipment. Military Time Format HHMMSS or HHMM",
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 6
+      },
+      "TimeInTransitRequest_ShipmentWeight": {
+        "type": "object",
+        "required": [
+          "UnitOfMeasurement",
+          "Weight"
+        ],
+        "properties": {
+          "UnitOfMeasurement": {
+            "$ref": "#/components/schemas/ShipmentWeight_UnitOfMeasurement"
+          },
+          "Weight": {
+            "description": "Weight of the package. Must return the Weight if supplied by user. Allows for only one decimal point and one decimal place.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipmentWeight"
+        },
+        "description": "NA"
+      },
+      "ShipmentWeight_UnitOfMeasurement": {
+        "type": "object",
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "The unit of measurement supplied by the user is returned. \nValid values = LBS = Pounds; KGS = Kilograms",
+            "type": "string"
+          },
+          "Description": {
+            "description": "The description of the codes provided, i.e., Pounds or Kilograms.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UnitOfMeasurement"
+        },
+        "description": "Must be returned if supplied in the request."
+      },
+      "UnitOfMeasurement_Code": {
+        "description": "The unit of measurement supplied by the user is returned. \nValid values = LBS = Pounds; KGS = Kilograms",
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 3
+      },
+      "UnitOfMeasurement_Description": {
+        "description": "The description of the codes provided, i.e., Pounds or Kilograms.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "ShipmentWeight_Weight": {
+        "description": "Weight of the package. Must return the Weight if supplied by user. Allows for only one decimal point and one decimal place.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 9
+      },
+      "TimeInTransitRequest_TotalPackagesInShipment": {
+        "description": "Total number of packages in shipment.   Default value is 1.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "TimeInTransitRequest_InvoiceLineTotal": {
+        "type": "object",
+        "required": [
+          "CurrencyCode",
+          "MonetaryValue"
+        ],
+        "properties": {
+          "CurrencyCode": {
+            "description": "Must return the currency code supplied in the request document.",
+            "type": "string"
+          },
+          "MonetaryValue": {
+            "description": "Must return the Monetary Value supplied in the request document.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "InvoiceLineTotal"
+        },
+        "description": "A container containing monetary value and currency code to show the value of the package/shipment. Required for International non-document shipments."
+      },
+      "InvoiceLineTotal_CurrencyCode": {
+        "description": "Must return the currency code supplied in the request document.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 3
+      },
+      "InvoiceLineTotal_MonetaryValue": {
+        "description": "Must return the Monetary Value supplied in the request document.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 12
+      },
+      "TimeInTransitRequest_DocumentsOnlyIndicator": {
+        "description": "If DocumentsOnlyIndicator is present then Document value \"02\" will be passed to downsteam systems.",
+        "type": "string"
+      },
+      "TimeInTransitRequest_BillType": {
+        "description": "Valid Values:\n04 - WWEF Pallet\n07 - Domestic Pallet\nThis field needs to be populated when UPS WorldWide Express Freight Shipment and UPS Worldwide Express Freight Midday Service is needed to be returned in response. The valid value is 04.\nIf BillType field is populated and DocumentsOnlyIndicator is present, BillType field value would gain precedence over DocumentsOnlyIndicator and 04 value will be passed to downsteam systems. \nIf BillType is not populated and DocumentsOnlyIndicator is not present, then Non-Document value \"03\" will be passed to downstream systems. \nIf BillType is not populated and DocumentsOnlyIndicator is present, then Document value \"02\" will be passed to downsteam systems.",
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TimeInTransitRequest_MaximumListSize": {
+        "description": "Allows for the user to input the number candidates he/she wishes to receive. Valid values are 1 through 50.If the user chooses not to provide a value, the default value is 35.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2
+      },
+      "TimeInTransitRequest_SaturdayDeliveryInfoRequestIndicator": {
+        "description": "Presence/Absence indicator. Presence indicates that SaturdayDelivery and SaturdayDeliveryDisclaimer will be returned in the response to indicate if a service is eligible for Saturday Delivery and if there are additional charges for Saturday Delivery.\n\nPlease see Saturday Delivery business rules section for more information.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TimeInTransitRequest_SundayDeliveryInfoRequestIndicator": {
+        "description": "Presence/Absence indicator. Presence indicates that SundayDelivery and SundayDeliveryDisclaimer will be returned in the response to indicate if a service is eligible for Sunday Delivery and if there are additional charges for Sunday Delivery.\n\nPlease see Sunday Delivery business rules section for more information.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TimeInTransitRequest_DropOffAtFacilityIndicator": {
+        "description": "If indicator is present indicates shipper will drop off at UPS facility and if absent indicates pick by UPS. This accessorial is valid if Bill Type is 04",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TimeInTransitRequest_HoldForPickupIndicator": {
+        "description": "If indicator is present indicates pickup by cosignee and if absent indicates delivery by UPS.This accessorial is valid if Bill Type is 04",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TimeInTransitRequest_IncludeAllServicesIndicator": {
+        "description": "If included, will return all unfiltered transit times for a given origin and destination.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TimeInTransitResponse": {
+        "type": "object",
+        "required": [
+          "Response"
+        ],
+        "properties": {
+          "Response": {
+            "$ref": "#/components/schemas/TimeInTransitResponse_Response"
+          },
+          "TransitResponse": {
+            "$ref": "#/components/schemas/TimeInTransitResponse_TransitResponse"
+          },
+          "CandidateResponse": {
+            "$ref": "#/components/schemas/TimeInTransitResponse_CandidateResponse"
+          }
+        },
+        "xml": {
+          "name": "TimeInTransitResponse"
+        },
+        "description": "Container for TimeInTransitResponse details."
+      },
+      "TimeInTransitResponse_Response": {
+        "type": "object",
+        "required": [
+          "ResponseStatus"
+        ],
+        "properties": {
+          "ResponseStatus": {
+            "$ref": "#/components/schemas/Response_ResponseStatus"
+          },
+          "Alert": {
+            "$ref": "#/components/schemas/Response_Alert"
+          },
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Response_TransactionReference"
+          }
+        },
+        "xml": {
+          "name": "Response"
+        },
+        "description": "Container for the Response details."
+      },
+      "Response_ResponseStatus": {
+        "type": "object",
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Identifies the success or failure of the transaction.\n0 = Failed, 1 = Successful",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Describes Response Status Code.  Returns text of Success or Failure.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ResponseStatus"
+        },
+        "description": "Contains code and description for Status."
+      },
+      "ResponseStatus_Code": {
+        "description": "Identifies the success or failure of the transaction.\n0 = Failed, 1 = Successful",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "ResponseStatus_Description": {
+        "description": "Describes Response Status Code.  Returns text of Success or Failure.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Response_Alert": {
+        "type": "object",
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Warning code returned by the system.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Warning messages returned by the system.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Alert"
+        },
+        "description": "Alert Container. There can be zero to many alert containers with code and description."
+      },
+      "Alert_Code": {
+        "description": "Warning code returned by the system.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Alert_Description": {
+        "description": "Warning messages returned by the system.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 150
+      },
+      "Response_TransactionReference": {
+        "type": "object",
+        "properties": {
+          "CustomerContext": {
+            "description": "The CustomerContext Information which will be echoed during response.",
+            "type": "string"
+          },
+          "TransactionIdentifier": {
+            "description": "The Unique TransactionIdentifier Information for that transaction",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "Transaction Reference Container."
+      },
+      "TimeInTransitResponse_TransitResponse": {
+        "type": "object",
+        "required": [
+          "ShipFrom",
+          "ShipTo",
+          "ServiceSummary",
+          "PickupDate"
+        ],
+        "properties": {
+          "ShipFrom": {
+            "$ref": "#/components/schemas/TransitResponse_ShipFrom"
+          },
+          "ShipTo": {
+            "$ref": "#/components/schemas/TransitResponse_ShipTo"
+          },
+          "PickupDate": {
+            "description": "The date the user requests UPS to pickup the package from the origin. Format: YYYYMMDD. \nIn the event this Pickup date differs from the Pickup date in the Estimated Arrival Container, a warning will be returned.",
+            "type": "string"
+          },
+          "ShipmentWeight": {
+            "$ref": "#/components/schemas/TransitResponse_ShipmentWeight"
+          },
+          "InvoiceLineTotal": {
+            "$ref": "#/components/schemas/TransitResponse_InvoiceLineTotal"
+          },
+          "DocumentsOnlyIndicator": {
+            "description": "This is an Empty Tag. Valid values are Document and Non-document.  If the indicator is present then the value is Document else Non-Document Will default to non-document.",
+            "type": "string"
+          },
+          "BillType": {
+            "description": "Returned only if BillType \"04\" is requested in Time In Transit Request and service returned in Time In Transit response has BillType \"04\".",
+            "type": "string"
+          },
+          "MaximumListSize": {
+            "description": "The maximum number of address candidates the user can view. If the user inputs any number less than 50 the number will be reflected in the response, else the default value 35 will be returned.",
+            "type": "string"
+          },
+          "ServiceSummary": {
+            "$ref": "#/components/schemas/TransitResponse_ServiceSummary"
+          },
+          "AutoDutyCode": {
+            "description": "Required output for International requests. If Documents indicator is set for Non-document a duty is automatically calculated. \nValid values: \n01 = Dutiable\n02 = Non-Dutiable\n03 = Low-value  \n04 = Courier Remission\n05 = Gift\n06 = Military\n07 = Exception\n08 = Line Release \n09 = Section 321 low value",
+            "type": "string"
+          },
+          "Disclaimer": {
+            "description": "The Disclaimer is provided based upon the Origin and Destination Country or Territory Codes provided in the request document. The possible disclaimers that can be returned are available in the Service Guaranteed Disclaimers table.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransitResponse"
+        },
+        "description": "Container for all the information contained within a /TimeInTransitResponse. Will be returned if the address information is adequate to provide a Time-in-Transit."
+      },
+      "TransitResponse_ShipFrom": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipFrom_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipFrom"
+        },
+        "description": "Contains information on origin shipment."
+      },
+      "Address_Country": {
+        "description": "Country or Territory Name If the Country or Territory Code is valid, the corresponding Country or Territory name will be returned. Valid values are available in the Country or Territory Information table.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "TransitResponse_ShipTo": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipTo_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipTo"
+        },
+        "description": "Contains information about destination shipment."
+      },
+      "TransitResponse_PickupDate": {
+        "description": "The date the user requests UPS to pickup the package from the origin. Format: YYYYMMDD. \nIn the event this Pickup date differs from the Pickup date in the Estimated Arrival Container, a warning will be returned.",
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "TransitResponse_ShipmentWeight": {
+        "type": "object",
+        "required": [
+          "UnitOfMeasurement",
+          "Weight"
+        ],
+        "properties": {
+          "UnitOfMeasurement": {
+            "$ref": "#/components/schemas/ShipmentWeight_UnitOfMeasurement"
+          },
+          "Weight": {
+            "description": "Weight of the package. Must return the Weight if supplied by user. Allows for only one decimal point and one decimal place.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipmentWeight"
+        },
+        "description": "Must be returned if International request. Must be returned if supplied for a Domestic query."
+      },
+      "TransitResponse_InvoiceLineTotal": {
+        "type": "object",
+        "required": [
+          "CurrencyCode",
+          "MonetaryValue"
+        ],
+        "properties": {
+          "CurrencyCode": {
+            "description": "Must return the currency code supplied in the request document.",
+            "type": "string"
+          },
+          "MonetaryValue": {
+            "description": "Must return the Monetary Value supplied in the request document.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "InvoiceLineTotal"
+        },
+        "description": "A container containing monetary value and currency code to show the value of the package/shipment. Must return the Invoice Line Total if supplied by user."
+      },
+      "TransitResponse_DocumentsOnlyIndicator": {
+        "description": "This is an Empty Tag. Valid values are Document and Non-document.  If the indicator is present then the value is Document else Non-Document Will default to non-document.",
+        "type": "string"
+      },
+      "TransitResponse_BillType": {
+        "description": "Returned only if BillType \"04\" is requested in Time In Transit Request and service returned in Time In Transit response has BillType \"04\".",
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TransitResponse_MaximumListSize": {
+        "description": "The maximum number of address candidates the user can view. If the user inputs any number less than 50 the number will be reflected in the response, else the default value 35 will be returned.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2
+      },
+      "TransitResponse_ServiceSummary": {
+        "type": "object",
+        "required": [
+          "EstimatedArrival",
+          "Service"
+        ],
+        "properties": {
+          "Service": {
+            "$ref": "#/components/schemas/ServiceSummary_Service"
+          },
+          "GuaranteedIndicator": {
+            "description": "This is an Empty Tag. Indicates whether the service will be guaranteed or not.  Required for International Requests.",
+            "type": "string"
+          },
+          "Disclaimer": {
+            "description": "The Disclaimer is provided based upon the Origin and Destination Country or Territory Codes provided in the request document. The disclaimer is returned as a conditional statement to the validity of the service being guaranteed. The possible disclaimers that can be returned are available in the Service Guaranteed Disclaimers table.",
+            "type": "string"
+          },
+          "EstimatedArrival": {
+            "$ref": "#/components/schemas/ServiceSummary_EstimatedArrival"
+          },
+          "SaturdayDelivery": {
+            "description": "Saturday delivery information for a service. Values are\n1 - Saturday Delivery Available with additional charges \n0 - Saturday Delivery not available or no additional charge, please check Delivery Date to confirm if the Delivery will be Saturday\n\nPlease see Saturday Delivery business rules section for more information.",
+            "type": "string"
+          },
+          "SaturdayDeliveryDisclaimer": {
+            "description": "Saturday delivery disclaimer message.",
+            "type": "string"
+          },
+          "SundayDelivery": {
+            "description": "Sundaydelivery information for a service. Values are\n1 - Sunday Delivery Available with additional charges \n0 - Sunday Delivery  available or no additional charge, please check Delivery Date to confirm if the Delivery will be Sunday\n\nPlease see Sunday Delivery business rules section for more information.",
+            "type": "string"
+          },
+          "SundayDeliveryDisclaimer": {
+            "description": "Sunday delivery disclaimer message.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ServiceSummary"
+        },
+        "maximum": 1,
+        "description": "Container that provides the Service and indication of the service is guaranteed and Estimated Arrival information."
+      },
+      "ServiceSummary_Service": {
+        "type": "object",
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Each must be only returned once.\nRefer to Service Codes in the Appendix for valid values.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Optional. Description of service. Example, UPS Next Day Air, UPS Ground etc, as referenced by the Service Code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Service"
+        },
+        "description": "The UPS service selected for a shipment."
+      },
+      "Service_Code": {
+        "description": "Each must be only returned once.\nRefer to Service Codes in the Appendix for valid values.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4
+      },
+      "Service_Description": {
+        "description": "Optional. Description of service. Example, UPS Next Day Air, UPS Ground etc, as referenced by the Service Code.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "ServiceSummary_GuaranteedIndicator": {
+        "description": "This is an Empty Tag. Indicates whether the service will be guaranteed or not.  Required for International Requests.",
+        "type": "string"
+      },
+      "ServiceSummary_Disclaimer": {
+        "description": "The Disclaimer is provided based upon the Origin and Destination Country or Territory Codes provided in the request document. The disclaimer is returned as a conditional statement to the validity of the service being guaranteed. The possible disclaimers that can be returned are available in the Service Guaranteed Disclaimers table.",
+        "type": "string"
+      },
+      "ServiceSummary_EstimatedArrival": {
+        "type": "object",
+        "required": [
+          "DayOfWeek",
+          "Pickup",
+          "Arrival",
+          "BusinessDaysInTransit"
+        ],
+        "properties": {
+          "Arrival": {
+            "$ref": "#/components/schemas/EstimatedArrival_Arrival"
+          },
+          "BusinessDaysInTransit": {
+            "description": "Number of business days from Origin to Destination Locations.",
+            "type": "string"
+          },
+          "Pickup": {
+            "$ref": "#/components/schemas/EstimatedArrival_Pickup"
+          },
+          "DayOfWeek": {
+            "description": "Day of week Valid values are: Mon, Tue, Wed, Thu, Fri, Sat.",
+            "type": "string"
+          },
+          "CustomerCenterCutoff": {
+            "description": "Customer Service call time. Returned for domestic as well as international requests.",
+            "type": "string"
+          },
+          "DelayCount": {
+            "description": "Number of days delayed at customs. Returned for International requests.",
+            "type": "string"
+          },
+          "HolidayCount": {
+            "description": "Number of National holidays during transit Returned for International requests.",
+            "type": "string"
+          },
+          "RestDays": {
+            "description": "Number of rest days, i.e. non movement. Returned for International requests.",
+            "type": "string"
+          },
+          "TotalTransitDays": {
+            "description": "The total number of days in transit from one location to the next. Returned for International requests.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "EstimatedArrival"
+        },
+        "description": "Provides the Time-In-Transit arrival information by service"
+      },
+      "EstimatedArrival_Arrival": {
+        "type": "object",
+        "required": [
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Scheduled Local Delivery Date. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "The time UPS will pick up the shipment. This is commit Time. Military Time Format HHMMSS or HHMM",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Arrival"
+        },
+        "description": "Container for date and time of arrival."
+      },
+      "Arrival_Date": {
+        "description": "Scheduled Local Delivery Date. Format: YYYYMMDD",
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Arrival_Time": {
+        "description": "The time UPS will pick up the shipment. This is commit Time. Military Time Format HHMMSS or HHMM",
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 6
+      },
+      "EstimatedArrival_BusinessDaysInTransit": {
+        "description": "Number of business days from Origin to Destination Locations.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 5
+      },
+      "EstimatedArrival_Pickup": {
+        "type": "object",
+        "required": [
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "The date UPS picks up the package from the origin. \nFormat: YYYYMMDD. \nIn the event the Pickup date differs from the Ship On Date, provided in the request, a warning message will be returned.",
+            "type": "string"
+          },
+          "Time": {
+            "description": "The time UPS will pick up the shipment. Military Time Format HHMMSS or HHMM",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Pickup"
+        },
+        "description": "The date and pick up time container."
+      },
+      "EstimatedArrival_DayOfWeek": {
+        "description": "Day of week Valid values are: Mon, Tue, Wed, Thu, Fri, Sat.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 9
+      },
+      "EstimatedArrival_CustomerCenterCutoff": {
+        "description": "Customer Service call time. Returned for domestic as well as international requests.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 6
+      },
+      "EstimatedArrival_DelayCount": {
+        "description": "Number of days delayed at customs. Returned for International requests.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 3
+      },
+      "EstimatedArrival_HolidayCount": {
+        "description": "Number of National holidays during transit Returned for International requests.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2
+      },
+      "EstimatedArrival_RestDays": {
+        "description": "Number of rest days, i.e. non movement. Returned for International requests.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2
+      },
+      "EstimatedArrival_TotalTransitDays": {
+        "description": "The total number of days in transit from one location to the next. Returned for International requests.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 5
+      },
+      "ServiceSummary_SaturdayDelivery": {
+        "description": "Saturday delivery information for a service. Values are\n1 - Saturday Delivery Available with additional charges \n0 - Saturday Delivery not available or no additional charge, please check Delivery Date to confirm if the Delivery will be Saturday\n\nPlease see Saturday Delivery business rules section for more information.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "ServiceSummary_SaturdayDeliveryDisclaimer": {
+        "description": "Saturday delivery disclaimer message.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "ServiceSummary_SundayDelivery": {
+        "description": "Sundaydelivery information for a service. Values are\n1 - Sunday Delivery Available with additional charges \n0 - Sunday Delivery  available or no additional charge, please check Delivery Date to confirm if the Delivery will be Sunday\n\nPlease see Sunday Delivery business rules section for more information.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "ServiceSummary_SundayDeliveryDisclaimer": {
+        "description": "Sunday delivery disclaimer message.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "TransitResponse_AutoDutyCode": {
+        "description": "Required output for International requests. If Documents indicator is set for Non-document a duty is automatically calculated. \nValid values: \n01 = Dutiable\n02 = Non-Dutiable\n03 = Low-value  \n04 = Courier Remission\n05 = Gift\n06 = Military\n07 = Exception\n08 = Line Release \n09 = Section 321 low value",
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TransitResponse_Disclaimer": {
+        "description": "The Disclaimer is provided based upon the Origin and Destination Country or Territory Codes provided in the request document. The possible disclaimers that can be returned are available in the Service Guaranteed Disclaimers table.",
+        "type": "string"
+      },
+      "TimeInTransitResponse_CandidateResponse": {
+        "type": "object",
+        "properties": {
+          "ShipFromList": {
+            "$ref": "#/components/schemas/CandidateResponse_ShipFromList"
+          },
+          "ShipToList": {
+            "$ref": "#/components/schemas/CandidateResponse_ShipToList"
+          }
+        },
+        "xml": {
+          "name": "CandidateResponse"
+        },
+        "description": "N/A"
+      },
+      "CandidateResponse_ShipFromList": {
+        "type": "object",
+        "required": [
+          "Candidate"
+        ],
+        "properties": {
+          "Candidate": {
+            "$ref": "#/components/schemas/ShipFromList_Candidate"
+          }
+        },
+        "xml": {
+          "name": "ShipFromList"
+        },
+        "description": "Required if the Origin address is an invalid international address."
+      },
+      "ShipFromList_Candidate": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/Candidate_Address"
+          }
+        },
+        "xml": {
+          "name": "Candidate"
+        },
+        "description": "A potential match provided by the address validation tool."
+      },
+      "Candidate_Address": {
+        "type": "object",
+        "properties": {
+          "Town": {
+            "description": "Town",
+            "type": "string"
+          },
+          "City": {
+            "description": "City",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "State/Province",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Country or Territory code",
+            "type": "string"
+          },
+          "PostcodePrimaryLow": {
+            "description": "Low-end Postal Code. (Used to return a range).  This field is validating the low end.  \nFor example, if the input combination is Atlanta, GA 30300, the evaluator would recognize that 30300 is not a valid postal code and would return up to 10 valid candidates that closely match the input combination.  \nSome matches include a postal code range (e.g., 30301-30371), however, some only have one associated postal code. \nIn this example, 30301 would be the Low-end Postal Code Match and 30371 would be the High-end Postal Code Match.  Therefore, there are 71 postal codes associated with this particular match. Returned based the postal code the user supplied as the low end range.",
+            "type": "string"
+          },
+          "PostcodePrimaryHigh": {
+            "description": "High-end Postal Code used to submit a range.  (Used to return a range). Returned if a range of postal codes is available for the candidate.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "required": [
+          "CountryCode"
+        ],
+        "description": "The address artifact format contains all of the data to uniquely identify an address to the Address Validation and Verification products."
+      },
+      "Address_PostcodePrimaryLow": {
+        "description": "Low-end Postal Code. (Used to return a range).  This field is validating the low end.  \nFor example, if the input combination is Atlanta, GA 30300, the evaluator would recognize that 30300 is not a valid postal code and would return up to 10 valid candidates that closely match the input combination.  \nSome matches include a postal code range (e.g., 30301-30371), however, some only have one associated postal code. \nIn this example, 30301 would be the Low-end Postal Code Match and 30371 would be the High-end Postal Code Match.  Therefore, there are 71 postal codes associated with this particular match. Returned based the postal code the user supplied as the low end range.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Address_PostcodePrimaryHigh": {
+        "description": "High-end Postal Code used to submit a range.  (Used to return a range). Returned if a range of postal codes is available for the candidate.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "CandidateResponse_ShipToList": {
+        "type": "object",
+        "required": [
+          "Candidate"
+        ],
+        "properties": {
+          "Candidate": {
+            "$ref": "#/components/schemas/ShipToList_Candidate"
+          }
+        },
+        "xml": {
+          "name": "ShipToList"
+        },
+        "description": "Required if the Destination address is invalid."
+      },
+      "ShipToList_Candidate": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/Candidate_Address"
+          }
+        },
+        "xml": {
+          "name": "Candidate"
+        },
+        "description": "A potential match provided by the address validation tool."
+      }
+    }
+  }
+}

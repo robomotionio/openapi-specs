@@ -1,0 +1,312 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Public API for the OpenEventDatabase project. Exemple of 'what' here: https://gist.github.com/cquest/abd2162d6e68fac407d4eecc7f0a114a",
+    "version": "0.0.1",
+    "title": "OpenEventDatabase",
+    "contact": {
+      "name": "OpenEventDatabase API Team"
+    },
+    "license": {
+      "name": "AGPL",
+      "url": "http://www.gnu.org/licenses/"
+    }
+  },
+  "tags": [
+    {
+      "name": "Statistics",
+      "description": "Operations about API statistics"
+    },
+    {
+      "name": "Events",
+      "description": "Operations about events"
+    }
+  ],
+  "paths": {
+    "/event": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "what",
+            "in": "query",
+            "description": "Event hierarchical keyword search",
+            "required": false,
+            "example": "weather.alert.wind",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "when",
+            "in": "query",
+            "description": "Event time search",
+            "required": false,
+            "example": "2016-05-01 12:00:00+00",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Event time range search (stop is required)",
+            "required": false,
+            "example": "2016-05-01 12:00:00+00",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "stop",
+            "in": "query",
+            "description": "Event time range search (start is required)",
+            "required": false,
+            "example": "2016-05-01 12:00:00+00",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "bbox",
+            "in": "query",
+            "description": "Event geographic bounding box search (East, South, West, North)",
+            "required": false,
+            "example": "-3.0,45.0,9.0,52.0",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "near",
+            "in": "query",
+            "description": "Event search by distance (long, lat, optional distance in meters)",
+            "required": false,
+            "example": "2.5,48.8,500",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of event as geojson FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Create a new event",
+        "description": "Create a new event",
+        "operationId": "placeOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Error 400"
+          }
+        }
+      }
+    },
+    "/event/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get details about a single event",
+        "description": "Get details about a single event",
+        "operationId": "getOrderById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of event",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error 400"
+          },
+          "404": {
+            "description": "Error 404"
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://api.openeventdatabase.org"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "EventGeometry": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Geometry type: Point"
+          },
+          "coordinates": {
+            "description": "Geometry coordinates (longitude; latitude)",
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float",
+              "maxItems": 2,
+              "minItems": 2
+            }
+          }
+        }
+      },
+      "EventProperties": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "what"
+        ],
+        "properties": {
+          "createdate": {
+            "type": "string",
+            "format": "date",
+            "description": "Event creation timestamp"
+          },
+          "id": {
+            "type": "string",
+            "description": "Event UUID"
+          },
+          "label": {
+            "type": "string",
+            "description": "Event label"
+          },
+          "lastupdate": {
+            "type": "string",
+            "format": "date",
+            "description": "Event last modification timestamp"
+          },
+          "lat": {
+            "type": "number",
+            "description": "Event location latitude"
+          },
+          "lon": {
+            "type": "number",
+            "description": "Event location longitude"
+          },
+          "source": {
+            "type": "string",
+            "description": "Event source"
+          },
+          "start": {
+            "type": "string",
+            "format": "date",
+            "description": "Event start timestamp"
+          },
+          "stop": {
+            "type": "string",
+            "format": "date",
+            "description": "Event stop timestamp"
+          },
+          "type": {
+            "type": "string",
+            "description": "Event type",
+            "enum": [
+              "scheduled",
+              "forecast",
+              "unscheduled"
+            ]
+          },
+          "what": {
+            "type": "string",
+            "description": "Event hierarchical keyword based description"
+          },
+          "when": {
+            "type": "string",
+            "format": "date",
+            "description": "Event timestamp"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "required": [
+          "geometry",
+          "properties",
+          "type"
+        ],
+        "properties": {
+          "geometry": {
+            "$ref": "#/components/schemas/EventGeometry"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/EventProperties"
+          },
+          "type": {
+            "description": "Type of event",
+            "type": "string",
+            "enum": [
+              "Point"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

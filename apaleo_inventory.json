@@ -1,0 +1,4751 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "apaleo Inventory API",
+    "description": "Setup and manage <b>properties</b> (hotels, etc.) and all the entites in them to rent out:\n<b>Units</b> such as rooms, parking lots, beds, meeting rooms, etc. Units can be combined into <b>groups</b> (single rooms, double rooms).",
+    "contact": {
+      "url": "https://apaleo.dev/",
+      "name": "Apaleo"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.apaleo.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/inventory/v1/properties": {
+      "get": {
+        "tags": [
+          "Property"
+        ],
+        "summary": "InventoryPropertiesGet",
+        "description": "Get the list of properties.<br>You need to be authorized (no particular scope required)",
+        "operationId": "InventoryPropertiesGet",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter result by property status",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/status2"
+              }
+            }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "description": "Include archived properties in the result. If not set, or set to false, it only returns non-archived properties",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "Filter result by country code",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: actions. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all properties.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no properties found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Property"
+        ],
+        "summary": "InventoryPropertiesPost",
+        "description": "Use this call to create a new property.<br>You must have at least one of these scopes: 'properties.create, setup.manage'.",
+        "operationId": "InventoryPropertiesPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the property.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertyModel"
+              },
+              "example": {
+                "code": "MUC",
+                "name": {
+                  "en": "Demo Hotel Munich",
+                  "de": "Demo Hotel München"
+                },
+                "companyName": "Hotel Münchner GmbH",
+                "managingDirectors": "Franz-Josef Gruber",
+                "commercialRegisterEntry": "Amtsgericht München, HRB 279336",
+                "taxId": "DE311053702",
+                "description": {
+                  "en": "This is the demo hotel Munich",
+                  "de": "Dies ist das Demo Hotel München"
+                },
+                "location": {
+                  "addressLine1": "Marienplatz 1",
+                  "postalCode": "80331",
+                  "city": "München",
+                  "countryCode": "DE"
+                },
+                "bankAccount": {
+                  "iban": "DE44 5001 0517 5407 3249 31",
+                  "bic": "SSKMDEMMXXX",
+                  "bank": "Stadtsparkasse München"
+                },
+                "paymentTerms": {
+                  "en": "Pay on checkout",
+                  "de": "Zahlung bei Checkout"
+                },
+                "timeZone": "Europe/Berlin",
+                "defaultCheckInTime": "17:00:00",
+                "defaultCheckOutTime": "11:00:00",
+                "currencyCode": "EUR"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new property was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "properties.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/properties/$count": {
+      "get": {
+        "tags": [
+          "Property"
+        ],
+        "summary": "InventoryProperties$countGet",
+        "description": "Return total count of properties<br>You need to be authorized (no particular scope required)",
+        "operationId": "InventoryProperties$countGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": []
+          }
+        ]
+      }
+    },
+    "/inventory/v1/properties/{id}": {
+      "get": {
+        "tags": [
+          "Property"
+        ],
+        "summary": "InventoryPropertiesByIdGet",
+        "description": "Get a property by id.<br>You need to be authorized (no particular scope required)",
+        "operationId": "InventoryPropertiesByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the property.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "description": "'all' or comma separated list of two-letter language codes (ISO Alpha-2)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: actions. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all the property data.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Property"
+        ],
+        "summary": "InventoryPropertiesByIdPatch",
+        "description": "Here's a list of allowed operations:\r\n- Replace Name\r\n- Add, replace and remove Description\r\n- Replace CompanyName\r\n- Add, replace and remove ManagingDirectors\r\n- Replace CommercialRegisterEntry\r\n- Replace TaxId\r\n- Replace Location\r\n- Add, replace and remove BankAccount\r\n- Replace PaymentTerms\r\n- Set IsTemplate<br>You must have at least one of these scopes: 'properties.manage, setup.manage'.",
+        "operationId": "InventoryPropertiesByIdPatch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the property.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "properties.manage",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/types/countries": {
+      "get": {
+        "tags": [
+          "Types"
+        ],
+        "summary": "InventoryTypesCountriesGet",
+        "description": "Returns a list of ISO country codes that could be used to create properties.<br>You need to be authorized (no particular scope required)",
+        "operationId": "InventoryTypesCountriesGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountryListModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": []
+          }
+        ]
+      }
+    },
+    "/inventory/v1/units/{id}": {
+      "patch": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsByIdPatch",
+        "description": "Here's a list of allowed operations:\r\n- Set unit condition\r\n- Set unit description\r\n- Set unit name\r\n- Set unit unitGroupId\r\n- Set unit maxPersons\r\n- Add unit attribute\r\n- Remove unit attribute<br>You must have at least one of these scopes: 'units.manage, setup.manage'.",
+        "operationId": "InventoryUnitsByIdPatch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "204": {
+            "description": "The unit was successfully modified.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.manage",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsByIdGet",
+        "description": "Get a unit by id.<br>You must have at least one of these scopes: 'units.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnitsByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "description": "'all' or comma separated list of two-letter language codes (ISO Alpha-2)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: property, unitGroup. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand2"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all the unit data.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsByIdDelete",
+        "description": "Use this call to delete a unit.<br>You must have at least one of these scopes: 'units.delete, setup.manage'.",
+        "operationId": "InventoryUnitsByIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion of the unit was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.delete",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/units": {
+      "patch": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsPatch",
+        "description": "Here's a list of allowed operations:\r\n- Set unit condition\r\n- Set unit description\r\n- Set unit name\r\n- Set unit unitGroupId\r\n- Set unit maxPersons\r\n- Add unit attribute\r\n- Remove unit attribute<br>You must have at least one of these scopes: 'units.manage, setup.manage'.",
+        "operationId": "InventoryUnitsPatch",
+        "parameters": [
+          {
+            "name": "unitIds",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Units were successfully modified.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.manage",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsGet",
+        "description": "Get the list of units.<br>You must have at least one of these scopes: 'units.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnitsGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Return units for specific property",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupId",
+            "in": "query",
+            "description": "Return units for the specific unit group - <b>DEPRECATED: This property will be removed 20.04.2022. Use `UnitGroupIds` instead</b>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupIds",
+            "in": "query",
+            "description": "Return units with the specific unit groups",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "unitAttributeIds",
+            "in": "query",
+            "description": "Return units with the specific unit attributes",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "isOccupied",
+            "in": "query",
+            "description": "Return only occupied or vacant units",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "maintenanceType",
+            "in": "query",
+            "description": "Return units with the specific maintenance type",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/maintenanceType"
+            }
+          },
+          {
+            "name": "condition",
+            "in": "query",
+            "description": "Return units with a specific condition",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/Condition2"
+            }
+          },
+          {
+            "name": "textSearch",
+            "in": "query",
+            "description": "This will filter all units where the provided text is contained in the unit name. The search is case insensitive.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: property, unitGroup. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand2"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all units.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No units were found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsPost",
+        "description": "Use this call to create a new unit.<br>You must have at least one of these scopes: 'units.create, setup.manage'.",
+        "operationId": "InventoryUnitsPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the unit.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUnitModel"
+              },
+              "example": {
+                "propertyId": "MUC",
+                "name": "A.102",
+                "description": {
+                  "en": "Room 102",
+                  "de": "Zimmer 102"
+                },
+                "unitGroupId": "MUC-DBL",
+                "maxPersons": 4,
+                "condition": "Clean",
+                "attributes": []
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new unit was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/units/$count": {
+      "get": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnits$countGet",
+        "description": "Returns number of units matching the filter criteria<br>You must have at least one of these scopes: 'units.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnits$countGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Return units for specific property",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupId",
+            "in": "query",
+            "description": "Return units for the specific unit group - <b>DEPRECATED: This property will be removed 20.04.2022. Use `UnitGroupIds` instead</b>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupIds",
+            "in": "query",
+            "description": "Return units with the specific unit groups",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "unitAttributeIds",
+            "in": "query",
+            "description": "Return units with the specific unit attributes",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "isOccupied",
+            "in": "query",
+            "description": "Return only occupied or vacant units",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "maintenanceType",
+            "in": "query",
+            "description": "Return units with the specific maintenance type",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/maintenanceType"
+            }
+          },
+          {
+            "name": "condition",
+            "in": "query",
+            "description": "Return units with a specific condition",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/Condition2"
+            }
+          },
+          {
+            "name": "textSearch",
+            "in": "query",
+            "description": "This will filter all units where the provided text is contained in the unit name. The search is case insensitive.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/units/bulk": {
+      "post": {
+        "tags": [
+          "Unit"
+        ],
+        "summary": "InventoryUnitsBulkPost",
+        "description": "Use this call to create multiple units, following a naming rule.<br>You must have at least one of these scopes: 'units.create, setup.manage'.",
+        "operationId": "InventoryUnitsBulkPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the units.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateUnitsModel"
+              },
+              "example": {
+                "maxPersons": 0,
+                "condition": "Clean",
+                "attributes": [],
+                "units": [
+                  {
+                    "propertyId": "MUC",
+                    "name": "Vermont",
+                    "description": {
+                      "en": "Small meetingroom",
+                      "de": "Kleiner Meetingraum"
+                    },
+                    "unitGroupId": "MUC-MEET",
+                    "maxPersons": 12,
+                    "condition": "Clean",
+                    "attributes": [
+                      {
+                        "id": "ADVFSSUL"
+                      }
+                    ]
+                  },
+                  {
+                    "propertyId": "MUC",
+                    "name": "Montreal",
+                    "description": {
+                      "en": "Small meetingroom",
+                      "de": "Kleiner Meetingraum"
+                    },
+                    "unitGroupId": "MUC-MEET",
+                    "maxPersons": 12,
+                    "condition": "Clean",
+                    "attributes": [
+                      {
+                        "id": "ADVFSSUL"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUnitsCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "units.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/unit-attributes/{id}": {
+      "get": {
+        "tags": [
+          "UnitAttribute"
+        ],
+        "summary": "InventoryUnit-attributesByIdGet",
+        "description": "Get unit attribute by id<br>You must have at least one of these scopes: 'unitattributes.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnit-attributesByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit attribute",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns unit attribute with specified id",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitAttributeDefinitionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitattributes.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "UnitAttribute"
+        ],
+        "summary": "InventoryUnit-attributesByIdPatch",
+        "description": "Here's a list of allowed operations:\r\n- Replace / Remove Description<br>You must have at least one of these scopes: 'unitattributes.manage, setup.manage'.",
+        "operationId": "InventoryUnit-attributesByIdPatch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of unit attribute",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitattributes.manage",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "UnitAttribute"
+        ],
+        "summary": "InventoryUnit-attributesByIdDelete",
+        "description": "Deletes unit attribute<br>You must have at least one of these scopes: 'unitattributes.delete, setup.manage'.",
+        "operationId": "InventoryUnit-attributesByIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of unit attribute",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitattributes.delete",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/unit-attributes": {
+      "get": {
+        "tags": [
+          "UnitAttribute"
+        ],
+        "summary": "InventoryUnit-attributesGet",
+        "description": "Get unit attribute list<br>You must have at least one of these scopes: 'unitattributes.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnit-attributesGet",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns unit attribute list for given account",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitAttributeDefinitionListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No unit attributes present for given account",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitattributes.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "UnitAttribute"
+        ],
+        "summary": "InventoryUnit-attributesPost",
+        "description": "Use this call to create a new unit attribute.<br>You must have at least one of these scopes: 'unitattributes.create, setup.manage'.",
+        "operationId": "InventoryUnit-attributesPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The unit attribute.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUnitAttributeDefinitionModel"
+              },
+              "example": {
+                "name": "Floor 1",
+                "description": "Floor number"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new unit attribute was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitAttributeDefinitionCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitattributes.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/unit-groups": {
+      "post": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groupsPost",
+        "description": "Use this call to create a new unit group.<br>You must have at least one of these scopes: 'unitgroups.create, setup.manage'.",
+        "operationId": "InventoryUnit-groupsPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the unit group.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUnitGroupModel"
+              },
+              "example": {
+                "code": "DBL",
+                "propertyId": "MUC",
+                "name": {
+                  "en": "Double Room",
+                  "de": "Doppelzimmer"
+                },
+                "description": {
+                  "en": "This is a nice room with as kingsize bed and flat screen",
+                  "de": "Dies ist ein schönes Zimmer mit Kingsize-Bett und Flachbildschirm"
+                },
+                "maxPersons": 4,
+                "rank": 1,
+                "type": "BedRoom"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new unit group was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitGroupCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groupsGet",
+        "description": "Get the list of unit groups.<br>You must have at least one of these scopes: 'unitgroups.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnit-groupsGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Return unit groups for specific property",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: property. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand4"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all unit groups.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitGroupListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no unit groups found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/unit-groups/$count": {
+      "get": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groups$countGet",
+        "description": "Returns number of unit groups matching the filter criteria<br>You must have at least one of these scopes: 'unitgroups.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnit-groups$countGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Return unit groups for specific property",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/inventory/v1/unit-groups/{id}": {
+      "get": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groupsByIdGet",
+        "description": "Get a unit group by id.<br>You must have at least one of these scopes: 'unitgroups.read, setup.read, setup.manage'.",
+        "operationId": "InventoryUnit-groupsByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit group.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "description": "'all' or comma separated list of two-letter language codes (ISO Alpha-2)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: property. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand4"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all the unit group data.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitGroupModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.read",
+              "setup.read",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groupsByIdPut",
+        "description": "Use this call to modify a unit group.<br>You must have at least one of these scopes: 'unitgroups.manage, setup.manage'.",
+        "operationId": "InventoryUnit-groupsByIdPut",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit group.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the unit group.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceUnitGroupModel"
+              },
+              "example": {
+                "name": {
+                  "en": "Double Room",
+                  "de": "Doppelzimmer"
+                },
+                "description": {
+                  "en": "This is a nice room with as kingsize bed and flat screen",
+                  "de": "Dies ist ein schönes Zimmer mit Kingsize-Bett und Flachbildschirm"
+                },
+                "maxPersons": 4,
+                "rank": 2
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "204": {
+            "description": "Replace of the unit group was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.manage",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "UnitGroup"
+        ],
+        "summary": "InventoryUnit-groupsByIdDelete",
+        "description": "Use this call to delete a unit group.<br>You must have at least one of these scopes: 'unitgroups.delete, setup.manage'.",
+        "operationId": "InventoryUnit-groupsByIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the unit group.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion of the unit group was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "unitgroups.delete",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActionModelPropertyActionNotAllowedPropertyActionReason": {
+        "title": "ActionModelPropertyActionNotAllowedPropertyActionReason",
+        "required": [
+          "action",
+          "isAllowed"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "isAllowed": {
+            "type": "boolean"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionReasonModelNotAllowedPropertyActionReason"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ActionReasonModelNotAllowedPropertyActionReason": {
+        "title": "ActionReasonModelNotAllowedPropertyActionReason",
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/Code"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AddressModel": {
+        "title": "AddressModel",
+        "required": [
+          "addressLine1",
+          "postalCode",
+          "city",
+          "countryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          }
+        }
+      },
+      "BankAccountModel": {
+        "title": "BankAccountModel",
+        "type": "object",
+        "properties": {
+          "iban": {
+            "type": "string"
+          },
+          "bic": {
+            "type": "string"
+          },
+          "bank": {
+            "type": "string"
+          }
+        }
+      },
+      "BulkCreateUnitsModel": {
+        "title": "BulkCreateUnitsModel",
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "The id of the property where the units will be created - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>"
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of unit names - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description, used for all units - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>"
+          },
+          "unitGroupId": {
+            "type": "string",
+            "description": "The id of the unit group used for all units - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the units - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>",
+            "format": "int32"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateUnitAttributeModel"
+            },
+            "description": "Collection of user defined attributes of unit - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateUnitModel"
+            },
+            "description": ""
+          }
+        },
+        "example": {
+          "maxPersons": 0,
+          "condition": "Clean",
+          "attributes": [],
+          "units": [
+            {
+              "propertyId": "MUC",
+              "name": "Vermont",
+              "description": {
+                "en": "Small meetingroom",
+                "de": "Kleiner Meetingraum"
+              },
+              "unitGroupId": "MUC-MEET",
+              "maxPersons": 12,
+              "condition": "Clean",
+              "attributes": [
+                {
+                  "id": "ADVFSSUL"
+                }
+              ]
+            },
+            {
+              "propertyId": "MUC",
+              "name": "Montreal",
+              "description": {
+                "en": "Small meetingroom",
+                "de": "Kleiner Meetingraum"
+              },
+              "unitGroupId": "MUC-MEET",
+              "maxPersons": 12,
+              "condition": "Clean",
+              "attributes": [
+                {
+                  "id": "ADVFSSUL"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "BulkUnitsCreatedModel": {
+        "title": "BulkUnitsCreatedModel",
+        "required": [
+          "ids"
+        ],
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The unit ids"
+          }
+        },
+        "example": {
+          "ids": [
+            "MUC-CFP",
+            "MUC-XTA",
+            "MUC-CPZ"
+          ]
+        }
+      },
+      "CountModel": {
+        "title": "CountModel",
+        "required": [
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "count": 50
+        }
+      },
+      "CountryListModel": {
+        "title": "CountryListModel",
+        "required": [
+          "countryCodes"
+        ],
+        "type": "object",
+        "properties": {
+          "countryCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of ISO country codes."
+          }
+        },
+        "example": {
+          "countryCodes": [
+            "DE",
+            "US"
+          ]
+        }
+      },
+      "CreateAddressModel": {
+        "title": "CreateAddressModel",
+        "required": [
+          "addressLine1",
+          "postalCode",
+          "city",
+          "countryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "regionCode": {
+            "maxLength": 6,
+            "minLength": 2,
+            "type": "string",
+            "description": "The ISO 3166-2 code"
+          },
+          "countryCode": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "The country code, in ISO 3166-1 alpha-2 code"
+          }
+        }
+      },
+      "CreatePropertyModel": {
+        "title": "CreatePropertyModel",
+        "required": [
+          "code",
+          "name",
+          "companyName",
+          "commercialRegisterEntry",
+          "taxId",
+          "location",
+          "paymentTerms",
+          "timeZone",
+          "defaultCheckInTime",
+          "defaultCheckOutTime",
+          "currencyCode"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "maxLength": 10,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_]*$",
+            "type": "string",
+            "description": "The code for the property that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The name for the property"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "The legal name of the company running the property."
+          },
+          "managingDirectors": {
+            "type": "string",
+            "description": "The managing director(s) of the company, as they should appear on invoices"
+          },
+          "commercialRegisterEntry": {
+            "type": "string",
+            "description": "The entry in the Commercial Reigster of the company running the property, as it should appear on invoices"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "The Tax-ID of the company running the property, as it should appear on invoices"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the property"
+          },
+          "location": {
+            "$ref": "#/components/schemas/CreateAddressModel"
+          },
+          "bankAccount": {
+            "$ref": "#/components/schemas/BankAccountModel"
+          },
+          "paymentTerms": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The payment terms used for all rate plans"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone name of the property from the IANA Time Zone Database.\r\n(see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)"
+          },
+          "defaultCheckInTime": {
+            "type": "string",
+            "description": "The default check-in time<br />A time (without fractional second part) as defined in the <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>"
+          },
+          "defaultCheckOutTime": {
+            "type": "string",
+            "description": "The default check-out time<br />A time (without fractional second part) as defined in the <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>"
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency a property works with."
+          }
+        },
+        "example": {
+          "code": "MUC",
+          "name": {
+            "en": "Demo Hotel Munich",
+            "de": "Demo Hotel München"
+          },
+          "companyName": "Hotel Münchner GmbH",
+          "managingDirectors": "Franz-Josef Gruber",
+          "commercialRegisterEntry": "Amtsgericht München, HRB 279336",
+          "taxId": "DE311053702",
+          "description": {
+            "en": "This is the demo hotel Munich",
+            "de": "Dies ist das Demo Hotel München"
+          },
+          "location": {
+            "addressLine1": "Marienplatz 1",
+            "postalCode": "80331",
+            "city": "München",
+            "countryCode": "DE"
+          },
+          "bankAccount": {
+            "iban": "DE44 5001 0517 5407 3249 31",
+            "bic": "SSKMDEMMXXX",
+            "bank": "Stadtsparkasse München"
+          },
+          "paymentTerms": {
+            "en": "Pay on checkout",
+            "de": "Zahlung bei Checkout"
+          },
+          "timeZone": "Europe/Berlin",
+          "defaultCheckInTime": "17:00:00",
+          "defaultCheckOutTime": "11:00:00",
+          "currencyCode": "EUR"
+        }
+      },
+      "CreateUnitAttributeDefinitionModel": {
+        "title": "CreateUnitAttributeDefinitionModel",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string",
+            "description": "The name of the unit attribute"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the unit attribute"
+          }
+        },
+        "example": {
+          "name": "Floor 1",
+          "description": "Floor number"
+        }
+      },
+      "CreateUnitAttributeModel": {
+        "title": "CreateUnitAttributeModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of unit attribute"
+          }
+        }
+      },
+      "CreateUnitGroupModel": {
+        "title": "CreateUnitGroupModel",
+        "required": [
+          "code",
+          "propertyId",
+          "name",
+          "description",
+          "maxPersons"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "maxLength": 10,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_]*$",
+            "type": "string",
+            "description": "The code for the unit group that can be shown in reports and table views"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "The id of the property where unit group will be created"
+          },
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The name for the unit group"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the unit group"
+          },
+          "maxPersons": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Maximum number of persons for the unit group",
+            "format": "int32"
+          },
+          "rank": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "description": "The unit group rank\r\nRestrictions:\r\n- Should be greater or equal to one",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          }
+        },
+        "example": {
+          "code": "DBL",
+          "propertyId": "MUC",
+          "name": {
+            "en": "Double Room",
+            "de": "Doppelzimmer"
+          },
+          "description": {
+            "en": "This is a nice room with as kingsize bed and flat screen",
+            "de": "Dies ist ein schönes Zimmer mit Kingsize-Bett und Flachbildschirm"
+          },
+          "maxPersons": 4,
+          "rank": 1,
+          "type": "BedRoom"
+        }
+      },
+      "CreateUnitModel": {
+        "title": "CreateUnitModel",
+        "required": [
+          "propertyId",
+          "name",
+          "description",
+          "maxPersons"
+        ],
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "The id of the property where the unit will be created"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the unit"
+          },
+          "unitGroupId": {
+            "type": "string",
+            "description": "The id of the unit group"
+          },
+          "maxPersons": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Maximum number of persons for the unit",
+            "format": "int32"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition1"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateUnitAttributeModel"
+            },
+            "description": "Collection of user defined attributes of unit"
+          }
+        },
+        "example": {
+          "propertyId": "MUC",
+          "name": "A.102",
+          "description": {
+            "en": "Room 102",
+            "de": "Zimmer 102"
+          },
+          "unitGroupId": "MUC-DBL",
+          "maxPersons": 4,
+          "condition": "Clean",
+          "attributes": []
+        }
+      },
+      "EmbeddedPropertyModel": {
+        "title": "EmbeddedPropertyModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The property id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the property that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the property"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the property"
+          }
+        }
+      },
+      "EmbeddedUnitGroupModel": {
+        "title": "EmbeddedUnitGroupModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit group id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the unit group that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit group"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit group"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type1"
+          }
+        }
+      },
+      "MessageItemCollection": {
+        "title": "MessageItemCollection",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        }
+      },
+      "Operation": {
+        "title": "Operation",
+        "type": "object",
+        "properties": {
+          "value": {},
+          "path": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          }
+        }
+      },
+      "PropertyCreatedModel": {
+        "title": "PropertyCreatedModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The property id"
+          }
+        },
+        "example": {
+          "id": "MUC"
+        }
+      },
+      "PropertyItemModel": {
+        "title": "PropertyItemModel",
+        "required": [
+          "id",
+          "code",
+          "isTemplate",
+          "name",
+          "companyName",
+          "commercialRegisterEntry",
+          "taxId",
+          "location",
+          "paymentTerms",
+          "timeZone",
+          "currencyCode",
+          "created",
+          "status",
+          "isArchived"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The property id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the property that can be shown in reports and table views"
+          },
+          "propertyTemplateId": {
+            "type": "string",
+            "description": "The id of the property used as a template while creating the property"
+          },
+          "isTemplate": {
+            "type": "boolean",
+            "description": "Whether the property can be used as a template for other properties"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the property"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the property"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "The legal name of the company running the property."
+          },
+          "managingDirectors": {
+            "type": "string",
+            "description": "The managing director(s) of the company, as they should appear on invoices"
+          },
+          "commercialRegisterEntry": {
+            "type": "string",
+            "description": "The entry in the Commercial Register of the company running the property, as it should appear on invoices"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "The Tax-ID of the company running the property, as it should appear on invoices"
+          },
+          "location": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "bankAccount": {
+            "$ref": "#/components/schemas/BankAccountModel"
+          },
+          "paymentTerms": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The payment terms used for all rate plans"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone name of the property from the IANA Time Zone Database.\r\n(see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)"
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency a property works with."
+          },
+          "created": {
+            "type": "string",
+            "description": "Date of creation<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "isArchived": {
+            "type": "boolean",
+            "description": "Is the property archived"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionModelPropertyActionNotAllowedPropertyActionReason"
+            },
+            "description": "The list of actions for this property"
+          }
+        }
+      },
+      "PropertyListModel": {
+        "title": "PropertyListModel",
+        "required": [
+          "properties",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyItemModel"
+            },
+            "description": "List of properties"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        }
+      },
+      "PropertyModel": {
+        "title": "PropertyModel",
+        "required": [
+          "id",
+          "code",
+          "isTemplate",
+          "name",
+          "companyName",
+          "commercialRegisterEntry",
+          "taxId",
+          "location",
+          "paymentTerms",
+          "timeZone",
+          "currencyCode",
+          "created",
+          "status",
+          "isArchived"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The property id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the property that can be shown in reports and table views"
+          },
+          "propertyTemplateId": {
+            "type": "string",
+            "description": "The id of the property used as a template while creating the property"
+          },
+          "isTemplate": {
+            "type": "boolean",
+            "description": "Whether the property can be used as a template for other properties"
+          },
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The name for the property"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the property"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "The legal name of the company running the property."
+          },
+          "managingDirectors": {
+            "type": "string",
+            "description": "The managing director(s) of the company, as they should appear on invoices"
+          },
+          "commercialRegisterEntry": {
+            "type": "string",
+            "description": "The entry in the Commercial Register of the company running the property, as it should appear on invoices"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "The Tax-ID of the company running the property, as it should appear on invoices"
+          },
+          "location": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "bankAccount": {
+            "$ref": "#/components/schemas/BankAccountModel"
+          },
+          "paymentTerms": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The payment terms used for all rate plans"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone name of the property from the IANA Time Zone Database.\r\n(see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)"
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency a property works with."
+          },
+          "created": {
+            "type": "string",
+            "description": "Date of creation<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "isArchived": {
+            "type": "boolean",
+            "description": "Is the property archived"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionModelPropertyActionNotAllowedPropertyActionReason"
+            },
+            "description": "The list of actions for this property"
+          }
+        },
+        "description": "With this request you can create a new property",
+        "example": {
+          "id": "MUC",
+          "code": "MUC",
+          "propertyTemplateId": "BER",
+          "isTemplate": false,
+          "name": {
+            "en": "Demo Hotel Munich",
+            "de": "Demo Hotel München"
+          },
+          "description": {
+            "en": "This is the demo hotel Munich",
+            "de": "Dies ist das Demo Hotel München"
+          },
+          "companyName": "Hotel Münchner GmbH",
+          "managingDirectors": "Franz-Josef Gruber",
+          "commercialRegisterEntry": "Amtsgericht München, HRB 279336",
+          "taxId": "DE311053702",
+          "location": {
+            "addressLine1": "Marienplatz 1",
+            "postalCode": "80331",
+            "city": "München",
+            "countryCode": "DE"
+          },
+          "bankAccount": {
+            "iban": "DE44 5001 0517 5407 3249 31",
+            "bic": "SSKMDEMMXXX",
+            "bank": "Stadtsparkasse München"
+          },
+          "paymentTerms": {
+            "en": "Pay on checkout",
+            "de": "Zahlung bei Checkout"
+          },
+          "timeZone": "Europe/Berlin",
+          "currencyCode": "EUR",
+          "created": "0001-01-01T00:00:00Z",
+          "status": "Test",
+          "isArchived": false
+        }
+      },
+      "ReplaceUnitGroupModel": {
+        "title": "ReplaceUnitGroupModel",
+        "required": [
+          "name",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The name for the unit group"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the unit group"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit group.\r\nIf this value is increased, the surcharges for the related rate plans must be specified in order for the rate plans to be sellable for the new possible occupancies.",
+            "format": "int32"
+          },
+          "rank": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "description": "The unit group rank\r\nRestrictions:\r\n- Should be greater or equal to one",
+            "format": "int32"
+          }
+        },
+        "example": {
+          "name": {
+            "en": "Double Room",
+            "de": "Doppelzimmer"
+          },
+          "description": {
+            "en": "This is a nice room with as kingsize bed and flat screen",
+            "de": "Dies ist ein schönes Zimmer mit Kingsize-Bett und Flachbildschirm"
+          },
+          "maxPersons": 4,
+          "rank": 2
+        }
+      },
+      "UnitAttributeDefinitionCreatedModel": {
+        "title": "UnitAttributeDefinitionCreatedModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit attribute id"
+          }
+        },
+        "example": {
+          "id": "FLOOR"
+        }
+      },
+      "UnitAttributeDefinitionListModel": {
+        "title": "UnitAttributeDefinitionListModel",
+        "required": [
+          "unitAttributes",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "unitAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitAttributeDefinitionModel"
+            },
+            "description": "List of unit attributes"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "unitAttributes": [
+            {
+              "id": "KQOSXHLS",
+              "name": "Floor 1",
+              "description": "Floor number"
+            },
+            {
+              "id": "ADVFSSUL",
+              "name": "Street view",
+              "description": "View from the room"
+            }
+          ],
+          "count": 2
+        }
+      },
+      "UnitAttributeDefinitionModel": {
+        "title": "UnitAttributeDefinitionModel",
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the unit attribute"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the unit attribute"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the unit attribute"
+          }
+        },
+        "example": {
+          "id": "KQOSXHLS",
+          "name": "Floor 1",
+          "description": "Floor number"
+        }
+      },
+      "UnitAttributeModel": {
+        "title": "UnitAttributeModel",
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of unit attribute"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the unit attribute"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of unit attribute"
+          }
+        }
+      },
+      "UnitCreatedModel": {
+        "title": "UnitCreatedModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit id"
+          }
+        },
+        "example": {
+          "id": "MUC-CFP"
+        }
+      },
+      "UnitGroupCreatedModel": {
+        "title": "UnitGroupCreatedModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit group id"
+          }
+        },
+        "example": {
+          "id": "MUC-DBL"
+        }
+      },
+      "UnitGroupItemModel": {
+        "title": "UnitGroupItemModel",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "description",
+          "memberCount",
+          "type",
+          "property"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit group id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the unit group that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit group"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit group"
+          },
+          "memberCount": {
+            "type": "integer",
+            "description": "Number of units in this group",
+            "format": "int32"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit group",
+            "format": "int32"
+          },
+          "rank": {
+            "type": "integer",
+            "description": "The unit group rank",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type1"
+          },
+          "property": {
+            "$ref": "#/components/schemas/EmbeddedPropertyModel"
+          }
+        }
+      },
+      "UnitGroupListModel": {
+        "title": "UnitGroupListModel",
+        "required": [
+          "unitGroups",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "unitGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitGroupItemModel"
+            },
+            "description": "List of unit groups"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "unitGroups": [
+            {
+              "id": "MUC-DBL",
+              "code": "DBL",
+              "name": "Double Room",
+              "description": "This is a nice room with as kingsize bed and flat screen",
+              "memberCount": 2,
+              "maxPersons": 4,
+              "rank": 2,
+              "type": "BedRoom",
+              "property": {
+                "id": "MUC",
+                "code": "MUC",
+                "name": "Demo Hotel Munich",
+                "description": "This is the demo hotel Munich"
+              }
+            },
+            {
+              "id": "BER-SGL",
+              "code": "SGL",
+              "name": "Standard Room",
+              "description": "This is a nice room with as standard bed",
+              "memberCount": 5,
+              "maxPersons": 2,
+              "rank": 1,
+              "type": "BedRoom",
+              "property": {
+                "id": "BER",
+                "code": "BER",
+                "name": "Demo Hotel Berlin",
+                "description": "This is the demo hotel Berlin"
+              }
+            }
+          ],
+          "count": 0
+        }
+      },
+      "UnitGroupModel": {
+        "title": "UnitGroupModel",
+        "required": [
+          "id",
+          "code",
+          "property",
+          "name",
+          "memberCount",
+          "description",
+          "maxPersons",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit group id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the unit group that can be shown in reports and table views"
+          },
+          "property": {
+            "$ref": "#/components/schemas/EmbeddedPropertyModel"
+          },
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The name for the unit group"
+          },
+          "memberCount": {
+            "type": "integer",
+            "description": "Number of units in this group",
+            "format": "int32"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the unit group"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit group",
+            "format": "int32"
+          },
+          "rank": {
+            "type": "integer",
+            "description": "The unit group rank",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type1"
+          }
+        },
+        "example": {
+          "id": "MUC-DBL",
+          "code": "DBL",
+          "property": {
+            "id": "MUC",
+            "code": "MUC",
+            "name": "Demo Hotel Munich",
+            "description": "This is the demo hotel Munich"
+          },
+          "name": {
+            "en": "Double Room",
+            "de": "Doppelzimmer"
+          },
+          "memberCount": 0,
+          "description": {
+            "en": "This is a nice room with as kingsize bed and flat screen",
+            "de": "Dies ist ein schönes Zimmer mit Kingsize-Bett und Flachbildschirm"
+          },
+          "maxPersons": 4,
+          "rank": 2,
+          "type": "BedRoom"
+        }
+      },
+      "UnitItemMaintenanceModel": {
+        "title": "UnitItemMaintenanceModel",
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the scheduled maintenance"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type4"
+          }
+        }
+      },
+      "UnitItemModel": {
+        "title": "UnitItemModel",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "property",
+          "status",
+          "maxPersons",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit"
+          },
+          "property": {
+            "$ref": "#/components/schemas/EmbeddedPropertyModel"
+          },
+          "unitGroup": {
+            "$ref": "#/components/schemas/EmbeddedUnitGroupModel"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UnitItemStatusModel"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date of creation<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitAttributeModel"
+            },
+            "description": "Collection of user defined attributes of unit"
+          }
+        }
+      },
+      "UnitItemStatusModel": {
+        "title": "UnitItemStatusModel",
+        "required": [
+          "isOccupied",
+          "condition"
+        ],
+        "type": "object",
+        "properties": {
+          "isOccupied": {
+            "type": "boolean"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition2"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/UnitItemMaintenanceModel"
+          }
+        }
+      },
+      "UnitListModel": {
+        "title": "UnitListModel",
+        "required": [
+          "units",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitItemModel"
+            },
+            "description": "List of units"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "units": [
+            {
+              "id": "MUC-JQI",
+              "name": "A.101",
+              "description": "Room 101",
+              "property": {
+                "id": "MUC",
+                "code": "MUC",
+                "name": "Demo Hotel Munich",
+                "description": "This is the demo hotel Munich"
+              },
+              "unitGroup": {
+                "id": "MUC-DBL",
+                "code": "DBL",
+                "name": "Double",
+                "description": "Double",
+                "type": "BedRoom"
+              },
+              "status": {
+                "isOccupied": true,
+                "condition": "Dirty",
+                "maintenance": {
+                  "id": "MUC-JQI-SGHZD",
+                  "type": "OutOfService"
+                }
+              },
+              "maxPersons": 4,
+              "created": "0001-01-01T00:00:00Z",
+              "attributes": [
+                {
+                  "id": "GRTDTLDD",
+                  "name": "Floor 2",
+                  "description": "Floor number"
+                },
+                {
+                  "id": "KQOSXHLS",
+                  "name": "Street view",
+                  "description": "View from the room"
+                }
+              ]
+            },
+            {
+              "id": "MUC-ELG",
+              "name": "A.102",
+              "description": "Room 102",
+              "property": {
+                "id": "MUC",
+                "code": "MUC",
+                "name": "Demo Hotel Munich",
+                "description": "This is the demo hotel Munich"
+              },
+              "unitGroup": {
+                "id": "MUC-SGL",
+                "code": "SGL",
+                "name": "Standard",
+                "description": "Standard",
+                "type": "BedRoom"
+              },
+              "status": {
+                "isOccupied": false,
+                "condition": "Clean",
+                "maintenance": {
+                  "id": "MUC-ELG-GSZGK",
+                  "type": "OutOfOrder"
+                }
+              },
+              "maxPersons": 1,
+              "created": "0001-01-01T00:00:00Z",
+              "attributes": [
+                {
+                  "id": "GRTDTLDD",
+                  "name": "Floor 2",
+                  "description": "Floor number"
+                }
+              ]
+            }
+          ],
+          "count": 2
+        }
+      },
+      "UnitMaintenanceModel": {
+        "title": "UnitMaintenanceModel",
+        "required": [
+          "id",
+          "from",
+          "to",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the scheduled maintenance"
+          },
+          "from": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window starts<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window ends<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type4"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description text for the maintenance"
+          }
+        }
+      },
+      "UnitModel": {
+        "title": "UnitModel",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "property",
+          "status",
+          "maxPersons",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit"
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description for the unit"
+          },
+          "property": {
+            "$ref": "#/components/schemas/EmbeddedPropertyModel"
+          },
+          "unitGroup": {
+            "$ref": "#/components/schemas/EmbeddedUnitGroupModel"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UnitStatusModel"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date of creation<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitAttributeModel"
+            },
+            "description": "Collection of user defined attributes of unit"
+          }
+        },
+        "example": {
+          "id": "MUC-YTO",
+          "name": "1.001",
+          "description": {
+            "en": "First Floor Room 1",
+            "de": "1.OG Zimmer 1"
+          },
+          "property": {
+            "id": "BER",
+            "code": "BER",
+            "name": "Demo Hotel Berlin",
+            "description": "This is the demo hotel Berlin"
+          },
+          "unitGroup": {
+            "id": "MUC-DBL",
+            "code": "DBL",
+            "name": "Double",
+            "description": "Double",
+            "type": "BedRoom"
+          },
+          "status": {
+            "isOccupied": false,
+            "condition": "Clean",
+            "maintenance": {
+              "id": "MUC-YTO-SGHZD",
+              "from": "2022-04-28T13:43:04.0581271+02:00",
+              "to": "2022-04-30T13:43:04.0581271+02:00",
+              "type": "OutOfService",
+              "description": "The remote control for the TV needs to be replaced."
+            }
+          },
+          "maxPersons": 2,
+          "created": "0001-01-01T00:00:00Z",
+          "attributes": [
+            {
+              "id": "KQOSXHLS",
+              "name": "Floor 3",
+              "description": "Floor number"
+            },
+            {
+              "id": "ADVFSSUL",
+              "name": "Street view",
+              "description": "View from the room"
+            }
+          ]
+        }
+      },
+      "UnitStatusModel": {
+        "title": "UnitStatusModel",
+        "required": [
+          "isOccupied",
+          "condition"
+        ],
+        "type": "object",
+        "properties": {
+          "isOccupied": {
+            "type": "boolean"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition2"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/UnitMaintenanceModel"
+          }
+        }
+      },
+      "Action": {
+        "title": "Action",
+        "enum": [
+          "Delete",
+          "Archive",
+          "SetLive",
+          "DeleteTransactionalData"
+        ],
+        "type": "string",
+        "example": "Delete"
+      },
+      "Code": {
+        "title": "Code",
+        "enum": [
+          "DeleteNotAllowedForPropertyNotInStatusTest",
+          "ArchiveNotAllowedForPropertyNotInStatusLive",
+          "ArchiveNotAllowedForPropertyWhichIsAlreadyArchived",
+          "SetToLiveNotAllowedForPropertyNotInStatusTest",
+          "SetToLiveNotAllowedForPropertyInNonLiveAccount",
+          "DeleteTransactionalDataNotAllowedForPropertyNotInStatusTest"
+        ],
+        "type": "string",
+        "example": "DeleteNotAllowedForPropertyNotInStatusTest"
+      },
+      "Condition": {
+        "title": "Condition",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "description": "Condition of the unit - <b>DEPRECATED: This field will be removed at 15.08.2021. Use `Units` for creating in bulk instead</b>",
+        "example": "Clean"
+      },
+      "Condition1": {
+        "title": "Condition1",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "description": "Condition of the unit",
+        "example": "Clean"
+      },
+      "Condition2": {
+        "title": "Condition2",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "example": "Clean"
+      },
+      "expand": {
+        "title": "expand",
+        "enum": [
+          "actions"
+        ],
+        "type": "string",
+        "example": "actions"
+      },
+      "expand2": {
+        "title": "expand2",
+        "enum": [
+          "property",
+          "unitGroup"
+        ],
+        "type": "string",
+        "example": "property"
+      },
+      "expand4": {
+        "title": "expand4",
+        "enum": [
+          "property"
+        ],
+        "type": "string",
+        "example": "property"
+      },
+      "maintenanceType": {
+        "title": "maintenanceType",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "example": "OutOfService"
+      },
+      "Status": {
+        "title": "Status",
+        "enum": [
+          "Test",
+          "Live"
+        ],
+        "type": "string",
+        "description": "The status of the property",
+        "example": "Test"
+      },
+      "status2": {
+        "title": "status2",
+        "enum": [
+          "Test",
+          "Live"
+        ],
+        "type": "string",
+        "example": "Test"
+      },
+      "Type": {
+        "title": "Type",
+        "enum": [
+          "BedRoom",
+          "MeetingRoom",
+          "EventSpace",
+          "ParkingLot"
+        ],
+        "type": "string",
+        "description": "The unit group type",
+        "example": "BedRoom"
+      },
+      "Type1": {
+        "title": "Type1",
+        "enum": [
+          "BedRoom",
+          "MeetingRoom",
+          "EventSpace",
+          "ParkingLot",
+          "Other"
+        ],
+        "type": "string",
+        "description": "The unit group type",
+        "example": "BedRoom"
+      },
+      "Type4": {
+        "title": "Type4",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "description": "The type of maintenance that is planned for the unit. A small repair (OutOfService),\r\na bigger disfunction that does not allow to sell the unit (OutOfOrder) or is it\r\neven under construction and should reduce the house count (OutOfInventory)",
+        "example": "OutOfService"
+      }
+    },
+    "securitySchemes": {
+      "Client credentials grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "",
+            "scopes": {
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      },
+      "Authorization code grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://identity.apaleo.com/connect/authorize",
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "https://identity.apaleo.com/connect/token",
+            "scopes": {
+              "offline_access": "This scope is active by default for connect clients.",
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Client credentials grant flow": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Property",
+      "description": ""
+    },
+    {
+      "name": "Types",
+      "description": ""
+    },
+    {
+      "name": "Unit",
+      "description": ""
+    },
+    {
+      "name": "UnitAttribute",
+      "description": ""
+    },
+    {
+      "name": "UnitGroup",
+      "description": ""
+    }
+  ]
+}

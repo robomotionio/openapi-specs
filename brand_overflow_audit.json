@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AuditApi",
+    "version": "1.0",
+    "description": "Brandoverflow Audit API",
+    "contact": {
+      "name": "Ahmed",
+      "url": "https://www.brandoverflow.com",
+      "email": "help@robomotion.pro"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api3.brandoverflow.com"
+    }
+  ],
+  "paths": {
+    "/leads_api": {
+      "post": {
+        "summary": "Add Lead and Request Audit",
+        "operationId": "post-leads_api",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Add Lead for website audit to dashboard and optionally start audit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "email": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "process_immediately": {
+                    "type": "boolean"
+                  },
+                  "max_pages": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "token",
+                  "url",
+                  "name",
+                  "email",
+                  "process_immediately",
+                  "max_pages"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "token": "your_api_token",
+                    "url": "https://your_url.com",
+                    "name": "Full Name",
+                    "email": "Email",
+                    "process_immediately": true,
+                    "max_pages": 10
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request from Form"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "title": "User",
+        "type": "object",
+        "description": "",
+        "x-examples": {
+          "Alice Smith": {
+            "id": 142,
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "email": "alice.smith@gmail.com",
+            "dateOfBirth": "1997-10-31",
+            "emailVerified": true,
+            "signUpDate": "2019-08-24"
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the given user."
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "example": "1997-10-31"
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Set to true if the user's email has been verified."
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date that the user was created."
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "emailVerified"
+        ]
+      }
+    },
+    "securitySchemes": {}
+  }
+}

@@ -1,0 +1,2347 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API-BASKETBALL",
+    "version": "1.3.4",
+    "x-logo": {
+      "url": "https://api-sports.io/assets/img/news/basket-player.png",
+      "altText": "api-basketball logo"
+    },
+    "description": "# Introduction\n\nWelcome to Api-Basketball! You can use our API to access all API endpoints, which can get information about Basketball Leagues & Cups.\n\nWe have language bindings in C, C#, cURL, Dart, Go, Java, Javascript, NodeJs, Objective-c, OCaml, Php, PowerShell, Python, Ruby, Shell and Swift! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.\n\n# Authentication\n\nWe uses API keys to allow access to the API. You can register a new API key in [rapidapi](https://rapidapi.com/api-sports/api/api-basketball/pricing) or directly on our [dashboard](https://dashboard.api-football.com/register).\n\n The accounts on **RapidAPI** and on our **Dashboard** are dissociated. Each of these registration methods has its own **URL** and **API-KEY**. You must therefore adapt your scripts according to your subscription by adapting the URL and your API-KEY.\n\n**RAPIDAPI** : https://api-basketball.p.rapidapi.com/\n\n**API-SPORTS** : https://v1.basketball.api-sports.io/\n\n\nOur API expects for the API key to be included in all API requests to the server in a header that looks like the following:\n\n> Make sure to replace `XxXxXxXxXxXxXxXxXxXxXxXx` with your API key.\n\n**REQUESTS HEADERS & CORS**\n\nThe API is configured to work only with **GET** requests and allows only the headers listed below:\n* `x-rapidapi-host`\n* `x-rapidapi-key`\n* `x-apisports-key`\n\nIf you make non-GET requests or add headers that are not in the list, you will receive an error from the API.\n\nSome frameworks *(especially in JS, nodeJS..)* automatically add extra headers, you have to make sure to remove them in order to get a response from the API.\n\n ## RAPIDAPI Account\n\nAll information related to your subscription are available on the rapidApi developer dashboard.\n\n The RapidAPI developer dashboard is where you can see all of your apps, locate API keys, view analytics, and manage billing settings.\n\nTo access the dashboard, simply login to RapidAPI and select 'My Apps' in the top-right menu. Alternatively, you can head directly to [https://rapidapi.com/developer/dashboard](https://rapidapi.com/developer/dashboard).\n\nIn the main dashboard, you will see account-wide analytics and account information. To get more detailed information, you can select tabs on the left-hand side of the screen.\n\n### App Specific Analytics\n\nUsing the RapidAPI dashboard, you can also view analytics specific to each app in your account. To do so, switch over to the 'Analytics' tab of your application in the dashboard.\n\nOn the top of the page, you'll be able to see a chart with all the calls being made to all the APIs your app is connected to. You'll also be able to see a log with all the request data. You are also able to filter these analytics to only show certain APIs within the app.\n\nIn each graph, you can view the following metrics:\n\n* `API Calls`: how many requests are being made\n* `Error rates`: how many requests are error some\n* `Latency`: how long (on average) requests take to execute\n\nYou may change the time period you're looking at by clicking the calendar icon and choosing a time range.\n\n### Headers sent as response\n\nWhen consuming our API, you will always receive the following headers appended to the response:\n\n* `server`: The current version of the API proxy used by RapidAPI.\n* `x-ratelimit-requests-limit`: The number of requests the plan you are currently subscribed to allows you to make, before incurring overages.\n* `x-ratelimit-requests-remaining`: The number of requests remaining before you reach the limit of requests your application is allowed to make, before experiencing overage charges.\n* `X-RapidAPI-Proxy-Response`: This header is set to true when the RapidAPI proxy generates the response, (i.e. the response is not generated from our servers)\n\n## API-SPORTS Account\n\nIf you decided to subscribe directly on our site, you have a dashboard at your disposal at the following url: [dashboard](https://dashboard.api-football.com/register)\n\n\nIt allows you to:\n\n* To follow your consumption in real time\n* Manage your subscription and change it if necessary\n* Check the status of our servers\n* Test all endpoints without writing a line of code.\n\nYou can also consult all this information directly through the API by calling the endpoint `status`.\n\n> This call does not count against the daily quota.\n\n```json\nget(\"https://v1.basketball.api-sports.io/status\");\n\n// response\n{\n    \"get\": \"status\",\n    \"parameters\": [],\n    \"errors\": [],\n    \"results\": 1,\n    \"response\": {\n        \"account\": {\n            \"firstname\": \"xxxx\",\n            \"lastname\": \"XXXXXX\",\n            \"email\": \"xxx@xxx.com\"\n        },\n        \"subscription\": {\n            \"plan\": \"Free\",\n            \"end\": \"2020-04-10T23:24:27+00:00\",\n            \"active\": true\n        },\n        \"requests\": {\n            \"current\": 12,\n            \"limit_day\": 100\n        }\n    }\n}\n```\n\n### Headers sent as response\n\nWhen consuming our API, you will always receive the following headers appended to the response:\n\n* `x-ratelimit-requests-limit`: The number of requests allocated per day according to your subscription.\n* `x-ratelimit-requests-remaining`: The number of remaining requests per day according to your subscription.\n* `X-RateLimit-Limit`: Maximum number of API calls per minute.\n* `X-RateLimit-Remaining`: Number of API calls remaining before reaching the limit per minute.\n\n### Dashboard\n![dashboard](https://www.api-football.com/public/img/news/baseball-dashboard.png)\n\n### Requests\n![requests](https://www.api-football.com/public/img/news/baseball-requests.png)\n\n# Architecture\n\n![image](https://www.api-football.com/public/img/news/api-basket.jpg)\n\n# Sample Scripts\n\nHere are some examples of how the API is used in the main development languages.\n\nYou have to replace `{endpoint}` by the real name of the endpoint you want to call, like `leagues` or `games` for example.\n\nAlso you will have to replace `XxXxXxXxXxXxXxXxXxXxXx` with your API-KEY provided in the [dashboard](https://dashboard.api-football.com/) or on [rapidapi](https://rapidapi.com/api-sports/api/api-basketball/pricing).\n\n\n## C\n\n`libcurl`\n```shell\nCURL *curl;\nCURLcode res;\ncurl = curl_easy_init();\nif(curl) {\n  curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, \"GET\");\n  curl_easy_setopt(curl, CURLOPT_URL, \"https://v1.basketball.api-sports.io/{endpoint}\");\n  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);\n  curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, \"https\");\n  struct curl_slist *headers = NULL;\n  headers = curl_slist_append(headers, \"x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx\");\n  headers = curl_slist_append(headers, \"x-rapidapi-host: v1.basketball.api-sports.io\");\n  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n  res = curl_easy_perform(curl);\n}\ncurl_easy_cleanup(curl);\n```\n\n## C#\n\n`RestSharp`\n```shell\nvar client = new RestClient(\"https://v1.basketball.api-sports.io/{endpoint}\");\nclient.Timeout = -1;\nvar request = new RestRequest(Method.GET);\nrequest.AddHeader(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\");\nrequest.AddHeader(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\");\nIRestResponse response = client.Execute(request);\nConsole.WriteLine(response.Content);\n```\n\n## cURL\n\n`Curl`\n```shell\ncurl --request GET \\\n\t--url https://v1.basketball.api-sports.io/{endpoint} \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n```\n\n## Dart\n\n`http`\n```dart\nvar headers = {\n  'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n  'x-rapidapi-host': 'v1.basketball.api-sports.io'\n};\nvar request = http.Request('GET', Uri.parse('https://v1.basketball.api-sports.io/{endpoint}'));\n\nrequest.headers.addAll(headers);\n\nhttp.StreamedResponse response = await request.send();\n\nif (response.statusCode == 200) {\n  print(await response.stream.bytesToString());\n}\nelse {\n  print(response.reasonPhrase);\n}\n```\n\n## Go\n\n`Native`\n```go\npackage main\n\nimport (\n  \"fmt\"\n  \"net/http\"\n  \"io/ioutil\"\n)\n\nfunc main() {\n\n  url := \"https://v1.basketball.api-sports.io/{endpoint}\"\n  method := \"GET\"\n\n  client := &http.Client {\n  }\n  req, err := http.NewRequest(method, url, nil)\n\n  if err != nil {\n    fmt.Println(err)\n    return\n  }\n  req.Header.Add(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\")\n  req.Header.Add(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\")\n\n  res, err := client.Do(req)\n  if err != nil {\n    fmt.Println(err)\n    return\n  }\n  defer res.Body.Close()\n\n  body, err := ioutil.ReadAll(res.Body)\n  if err != nil {\n    fmt.Println(err)\n    return\n  }\n  fmt.Println(string(body))\n}\n```\n\n## Java\n\n`OkHttp`\n```java\nvar myHeaders = new Headers();\nmyHeaders.append(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\");\nmyHeaders.append(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\");\n\nvar requestOptions = {\n  method: 'GET',\n  headers: myHeaders,\n  redirect: 'follow'\n};\n```\n\n`Unirest`\n```java\nUnirest.setTimeouts(0, 0);\nHttpResponse<String> response = Unirest.get(\"https://v1.basketball.api-sports.io/{endpoint}\")\n  .header(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\")\n  .header(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\")\n  .asString();\n```\n\n## Javascript\n\n`Fetch`\n```javascript\nvar myHeaders = new Headers();\nmyHeaders.append(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\");\nmyHeaders.append(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\");\n\nvar requestOptions = {\n  method: 'GET',\n  headers: myHeaders,\n  redirect: 'follow'\n};\n\nfetch(\"https://v1.basketball.api-sports.io/{endpoint}\", requestOptions)\n  .then(response => response.text())\n  .then(result => console.log(result))\n  .catch(error => console.log('error', error));\n```\n\n`jQuery`\n```javascript\nvar settings = {\n  \"url\": \"https://v1.basketball.api-sports.io/{endpoint}\",\n  \"method\": \"GET\",\n  \"timeout\": 0,\n  \"headers\": {\n    \"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\",\n    \"x-rapidapi-host\": \"v1.basketball.api-sports.io\"\n  },\n};\n\n$.ajax(settings).done(function (response) {\n  console.log(response);\n});\n```\n\n`XHR`\n```javascript\nvar xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\nxhr.addEventListener(\"readystatechange\", function() {\n  if(this.readyState === 4) {\n    console.log(this.responseText);\n  }\n});\n\nxhr.open(\"GET\", \"https://v1.basketball.api-sports.io/%7Bendpoint%7D\");\nxhr.setRequestHeader(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\");\nxhr.setRequestHeader(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\");\n\nxhr.send();\n```\n\n## NodeJs\n\n`Axios`\n```nodejs\nvar axios = require('axios');\n\nvar config = {\n  method: 'get',\n  url: 'https://v1.basketball.api-sports.io/{endpoint}',\n  headers: {\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n    'x-rapidapi-host': 'v1.basketball.api-sports.io'\n  }\n};\n\naxios(config)\n.then(function (response) {\n  console.log(JSON.stringify(response.data));\n})\n.catch(function (error) {\n  console.log(error);\n});\n```\n\n`Native`\n```nodejs\nvar https = require('follow-redirects').https;\nvar fs = require('fs');\n\nvar options = {\n  'method': 'GET',\n  'hostname': 'v1.basketball.api-sports.io',\n  'path': '/{endpoint}',\n  'headers': {\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n    'x-rapidapi-host': 'v1.basketball.api-sports.io'\n  },\n  'maxRedirects': 20\n};\n\nvar req = https.request(options, function (res) {\n  var chunks = [];\n\n  res.on(\"data\", function (chunk) {\n    chunks.push(chunk);\n  });\n\n  res.on(\"end\", function (chunk) {\n    var body = Buffer.concat(chunks);\n    console.log(body.toString());\n  });\n\n  res.on(\"error\", function (error) {\n    console.error(error);\n  });\n});\n\nreq.end();\n```\n\n`Requests`\n```nodejs\nvar request = require('request');\nvar options = {\n  'method': 'GET',\n  'url': 'https://v1.basketball.api-sports.io/{endpoint}',\n  'headers': {\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n    'x-rapidapi-host': 'v1.basketball.api-sports.io'\n  }\n};\nrequest(options, function (error, response) {\n  if (error) throw new Error(error);\n  console.log(response.body);\n});\n```\n\n`Unirest`\n```nodejs\nvar unirest = require('unirest');\nvar req = unirest('GET', 'https://v1.basketball.api-sports.io/{endpoint}')\n  .headers({\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n    'x-rapidapi-host': 'v1.basketball.api-sports.io'\n  })\n  .end(function (res) {\n    if (res.error) throw new Error(res.error);\n    console.log(res.raw_body);\n  });\n```\n\n## Objective-c\n\n`NSURLSession`\n```objectivec\n#import <Foundation/Foundation.h>\n\ndispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\nNSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@\"https://v1.basketball.api-sports.io/{endpoint}\"]\n  cachePolicy:NSURLRequestUseProtocolCachePolicy\n  timeoutInterval:10.0];\nNSDictionary *headers = @{\n  @\"x-rapidapi-key\": @\"XxXxXxXxXxXxXxXxXxXxXxXx\",\n  @\"x-rapidapi-host\": @\"v1.basketball.api-sports.io\"\n};\n\n[request setAllHTTPHeaderFields:headers];\n\n[request setHTTPMethod:@\"GET\"];\n\nNSURLSession *session = [NSURLSession sharedSession];\nNSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request\ncompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n  if (error) {\n    NSLog(@\"%@\", error);\n    dispatch_semaphore_signal(sema);\n  } else {\n    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n    NSError *parseError = nil;\n    NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];\n    NSLog(@\"%@\",responseDictionary);\n    dispatch_semaphore_signal(sema);\n  }\n}];\n[dataTask resume];\ndispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);\n```\n\n## OCaml\n\n`Cohttp`\n```ocaml\nopen Lwt\nopen Cohttp\nopen Cohttp_lwt_unix\n\nlet reqBody =\n  let uri = Uri.of_string \"https://v1.basketball.api-sports.io/%7Bendpoint%7D\" in\n  let headers = Header.init ()\n    |> fun h -> Header.add h \"x-rapidapi-key\" \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    |> fun h -> Header.add h \"x-rapidapi-host\" \"v1.basketball.api-sports.io\"\n  in\n  Client.call ~headers `GET uri >>= fun (_resp, body) ->\n  body |> Cohttp_lwt.Body.to_string >|= fun body -> body\n\nlet () =\n  let respBody = Lwt_main.run reqBody in\n  print_endline (respBody)\n```\n\n## Php\n\n`cURL`\n```php\n$curl = curl_init();\n\ncurl_setopt_array($curl, array(\n  CURLOPT_URL => 'https://v1.basketball.api-sports.io/{endpoint}',\n  CURLOPT_RETURNTRANSFER => true,\n  CURLOPT_ENCODING => '',\n  CURLOPT_MAXREDIRS => 10,\n  CURLOPT_TIMEOUT => 0,\n  CURLOPT_FOLLOWLOCATION => true,\n  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n  CURLOPT_CUSTOMREQUEST => 'GET',\n  CURLOPT_HTTPHEADER => array(\n    'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx',\n    'x-rapidapi-host: v1.basketball.api-sports.io'\n  ),\n));\n\n$response = curl_exec($curl);\n\ncurl_close($curl);\necho $response;\n```\n\n`Request2`\n```php\n<?php\nrequire_once 'HTTP/Request2.php';\n$request = new HTTP_Request2();\n$request->setUrl('https://v1.basketball.api-sports.io/{endpoint}');\n$request->setMethod(HTTP_Request2::METHOD_GET);\n$request->setConfig(array(\n  'follow_redirects' => TRUE\n));\n$request->setHeader(array(\n  'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx',\n  'x-rapidapi-host' => 'v1.basketball.api-sports.io'\n));\ntry {\n  $response = $request->send();\n  if ($response->getStatus() == 200) {\n    echo $response->getBody();\n  }\n  else {\n    echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .\n    $response->getReasonPhrase();\n  }\n}\ncatch(HTTP_Request2_Exception $e) {\n  echo 'Error: ' . $e->getMessage();\n}\n```\n\n`Http`\n```php\n$client = new http\\Client;\n$request = new http\\Client\\Request;\n$request->setRequestUrl('https://v1.basketball.api-sports.io/{endpoint}');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n$client->enqueue($request)->send();\n$response = $client->getResponse();\necho $response->getBody();\n```\n\n## PowerShell\n\n`RestMethod`\n```powershell\n$headers = New-Object \"System.Collections.Generic.Dictionary[[String],[String]]\"\n$headers.Add(\"x-rapidapi-key\", \"XxXxXxXxXxXxXxXxXxXxXxXx\")\n$headers.Add(\"x-rapidapi-host\", \"v1.basketball.api-sports.io\")\n\n$response = Invoke-RestMethod 'https://v1.basketball.api-sports.io/{endpoint}' -Method 'GET' -Headers $headers\n$response | ConvertTo-Json\n```\n\n## Python\n\n`http.client`\n```python\nimport http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/{endpoint}\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n```\n\n`Requests`\n```python\nurl = \"https://v1.basketball.api-sports.io/{endpoint}\"\n\npayload={}\nheaders = {\n  'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx',\n  'x-rapidapi-host': 'v1.basketball.api-sports.io'\n}\n\nresponse = requests.request(\"GET\", url, headers=headers, data=payload)\n\nprint(response.text)\n```\n\n## Ruby\n\n`Net::HTTP`\n```ruby\nrequire 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/{endpoint}\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n```\n\n## Shell\n\n`Httpie`\n```shell\nhttp --follow --timeout 3600 GET 'https://v1.basketball.api-sports.io/{endpoint}' \\\n x-rapidapi-key:'XxXxXxXxXxXxXxXxXxXxXxXx' \\\n x-rapidapi-host:'v1.basketball.api-sports.io'\n```\n\n`wget`\n```shell\nwget --no-check-certificate --quiet \\\n  --method GET \\\n  --timeout=0 \\\n  --header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx' \\\n  --header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n   'https://v1.basketball.api-sports.io/{endpoint}'\n```\n\n## Swift\n\n`URLSession`\n```swift\nimport Foundation\n#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\nvar semaphore = DispatchSemaphore (value: 0)\n\nvar request = URLRequest(url: URL(string: \"https://v1.basketball.api-sports.io/{endpoint}\")!,timeoutInterval: Double.infinity)\nrequest.addValue(\"XxXxXxXxXxXxXxXxXxXxXxXx\", forHTTPHeaderField: \"x-rapidapi-key\")\nrequest.addValue(\"v1.basketball.api-sports.io\", forHTTPHeaderField: \"x-rapidapi-host\")\n\nrequest.httpMethod = \"GET\"\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n  guard let data = data else {\n    print(String(describing: error))\n    semaphore.signal()\n    return\n  }\n  print(String(data: data, encoding: .utf8)!)\n  semaphore.signal()\n}\n\ntask.resume()\nsemaphore.wait()\n```\n",
+    "contact": {
+      "name": "support",
+      "url": "https://www.api-basketball.com",
+      "email": "https://dashboard.api-football.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://v1.basketball.api-sports.io",
+      "description": "API-SPORTS"
+    },
+    {
+      "url": "https://api-basketball.p.rapidapi.com",
+      "description": "RapidAPI"
+    }
+  ],
+  "paths": {
+    "/timezone": {
+      "get": {
+        "summary": "timezone",
+        "tags": [
+          "Timezone"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "timezone",
+                      "parameters": [],
+                      "errors": [],
+                      "results": 425,
+                      "response": [
+                        "Africa/Abidjan",
+                        "Africa/Accra",
+                        "Africa/Addis_Ababa",
+                        "Africa/Algiers",
+                        "Africa/Asmara"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-timezone",
+        "description": "Get the list of available timezone to be used in the games endpoint.\n\n> This endpoint does not require any parameters.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/timezone');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/timezone\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/timezone',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/timezone\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/timezone \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/timezone\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          }
+        ]
+      }
+    },
+    "/seasons": {
+      "get": {
+        "summary": "seasons",
+        "tags": [
+          "Seasons"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "seasons",
+                      "parameters": [],
+                      "errors": [],
+                      "results": 8,
+                      "response": [
+                        "2015-2016",
+                        "2016-2017",
+                        2017,
+                        "2017-2018",
+                        2018,
+                        "2018-2019",
+                        2019,
+                        "2019-2020"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-seasons",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "All `seasons` can be used in other endpoints as filters.\n\n> This endpoint does not require any parameters.",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/seasons');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/leagues/seasons\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/seasons',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/seasons\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/seasons \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/seasons\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          }
+        ]
+      }
+    },
+    "/countries": {
+      "get": {
+        "summary": "countries",
+        "tags": [
+          "Countries"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "countries",
+                      "parameters": {
+                        "search": "usa"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        {
+                          "id": 5,
+                          "name": "USA",
+                          "code": "US",
+                          "flag": "https://media.api-football.com/flags/us.svg"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-countries",
+        "description": "Get the list of available countries.\n\n The `id` `name` and `code` fields can be used in other endpoints as filters. \n\n> All the parameters of this endpoint can be used together.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the country"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "The name of the country"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "example": "EN, IT, FR"
+            },
+            "in": "query",
+            "name": "code",
+            "description": "The code of the country"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3
+            },
+            "in": "query",
+            "name": "search"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/countries');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/countries\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/countries',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/countries\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/countries \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/countries\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all available countries across all {seasons} and competitions\nget(\"https://v1.basketball.api-sports.io/countries\");\n\n// Get all available countries from one id {id}\nget(\"https://v1.basketball.api-sports.io/countries?id=1\");\n\n// Get all available countries from one country {name}\nget(\"https://v1.basketball.api-sports.io/countries?name=england\");\n\n// Get all available countries from one country {code}\nget(\"https://v1.basketball.api-sports.io/countries?code=fr\");\n\n// Allows you to search for a countries in relation to a country {name}\nget(\"https://v1.basketball.api-sports.io/countries?search=engl\");\n"
+          }
+        ]
+      }
+    },
+    "/leagues": {
+      "get": {
+        "summary": "leagues",
+        "tags": [
+          "Leagues"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "leagues",
+                      "parameters": {
+                        "id": "12"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        {
+                          "id": 12,
+                          "name": "NBA",
+                          "type": "League",
+                          "logo": null,
+                          "country": {
+                            "id": 5,
+                            "name": "USA",
+                            "code": "US",
+                            "flag": "https://media.api-football.com/flags/us.svg"
+                          },
+                          "seasons": [
+                            {
+                              "season": "2019-2020",
+                              "start": "2019-10-04",
+                              "end": "2020-04-16"
+                            },
+                            {
+                              "season": "2018-2019",
+                              "start": "2018-09-28",
+                              "end": "2019-05-24"
+                            },
+                            {
+                              "season": "2017-2018",
+                              "start": "2017-10-01",
+                              "end": "2018-06-09"
+                            },
+                            {
+                              "season": "2016-2017",
+                              "start": "2016-10-01",
+                              "end": "2017-06-13"
+                            },
+                            {
+                              "season": "2015-2016",
+                              "start": "2015-10-03",
+                              "end": "2016-06-20"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-leagues",
+        "description": "Get the list of available leagues and cups.\n\nThe league `id` are **unique** in the API and leagues keep it across all `seasons`\n\n> Most of the parameters of this endpoint can be used together.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "The name of the league"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "country_id",
+            "description": "The id of the country"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country",
+            "description": "The name of the country"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "league",
+                "cup"
+              ]
+            },
+            "in": "query",
+            "name": "type",
+            "description": "The type of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3
+            },
+            "in": "query",
+            "name": "search",
+            "description": "The code of the country"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "You rapidAPI Key",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "example": "FR, EN, IT"
+            },
+            "in": "query",
+            "name": "code"
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/leagues');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/leagues\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/leagues',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/leagues\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/leagues \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/leagues\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Allows to retrieve all the seasons available for a league/cup\nget(\"https://v1.basketball.api-sports.io/leagues?id=39\");\n\n// Get all leagues from one league {name}\nget(\"https://v1.basketball.api-sports.io/leagues?name=nba\");\n\n// Get all leagues from one {country}\n// You can find the available {country} by using the endpoint country\nget(\"https://v1.basketball.api-sports.io/leagues?country=usa\");\n\n// Get all leagues from one country {code} (GB, FR, IT etc..)\n// You can find the available country {code} by using the endpoint country\nget(\"https://v1.basketball.api-sports.io/leagues?code=us\");\n\n// Get all leagues from one {season}\n// You can find the available {season} by using the endpoint seasons\nget(\"https://v1.basketball.api-sports.io/leagues?season=2019-2020\");\n\n// Get one league from one league {id} & {season}\nget(\"https://v1.basketball.api-sports.io/leagues?season=2019-2020&id=12\");\n\n// Allows you to search for a league in relation to a league {name} or {country}\nget(\"https://v1.basketball.api-sports.io/leagues?search=nba\");\nget(\"https://v1.basketball.api-sports.io/leagues?search=usa\");\n\n// Get all leagues from one {type}\nget(\"https://v1.basketball.api-sports.io/leagues?type=league\");\n\n// It’s possible to make requests by mixing the available parameters\nget(\"https://v1.basketball.api-sports.io/leagues?season=2019&country=usa&type=league\");\nget(\"https://v1.basketball.api-sports.io/leagues?team=134&season=2019-2020\");\n"
+          }
+        ]
+      }
+    },
+    "/teams": {
+      "get": {
+        "summary": "teams",
+        "tags": [
+          "Teams"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "teams",
+                      "parameters": {
+                        "name": "Denver Nuggets"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        {
+                          "id": 139,
+                          "name": "Denver Nuggets",
+                          "nationnal": false,
+                          "logo": null,
+                          "country": {
+                            "id": 5,
+                            "name": "USA",
+                            "code": "US",
+                            "flag": "https://media.api-football.com/flags/us.svg"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-teams",
+        "description": "Get data about teams.\n\nThe team `id` are **unique** in the API and teams keep it among all the leagues/cups in which they participate.\n\n> **This endpoint requires at least one parameter.**",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the team"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "The name of the team"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3
+            },
+            "in": "query",
+            "name": "search"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/teams');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'id' => '139'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/teams?id=139\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/teams',\n  qs: {id: '139'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/teams?id=139\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/teams?id=139' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/teams?id=139\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get one team from one team {id}\nget(\"https://v1.basketball.api-sports.io/teams?id=139\");\n\n// Get one team from one team {name}\nget(\"https://v1.basketball.api-sports.io/teams?name=Denver Nuggets\");\n\n// Get all teams from one {league} & {season}\nget(\"https://v1.basketball.api-sports.io/teams?league=12&season=2019-2020\");\n\n// Allows you to search for a team in relation to a team {name} or {country}\nget(\"https://v1.basketball.api-sports.io/teams?search=Denver\");\nget(\"https://v1.basketball.api-sports.io/teams?search=usa\");\n"
+          }
+        ]
+      }
+    },
+    "/statistics": {
+      "get": {
+        "summary": "statistics",
+        "tags": [
+          "Teams"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "statistics",
+                      "parameters": {
+                        "league": "12",
+                        "season": "2019-2020",
+                        "team": "139"
+                      },
+                      "errors": [],
+                      "results": 5,
+                      "response": {
+                        "league": {
+                          "id": 12,
+                          "name": "NBA",
+                          "type": "League",
+                          "season": "2019-2020",
+                          "logo": null
+                        },
+                        "country": {
+                          "id": 5,
+                          "name": "USA",
+                          "code": "US",
+                          "flag": "https://media.api-football.com/flags/us.svg"
+                        },
+                        "team": {
+                          "id": 139,
+                          "name": "Denver Nuggets",
+                          "logo": null
+                        },
+                        "games": {
+                          "played": {
+                            "home": 9,
+                            "away": 9,
+                            "all": 18
+                          },
+                          "wins": {
+                            "home": {
+                              "total": 7,
+                              "percentage": "0.778"
+                            },
+                            "away": {
+                              "total": 8,
+                              "percentage": "0.889"
+                            },
+                            "all": {
+                              "total": 15,
+                              "percentage": "0.833"
+                            }
+                          },
+                          "draws": {
+                            "home": {
+                              "total": 0,
+                              "percentage": "0.000"
+                            },
+                            "away": {
+                              "total": 0,
+                              "percentage": "0.000"
+                            },
+                            "all": {
+                              "total": 0,
+                              "percentage": "0.000"
+                            }
+                          },
+                          "loses": {
+                            "home": {
+                              "total": 2,
+                              "percentage": "0.222"
+                            },
+                            "away": {
+                              "total": 1,
+                              "percentage": "0.111"
+                            },
+                            "all": {
+                              "total": 3,
+                              "percentage": "0.167"
+                            }
+                          }
+                        },
+                        "points": {
+                          "for": {
+                            "total": {
+                              "home": 956,
+                              "away": 961,
+                              "all": 1917
+                            },
+                            "average": {
+                              "home": "106.2",
+                              "away": "106.8",
+                              "all": "106.5"
+                            }
+                          },
+                          "against": {
+                            "total": {
+                              "home": 911,
+                              "away": 902,
+                              "all": 1813
+                            },
+                            "average": {
+                              "home": "101.2",
+                              "away": "100.2",
+                              "all": "100.7"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-teams-statistics",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "required": true,
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "required": true,
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "team",
+            "required": true,
+            "description": "The id of the team"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "YYYY-MM-DD"
+            },
+            "in": "query",
+            "name": "date",
+            "description": "A Limit Date"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/statistics');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'season' => '2019-2020',\n\t'team' => '139',\n\t'league' => '12'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/statistics?season=2019-2020&team=139&league=12\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/statistics',\n  qs: {season: '2019-2020', team: '139', league: '12'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/statistics?season=2019-2020&team=139&league=12\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/statistics?season=2019-2020&team=139&league=12' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/statistics?season=2019-2020&team=139&league=12\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all statistics for a {team} in a {league} & {season}\nget(\"https://v1.basketball.api-sports.io/statistics?league=12&team=139&season=2019-2020\");\n\n//Get all statistics for a {team} in a {league} & {season} with a end {date}\nget(\"https://v1.basketball.api-sports.io/statistics?league=12&team=139&season=2019-2020&date=2019-10-08\");\n"
+          }
+        ]
+      }
+    },
+    "/standings": {
+      "get": {
+        "summary": "standings",
+        "tags": [
+          "Standings"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "standings",
+                      "parameters": {
+                        "league": "12",
+                        "season": "2019-2020",
+                        "team": "137"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        [
+                          {
+                            "position": 14,
+                            "stage": "NBA - Regular Season",
+                            "group": {
+                              "name": "Eastern Conference",
+                              "points": null
+                            },
+                            "team": {
+                              "id": 137,
+                              "name": "Cleveland Cavaliers",
+                              "logo": null
+                            },
+                            "league": {
+                              "id": 12,
+                              "name": "NBA",
+                              "type": "League",
+                              "season": "2019-2020",
+                              "logo": null
+                            },
+                            "country": {
+                              "id": 5,
+                              "name": "USA",
+                              "code": "US",
+                              "flag": "https://media.api-football.com/flags/us.svg"
+                            },
+                            "games": {
+                              "played": 15,
+                              "win": {
+                                "total": 4,
+                                "percentage": "0.267"
+                              },
+                              "lose": {
+                                "total": 11,
+                                "percentage": "0.733"
+                              }
+                            },
+                            "points": {
+                              "for": 1559,
+                              "against": 1682
+                            },
+                            "form": "LLLLL",
+                            "description": null
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-standings",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "required": true,
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "required": true,
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "team",
+            "description": "The id of the team"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "stage",
+            "description": "A valid stage"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "group",
+            "description": "A valid group"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "Get the standings for a league.\n\nReturn a table of one or more rankings according to the league / cup. Some competitions have several rankings in a year, regular season, pre season etc…\n\nTo know the list of available stages or groups you have to use the endpoint standings/stages or standings/groups\n\n> Standings are updated every hours",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/standings');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'league' => '12',\n\t'season' => '2019-2020'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/standings?league=12&season=2019-2020\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/standings',\n  qs: {league: '12', season: '2019-2020'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all Standings from one {league} & {season}\nget(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020\");\n\n// Get all Standings from one {league} & {season} & {team}\nget(\"https://v1.basketball.api-sports.io/standings?league=12&team=137&season=2019-2020\");\n\n// Get all Standings from one {team} & {season}\nget(\"https://v1.basketball.api-sports.io/standings?team=137&season=2019-2020\");\n\n// Get all Standings from one {team} & {season} & {stage}\nget(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020&stage=NBA - Regular Season\");\n\n// Get all Standings from one {team} & {season} & {group}\nget(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020&group=Eastern Conference\");\n\n// Get all Standings from one {team} & {season} & {stage} & {group}\nget(\"https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020&stage=NBA - Regular Season&group=Eastern Conference\");\n"
+          }
+        ]
+      }
+    },
+    "/standings/stages": {
+      "get": {
+        "summary": "standings/stages",
+        "tags": [
+          "Standings"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "standings/stages",
+                      "parameters": {
+                        "league": "12",
+                        "season": "2019-2020"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        "NBA - Regular Season"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-standings-stages",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "required": true,
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "Get the list of available stages for a league to be used in the standings endpoint.",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/standings/stages');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/leagues/standings/stages\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/standings/stages',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/standings/stages\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/standings/stages \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/standings/stages\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          }
+        ]
+      }
+    },
+    "/standings/groups": {
+      "get": {
+        "summary": "standings/groups",
+        "tags": [
+          "Standings"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "standings/groups",
+                      "parameters": {
+                        "league": "12",
+                        "season": "2019-2020"
+                      },
+                      "errors": [],
+                      "results": 8,
+                      "response": [
+                        "Western Conference",
+                        "Eastern Conference",
+                        "Atlantic",
+                        "Southeast",
+                        "Central",
+                        "Northwest",
+                        "Pacific",
+                        "Southwest"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "operationId": "get-standings-groups",
+        "description": "Get the list of available groups for a league to be used in the standings endpoint.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/standings/groups');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/leagues/standings/groups\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/standings/groups',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/standings/groups\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n--url https://v1.basketball.api-sports.io/standings/groups \\\n--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/standings/groups\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          }
+        ]
+      }
+    },
+    "/games": {
+      "get": {
+        "summary": "games",
+        "tags": [
+          "Games"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "games",
+                      "parameters": {
+                        "league": "12",
+                        "date": "2019-11-23",
+                        "team": "134",
+                        "timezone": "europe/london",
+                        "season": "2019-2020"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        {
+                          "id": 1911,
+                          "date": "2019-11-23T00:30:00+00:00",
+                          "time": "00:30",
+                          "timestamp": 1574469000,
+                          "timezone": "europe/london",
+                          "stage": null,
+                          "week": null,
+                          "status": {
+                            "long": "Game Finished",
+                            "short": "FT",
+                            "timer": null
+                          },
+                          "league": {
+                            "id": 12,
+                            "name": "NBA",
+                            "type": "League",
+                            "season": "2019-2020",
+                            "logo": null
+                          },
+                          "country": {
+                            "id": 5,
+                            "name": "USA",
+                            "code": "US",
+                            "flag": "https://media.api-football.com/flags/us.svg"
+                          },
+                          "teams": {
+                            "home": {
+                              "id": 134,
+                              "name": "Brooklyn Nets",
+                              "logo": null
+                            },
+                            "away": {
+                              "id": 157,
+                              "name": "Sacramento Kings",
+                              "logo": null
+                            }
+                          },
+                          "scores": {
+                            "home": {
+                              "quarter_1": 26,
+                              "quarter_2": 30,
+                              "quarter_3": 30,
+                              "quarter_4": 30,
+                              "over_time": null,
+                              "total": 116
+                            },
+                            "away": {
+                              "quarter_1": 23,
+                              "quarter_2": 26,
+                              "quarter_3": 21,
+                              "quarter_4": 27,
+                              "over_time": null,
+                              "total": 97
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-games",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the game"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "date",
+            "description": "A valid date"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "team",
+            "description": "The id of the team"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "timezone",
+            "description": "A valid timezone"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "For all requests to games you can add the query parameter `timezone` to your request in order to retrieve the list of games in the time zone of your choice like *“Europe/London“*\n\nTo know the list of available time zones you have to use the endpoint timezone\n\n**Available status**\n* NS : Not Started\n* Q1 : Quarter 1 (In Play)\n* Q2 : Quarter 2 (In Play)\n* Q3 : Quarter 3 (In Play)\n* Q4 : Quarter 4 (In Play)\n* OT : Over Time (In Play)\n* BT : Break Time (In Play)\n* HT : Halftime (In Play)\n* FT : Game Finished (Game Finished)\n* AOT : After Over Time (Game Finished)\n* POST : Game Postponed\n* CANC : Game Cancelled\n\n> Games are updated every 15 seconds\n\n> **This endpoint requires at least one parameter.**",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/games');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'date' => '2019-11-23'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/games?date=2019-11-23\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/games',\n  qs: {date: '2019-11-23'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/games?date=2019-11-23\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/games?date=2019-11-23' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/games?date=2019-11-23\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get games from one game {id}\nget(\"https://v1.basketball.api-sports.io/games?id=1911\");\n\n// Get all available games from one {league} & {season}\nget(\"https://v1.basketball.api-sports.io/games?league=12&season=2019-2020\");\n\n// Get all available games from one {team} & {season}\nget(\"https://v1.basketball.api-sports.io/games?team=134&season=2019-2020\");\n\n// Get all available games from one {date}\nget(\"https://v1.basketball.api-sports.io/games?date=2019-11-23\");\n\n// It’s possible to make requests by mixing the available parameters\nget(\"https://v1.basketball.api-sports.io/games?date=2020-01-30&league=12&season=2019-2020\");\nget(\"https://v1.basketball.api-sports.io/games?team=134&season=2019-2020&date=2019-11-23\");\nget(\"https://v1.basketball.api-sports.io/games?league=12&season=2019-2020&date=2019-11-23&timezone=Europe/london\");\n"
+          }
+        ]
+      }
+    },
+    "/games/h2h": {
+      "get": {
+        "summary": "h2h",
+        "tags": [
+          "Games"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "games",
+                      "parameters": {
+                        "league": "12",
+                        "h2h": "132-134",
+                        "season": "2019-2020"
+                      },
+                      "errors": [],
+                      "results": 4,
+                      "response": [
+                        {
+                          "id": 2003,
+                          "date": "2019-12-05T00:30:00+00:00",
+                          "time": "00:30",
+                          "timestamp": 1575505800,
+                          "timezone": "UTC",
+                          "stage": null,
+                          "week": null,
+                          "status": {
+                            "long": "Not Started",
+                            "short": "NS",
+                            "timer": null
+                          },
+                          "league": {
+                            "id": 12,
+                            "name": "NBA",
+                            "type": "League",
+                            "season": "2019-2020",
+                            "logo": null
+                          },
+                          "country": {
+                            "id": 5,
+                            "name": "USA",
+                            "code": "US",
+                            "flag": "https://media.api-football.com/flags/us.svg"
+                          },
+                          "teams": {
+                            "home": {
+                              "id": 132,
+                              "name": "Atlanta Hawks",
+                              "logo": null
+                            },
+                            "away": {
+                              "id": 134,
+                              "name": "Brooklyn Nets",
+                              "logo": null
+                            }
+                          },
+                          "scores": {
+                            "home": {
+                              "quarter_1": null,
+                              "quarter_2": null,
+                              "quarter_3": null,
+                              "quarter_4": null,
+                              "over_time": null,
+                              "total": null
+                            },
+                            "away": {
+                              "quarter_1": null,
+                              "quarter_2": null,
+                              "quarter_3": null,
+                              "quarter_4": null,
+                              "over_time": null,
+                              "total": null
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-games-h2h",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "id-id"
+            },
+            "in": "query",
+            "name": "h2h",
+            "description": "The ids of the teams",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "YYYY-MM-DD"
+            },
+            "in": "query",
+            "name": "date",
+            "description": "A valid date"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 4,
+              "minLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "timezone",
+            "description": "A valid timezone"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "Get heads to heads between two teams.",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/games');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'h2h' => '132-134'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/games?h2h=132-134\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/games',\n  qs: {h2h: '132-134'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/games?h2h=132-134\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/games?h2h=132-134' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/games?h2h=132-134\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all h2h between two teams\nget(\"https://v1.basketball.api-sports.io/games?h2h=132-134\");\n\n// Get all h2h between two teams from one {league} & {season}\nget(\"https://v1.basketball.api-sports.io/games?h2h=132-134&league=12&season=2019-2020\");\n\n// Get all h2h between two teams  from one {date}\nget(\"https://v1.basketball.api-sports.io/games?h2h=132-134&date=2019-11-23\");\n\n// It’s possible to make requests by mixing the available parameters\nget(\"https://v1.basketball.api-sports.io/games?h2h=132-134&season=2019-2020&date=2019-11-23&timezone=Europe/london\");\n"
+          }
+        ]
+      }
+    },
+    "/odds": {
+      "get": {
+        "summary": "odds",
+        "tags": [
+          "Odds"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "odds",
+                      "parameters": {
+                        "bet": "2",
+                        "game": "1912"
+                      },
+                      "errors": [],
+                      "results": 1,
+                      "response": [
+                        {
+                          "league": {
+                            "id": 12,
+                            "name": "NBA",
+                            "type": "League",
+                            "season": "2019-2020",
+                            "logo": null
+                          },
+                          "country": {
+                            "id": 5,
+                            "name": "USA",
+                            "code": "US",
+                            "flag": "https://media.api-football.com/flags/us.svg"
+                          },
+                          "game": {
+                            "id": 1912
+                          },
+                          "bookmakers": [
+                            {
+                              "id": 1,
+                              "name": "bwin",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.30"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.60"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 7,
+                              "name": "10Bet",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.33"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.45"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 4,
+                              "name": "bet365",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.34"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.35"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 2,
+                              "name": "Marathon",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.36"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.44"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 8,
+                              "name": "5Dimes",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.36"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.55"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 9,
+                              "name": "Betfair",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.33"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.25"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 10,
+                              "name": "188bet",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.32"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.60"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 11,
+                              "name": "Intertops",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.33"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.50"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 12,
+                              "name": "Pncl",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.34"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.51"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 13,
+                              "name": "Sbo",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.32"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.38"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 3,
+                              "name": "1xBet",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.37"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.42"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 14,
+                              "name": "BetFred",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.33"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.25"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 5,
+                              "name": "Bovada",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.33"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.50"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 15,
+                              "name": "BetUS",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.36"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.35"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 6,
+                              "name": "Betcris",
+                              "bets": [
+                                {
+                                  "id": 2,
+                                  "name": "Home/Away",
+                                  "values": [
+                                    {
+                                      "value": "Home",
+                                      "odd": "1.32"
+                                    },
+                                    {
+                                      "value": "Away",
+                                      "odd": "3.39"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-odds",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "league",
+            "description": "The id of the league"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minLength": 4,
+              "maxLength": 4
+            },
+            "in": "query",
+            "name": "season",
+            "description": "The season of the league"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "game",
+            "description": "The id of the game"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "bookmaker",
+            "description": "The id of the bookmaker"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "bet",
+            "description": "The id of the bet"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "description": "Get odds from games or leagues.\n\nWe provide pre-match odds between 1 and 7 days before the game.\n\nWe keep a 7-day history *(The availability of odds may vary according to the leagues, seasons, games and bookmakers)*\n\n> Odds are updated once a day",
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/odds');\n$request->setRequestMethod('GET');\n$request->setQuery(new http\\QueryString(array(\n\t'season' => '2019-2020',\n\t'bet' => '1',\n\t'bookmaker' => '6',\n\t'game' => '1912',\n\t'league' => '12'\n)));\n\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/odds?season=2019-2020&bet=1&bookmaker=6&game=1912&league=12\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/odds',\n  qs: {season: '2019-2020', bet: '1', bookmaker: '6', game: '1912', league: '12'},\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/odds?season=2019-2020&bet=1&bookmaker=6&game=1912&league=12\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url 'https://v1.basketball.api-sports.io/odds?season=2019-2020&bet=1&bookmaker=6&game=1912&league=12' \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/odds?season=2019-2020&bet=1&bookmaker=6&game=1912&league=12\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all available odds from one {game}\nget(\"https://v1.basketball.api-sports.io/odds?game=1912\");\n\n// Get all available odds from one {league} & {season}\nget(\"https://v1.basketball.api-sports.io/odds?league=12&season=2019-2020\");\n\n// It’s possible to make requests by mixing the available parameters\nget(\"https://v1.basketball.api-sports.io/odds?bookmaker=1&bet=4&league=12&season=2019-2020\");\nget(\"https://v1.basketball.api-sports.io/odds?bet=4&game=1912\");\nget(\"https://v1.basketball.api-sports.io/odds?bookmaker=1&league=12&season=2019-2020\");\n"
+          }
+        ]
+      }
+    },
+    "/bookmakers": {
+      "get": {
+        "summary": "bookmakers",
+        "tags": [
+          "Odds"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "bookmakers",
+                      "parameters": [],
+                      "errors": [],
+                      "results": 15,
+                      "response": [
+                        {
+                          "id": 1,
+                          "name": "Bwin"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Marathon Bet"
+                        },
+                        {
+                          "id": 3,
+                          "name": "1xBet"
+                        },
+                        {
+                          "id": 4,
+                          "name": "Bet365"
+                        },
+                        {
+                          "id": 5,
+                          "name": "Bovada"
+                        },
+                        {
+                          "id": 6,
+                          "name": "Betcris"
+                        },
+                        {
+                          "id": 7,
+                          "name": "10Bet"
+                        },
+                        {
+                          "id": 8,
+                          "name": "5Dimes"
+                        },
+                        {
+                          "id": 9,
+                          "name": "Betfair"
+                        },
+                        {
+                          "id": 10,
+                          "name": "188bet"
+                        },
+                        {
+                          "id": 11,
+                          "name": "Intertops"
+                        },
+                        {
+                          "id": 12,
+                          "name": "Pinnacle"
+                        },
+                        {
+                          "id": 13,
+                          "name": "Sport Betting Online"
+                        },
+                        {
+                          "id": 14,
+                          "name": "BetFred"
+                        },
+                        {
+                          "id": 15,
+                          "name": "BetUS"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-odds-bookmakers",
+        "description": "Get all available bookmakers.\n\nAll bookmakers `id` can be used in endpoint odds as filters.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the bookmaker"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3
+            },
+            "in": "query",
+            "name": "search",
+            "description": "The name of the bookmaker"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/bookmakers');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/bookmakers\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/bookmakers',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/bookmakers\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url https://v1.basketball.api-sports.io/bookmakers \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/bookmakers\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all available bookmakers\nget(\"https://v1.basketball.api-sports.io/bookmakers\");\n\n// Get bookmaker from one {id}\nget(\"https://v1.basketball.api-sports.io/bookmakers?id=1\");\n\n// Allows you to search for a bookmaker in relation to a bookmakers {name}\nget(\"https://v1.basketball.api-sports.io/bookmakers?search=Betfair\");\n"
+          }
+        ]
+      }
+    },
+    "/bets": {
+      "get": {
+        "summary": "bets",
+        "tags": [
+          "Odds"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "get": "bets",
+                      "parameters": {
+                        "search": "under"
+                      },
+                      "errors": [],
+                      "results": 7,
+                      "response": [
+                        {
+                          "id": 1,
+                          "name": "3Way Result"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Home/Away"
+                        },
+                        {
+                          "id": 3,
+                          "name": "Asian Handicap"
+                        },
+                        {
+                          "id": 4,
+                          "name": "Over/Under"
+                        },
+                        {
+                          "id": 5,
+                          "name": "Over/Under 1st Half"
+                        },
+                        {
+                          "id": 6,
+                          "name": "Highest Scoring Half"
+                        },
+                        {
+                          "id": 7,
+                          "name": "Double Chance"
+                        },
+                        {
+                          "id": 8,
+                          "name": "1st Half 3Way Result"
+                        },
+                        {
+                          "id": 9,
+                          "name": "Handicap Result 1st Half"
+                        },
+                        {
+                          "id": 10,
+                          "name": "Asian Handicap First Half"
+                        },
+                        {
+                          "id": 11,
+                          "name": "Asian Handicap 2nd Qtr"
+                        },
+                        {
+                          "id": 12,
+                          "name": "Odd/Even (Including OT)"
+                        },
+                        {
+                          "id": 13,
+                          "name": "Odd/Even 1st Half"
+                        },
+                        {
+                          "id": 14,
+                          "name": "3Way Result - 1st Qtr"
+                        },
+                        {
+                          "id": 15,
+                          "name": "HT/FT (Including OT)"
+                        },
+                        {
+                          "id": 16,
+                          "name": "Over/Under 1st Qtr"
+                        },
+                        {
+                          "id": 17,
+                          "name": "Asian Handicap 1st Qtr"
+                        },
+                        {
+                          "id": 18,
+                          "name": "Home/Away - 1st Half"
+                        },
+                        {
+                          "id": 19,
+                          "name": "Home/Away - 1st Qtr"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-odds-bets",
+        "description": "Get all available bets.\n\nAll bets `id` can be used in endpoint odds as filters",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "id",
+            "description": "The id of the bet"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3
+            },
+            "in": "query",
+            "name": "search",
+            "description": "The name of the bet"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-rapidapi-key",
+            "description": "Your RapidAPI Key",
+            "required": true
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Php",
+            "source": "$client = new http\\Client;\n$request = new http\\Client\\Request;\n\n$request->setRequestUrl('https://v1.basketball.api-sports.io/bets');\n$request->setRequestMethod('GET');\n$request->setHeaders(array(\n\t'x-rapidapi-host' => 'v1.basketball.api-sports.io',\n\t'x-rapidapi-key' => 'XxXxXxXxXxXxXxXxXxXxXxXx'\n));\n\n$client->enqueue($request)->send();\n$response = $client->getResponse();\n\necho $response->getBody();\n"
+          },
+          {
+            "lang": "Python",
+            "source": "import http.client\n\nconn = http.client.HTTPSConnection(\"v1.basketball.api-sports.io\")\n\nheaders = {\n    'x-rapidapi-host': \"v1.basketball.api-sports.io\",\n    'x-rapidapi-key': \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n    }\n\nconn.request(\"GET\", \"/bets\", headers=headers)\n\nres = conn.getresponse()\ndata = res.read()\n\nprint(data.decode(\"utf-8\"))\n"
+          },
+          {
+            "lang": "Node",
+            "source": "var request = require(\"request\");\n\nvar options = {\n  method: 'GET',\n  url: 'https://v1.basketball.api-sports.io/bets',\n  headers: {\n    'x-rapidapi-host': 'v1.basketball.api-sports.io',\n    'x-rapidapi-key': 'XxXxXxXxXxXxXxXxXxXxXxXx'\n  }\n};\n\nrequest(options, function (error, response, body) {\n\tif (error) throw new Error(error);\n\n\tconsole.log(body);\n});\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "fetch(\"https://v1.basketball.api-sports.io/bets\", {\n\t\"method\": \"GET\",\n\t\"headers\": {\n\t\t\"x-rapidapi-host\": \"v1.basketball.api-sports.io\",\n\t\t\"x-rapidapi-key\": \"XxXxXxXxXxXxXxXxXxXxXxXx\"\n\t}\n})\n.then(response => {\n\tconsole.log(response);\n})\n.catch(err => {\n\tconsole.log(err);\n});\n"
+          },
+          {
+            "lang": "Curl",
+            "source": "curl --request GET \\\n\t--url https://v1.basketball.api-sports.io/bets \\\n\t--header 'x-rapidapi-host: v1.basketball.api-sports.io' \\\n\t--header 'x-rapidapi-key: XxXxXxXxXxXxXxXxXxXxXxXx'\n"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'uri'\nrequire 'net/http'\nrequire 'openssl'\n\nurl = URI(\"https://v1.basketball.api-sports.io/bets\")\n\nhttp = Net::HTTP.new(url.host, url.port)\nhttp.use_ssl = true\nhttp.verify_mode = OpenSSL::SSL::VERIFY_NONE\n\nrequest = Net::HTTP::Get.new(url)\nrequest[\"x-rapidapi-host\"] = 'v1.basketball.api-sports.io'\nrequest[\"x-rapidapi-key\"] = 'XxXxXxXxXxXxXxXxXxXxXxXx'\n\nresponse = http.request(request)\nputs response.read_body\n"
+          },
+          {
+            "lang": "Use Cases",
+            "source": "// Get all available bets\nget(\"https://v1.basketball.api-sports.io/bets\");\n\n// Get bet from one {id}\nget(\"https://v1.basketball.api-sports.io/bets?id=1\");\n\n// Allows you to search for a bet in relation to a bet {name}\nget(\"https://v1.basketball.api-sports.io/bets?search=3Way Result\");\n"
+          }
+        ]
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Endpoints",
+      "tags": [
+        "Timezone",
+        "Seasons",
+        "Countries",
+        "Leagues",
+        "Teams",
+        "Standings",
+        "Games",
+        "Odds"
+      ]
+    }
+  ],
+  "components": {}
+}

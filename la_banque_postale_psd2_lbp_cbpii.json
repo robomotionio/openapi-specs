@@ -1,0 +1,559 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.3.3.3",
+    "title": "PSD2 LBP CBPII",
+    "description": "This API is designed for Third Party Providers who act as Card Based Payment Instrument Issuers and want to get confirmation of the availability of specific funds on the account of a La Banque Postale's customer.",
+    "contact": {
+      "name": "La Banque Postale",
+      "url": "https://developer.labanquepostale.com",
+      "email": "api.support@labanquepostale.fr"
+    },
+    "license": {
+      "name": "Creative Commons Attribution 3.0 France (CC BY 3.0 FR)"
+    }
+  },
+  "paths": {
+    "/funds-confirmations": {
+      "post": {
+        "operationId": "fundsConfirmationsPost",
+        "summary": "Payment coverage check request",
+        "description": "The CBPII can ask an ASPSP to check if a given amount can be covered by the liquidity that is available on a PSU cash account or payment card.",
+        "security": [
+          {
+            "accessCode": [
+              "cbpii"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AuthorizationParameter"
+          },
+          {
+            "$ref": "#/components/parameters/Correlation"
+          },
+          {
+            "$ref": "#/components/parameters/PsuIpAddressHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuIpPortHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuHttpMethodHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuDateHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuGeoLocation"
+          },
+          {
+            "$ref": "#/components/parameters/PsuUserAgentHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuRefererHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuAcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuAcceptCharsetHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuAcceptEncodingHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuAcceptLanguageHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PsuDeviceId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentCoverageRequestResource"
+              }
+            }
+          },
+          "description": "parameters of a payment coverage request",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - payment coverage request",
+            "headers": {
+              "X-REQUEST-ID": {
+                "description": "Correlation header set in the request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalPaymentCoverageReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.labanquepostale.com/v1"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "AuthorizationParameter": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuIpAddressHeader": {
+        "name": "PSU-IP-Address",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuIpPortHeader": {
+        "name": "PSU-IP-Port",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuHttpMethodHeader": {
+        "name": "PSU-HTTP-Method",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuDateHeader": {
+        "name": "PSU-Date",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuGeoLocation": {
+        "name": "PSU-GEO-Location",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuUserAgentHeader": {
+        "name": "PSU-User-Agent",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuRefererHeader": {
+        "name": "PSU-Referer",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuAcceptHeader": {
+        "name": "PSU-Accept",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuAcceptCharsetHeader": {
+        "name": "PSU-Accept-Charset",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuAcceptEncodingHeader": {
+        "name": "PSU-Accept-Encoding",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuAcceptLanguageHeader": {
+        "name": "PSU-Accept-Language",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PsuDeviceId": {
+        "name": "PSU-Device-ID",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "DigestHeader": {
+        "name": "Digest",
+        "in": "header",
+        "required": false,
+        "description": "Digest of the body",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Correlation": {
+        "name": "X-REQUEST-ID",
+        "in": "header",
+        "required": true,
+        "description": "Correlation header to be set in a request and retrieved in the relevant response",
+        "schema": {
+          "type": "string",
+          "maxLength": 70
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad request",
+        "headers": {
+          "X-REQUEST-ID": {
+            "description": "Correlation header set in the request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "*/*": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModel"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized, authentication failure.",
+        "headers": {
+          "X-REQUEST-ID": {
+            "description": "Correlation header set in the request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "*/*": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModel"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden, authentication successful but access to resource is not allowed.",
+        "headers": {
+          "X-REQUEST-ID": {
+            "description": "Correlation header set in the request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "*/*": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModel"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error.",
+        "headers": {
+          "X-REQUEST-ID": {
+            "description": "Correlation header set in the request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "*/*": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModel"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "accessCode": {
+        "description": "In order to access the PSU's account information, the CBPII needs to get an authorization code grant token.\n",
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://oauth2.labanquepostale.com/authorize",
+            "tokenUrl": "https://oauth2.labanquepostale.com/token",
+            "scopes": {
+              "cbpii": "Access by a CBPII to one given PSU's account to check payment coverage."
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorModel": {
+        "description": "Generic error report structure",
+        "type": "object",
+        "required": [
+          "httpCode",
+          "httpMessage",
+          "moreInformation"
+        ],
+        "properties": {
+          "httpCode": {
+            "description": "HTTP error code",
+            "type": "string"
+          },
+          "httpMessage": {
+            "description": "HTTP error text",
+            "type": "string",
+            "maxLength": 140
+          },
+          "moreInformation": {
+            "description": "HTTP textual reason phrase",
+            "type": "string",
+            "maxLength": 140
+          }
+        },
+        "example": {
+          "httpCode": 400,
+          "htppMessage": "Bad Request",
+          "moreInformation": "Missing request header 'X-REQUEST-ID'"
+        }
+      },
+      "GenericLink": {
+        "x-generic": true,
+        "description": "hypertext reference",
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI to be used",
+            "type": "string",
+            "maxLength": 140
+          },
+          "templated": {
+            "description": "specifies \"true\" if href is a URI template, i.e. with parameters. Otherwise, this property is absent or set to false",
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "href": "https://api.labanquepostale.com/v1/accounts/Alias1/balances"
+        }
+      },
+      "PaymentCoverageReportLinks": {
+        "description": "links that can be used for further navigation to post another coverage request.\n",
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "self"
+        ],
+        "properties": {
+          "self": {
+            "$ref": "#/components/schemas/GenericLink"
+          }
+        },
+        "example": {
+          "self": {
+            "href": "https://api.labanquepostale.com/v1/funds-confirmations"
+          }
+        }
+      },
+      "GenericIdentification": {
+        "x-generic": true,
+        "description": "ISO20022: Unique identification of an account, a person or an organisation, as assigned by an issuer.\nAPI: The ASPSP will document which account reference type it will support.\n",
+        "type": "object",
+        "required": [
+          "identification",
+          "schemeName"
+        ],
+        "properties": {
+          "identification": {
+            "description": "API: Identifier\n",
+            "type": "string",
+            "maxLength": 70
+          },
+          "schemeName": {
+            "description": "Name of the identification scheme.\nPossible values for the scheme name, partially based on ISO20022 external code list, are the following: \n- BANK (BankPartyIdentification): [NOT AVAILABLE AT LA BANQUE POSTALE] - Unique and unambiguous assignment made by a specific bank or similar financial institution to identify a relationship as defined between the bank and its client. \n- COID (CountryIdentificationCode) : [NOT AVAILABLE AT LA BANQUE POSTALE] - Country authority given organisation identification (e.g., corporate registration number)\n- SREN (SIREN): [NOT AVAILABLE AT LA BANQUE POSTALE] - The SIREN number is a 9 digit code assigned by INSEE, the French National Institute for Statistics and Economic Studies, to identify an organisation in France.\n- SRET (SIRET): [NOT AVAILABLE AT LA BANQUE POSTALE] - The SIRET number is a 14 digit code assigned by INSEE, the French National Institute for Statistics and Economic Studies, to identify an organisation unit in France. It consists of the SIREN number, followed by a five digit classification number, to identify the local geographical unit of that entity.\n- NIDN (NationalIdentityNumber): [NOT AVAILABLE AT LA BANQUE POSTALE] - Number assigned by an authority to identify the national identity number of a person.\nOther values are also permitted, for instance:\n- OAUT (OAUTH2): [NOT AVAILABLE AT LA BANQUE POSTALE] - OAUTH2 access token that is owned by the PISP being also an AISP and that can be used in order to identify the PSU\n- CPAN (CardPan): [NOT AVAILABLE AT LA BANQUE POSTALE] - Card PAN\nEach implementation of the STET PSD2 API must specify in its own documentation which schemes can actually been used.\nLa Banque Postale only provides IBAN scheme\n",
+            "type": "string",
+            "maxLength": 70
+          },
+          "issuer": {
+            "description": "ISO20022: Entity that assigns the identification. this could a country code or any organisation name or identifier that can be recognized by both parties\n",
+            "type": "string",
+            "maxLength": 35
+          }
+        },
+        "example": {
+          "identification": "12FR5",
+          "schemeName": "COID",
+          "issuer": "FR"
+        }
+      },
+      "AccountIdentification": {
+        "x-generic": true,
+        "description": "Unique and unambiguous identification for the account between the account owner and the account servicer.",
+        "type": "object",
+        "properties": {
+          "iban": {
+            "description": "ISO20022: International Bank Account Number (IBAN) - identification used internationally by financial institutions to uniquely identify the account of a customer. \n\nFurther specifications of the format and content of the IBAN can be found in the standard ISO 13616 \"Banking and related financial services - International Bank Account Number (IBAN)\" version 1997-10-01, or later revisions.\n",
+            "type": "string",
+            "pattern": "^[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}$"
+          },
+          "other": {
+            "$ref": "#/components/schemas/GenericIdentification"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          }
+        },
+        "example": {
+          "iban": "YY64COJH41059545330222956960771321"
+        }
+      },
+      "CurrencyCode": {
+        "description": "Specifies the currency of the amount or of the account. \nA code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 \"Codes for the representation of currencies and funds\". \n",
+        "type": "string",
+        "pattern": "^[A-Z]{3,3}$",
+        "example": "EUR"
+      },
+      "AmountType": {
+        "description": "Structure aiming to embed the amount and the currency to be used.\n",
+        "type": "object",
+        "required": [
+          "currency",
+          "amount"
+        ],
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "amount": {
+            "description": "ISO20022: Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.\n",
+            "type": "number",
+            "format": "float",
+            "pattern": "^\\-{0,1}[0-9]{1,13}(\\.[0-9]{0,5}){0,1}$"
+          }
+        },
+        "example": {
+          "currency": "EUR",
+          "amount": "12.25"
+        }
+      },
+      "PaymentCoverageRequestResource": {
+        "description": "Payment coverage request structure. The request must rely either on a cash account or a payment card.",
+        "type": "object",
+        "required": [
+          "paymentCoverageRequestId",
+          "instructedAmount",
+          "accountId"
+        ],
+        "properties": {
+          "paymentCoverageRequestId": {
+            "description": "Identification of the payment Coverage Request",
+            "type": "string",
+            "maxLength": 35
+          },
+          "payee": {
+            "description": "The merchant where the card is accepted as information to the PSU.",
+            "type": "string",
+            "maxLength": 70
+          },
+          "instructedAmount": {
+            "$ref": "#/components/schemas/AmountType"
+          },
+          "accountId": {
+            "$ref": "#/components/schemas/AccountIdentification"
+          }
+        },
+        "example": {
+          "paymentCoverage": {
+            "paymentCoverageRequestId": "paymentCoverageRequestId",
+            "instructedAmount": {
+              "currency": "EUR",
+              "amount": "1"
+            },
+            "accountId": {
+              "iban": "FR0220041010100125422F03185"
+            }
+          }
+        }
+      },
+      "HalPaymentCoverageReport": {
+        "description": "HYPERMEDIA structure used for returning the payment coverage report to the CBPII",
+        "type": "object",
+        "required": [
+          "request",
+          "result",
+          "_links"
+        ],
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/PaymentCoverageRequestResource"
+          },
+          "result": {
+            "description": "Result of the coverage check :\n- true: the payment can be covered\n- false: the payment cannot be covered\n",
+            "type": "boolean"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/PaymentCoverageReportLinks"
+          }
+        },
+        "example": {
+          "request": {
+            "paymentCoverageRequestId": "paymentCoverageRequestId",
+            "instructedAmount": {
+              "amount": "1",
+              "currency": "EUR"
+            },
+            "accountId": {
+              "iban": "FR0220041010100125422F03185"
+            }
+          },
+          "result": true,
+          "_links": {
+            "self": {
+              "href": "https://api.labanquepostale.com/v1/funds-confirmations"
+            }
+          }
+        }
+      }
+    }
+  }
+}

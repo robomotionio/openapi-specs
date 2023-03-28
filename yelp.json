@@ -1,0 +1,678 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "Yelp V3 - Share",
+    "description": "The Yelp Fusion API allows you to get the best local content and user reviews from millions of businesses across 32 countries."
+  },
+  "security": [
+    {
+      "ApiKey": []
+    }
+  ],
+  "paths": {
+    "/businesses/{name}": {
+      "get": {
+        "description": "Get rich business data, such as name, address, phone number, photos, Yelp rating, price levels and hours of operation.",
+        "summary": "Business Details",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/businesses/{id}",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "Bearer {token}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/businesses/{id}/reviews": {
+      "get": {
+        "description": "Get up to three review excerpts for a business.",
+        "summary": "Reviews",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/businesses/{id}/reviews",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "Bearer {token}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/businesses/search": {
+      "get": {
+        "description": "Search for businesses by keyword, category, location, price level, etc.\nThis endpoint returns up to 1000 businesses based on the provided search criteria. It has some basic information about the business. To get detailed information and reviews, please use the Business ID returned here and refer to /businesses/{id} and /businesses/{id}/reviews endpoints.\n\nNote: at this time, the API does not return businesses without any reviews and using the offset and limit parameters, you can get up to 1000 businesses from this endpoint if there are more than 1000 results. If you request a page out of this 1000 business limit, this endpoint will return an error.",
+        "summary": "Business Search",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/businesses/search",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "description": "Search term, for example \"food\" or \"restaurants\". The term may also be business names, such as \"Starbucks\". If term is not included the endpoint will default to searching across businesses from a small number of popular categories.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "location",
+            "description": " Required if either latitude or longitude is not provided. This string indicates the geographic area to be used when searching for businesses. Examples: \"New York City\", \"NYC\", \"350 5th Ave, New York, NY 10118\". Businesses returned in the response may not be strictly within the specified location."
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Required if location is not provided. Latitude of the location you want to search nearby."
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "description": "Required if location is not provided. Longitude of the location you want to search nearby.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "radius",
+            "description": "A suggested search radius in meters. This field is used as a suggestion to the search. The actual search radius may be lower than the suggested radius in dense urban areas, and higher in regions of less business density. If the specified value is too large, a AREA_TOO_LARGE error may be returned. The max value is 40000 meters (about 25 miles)."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "Categories to filter the search results with. [See the list of supported categories](https://www.yelp.com/developers/documentation/v3/all_category_list). The category filter can be a list of comma delimited categories. For example, \"bars,french\" will filter by Bars OR French. The category identifier should be used (for example \"discgolf\", not \"Disc Golf\").",
+            "name": "categories"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "locale",
+            "description": "Specify the locale into which to localize the business information. [See the list of supported locales](https://www.yelp.com/developers/documentation/v3/supported_locales). Defaults to en_US."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maxLength": 50,
+              "minLength": 1,
+              "example": 20
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "Number of business results to return. By default, it will return 20. Maximum is 50."
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "Offset the list of returned business results by this amount."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "best_match",
+                "rating",
+                "review_count",
+                "distance"
+              ],
+              "example": "best_match",
+              "default": "best_match"
+            },
+            "in": "query",
+            "name": "sort_by",
+            "description": "Suggestion to the search algorithm that the results be sorted by one of the these modes: best_match, rating, review_count or distance. The default is best_match. Note that specifying the sort_by is a suggestion (not strictly enforced) to Yelp's search, which considers multiple input parameters to return the most relevant results. For example, the rating sort is not strictly sorted by the rating value, but by an adjusted rating value that takes into account the number of ratings, similar to a Bayesian average. This is to prevent skewing results to businesses with a single review."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "1, 2, 3"
+            },
+            "in": "query",
+            "name": "price",
+            "description": "Pricing levels to filter the search result with: 1 = $, 2 = $$, 3 = $$$, 4 = $$$$. The price filter can be a list of comma delimited pricing levels. For example, \"1, 2, 3\" will filter the results to show the ones that are $, $$, or $$$."
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "enum": [
+                false,
+                true
+              ],
+              "example": false
+            },
+            "in": "query",
+            "name": "open_now",
+            "description": "Default to false. When set to true, only return the businesses open now. Notice that open_at and open_now cannot be used together."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 1649678085
+            },
+            "in": "query",
+            "name": "open_at",
+            "description": "An integer represending the Unix time in the same timezone of the search location. If specified, it will return business open at the given time. Notice that open_at and open_now cannot be used together."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hot_and_new",
+                "request_a_quote",
+                "reservation",
+                "waitlist_reservation",
+                "deals",
+                "gender_neutral_restrooms",
+                "open_to_all",
+                "wheelchair_accessible"
+              ],
+              "example": "hot_and_new,reservation"
+            },
+            "in": "query",
+            "name": "attributes",
+            "description": "Try these additional filters to return specific search results!      hot_and_new - popular businesses which recently joined Yelp     request_a_quote - businesses which actively reply to Request a Quote inquiries     reservation - businesses with Yelp Reservations bookings enabled on their profile page     waitlist_reservation - businesses with Yelp Waitlist bookings enabled on their profile screen (iOS/Android)     deals - businesses offering Yelp Deals on their profile page     gender_neutral_restrooms - businesses which provide gender neutral restrooms     open_to_all - businesses which are Open To All     wheelchair_accessible - businesses which are Wheelchair Accessible  You can combine multiple attributes by providing a comma separated like \"attribute1,attribute2\". If multiple attributes are used, only businesses that satisfy ALL attributes will be returned in search results. For example, the attributes \"hot_and_new,request_a_quote\" will return businesses that are Hot and New AND offer Request a Quote. "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "total": 8228,
+                      "businesses": [
+                        {
+                          "rating": 4,
+                          "price": "$",
+                          "phone": "+14152520800",
+                          "id": "E8RJkjfdcwgtyoPMjQ_Olg",
+                          "alias": "four-barrel-coffee-san-francisco",
+                          "is_closed": false,
+                          "categories": [
+                            {
+                              "alias": "coffee",
+                              "title": "Coffee & Tea"
+                            }
+                          ],
+                          "review_count": 1738,
+                          "name": "Four Barrel Coffee",
+                          "url": "https://www.yelp.com/biz/four-barrel-coffee-san-francisco",
+                          "coordinates": {
+                            "latitude": 37.7670169511878,
+                            "longitude": -122.42184275
+                          },
+                          "image_url": "http://s3-media2.fl.yelpcdn.com/bphoto/MmgtASP3l_t4tPCL1iAsCg/o.jpg",
+                          "location": {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "address2": "",
+                            "address3": "",
+                            "state": "CA",
+                            "address1": "375 Valencia St",
+                            "zip_code": "94103"
+                          },
+                          "distance": 1604.23,
+                          "transactions": [
+                            "pickup",
+                            "delivery"
+                          ]
+                        }
+                      ],
+                      "region": {
+                        "center": {
+                          "latitude": 37.767413217936834,
+                          "longitude": -122.42820739746094
+                        }
+                      }
+                    }
+                  },
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "description": "Total number of business Yelp finds based on the search criteria. Sometimes, the value may exceed 1000. In such case, you still can only get up to 1000 businesses using multiple queries and combinations of the \"limit\" and \"offset\" parameters."
+                    },
+                    "businesses": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "description": "List of business Yelp finds based on the search criteria.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rating": {
+                            "type": "number",
+                            "description": "Rating for this business (value ranges from 1, 1.5, ... 4.5, 5)."
+                          },
+                          "price": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": " \tPrice level of the business. Value is one of $, $$, $$$ and $$$$."
+                          },
+                          "phone": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Phone number of the business."
+                          },
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Unique Yelp ID of this business. Example: '4kMBvIEWPxWkWKFN__8SxQ'"
+                          },
+                          "alias": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Unique Yelp alias of this business. Can contain unicode characters. Example: 'yelp-san-francisco'. "
+                          },
+                          "is_closed": {
+                            "type": "boolean",
+                            "description": "Whether business has been (permanently) closed"
+                          },
+                          "categories": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "minItems": 1,
+                            "description": "List of category title and alias pairs associated with this business.",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "alias": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "description": "Alias of a category, when searching for business in certain categories, use alias rather than the title."
+                                },
+                                "title": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "description": "Title of a category for display purpose."
+                                }
+                              },
+                              "required": [
+                                "alias",
+                                "title"
+                              ]
+                            }
+                          },
+                          "review_count": {
+                            "type": "number",
+                            "description": " \tNumber of reviews for this business."
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Name of this business."
+                          },
+                          "url": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "URL for business page on Yelp."
+                          },
+                          "coordinates": {
+                            "type": "object",
+                            "description": "Coordinates of this business.",
+                            "properties": {
+                              "latitude": {
+                                "type": "number"
+                              },
+                              "longitude": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "latitude",
+                              "longitude"
+                            ]
+                          },
+                          "image_url": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "URL of photo for this business."
+                          },
+                          "location": {
+                            "type": "object",
+                            "description": "Location of this business, including address, city, state, zip code and country.",
+                            "properties": {
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "country": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "address2": {
+                                "type": "string"
+                              },
+                              "address3": {
+                                "type": "string"
+                              },
+                              "state": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "address1": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "zip_code": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "city",
+                              "country",
+                              "address2",
+                              "address3",
+                              "state",
+                              "address1",
+                              "zip_code"
+                            ]
+                          },
+                          "distance": {
+                            "type": "number",
+                            "description": "Distance in meters from the search location. This returns meters regardless of the locale."
+                          },
+                          "transactions": {
+                            "type": "array",
+                            "description": "List of Yelp transactions that the business is registered for. Current supported values are pickup, delivery and restaurant_reservation.",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "display_phone": {
+                            "type": "string",
+                            "description": "Phone number of the business formatted nicely to be displayed to users. The format is the standard phone number format for the business's country."
+                          }
+                        },
+                        "required": [
+                          "rating",
+                          "price",
+                          "phone",
+                          "id",
+                          "alias",
+                          "is_closed",
+                          "review_count",
+                          "name",
+                          "url",
+                          "image_url",
+                          "distance",
+                          "display_phone"
+                        ]
+                      }
+                    },
+                    "region": {
+                      "type": "object",
+                      "required": [
+                        "center"
+                      ],
+                      "description": "Suggested area in a map to display results in.",
+                      "properties": {
+                        "center": {
+                          "type": "object",
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "description": "Center position of map area.",
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "description": "Latitude position of map bounds center."
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "description": "Longitude position of map bounds center."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "businesses",
+                    "region"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "total": 8228,
+                      "businesses": [
+                        {
+                          "rating": 4,
+                          "price": "$",
+                          "phone": "+14152520800",
+                          "display_phone": "+14152520800",
+                          "id": "E8RJkjfdcwgtyoPMjQ_Olg",
+                          "alias": "four-barrel-coffee-san-francisco",
+                          "is_closed": false,
+                          "categories": [
+                            {
+                              "alias": "coffee",
+                              "title": "Coffee & Tea"
+                            }
+                          ],
+                          "review_count": 1738,
+                          "name": "Four Barrel Coffee",
+                          "url": "https://www.yelp.com/biz/four-barrel-coffee-san-francisco",
+                          "coordinates": {
+                            "latitude": 37.7670169511878,
+                            "longitude": -122.42184275
+                          },
+                          "image_url": "http://s3-media2.fl.yelpcdn.com/bphoto/MmgtASP3l_t4tPCL1iAsCg/o.jpg",
+                          "location": {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "address2": "",
+                            "address3": "",
+                            "state": "CA",
+                            "address1": "375 Valencia St",
+                            "zip_code": "94103"
+                          },
+                          "distance": 1604.23,
+                          "transactions": [
+                            "pickup",
+                            "delivery"
+                          ]
+                        }
+                      ],
+                      "region": {
+                        "center": {
+                          "latitude": 37.767413217936834,
+                          "longitude": -122.42820739746094
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/businesses/search/phone": {
+      "get": {
+        "description": "Search for businesses by phone number.",
+        "summary": "Phone Search",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/businesses/search/phone",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/transactions/delivery/search": {
+      "get": {
+        "description": "Search for businesses which support food delivery transactions.",
+        "summary": "Transaction Search",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/transactions/search",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/autocomplete": {
+      "get": {
+        "description": "Provide autocomplete suggestions for businesses, search keywords and categories.",
+        "summary": "Autocomplete",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "/autocomplete",
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Misc",
+      "description": ""
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.yelp.com/v3"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  }
+}

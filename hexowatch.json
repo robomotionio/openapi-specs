@@ -1,0 +1,924 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hexowatch",
+    "version": "1.0",
+    "description": "Monitor updates on any website and get notified when visual, content, keyword, technology stack, HTML, availability, price or WHOIS changes are detected.",
+    "contact": {
+      "email": "support@hexowatch.com",
+      "url": "https://hexowatch.com/api-documentation/",
+      "name": "Hexowatch"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.hexowatch.com/v2/app/services/v1"
+    }
+  ],
+  "paths": {
+    "/monitor": {
+      "post": {
+        "summary": "Create monitoring",
+        "operationId": "post-monitor",
+        "description": "Create pultiple monitor with this endpoint.\nYou can find everything in the documentation here: https://hexowatch.com/api-documentation/",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/monitoring"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "monitoring_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "message": "New monitoring(s) created.",
+                      "monitoring_ids": [
+                        1240
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "error": true,
+                      "message": "string",
+                      "monitoring_ids": [
+                        0
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monitoring"
+        ]
+      }
+    },
+    "/action": {
+      "patch": {
+        "summary": "Change status monitoring",
+        "operationId": "patch-action",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "To pause, resume or check now your monitorings use the following PATCH request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "action": "check_now",
+                    "monitoring_ids": [
+                      1234,
+                      2321
+                    ]
+                  }
+                },
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "pause",
+                      "resume",
+                      "check_now"
+                    ],
+                    "description": "you should provide type of the action and monitoring ids that you want to perform actions on if you pass monitoring_ids field as null action will be performed on each of your monitorings (you should have got the monitoring ids in the previous GET request)"
+                  },
+                  "monitoring_ids": {
+                    "type": "array",
+                    "description": "you should provide type of the action and monitoring ids that you want to perform actions on if you pass monitoring_ids field as null action will be performed on each of your monitorings (you should have got the monitoring ids in the previous GET request)",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "action",
+                  "monitoring_ids"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "action": "check_now",
+                    "monitoring_ids": [
+                      1234,
+                      2321
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": "pause:\tpause will stop monitor URL\nresume:\tresume will start monitor URL\ncheck_now: check_now will monitor right now"
+        },
+        "tags": [
+          "action"
+        ]
+      }
+    },
+    "/monitoring_logs/{monitoring_id}": {
+      "get": {
+        "summary": "Get monitoring logs",
+        "tags": [
+          "monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "monitoring_id": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "monitoring_results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "scan_result_id": {
+                            "type": "string"
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "event_detected": {
+                            "type": "boolean"
+                          },
+                          "percentage": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "monitoring_id": "MONITORING_ID",
+                      "tool": "visualMonitoringTool",
+                      "monitoring_results": [
+                        {
+                          "scan_result_id": "RESULT_ID",
+                          "date": "2021-11-26T10:59:18.500Z",
+                          "event_detected": true,
+                          "percentage": 0.5
+                        },
+                        {
+                          "scan_result_id": "RESULT_ID",
+                          "date": "2021-11-26T10:58:50.225Z",
+                          "event_detected": false,
+                          "percentage": 0
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "error": false,
+                      "monitoring_id": "MONITORING_ID",
+                      "tool": "visualMonitoringTool",
+                      "monitoring_results": [
+                        {
+                          "scan_result_id": "RESULT_ID",
+                          "date": "2021-11-26T10:59:18.500Z",
+                          "event_detected": true,
+                          "percentage": 0.5
+                        },
+                        {
+                          "scan_result_id": "RESULT_ID",
+                          "date": "2021-11-26T10:58:50.225Z",
+                          "event_detected": false,
+                          "percentage": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-monitoring_logs",
+        "description": "Get the logs of a specific monitoring",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "limit": {
+                    "type": "number",
+                    "default": 10,
+                    "description": "the limit of scan results"
+                  },
+                  "page": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "page pagination"
+                  },
+                  "Only_detected_changes": {
+                    "type": "boolean",
+                    "description": "if true, only return scan results with detected changes",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "monitoring_id",
+          "in": "path",
+          "required": true,
+          "description": "To get all monitoring IDs go to \"To get all your monitored URLs ids use this get API\" section and follow the steps. After getting all the IDs provide the desired monitoring URL ID for this request."
+        }
+      ]
+    },
+    "/scan_result/{scan_result_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "scan_result_id",
+          "in": "path",
+          "required": true,
+          "description": " go to the Monitoring Log page and use the Monitoring Log ID "
+        }
+      ],
+      "get": {
+        "summary": "Get scan result",
+        "tags": [
+          "scan_result"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "scanResult": {
+                      "type": "object",
+                      "properties": {
+                        "newData": {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        "oldData": {
+                          "type": "object",
+                          "properties": {}
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "scanResult": {
+                        "newData": {},
+                        "oldData": {}
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "error": false,
+                      "scanResult": {
+                        "newData": {
+                          "image": "IMAGE_LINK",
+                          "imageHeight": 3565,
+                          "imageWidth": 1890,
+                          "viewport": {
+                            "width": 1890
+                          }
+                        },
+                        "oldData": {
+                          "image": "IMAGE_LINK",
+                          "imageHeight": 3565,
+                          "imageWidth": 1890,
+                          "viewport": {
+                            "width": 1890
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-scan_result-scan_result_id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visualMonitoringTool",
+                "htmlElementMonitoringTool",
+                "keywordTool",
+                "techStackTool",
+                "sourceCodeMonitoringTool",
+                "contentMonitoringTool",
+                "automaticAITool",
+                "availabilityMonitoringTool",
+                "domainWhoisTool",
+                "sitemapTool",
+                "apiMonitoringTool",
+                "backlinkTool",
+                "rssTool"
+              ]
+            },
+            "in": "query",
+            "name": "tool"
+          }
+        ],
+        "description": "Retrieve specific scan result of a specific tool"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "country_code": {
+        "title": "country_code",
+        "type": "string",
+        "enum": [
+          "AF",
+          "AL",
+          "DZ",
+          "AD",
+          "AO",
+          "AR",
+          "AU",
+          "AT",
+          "AZ",
+          "BH",
+          "BD",
+          "BB",
+          "BY",
+          "BJ",
+          "BO",
+          "BW",
+          "BR",
+          "BG",
+          "BF",
+          "BI",
+          "KH",
+          "CM",
+          "CA",
+          "CV",
+          "CL",
+          "CN",
+          "CO",
+          "CG",
+          "CR",
+          "HR",
+          "CU",
+          "CY",
+          "CZ",
+          "CI",
+          "DK",
+          "DO",
+          "EC",
+          "EG",
+          "SV",
+          "EE",
+          "ET",
+          "FJ",
+          "FI",
+          "FR",
+          "GM",
+          "GE",
+          "DE",
+          "GH",
+          "GR",
+          "GL",
+          "GT",
+          "GN",
+          "HT",
+          "HN",
+          "HK",
+          "HU",
+          "IN",
+          "ID",
+          "IR",
+          "IQ",
+          "IL",
+          "IT",
+          "JM",
+          "JP",
+          "JO",
+          "KE",
+          "KZ",
+          "KR",
+          "KW",
+          "KG",
+          "LV",
+          "LB",
+          "LT",
+          "MO",
+          "MK",
+          "MG",
+          "MW",
+          "MY",
+          "MV",
+          "ML",
+          "MT",
+          "MR",
+          "MU",
+          "MX",
+          "MD",
+          "MN",
+          "MA",
+          "MZ",
+          "MM",
+          "NA",
+          "NP",
+          "NL",
+          "NI",
+          "NE",
+          "NG",
+          "PK",
+          "PA",
+          "PY",
+          "PE",
+          "PH",
+          "PL",
+          "PT",
+          "PR",
+          "QA",
+          "RO",
+          "RU",
+          "RW",
+          "RE",
+          "LC",
+          "SM",
+          "SA",
+          "SN",
+          "RS",
+          "SL",
+          "SG",
+          "SK",
+          "SI",
+          "SO",
+          "ZA",
+          "ES",
+          "LK",
+          "SD",
+          "SE",
+          "TZ",
+          "TH",
+          "TG",
+          "TT",
+          "TN",
+          "TR",
+          "UG",
+          "UA",
+          "AE",
+          "GB",
+          "US",
+          "UY",
+          "UZ",
+          "VE",
+          "VN",
+          "ZW"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "API Key": {
+        "name": "key",
+        "type": "apiKey",
+        "in": "query"
+      }
+    },
+    "requestBodies": {
+      "monitoring": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "x-examples": {
+                "example-1": {
+                  "address_list": [
+                    "example1.com",
+                    "example2.com"
+                  ],
+                  "tool": "techStackTool",
+                  "alert_notification_settings": {
+                    "email": false,
+                    "telegram": false
+                  },
+                  "change_notification_level": "ANY",
+                  "monitoring_interval": "2_WEEK",
+                  "pause_after_first_change_event": false,
+                  "emails_to_notify": [
+                    "example@example.com"
+                  ],
+                  "tags": [
+                    "tag1",
+                    "tag2"
+                  ],
+                  "webhook": "your-webhook",
+                  "tool_settings": {
+                    "proxy": {
+                      "type": "",
+                      "country_code": ""
+                    },
+                    "api_host_code": "USA",
+                    "user_agent": false,
+                    "mode": "SPECIFIC_TECH_STACK_SEARCH",
+                    "specific_tech_stacks": [
+                      "AWStats"
+                    ]
+                  }
+                }
+              },
+              "properties": {
+                "address_list": {
+                  "type": "array",
+                  "description": "You should provide an address list of monitoring urls.",
+                  "items": {
+                    "type": "string",
+                    "example": "[\"example1.com\", \"example2.com\"]"
+                  }
+                },
+                "tool": {
+                  "type": "string",
+                  "description": "You should provide a specific tool name.",
+                  "example": "keywordTool",
+                  "enum": [
+                    "visualMonitoringTool",
+                    "keywordTool",
+                    "techStackTool",
+                    "availabilityMonitoringTool",
+                    "sourceCodeMonitoringTool",
+                    "domainWhoisTool",
+                    "contentMonitoringTool",
+                    "backlinkTool"
+                  ]
+                },
+                "alert_notification_settings": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "telegram": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "slack": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "zapier": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "push_channel": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "discord": {
+                      "type": "boolean",
+                      "default": true
+                    }
+                  }
+                },
+                "change_notification_level": {
+                  "type": "string",
+                  "default": "ANY",
+                  "enum": [
+                    "ANY",
+                    "ADDED",
+                    "UPDATED",
+                    "DELETED"
+                  ]
+                },
+                "monitoring_interval": {
+                  "type": "string",
+                  "default": "1_DAY",
+                  "enum": [
+                    "5_MINUTE",
+                    "10_MINUTE",
+                    "15_MINUTE",
+                    "30_MINUTE",
+                    "1_HOUR",
+                    "2_HOUR",
+                    "3_HOUR",
+                    "4_HOUR",
+                    "5_HOUR",
+                    "6_HOUR",
+                    "12_HOUR",
+                    "1_DAY",
+                    "2_DAY",
+                    "3_DAY",
+                    "1_WEEK",
+                    "2_WEEK",
+                    "1_MONTH",
+                    "2_MONTH",
+                    "3_MONTH"
+                  ]
+                },
+                "pause_after_first_change_event": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "emails_to_notify": {
+                  "type": "array",
+                  "description": "You should provide an email(s) that is/are added and verified in your email notification.",
+                  "items": {
+                    "type": "string",
+                    "example": "[\"example@example.com\"]"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "[\"tag1\", \"tag2\"]"
+                  }
+                },
+                "webhook": {
+                  "type": "string",
+                  "example": "your-webhook"
+                },
+                "tool_settings": {
+                  "type": "object",
+                  "properties": {
+                    "proxy": {
+                      "type": "object",
+                      "description": "REQUIRED if type === \"premium",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "premium"
+                        },
+                        "country_code": {
+                          "$ref": "#/components/schemas/country_code"
+                        }
+                      }
+                    },
+                    "api_host_code": {
+                      "type": "string",
+                      "enum": [
+                        "EUROPE",
+                        "USA",
+                        "ASIA"
+                      ]
+                    },
+                    "user_agent": {
+                      "type": "boolean"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "SPECIFIC_TECH_STACK_SEARCH",
+                        "ANY_CHANGE",
+                        "SEARCH",
+                        "FULL_SCREEN",
+                        "FULL_CODE",
+                        "SPECIFIC_CODE",
+                        "SPECIFIC_FIELDS",
+                        "FULL_CONTENT",
+                        "SPECIFIC_CONTENT",
+                        "FULL_DATA"
+                      ]
+                    },
+                    "specific_tech_stacks": {
+                      "type": "array",
+                      "description": "REQUIRED if mode === SPECIFIC_TECH_STACK_SEARCH\nFind value here: https://hexowatch.com/api-documentation/",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "operators": {
+                      "type": "array",
+                      "description": "REQUIRED if keywords.length > 1\nValues: OR, AND",
+                      "items": {
+                        "type": "string",
+                        "example": "[\"OR\"]"
+                      }
+                    },
+                    "keywords": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "[\"example1\", \"example2\"]"
+                      }
+                    },
+                    "full_stack": {
+                      "description": "REQUIRED if keywords.length > 1\nValues: OR, AND",
+                      "type": "boolean"
+                    },
+                    "device": {
+                      "type": "string",
+                      "enum": [
+                        "MOBILE_SMALL",
+                        "MOBILE_MEDIUM",
+                        "MOBILE_LARGE",
+                        "TABLET",
+                        "LAPTOP_SMALL",
+                        "LAPTOP_MEDIUM",
+                        "LAPTOP_LARGE",
+                        "DESKTOP_4K"
+                      ]
+                    },
+                    "adblock": {
+                      "type": "boolean"
+                    },
+                    "specific_codes": {
+                      "type": "array",
+                      "description": "REQUIRED if mode === SPECIFIC_CODE",
+                      "items": {
+                        "type": "string",
+                        "example": "[\"<h1>Hello world!</h1>\"]"
+                      }
+                    },
+                    "file_type": {
+                      "type": "string",
+                      "enum": [
+                        "HTML",
+                        "JS",
+                        "CSS"
+                      ]
+                    },
+                    "specific_fields": {
+                      "type": "array",
+                      "description": "REQUIRED if mode === SPECIFIC_FIELDS",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "registeredAt",
+                          "lastModified",
+                          "fullText",
+                          "expiresAt",
+                          "exists",
+                          "domain",
+                          "url",
+                          "dnsData",
+                          "status"
+                        ]
+                      }
+                    },
+                    "alertDay": {
+                      "type": "number",
+                      "example": 7,
+                      "enum": [
+                        -90,
+                        -80,
+                        -70,
+                        -60,
+                        -45,
+                        -30,
+                        -15,
+                        -7,
+                        -1,
+                        0,
+                        1,
+                        7,
+                        15,
+                        30,
+                        45,
+                        60,
+                        70,
+                        80,
+                        90,
+                        null
+                      ]
+                    },
+                    "content": {
+                      "type": "array",
+                      "description": "REQUIRED if mode === SPECIFIC_CONTENT",
+                      "items": {
+                        "type": "string",
+                        "example": "[\"content_here\"]"
+                      }
+                    },
+                    "keyword": {
+                      "type": "string",
+                      "enum": [
+                        "backlink"
+                      ],
+                      "description": "REQUIRED if tool === backlinkTool"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "address_list",
+                "tool",
+                "emails_to_notify"
+              ]
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "address_list": [
+                    "example1.com",
+                    "example2.com"
+                  ],
+                  "tool": "techStackTool",
+                  "alert_notification_settings": {
+                    "email": false,
+                    "telegram": false
+                  },
+                  "change_notification_level": "ANY",
+                  "monitoring_interval": "2_WEEK",
+                  "pause_after_first_change_event": false,
+                  "emails_to_notify": [
+                    "example@example.com"
+                  ],
+                  "tags": [
+                    "tag1",
+                    "tag2"
+                  ],
+                  "webhook": "your-webhook",
+                  "tool_settings": {
+                    "proxy": {
+                      "type": "",
+                      "country_code": "US"
+                    },
+                    "api_host_code": "USA",
+                    "user_agent": false,
+                    "mode": "SPECIFIC_TECH_STACK_SEARCH",
+                    "specific_tech_stacks": [
+                      "AWStats"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "action"
+    },
+    {
+      "name": "monitoring"
+    },
+    {
+      "name": "scan_result"
+    }
+  ]
+}

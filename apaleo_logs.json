@@ -1,0 +1,2081 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "apaleo logs API",
+    "description": "Different logs: night audit, transactions export, folio change log",
+    "contact": {
+      "url": "https://apaleo.dev/",
+      "name": "Apaleo"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.apaleo.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/logs/v1/booking/reservation": {
+      "get": {
+        "tags": [
+          "BookingLogs"
+        ],
+        "summary": "LogsBookingReservationGet",
+        "description": "<br>You must have this scope: 'logs.read'.",
+        "operationId": "LogsBookingReservationGet",
+        "parameters": [
+          {
+            "name": "reservationIds",
+            "in": "query",
+            "description": "Filter the log entries by reservation IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "eventTypes",
+            "in": "query",
+            "description": "Filter the log entries by event types.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/eventType2"
+              }
+            }
+          },
+          {
+            "name": "clientIds",
+            "in": "query",
+            "description": "Filter the log entries by client IDs (which application triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "propertyIds",
+            "in": "query",
+            "description": "Filter the log entries by property IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectIds",
+            "in": "query",
+            "description": "Filter the log entries by subject IDs (which user triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "dateFilter",
+            "in": "query",
+            "description": "Filter by event date and time<br />You can provide an array of string expressions which all need to apply.<br />Each expression has the form of 'OPERATION_VALUE' where VALUE needs to be of the valid format of the property type and OPERATION can be:<br />'eq' for equals<br />'neq' for not equals<br />'lt' for less than<br />'gt' for greater than<br />'lte' for less than or equals<br />'gte' for greater than or equals<br />For instance<br />'eq_5' would mean the value should equal 5<br />'lte_7' would mean the value should be less than or equal to 7",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: changes. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationChangeLogListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No reservation change logs found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "logs.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/logs/v1/finance/folio": {
+      "get": {
+        "tags": [
+          "FinanceLogs"
+        ],
+        "summary": "LogsFinanceFolioGet",
+        "description": "<br>You must have this scope: 'logs.read'.",
+        "operationId": "LogsFinanceFolioGet",
+        "parameters": [
+          {
+            "name": "folioIds",
+            "in": "query",
+            "description": "Filter the log entries by folio IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "eventTypes",
+            "in": "query",
+            "description": "Filter the log entries by event types.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/eventType3"
+              }
+            }
+          },
+          {
+            "name": "clientIds",
+            "in": "query",
+            "description": "Filter the log entries by client IDs (which application triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "propertyIds",
+            "in": "query",
+            "description": "Filter the log entries by property IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectIds",
+            "in": "query",
+            "description": "Filter the log entries by subject IDs (which user triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "dateFilter",
+            "in": "query",
+            "description": "Filter by event date and time<br />You can provide an array of string expressions which all need to apply.<br />Each expression has the form of 'OPERATION_VALUE' where VALUE needs to be of the valid format of the property type and OPERATION can be:<br />'eq' for equals<br />'neq' for not equals<br />'lt' for less than<br />'gt' for greater than<br />'lte' for less than or equals<br />'gte' for greater than or equals<br />For instance<br />'eq_5' would mean the value should equal 5<br />'lte_7' would mean the value should be less than or equal to 7",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolioChangeLogListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No folio change logs found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "logs.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/logs/v1/finance/night-audit": {
+      "get": {
+        "tags": [
+          "FinanceLogs"
+        ],
+        "summary": "LogsFinanceNight-auditGet",
+        "description": "Returns a log of all night audits\r\nNewest log entries are returned first.<br>You must have this scope: 'logs.read'.",
+        "operationId": "LogsFinanceNight-auditGet",
+        "parameters": [
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Filter the log entries by status.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/status2"
+              }
+            }
+          },
+          {
+            "name": "propertyIds",
+            "in": "query",
+            "description": "Filter the log entries by property IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectIds",
+            "in": "query",
+            "description": "Filter the log entries by subject IDs (which user triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "dateFilter",
+            "in": "query",
+            "description": "Filter by event date and time<br />You can provide an array of string expressions which all need to apply.<br />Each expression has the form of 'OPERATION_VALUE' where VALUE needs to be of the valid format of the property type and OPERATION can be:<br />'eq' for equals<br />'neq' for not equals<br />'lt' for less than<br />'gt' for greater than<br />'lte' for less than or equals<br />'gte' for greater than or equals<br />For instance<br />'eq_5' would mean the value should equal 5<br />'lte_7' would mean the value should be less than or equal to 7",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NightAuditLogListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No night audit logs found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "logs.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/logs/v1/finance/transactions-export": {
+      "get": {
+        "tags": [
+          "FinanceLogs"
+        ],
+        "summary": "LogsFinanceTransactions-exportGet",
+        "description": "Returns the audit log for all exports if accounting data that have been done.<br>You must have this scope: 'logs.read'.",
+        "operationId": "LogsFinanceTransactions-exportGet",
+        "parameters": [
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Filter the log entries by export log types.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/type1"
+              }
+            }
+          },
+          {
+            "name": "propertyIds",
+            "in": "query",
+            "description": "Filter the log entries by property IDs",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectIds",
+            "in": "query",
+            "description": "Filter the log entries by subject IDs (which user triggered this event)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "dateFilter",
+            "in": "query",
+            "description": "Filter by event date and time<br />You can provide an array of string expressions which all need to apply.<br />Each expression has the form of 'OPERATION_VALUE' where VALUE needs to be of the valid format of the property type and OPERATION can be:<br />'eq' for equals<br />'neq' for not equals<br />'lt' for less than<br />'gt' for greater than<br />'lte' for less than or equals<br />'gte' for greater than or equals<br />For instance<br />'eq_5' would mean the value should equal 5<br />'lte_7' would mean the value should be less than or equal to 7",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionsExportLogListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No transactions export logs found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "logs.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AmountModel": {
+        "title": "AmountModel",
+        "required": [
+          "grossAmount",
+          "netAmount",
+          "vatType",
+          "vatPercent",
+          "currency"
+        ],
+        "type": "object",
+        "properties": {
+          "grossAmount": {
+            "type": "number"
+          },
+          "netAmount": {
+            "type": "number"
+          },
+          "vatType": {
+            "$ref": "#/components/schemas/VatType"
+          },
+          "vatPercent": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "grossAmount": 107,
+          "netAmount": 100,
+          "vatType": "Reduced",
+          "vatPercent": 7,
+          "currency": "USD"
+        }
+      },
+      "FolioChangeLogItemModel": {
+        "title": "FolioChangeLogItemModel",
+        "required": [
+          "folioId",
+          "eventType",
+          "clientId",
+          "propertyId",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "folioId": {
+            "type": "string",
+            "description": "The ID of the folio"
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "relatedEntityId": {
+            "type": "string",
+            "description": "The ID of related entity, if there is any (e.g. the ID of the charge posted)"
+          },
+          "relatedEntityDescription": {
+            "type": "string",
+            "description": "The description of related entity, if there is any (e.g. the name of the charge posted or the payment method)"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "The ID of the client that triggered this event"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "The ID of the property"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date and time when the operation has been executed<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "The ID of the user that triggered this event"
+          }
+        }
+      },
+      "FolioChangeLogListModel": {
+        "title": "FolioChangeLogListModel",
+        "required": [
+          "logEntries",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "logEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolioChangeLogItemModel"
+            },
+            "description": "List of the log entries."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "logEntries": [
+            {
+              "folioId": "GEKFSD-1-1",
+              "eventType": "ChargePosted",
+              "relatedEntityId": "GEKFSD-1-1-TS-1",
+              "relatedEntityDescription": "Double room",
+              "amount": {
+                "amount": 10,
+                "currency": "EUR"
+              },
+              "clientId": "app-apaleo",
+              "propertyId": "MUC",
+              "created": "2022-04-28T13:46:43.6178285+02:00",
+              "subjectId": "d4f55fe0-672c-43d9-839a-7d57489475df"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "MessageItemCollection": {
+        "title": "MessageItemCollection",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        }
+      },
+      "MonetaryValueModel": {
+        "title": "MonetaryValueModel",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "NightAuditLogItemModel": {
+        "title": "NightAuditLogItemModel",
+        "required": [
+          "ended",
+          "setReservationsToNoShow",
+          "status",
+          "propertyId",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "ended": {
+            "type": "string",
+            "description": "Date and time when the night audit ended<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "setReservationsToNoShow": {
+            "type": "boolean",
+            "description": "Night audit settings - whether reservations were set to no-show"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "failureCode": {
+            "$ref": "#/components/schemas/FailureCode"
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "Why the night audit failed"
+          },
+          "reservationIdsSetToNoShow": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of reservations that were set to no-show"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "The ID of the property"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date and time when the operation has been executed<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "The ID of the user that triggered this event"
+          }
+        }
+      },
+      "NightAuditLogListModel": {
+        "title": "NightAuditLogListModel",
+        "required": [
+          "logEntries",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "logEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NightAuditLogItemModel"
+            },
+            "description": "List of the log entries."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "logEntries": [
+            {
+              "ended": "2022-04-28T13:46:43.6178285+02:00",
+              "setReservationsToNoShow": false,
+              "status": "Success",
+              "propertyId": "MUC",
+              "created": "2022-04-28T13:46:43.6178285+02:00",
+              "subjectId": "d4f55fe0-672c-43d9-839a-7d57489475df"
+            }
+          ],
+          "count": 2
+        }
+      },
+      "ReservationAddedChangeModel": {
+        "title": "ReservationAddedChangeModel",
+        "required": [
+          "arrival",
+          "departure",
+          "status",
+          "totalGrossAmount",
+          "adults",
+          "channelCode",
+          "timeSlices",
+          "guaranteeType",
+          "cancellationFee",
+          "noShowFee",
+          "hasCityTax"
+        ],
+        "type": "object",
+        "properties": {
+          "arrival": {
+            "type": "string",
+            "description": "Date of arrival<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "departure": {
+            "type": "string",
+            "description": "Date of departure<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status1"
+          },
+          "blockId": {
+            "type": "string",
+            "description": "Block id"
+          },
+          "totalGrossAmount": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Number of adults",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Additional information and comments"
+          },
+          "guestComment": {
+            "type": "string",
+            "description": "Additional information and comment by the guest"
+          },
+          "externalCode": {
+            "type": "string",
+            "description": "Code in external system"
+          },
+          "channelCode": {
+            "$ref": "#/components/schemas/ChannelCode"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source of the reservation (e.g Hotels.com, Orbitz, etc.)"
+          },
+          "primaryGuest": {
+            "$ref": "#/components/schemas/ReservationPersonChangeModel"
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "The ages of the children"
+          },
+          "additionalGuests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationPersonChangeModel"
+            },
+            "description": "Additional guests of the reservation."
+          },
+          "paymentAccount": {
+            "$ref": "#/components/schemas/ReservationPaymentAccountChangeModel"
+          },
+          "timeSlices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationTimeSliceChangeModel"
+            },
+            "description": "The list of time slices"
+          },
+          "extraServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationServiceChangeModel"
+            },
+            "description": "The list of additional services (extras, add-ons) reserved for the stay"
+          },
+          "guaranteeType": {
+            "$ref": "#/components/schemas/GuaranteeType"
+          },
+          "cancellationFee": {
+            "$ref": "#/components/schemas/ReservationCancellationFeeChangeModel"
+          },
+          "noShowFee": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "travelPurpose": {
+            "$ref": "#/components/schemas/TravelPurpose"
+          },
+          "prePaymentAmount": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "validationMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationValidationMessageChangeModel"
+            },
+            "description": "The list of validation messages"
+          },
+          "companyId": {
+            "type": "string",
+            "description": "Company id for this reservation"
+          },
+          "hasCityTax": {
+            "type": "boolean",
+            "description": "Whether the city tax has already been added to the reservation. Set to false, if the property does not have city tax configured"
+          }
+        }
+      },
+      "ReservationAddressChangeModel": {
+        "title": "ReservationAddressChangeModel",
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          }
+        }
+      },
+      "ReservationCancellationFeeChangeModel": {
+        "title": "ReservationCancellationFeeChangeModel",
+        "type": "object",
+        "properties": {
+          "dueDateTime": {
+            "type": "string",
+            "description": "The date and time the cancellation fee will be due. After that time this fee will\r\nbe charged in case of cancellation<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "fee": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          }
+        }
+      },
+      "ReservationChangedChangeModel": {
+        "title": "ReservationChangedChangeModel",
+        "type": "object",
+        "properties": {
+          "arrival": {
+            "type": "string",
+            "description": "Date of arrival<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "departure": {
+            "type": "string",
+            "description": "Date of departure<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Number of adults",
+            "format": "int32"
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Value of ages of the children"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Comment"
+          },
+          "guestComment": {
+            "type": "string",
+            "description": "Guest comment"
+          },
+          "totalGrossAmount": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "primaryGuest": {
+            "$ref": "#/components/schemas/ReservationPersonChangeModel"
+          },
+          "paymentAccount": {
+            "$ref": "#/components/schemas/ReservationPaymentAccountChangeModel"
+          },
+          "guaranteeType": {
+            "$ref": "#/components/schemas/GuaranteeType1"
+          },
+          "travelPurpose": {
+            "$ref": "#/components/schemas/TravelPurpose1"
+          },
+          "companyId": {
+            "type": "string",
+            "description": "Company id for this reservation"
+          },
+          "noShowFee": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "cancellationFee": {
+            "$ref": "#/components/schemas/ReservationCancellationFeeChangeModel"
+          },
+          "commissionAmount": {
+            "$ref": "#/components/schemas/MonetaryValueModel"
+          },
+          "hasCityTax": {
+            "type": "boolean",
+            "description": "Whether the city tax has already been added to the reservation"
+          }
+        }
+      },
+      "ReservationChangeLogItemModel": {
+        "title": "ReservationChangeLogItemModel",
+        "required": [
+          "reservationId",
+          "eventType",
+          "clientId",
+          "propertyId",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "description": "The ID of the reservation"
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/EventType1"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationChangeModel"
+            },
+            "description": "The list of changes"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "The ID of the client that triggered this event"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "The ID of the property"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date and time when the operation has been executed<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "The ID of the user that triggered this event"
+          }
+        }
+      },
+      "ReservationChangeLogListModel": {
+        "title": "ReservationChangeLogListModel",
+        "required": [
+          "logEntries",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "logEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationChangeLogItemModel"
+            },
+            "description": "List of the log entries."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "logEntries": [
+            {
+              "reservationId": "XFDRTG-1",
+              "eventType": "Created",
+              "clientId": "app-apaleo",
+              "propertyId": "MUC",
+              "created": "2022-04-28T13:46:43.6178285+02:00",
+              "subjectId": "d4f55fe0-672c-43d9-839a-7d57489475df"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "ReservationChangeModel": {
+        "title": "ReservationChangeModel",
+        "required": [
+          "changeType"
+        ],
+        "type": "object",
+        "properties": {
+          "changeType": {
+            "$ref": "#/components/schemas/ChangeType"
+          },
+          "reservationAddedValue": {
+            "$ref": "#/components/schemas/ReservationAddedChangeModel"
+          },
+          "newReservationChangedValue": {
+            "$ref": "#/components/schemas/ReservationChangedChangeModel"
+          },
+          "oldReservationChangedValue": {
+            "$ref": "#/components/schemas/ReservationChangedChangeModel"
+          },
+          "newAdditionalGuestValue": {
+            "$ref": "#/components/schemas/ReservationPersonChangeModel"
+          },
+          "oldAdditionalGuestValue": {
+            "$ref": "#/components/schemas/ReservationPersonChangeModel"
+          },
+          "newTimeSliceValue": {
+            "$ref": "#/components/schemas/ReservationTimeSliceChangeModel"
+          },
+          "oldTimeSliceValue": {
+            "$ref": "#/components/schemas/ReservationTimeSliceChangeModel"
+          },
+          "newExtraServiceValue": {
+            "$ref": "#/components/schemas/ReservationServiceChangeModel"
+          },
+          "oldExtraServiceValue": {
+            "$ref": "#/components/schemas/ReservationServiceChangeModel"
+          },
+          "newValidationMessageValue": {
+            "$ref": "#/components/schemas/ReservationValidationMessageChangeModel"
+          },
+          "oldValidationMessageValue": {
+            "$ref": "#/components/schemas/ReservationValidationMessageChangeModel"
+          }
+        }
+      },
+      "ReservationCompanyChangeModel": {
+        "title": "ReservationCompanyChangeModel",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the company"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "Tax or Vat ID of the company"
+          }
+        }
+      },
+      "ReservationPaymentAccountChangeModel": {
+        "title": "ReservationPaymentAccountChangeModel",
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string",
+            "description": "The account number (e.g. masked credit card number or last 4 digits)"
+          },
+          "accountHolder": {
+            "type": "string",
+            "description": "The account holder (e.g. card holder)"
+          },
+          "expiryMonth": {
+            "type": "string",
+            "description": "The credit card's expiration month"
+          },
+          "expiryYear": {
+            "type": "string",
+            "description": "The credit card's expiration year"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "The payment method (e.g. visa)"
+          },
+          "payerEmail": {
+            "type": "string",
+            "description": "The email address of the shopper / customer"
+          },
+          "isVirtual": {
+            "type": "boolean",
+            "description": "Indicates if the payment account is a virtual credit card"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Indicates if the payment account can be used for capturing payments. A payment account is active, when it has a valid payer reference set"
+          }
+        }
+      },
+      "ReservationPersonChangeModel": {
+        "title": "ReservationPersonChangeModel",
+        "type": "object",
+        "properties": {
+          "title": {
+            "$ref": "#/components/schemas/Title"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name of the guest"
+          },
+          "middleInitial": {
+            "type": "string",
+            "description": "Middle initial of the guest"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name of the guest"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the guest"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number of the guest"
+          },
+          "address": {
+            "$ref": "#/components/schemas/ReservationAddressChangeModel"
+          },
+          "nationalityCountryCode": {
+            "type": "string",
+            "description": "The guest's nationality, in ISO 3166-1 alpha-2 code"
+          },
+          "identificationNumber": {
+            "type": "string",
+            "description": "The guest's identification number for the given identificationType."
+          },
+          "identificationIssueDate": {
+            "type": "string",
+            "description": "The issue date of the guest's identification document.",
+            "format": "date",
+            "example": "2020-10-10"
+          },
+          "identificationType": {
+            "$ref": "#/components/schemas/IdentificationType"
+          },
+          "preferredLanguage": {
+            "type": "string",
+            "description": "Two-letter code (ISO Alpha-2) of a language preferred for contact"
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "Guest's birthdate",
+            "format": "date",
+            "example": "2020-10-10"
+          },
+          "birthPlace": {
+            "type": "string",
+            "description": "Guest's place of birth"
+          },
+          "company": {
+            "$ref": "#/components/schemas/ReservationCompanyChangeModel"
+          }
+        }
+      },
+      "ReservationServiceChangeModel": {
+        "title": "ReservationServiceChangeModel",
+        "required": [
+          "serviceId",
+          "serviceDate"
+        ],
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The id of the service booked"
+          },
+          "count": {
+            "type": "integer",
+            "description": "The number of services booked for each service date",
+            "format": "int32"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/AmountModel"
+          },
+          "totalAmount": {
+            "$ref": "#/components/schemas/AmountModel"
+          },
+          "serviceDate": {
+            "type": "string",
+            "description": "The service date",
+            "format": "date",
+            "example": "2020-10-10"
+          }
+        }
+      },
+      "ReservationTimeSliceChangeModel": {
+        "title": "ReservationTimeSliceChangeModel",
+        "required": [
+          "from",
+          "to"
+        ],
+        "type": "object",
+        "properties": {
+          "ratePlanId": {
+            "type": "string",
+            "description": "The rate plan id for this time slice"
+          },
+          "from": {
+            "type": "string",
+            "description": "The start date and time for this time slice<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "The end date and time for this time slice<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "unitId": {
+            "type": "string",
+            "description": "The assigned unit id for this time slice"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/AmountModel"
+          }
+        }
+      },
+      "ReservationValidationMessageChangeModel": {
+        "title": "ReservationValidationMessageChangeModel",
+        "required": [
+          "category",
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "code": {
+            "$ref": "#/components/schemas/Code"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message description"
+          }
+        }
+      },
+      "TransactionsExportLogItemModel": {
+        "title": "TransactionsExportLogItemModel",
+        "required": [
+          "periodStart",
+          "periodEnd",
+          "type",
+          "propertyId",
+          "created"
+        ],
+        "type": "object",
+        "properties": {
+          "periodStart": {
+            "type": "string",
+            "description": "Export params - period start<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "periodEnd": {
+            "type": "string",
+            "description": "Export params - period end<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "The ID of the property"
+          },
+          "created": {
+            "type": "string",
+            "description": "Date and time when the operation has been executed<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "The ID of the user that triggered this event"
+          }
+        }
+      },
+      "TransactionsExportLogListModel": {
+        "title": "TransactionsExportLogListModel",
+        "required": [
+          "logEntries",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "logEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionsExportLogItemModel"
+            },
+            "description": "List of the log entries."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "logEntries": [
+            {
+              "periodStart": "2022-04-28T13:46:43.6178285+02:00",
+              "periodEnd": "2022-04-28T13:46:43.6178285+02:00",
+              "type": "AggregatePairs",
+              "propertyId": "MUC",
+              "created": "2022-04-28T13:46:43.6178285+02:00",
+              "subjectId": "d4f55fe0-672c-43d9-839a-7d57489475df"
+            }
+          ],
+          "count": 2
+        }
+      },
+      "Category": {
+        "title": "Category",
+        "enum": [
+          "OfferNotAvailable",
+          "AutoUnitAssignment"
+        ],
+        "type": "string",
+        "description": "The message category",
+        "example": "OfferNotAvailable"
+      },
+      "ChangeType": {
+        "title": "ChangeType",
+        "enum": [
+          "ReservationAdded",
+          "ReservationChanged",
+          "AdditionalGuestAdded",
+          "AdditionalGuestRemoved",
+          "AdditionalGuestChanged",
+          "TimeSliceAdded",
+          "TimeSliceRemoved",
+          "TimeSliceChanged",
+          "ExtraServiceAdded",
+          "ExtraServiceRemoved",
+          "ExtraServiceChanged",
+          "ValidationMessageAdded",
+          "ValidationMessageRemoved"
+        ],
+        "type": "string",
+        "description": "The type of the change",
+        "example": "ReservationAdded"
+      },
+      "ChannelCode": {
+        "title": "ChannelCode",
+        "enum": [
+          "Direct",
+          "BookingCom",
+          "Ibe",
+          "ChannelManager",
+          "Expedia",
+          "Homelike",
+          "Hrs"
+        ],
+        "type": "string",
+        "description": "Channel code",
+        "example": "Direct"
+      },
+      "Code": {
+        "title": "Code",
+        "enum": [
+          "UnitGroupFullyBooked",
+          "UnitGroupCapacityExceeded",
+          "RatePlanRestrictionsViolated",
+          "RatePlanSurchargesNotSet",
+          "RateRestrictionsViolated",
+          "RatePlanChannelNotSet",
+          "RatesNotSet",
+          "BlockFullyBooked",
+          "UnitMoved",
+          "IncludedServicesAmountExceededRateAmount",
+          "RatePlanCompanyRestrictionsViolated",
+          "ServiceFullyBooked"
+        ],
+        "type": "string",
+        "description": "The message code",
+        "example": "UnitGroupFullyBooked"
+      },
+      "EventType": {
+        "title": "EventType",
+        "enum": [
+          "Created",
+          "ChargePosted",
+          "TransitoryChargePosted",
+          "AllowancePosted",
+          "PaymentPosted",
+          "ChargeMovedFromFolio",
+          "TransitoryChargeMovedFromFolio",
+          "PaymentMovedFromFolio",
+          "ChargeMovedToFolio",
+          "TransitoryChargeMovedToFolio",
+          "PaymentMovedToFolio",
+          "Closed",
+          "Reopened",
+          "Deleted",
+          "DebitorChanged",
+          "AllowanceMovedFromFolio",
+          "AllowanceMovedToFolio",
+          "RefundPosted",
+          "RefundMovedFromFolio",
+          "RefundMovedToFolio",
+          "InvoiceCreated",
+          "InvoiceCanceled",
+          "InvoicePaid",
+          "ChargesChanged",
+          "PaymentAdded",
+          "PaymentFailed",
+          "PaymentCanceled",
+          "RefundAdded",
+          "RefundFailed",
+          "InvoiceWrittenOff"
+        ],
+        "type": "string",
+        "description": "The type of the operation",
+        "example": "Created"
+      },
+      "EventType1": {
+        "title": "EventType1",
+        "enum": [
+          "Created",
+          "Amended",
+          "CheckedIn",
+          "CheckedOut",
+          "Canceled",
+          "SetToNoShow",
+          "CityTaxAdded",
+          "CityTaxRemoved",
+          "UnitAssigned",
+          "UnitUnassigned",
+          "PaymentAccountSet",
+          "PaymentAccountRemoved",
+          "InvoiceStatusChanged",
+          "Changed"
+        ],
+        "type": "string",
+        "description": "The type of the operation",
+        "example": "Created"
+      },
+      "eventType2": {
+        "title": "eventType2",
+        "enum": [
+          "Created",
+          "Amended",
+          "CheckedIn",
+          "CheckedOut",
+          "Canceled",
+          "SetToNoShow",
+          "CityTaxAdded",
+          "CityTaxRemoved",
+          "UnitAssigned",
+          "UnitUnassigned",
+          "PaymentAccountSet",
+          "PaymentAccountRemoved",
+          "InvoiceStatusChanged",
+          "Changed"
+        ],
+        "type": "string",
+        "example": "Created"
+      },
+      "eventType3": {
+        "title": "eventType3",
+        "enum": [
+          "Created",
+          "ChargePosted",
+          "TransitoryChargePosted",
+          "AllowancePosted",
+          "PaymentPosted",
+          "ChargeMovedFromFolio",
+          "TransitoryChargeMovedFromFolio",
+          "PaymentMovedFromFolio",
+          "ChargeMovedToFolio",
+          "TransitoryChargeMovedToFolio",
+          "PaymentMovedToFolio",
+          "Closed",
+          "Reopened",
+          "Deleted",
+          "DebitorChanged",
+          "AllowanceMovedFromFolio",
+          "AllowanceMovedToFolio",
+          "RefundPosted",
+          "RefundMovedFromFolio",
+          "RefundMovedToFolio",
+          "InvoiceCreated",
+          "InvoiceCanceled",
+          "InvoicePaid",
+          "ChargesChanged",
+          "PaymentAdded",
+          "PaymentFailed",
+          "PaymentCanceled",
+          "RefundAdded",
+          "RefundFailed",
+          "InvoiceWrittenOff"
+        ],
+        "type": "string",
+        "example": "Created"
+      },
+      "expand": {
+        "title": "expand",
+        "enum": [
+          "changes"
+        ],
+        "type": "string",
+        "example": "changes"
+      },
+      "FailureCode": {
+        "title": "FailureCode",
+        "enum": [
+          "None",
+          "ProcessNoShowsFailed",
+          "ProcessFoliosFailed",
+          "ProcessOccupiedUnitsFailed",
+          "Unknown"
+        ],
+        "type": "string",
+        "description": "Failure code of the night audit",
+        "example": "None"
+      },
+      "Gender": {
+        "title": "Gender",
+        "enum": [
+          "Female",
+          "Male",
+          "Other"
+        ],
+        "type": "string",
+        "description": "Gender of the booker",
+        "example": "Female"
+      },
+      "GuaranteeType": {
+        "title": "GuaranteeType",
+        "enum": [
+          "PM6Hold",
+          "CreditCard",
+          "Prepayment",
+          "Company",
+          "Ota"
+        ],
+        "type": "string",
+        "description": "The strongest guarantee for the rate plans booked in this reservation",
+        "example": "PM6Hold"
+      },
+      "GuaranteeType1": {
+        "title": "GuaranteeType1",
+        "enum": [
+          "PM6Hold",
+          "CreditCard",
+          "Prepayment",
+          "Company",
+          "Ota"
+        ],
+        "type": "string",
+        "description": "Guarantee type",
+        "example": "PM6Hold"
+      },
+      "IdentificationType": {
+        "title": "IdentificationType",
+        "enum": [
+          "SocialInsuranceNumber",
+          "PassportNumber",
+          "IdNumber",
+          "DriverLicenseNumber"
+        ],
+        "type": "string",
+        "description": "The type of the identificationNumber",
+        "example": "SocialInsuranceNumber"
+      },
+      "Status": {
+        "title": "Status",
+        "enum": [
+          "InProgress",
+          "Success",
+          "Failure"
+        ],
+        "type": "string",
+        "description": "The status of the night audit",
+        "example": "InProgress"
+      },
+      "Status1": {
+        "title": "Status1",
+        "enum": [
+          "Confirmed",
+          "InHouse",
+          "CheckedOut",
+          "Canceled",
+          "NoShow"
+        ],
+        "type": "string",
+        "description": "Status of the reservation",
+        "example": "Confirmed"
+      },
+      "status2": {
+        "title": "status2",
+        "enum": [
+          "InProgress",
+          "Success",
+          "Failure"
+        ],
+        "type": "string",
+        "example": "InProgress"
+      },
+      "Title": {
+        "title": "Title",
+        "enum": [
+          "Mr",
+          "Ms",
+          "Dr",
+          "Prof",
+          "Mrs",
+          "Other"
+        ],
+        "type": "string",
+        "description": "Title of the guest",
+        "example": "Mr"
+      },
+      "TravelPurpose": {
+        "title": "TravelPurpose",
+        "enum": [
+          "Business",
+          "Leisure"
+        ],
+        "type": "string",
+        "description": "The purpose of the trip, leisure or business",
+        "example": "Business"
+      },
+      "TravelPurpose1": {
+        "title": "TravelPurpose1",
+        "enum": [
+          "Business",
+          "Leisure"
+        ],
+        "type": "string",
+        "description": "Travel purpose",
+        "example": "Business"
+      },
+      "Type": {
+        "title": "Type",
+        "enum": [
+          "Raw",
+          "Aggregate",
+          "AggregatePairs"
+        ],
+        "type": "string",
+        "description": "Export params - export type",
+        "example": "Raw"
+      },
+      "type1": {
+        "title": "type1",
+        "enum": [
+          "Raw",
+          "Aggregate",
+          "AggregatePairs"
+        ],
+        "type": "string",
+        "example": "Raw"
+      },
+      "VatType": {
+        "title": "VatType",
+        "enum": [
+          "Null",
+          "VeryReduced",
+          "Reduced",
+          "Normal",
+          "Without",
+          "Special",
+          "ReducedCovid19",
+          "NormalCovid19"
+        ],
+        "type": "string",
+        "example": "Null"
+      }
+    },
+    "securitySchemes": {
+      "Client credentials grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "",
+            "scopes": {
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      },
+      "Authorization code grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://identity.apaleo.com/connect/authorize",
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "https://identity.apaleo.com/connect/token",
+            "scopes": {
+              "offline_access": "This scope is active by default for connect clients.",
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Client credentials grant flow": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "BookingLogs",
+      "description": ""
+    },
+    {
+      "name": "FinanceLogs",
+      "description": ""
+    }
+  ]
+}

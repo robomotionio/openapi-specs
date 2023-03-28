@@ -1,0 +1,506 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Supermetrics v2",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.supermetrics.com/enterprise/v2"
+    }
+  ],
+  "paths": {
+    "/query/data/json": {
+      "post": {
+        "summary": "Get data",
+        "operationId": "post-query-data-json",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "schedule_id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "status_code": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "start_date": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "end_date": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "ds_accounts": {
+                              "type": "array",
+                              "items": {
+                                "required": [],
+                                "properties": {}
+                              }
+                            },
+                            "ds_segments": {
+                              "type": "array",
+                              "items": {
+                                "required": [],
+                                "properties": {}
+                              }
+                            },
+                            "fields": {
+                              "type": "array",
+                              "uniqueItems": true,
+                              "minItems": 1,
+                              "items": {
+                                "required": [
+                                  "id",
+                                  "field_id",
+                                  "field_name",
+                                  "field_type",
+                                  "field_split",
+                                  "data_type",
+                                  "data_column",
+                                  "visible"
+                                ],
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "field_id": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "field_name": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "field_type": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "field_split": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "data_type": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "data_column": {
+                                    "type": "number"
+                                  },
+                                  "visible": {
+                                    "type": "boolean"
+                                  }
+                                }
+                              }
+                            },
+                            "compare_type": {},
+                            "compare_show": {},
+                            "compare_start_date": {},
+                            "compare_end_date": {},
+                            "settings": {
+                              "type": "object",
+                              "properties": {
+                                "no_headers": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "no_headers"
+                              ]
+                            },
+                            "cache_minutes": {}
+                          },
+                          "required": [
+                            "start_date",
+                            "end_date",
+                            "ds_accounts",
+                            "ds_segments",
+                            "fields",
+                            "settings"
+                          ]
+                        },
+                        "result": {
+                          "type": "object",
+                          "properties": {
+                            "total_columns": {
+                              "type": "number"
+                            },
+                            "total_rows": {
+                              "type": "number"
+                            },
+                            "run_seconds": {
+                              "type": "number"
+                            },
+                            "data_sampled": {
+                              "type": "boolean"
+                            },
+                            "cache_used": {
+                              "type": "boolean"
+                            },
+                            "cache_time": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "total_columns",
+                            "total_rows",
+                            "run_seconds",
+                            "data_sampled",
+                            "cache_used",
+                            "cache_time"
+                          ]
+                        },
+                        "paginate": {
+                          "type": "object",
+                          "properties": {
+                            "prev": {},
+                            "next": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "next"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "request_id",
+                        "schedule_id",
+                        "status_code",
+                        "query",
+                        "result",
+                        "paginate"
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "required": [],
+                        "properties": {
+                          "0": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                              "required": [],
+                              "properties": {}
+                            }
+                          },
+                          "1": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                              "required": [],
+                              "properties": {}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "data"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "meta": {
+                        "request_id": "tDcBg85cRzVZru7mRVQNkQ35tE4DdsPu",
+                        "schedule_id": "...",
+                        "status_code": "SUCCESS",
+                        "query": {
+                          "start_date": "2020-01-01",
+                          "end_date": "2021-05-05",
+                          "ds_accounts": [
+                            "567890"
+                          ],
+                          "ds_segments": [
+                            "segment1"
+                          ],
+                          "fields": [
+                            {
+                              "id": "date",
+                              "field_id": "date",
+                              "field_name": "Date",
+                              "field_type": "dim",
+                              "field_split": "row",
+                              "data_type": "string.time.date",
+                              "data_column": 0,
+                              "visible": true
+                            },
+                            {
+                              "id": "impressions",
+                              "field_id": "impressions",
+                              "field_name": "Impressions",
+                              "field_type": "met",
+                              "field_split": "row",
+                              "data_type": "int.number.value",
+                              "data_column": 1,
+                              "visible": true
+                            }
+                          ],
+                          "compare_type": null,
+                          "compare_show": null,
+                          "compare_start_date": null,
+                          "compare_end_date": null,
+                          "settings": {
+                            "no_headers": true
+                          },
+                          "cache_minutes": null
+                        },
+                        "result": {
+                          "total_columns": 2,
+                          "total_rows": 25678,
+                          "run_seconds": 0.391,
+                          "data_sampled": true,
+                          "cache_used": true,
+                          "cache_time": "2020-06-03T10:16:38+00:00"
+                        },
+                        "paginate": {
+                          "prev": null,
+                          "next": "http://..?json={... offset_start:100, offset_end:199}"
+                        }
+                      },
+                      "data": [
+                        [
+                          "2020-01-20",
+                          4384
+                        ],
+                        [
+                          "2020-01-21",
+                          38518
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint to run a data source query.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "ds_id": "GA",
+                    "ds_accounts": [
+                      "567890"
+                    ],
+                    "start_date": "2020-01-01",
+                    "end_date": "today",
+                    "fields": [
+                      "date",
+                      "impressions"
+                    ],
+                    "settings": {
+                      "no_headers": true
+                    },
+                    "filter": "impressions > 0 AND impressions < 100",
+                    "order_rows": [
+                      "impressions desc",
+                      "date desc"
+                    ],
+                    "max_rows": 1000
+                  }
+                },
+                "properties": {
+                  "ds_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Required. Target data source ID. "
+                  },
+                  "ds_accounts": {
+                    "type": "array",
+                    "description": "Conditional. List of data source accounts the query should target, or a filter for them. Not required for some data sources. Account selection can be limited by license restrictions. ",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Conditional. When date_range_type is custom, the fixed or relative start date for your query"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Conditional. When date_range_type is custom, the fixed or relative end date for your query. Future dates are allowed. "
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Required. Field ID "
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Custom field name. Appears in the response field_name property and in the header row of the query results. Not allowed to contain any HTML. "
+                        },
+                        "split": {
+                          "type": "string",
+                          "description": "Field split by type. Defaults to row.\nrow\tField value will be placed into rows\ncolumn\tField value will be used as a column (pivoting) "
+                        },
+                        "visible": {
+                          "type": "boolean",
+                          "description": "Whether field should be visible in query results. Field data is still queried and used e.g. to split rows, but just not returned in final query results. See related setting no_dimensions. Defaults to true. "
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    }
+                  },
+                  "settings": {
+                    "type": "object",
+                    "description": "Conditional. Settings that should be applied when performing the query in key-value pairs. Some data sources require additional settings. \nhttps://supermetrics.com/docs/product-api-enum-setting/"
+                  },
+                  "filter": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Filter string that should be applied to the results before returning them "
+                  },
+                  "order_rows": {
+                    "type": "array",
+                    "description": "List of order and sort instructions for result rows. Limited to two order items. ",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "max_rows": {
+                    "type": "integer",
+                    "description": "Maximum number of rows the query results should contain. Defaults to 100. Default and maximum values are subject to license restrictions. "
+                  },
+                  "schedule_id": {
+                    "type": "string",
+                    "description": "Schedule ID for this query request. If not provided, one will be generated from the other query parameters. Only one schedule ID is allowed to be run at the same time. See async queries for more. "
+                  },
+                  "sync_timeout": {
+                    "type": "number",
+                    "description": "Number of seconds the API should wait for query to finish before returning a response. Defaults to 1800 seconds (30 minutes). Default and maximum values are subject to license restrictions. See async queries for more. "
+                  },
+                  "ds_segments": {
+                    "type": "array",
+                    "description": "List of data source segment IDs the query should target ",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ds_user": {
+                    "type": "string",
+                    "description": "Optional shorthand parameter to provide one value to ds_users. "
+                  },
+                  "ds_users": {
+                    "type": "string",
+                    "description": "Optional list of data source usernames we should limit to when searching for a suitable data source authentication for the query. First available authentication that matches query parameters will be used automatically. "
+                  },
+                  "date_range_type": {
+                    "type": "string",
+                    "description": "Conditional. Date range type for the query. Defaults to custom. ",
+                    "default": "custom"
+                  },
+                  "compare_type": {
+                    "type": "string",
+                    "description": "Date range comparison type. Defaults to none. ",
+                    "default": "none",
+                    "enum": [
+                      "custom",
+                      "prev_ranges",
+                      "prev_year",
+                      "prev_year_weekday"
+                    ]
+                  },
+                  "compare_show": {
+                    "type": "string",
+                    "description": "Display type for comparison values. Defaults to perc_change. ",
+                    "default": "perc_change",
+                    "enum": [
+                      "perc_change",
+                      "abs_change",
+                      "value"
+                    ]
+                  },
+                  "compare_start_date": {
+                    "type": "string",
+                    "description": "Conditional. When compare_type is custom, fixed or relative start date for your comparison date range. "
+                  },
+                  "compare_end_date": {
+                    "type": "string",
+                    "description": "Conditional. When compare_type is custom, fixed or relative end date for your comparison date range. "
+                  },
+                  "order_columns": {
+                    "type": "array",
+                    "description": "Order instruction for fields that are split by column. Defaults to met_desc. ",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "max_columns": {
+                    "type": "integer",
+                    "description": "Maximum number of columns the query results should contain when fields that split by column are used. Defaults to 20. Default and maximum values are subject to license restrictions. "
+                  },
+                  "offset_start": {
+                    "type": "integer",
+                    "description": "Starting row index for paginated response. Defaults to 0. "
+                  },
+                  "offset_end": {
+                    "type": "integer",
+                    "description": "Ending row index for paginated response. Defaults to none. "
+                  },
+                  "cache_minutes": {
+                    "type": "integer",
+                    "description": "Maximum allowed age of query results cache in minutes. Defaults to dynamic caching based on query properties. When provided, license specific or default value range between 60 minutes and 1440 minutes is enforced. Please note that this parameter does not guarantee fully uncached results. "
+                  }
+                },
+                "required": [
+                  "ds_id"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "API Key": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ]
+}

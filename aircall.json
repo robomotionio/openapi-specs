@@ -1,0 +1,5481 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Aircall",
+    "version": "1.0",
+    "description": "Aircall Public API is a classic REST API. It can be used with any programming languages and offers a fast, reliable and secure access to an Aircall account information.\nEach Public API request must be authenticated and should not exceed the rate limit, please check the Authentication and the rate limiting sections before jumping in our documentation!",
+    "x-logo": {
+      "url": "https://assets.brandfetch.io/e44d335c403d4c3.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.aircall.io/v1"
+    }
+  ],
+  "paths": {
+    "/users/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the User."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a User",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "User Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "user"
+                  ]
+                },
+                "examples": {
+                  "Get User": {
+                    "value": {
+                      "user": {
+                        "id": 456,
+                        "direct_link": "https://api.aircall.io/v1/users/456",
+                        "name": "John Doe",
+                        "email": "john.doe@aircall.io",
+                        "available": true,
+                        "availability_status": "available",
+                        "created_at": "2019-12-29T10:03:18.000Z",
+                        "time_zone": "America/New_York",
+                        "language": "en-US",
+                        "numbers": [
+                          {
+                            "id": 1234,
+                            "direct_link": "https://api.aircall.io/v1/numbers/1234",
+                            "name": "French Office",
+                            "digits": "+33 1 76 11 11 11",
+                            "created_at": "2020-01-02T11:41:01.000Z",
+                            "country": "FR",
+                            "time_zone": "Europe/Paris",
+                            "open": true,
+                            "availability_status": "custom",
+                            "is_ivr": true,
+                            "live_recording_activated": true,
+                            "messages": {
+                              "welcome": "https://example.com/welcome.mp3",
+                              "waiting": "https://example.com/waiting_music.mp3",
+                              "ivr": "https://example.com/ivr_message.mp3",
+                              "voicemail": "https://example.com/voicemail.mp3",
+                              "closed": "https://example.com/closed_message.mp3",
+                              "callback_later": "https://example.com/callback_later.mp3",
+                              "unanswered_call": "https://example.com/unanswered_call.mp3",
+                              "after_hours": "https://example.com/closed_message.mp3",
+                              "ringing_tone": "https://example.com/waiting_music.mp3"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-users-userId",
+        "description": "Retrieve details of a specific User."
+      },
+      "put": {
+        "summary": "Update a User",
+        "operationId": "put-users-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Some fields can be updated via the Public API. For instance, a User's availability status could be automatically updated based on information from their calendar or a workforce management tool.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "availability_status": {
+                    "type": "string",
+                    "enum": [
+                      "available",
+                      "custom",
+                      "unavailable"
+                    ]
+                  }
+                }
+              },
+              "examples": {
+                "User update": {
+                  "value": {
+                    "first_name": "Jeff Updated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove an user",
+        "operationId": "delete-users-id",
+        "responses": {
+          "204": {
+            "description": "User will be deleted in the next minutes, depending on how many calls and data are associated to them."
+          },
+          "422": {
+            "description": "Server unable to process the request, error will be described in the troubleshoot field."
+          }
+        },
+        "description": "When deleting a User, all data associated to them will also be destroyed and won't be recoverable."
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "Create New User",
+        "operationId": "post-user",
+        "responses": {
+          "201": {
+            "description": "User Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "user"
+                  ]
+                },
+                "examples": {
+                  "New User": {
+                    "value": {
+                      "user": {
+                        "id": 458,
+                        "direct_link": "https://api.aircall.io/v1/users/458",
+                        "name": "Jeffrey Curtis",
+                        "email": "jeffrey.curtis@aircall.io",
+                        "available": false,
+                        "availability_status": "available",
+                        "created_at": "2020-02-18T20:52:22.000Z",
+                        "time_zone": "Etc/UTC",
+                        "language": "en-US"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "availability_status": {
+                    "type": "string",
+                    "minLength": 1,
+                    "enum": [
+                      "available",
+                      "custom",
+                      "unavailable"
+                    ],
+                    "default": "available"
+                  },
+                  "is_admin": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "email",
+                  "first_name",
+                  "last_name"
+                ]
+              },
+              "examples": {
+                "Create User": {
+                  "value": {
+                    "email": "jeffrey.curtis@aircall.io",
+                    "first_name": "Jeffrey",
+                    "last_name": "Curtis"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Post the necessary fields for the API to create a new user."
+        },
+        "description": "Users can be created one at a time. After creation, a unique user ID will be included in the response's payload. An invitation email will be sent to the User, they will have to confirm their account before being able to use Aircall."
+      },
+      "parameters": [],
+      "get": {
+        "summary": "List all Users",
+        "operationId": "get-users",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "users": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "users"
+                  ]
+                },
+                "examples": {
+                  "List users example": {
+                    "value": {
+                      "meta": {
+                        "count": 3,
+                        "total": 3,
+                        "current_page": 1,
+                        "per_page": 20,
+                        "next_page_link": "",
+                        "previous_page_link": null
+                      },
+                      "users": [
+                        {
+                          "id": 456,
+                          "direct_link": "https://api.aircall.io/v1/users/456",
+                          "name": "John Doe",
+                          "email": "john.doe@aircall.io",
+                          "available": true,
+                          "availability_status": "available",
+                          "created_at": "2019-12-29T10:03:18.000Z",
+                          "time_zone": "America/New_York",
+                          "language": "en-US"
+                        },
+                        {
+                          "id": 457,
+                          "direct_link": "https://api.aircall.io/v1/users/457",
+                          "name": "Amy Rudd",
+                          "email": "amy.rudd@aircall.io",
+                          "available": true,
+                          "availability_status": "custom",
+                          "created_at": "2019-12-30T18:10:21.000Z",
+                          "time_zone": "Etc/UTC",
+                          "language": "en-US"
+                        },
+                        {
+                          "id": 458,
+                          "direct_link": "https://api.aircall.io/v1/users/458",
+                          "name": "Vera Martin",
+                          "email": "vera.martin@aircall.io",
+                          "available": false,
+                          "availability_status": "unavailable",
+                          "created_at": "20120-01-02T09:01:58.000Z",
+                          "time_zone": "Europe/Paris",
+                          "language": "fr-FR"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Fetch all Users associated to a Company and their information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "security": [
+          {
+            "OAuth": [
+              "public_api"
+            ]
+          }
+        ]
+      }
+    },
+    "/users/availabilities": {
+      "get": {
+        "summary": "Retrieve list of Users availability",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-users-availabilities",
+        "description": "List the detailed availability of all Users, displayed in the Dashboard's Activity Feed.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          }
+        ]
+      }
+    },
+    "/calls": {
+      "get": {
+        "summary": "List all Calls",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "calls": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Call"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "calls"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 20,
+                        "total": 2234,
+                        "current_page": 1,
+                        "per_page": 20,
+                        "next_page_link": "https://api.aircall.io/v1/calls?order=asc&page=2&per_page=20",
+                        "previous_page_link": null
+                      },
+                      "calls": [
+                        {
+                          "id": 812,
+                          "direct_link": "https://api.aircall.io/v1/calls/812",
+                          "direction": "outbound",
+                          "status": "done",
+                          "missed_call_reason": null,
+                          "started_at": 1584998199,
+                          "answered_at": 1584998205,
+                          "ended_at": 1584998210,
+                          "duration": 11,
+                          "voicemail": null,
+                          "recording": null,
+                          "asset": null,
+                          "raw_digits": "+1 800-123-4567",
+                          "user": {
+                            "id": 456,
+                            "direct_link": "https://api.aircall.io/v1/users/456",
+                            "name": "John Doe",
+                            "email": "john.doe@aircall.io",
+                            "available": true,
+                            "availability_status": "available",
+                            "created_at": "2019-12-29T10:03:18.000Z",
+                            "time_zone": "America/New_York"
+                          },
+                          "contact": null,
+                          "archived": false,
+                          "assigned_to": null,
+                          "transferred_to": null,
+                          "cost": "2.34",
+                          "number": {
+                            "id": 1234,
+                            "direct_link": "https://api.aircall.io/v1/numbers/1234",
+                            "name": "French Office",
+                            "digits": "+33 1 76 11 11 11",
+                            "created_at": "2020-01-02T11:41:01.000Z",
+                            "country": "FR",
+                            "time_zone": "Europe/Paris",
+                            "open": true,
+                            "availability_status": "custom",
+                            "is_ivr": true,
+                            "live_recording_activated": true,
+                            "messages": {
+                              "welcome": "https://example.com/welcome.mp3"
+                            }
+                          },
+                          "comments": [
+                            {
+                              "id": 735,
+                              "content": "Please call back this customer!",
+                              "posted_at": 1587994808,
+                              "posted_by": {
+                                "id": 456,
+                                "direct_link": "https://api.aircall.io/v1/users/456",
+                                "name": "Johnn Doe",
+                                "email": "john.doe@aircall.io",
+                                "available": true,
+                                "availability_status": "available",
+                                "created_at": "2019-12-29T10:03:18.000Z"
+                              }
+                            }
+                          ],
+                          "tags": [
+                            {
+                              "id": 678,
+                              "name": "General Inquiries",
+                              "created_at": 1587995020,
+                              "tagged_by": {
+                                "id": 456,
+                                "direct_link": "https://api.aircall.io/v1/users/456",
+                                "name": "Johnn Doe",
+                                "email": "john.doe@aircall.io",
+                                "available": true,
+                                "availability_status": "available",
+                                "created_at": "2019-12-29T10:03:18.000Z"
+                              }
+                            }
+                          ],
+                          "teams": [
+                            {
+                              "id": 678,
+                              "name": "Global Sales",
+                              "direct_link": "https://api.aircall.io/v1/teams/678",
+                              "created_at": "2020-03-10T08:31:43.000Z",
+                              "users": [
+                                {
+                                  "id": 456,
+                                  "direct_link": "https://api.aircall.io/v1/users/4c56",
+                                  "name": "John Doe",
+                                  "email": "john.doe@aircall.io",
+                                  "available": true,
+                                  "availability_status": "available",
+                                  "created_at": "2019-12-29T10:03:18.000Z",
+                                  "time_zone": "America/New_York"
+                                },
+                                {
+                                  "id": 457,
+                                  "direct_link": "https://api.aircall.io/v1/users/457",
+                                  "name": "Amy Rudd",
+                                  "email": "amy.rudd@aircall.io",
+                                  "available": true,
+                                  "availability_status": "custom",
+                                  "created_at": "2019-12-30T18:10:21.000Z",
+                                  "time_zone": "Etc/UTC"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-calls",
+        "description": "Fetch all Calls associated to a company and their information.\n\nBy default, Calls are ordered by ascending IDs - consider using the order=desc query param if you want to get the last calls made by an account!\n\nOnly six months of history is available. Please contact our Support team on support.aircall.io to get a one-time export of calls.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          }
+        ]
+      }
+    },
+    "/users/{id}/availability": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Check availability of a User",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "availability": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "availability"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v1-users-id-availability",
+        "description": "Retrieve the detailed availability of a specific User, displayed in the Dashboard's Activity Feed.\n\nPlease refer to the User object definition to see all the possible values of the availability field."
+      }
+    },
+    "/calls/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Call",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "call": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "call": {
+                        "id": 0,
+                        "direct_link": "string",
+                        "direction": "string",
+                        "status": "string",
+                        "missed_call_reason": null,
+                        "started_at": 0,
+                        "answered_at": 0,
+                        "ended_at": 0,
+                        "duration": 0,
+                        "voicemail": null,
+                        "recording": null,
+                        "asset": null,
+                        "raw_digits": "string",
+                        "user": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "email": "string",
+                          "available": true,
+                          "availability_status": "string",
+                          "created_at": "string",
+                          "time_zone": "string",
+                          "language": "string",
+                          "numbers": [
+                            {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "digits": "string",
+                              "created_at": "string",
+                              "country": "string",
+                              "time_zone": "string",
+                              "open": true,
+                              "availability_status": "string",
+                              "is_ivr": true,
+                              "live_recording_activated": true,
+                              "messages": null
+                            }
+                          ]
+                        },
+                        "contact": null,
+                        "archived": true,
+                        "assigned_to": null,
+                        "transferred_to": null,
+                        "cost": "string",
+                        "number": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "digits": "string",
+                          "created_at": "string",
+                          "country": "string",
+                          "time_zone": "string",
+                          "open": true,
+                          "availability_status": "string",
+                          "is_ivr": true,
+                          "live_recording_activated": true,
+                          "messages": null
+                        },
+                        "comments": [
+                          {
+                            "id": 0,
+                            "content": "string",
+                            "posted_at": 0,
+                            "posted_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": null
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "created_at": 0,
+                            "tagged_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": null
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "teams": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "direct_link": "string",
+                            "created_at": "string",
+                            "users": [
+                              {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "email": "string",
+                                "available": true,
+                                "availability_status": "string",
+                                "created_at": "string",
+                                "time_zone": "string",
+                                "language": "string",
+                                "numbers": [
+                                  {
+                                    "id": 0,
+                                    "direct_link": "string",
+                                    "name": "string",
+                                    "digits": "string",
+                                    "created_at": "string",
+                                    "country": "string",
+                                    "time_zone": "string",
+                                    "open": true,
+                                    "availability_status": "string",
+                                    "is_ivr": true,
+                                    "live_recording_activated": true,
+                                    "messages": null
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v1-calls-id",
+        "description": "Use this endpoint to asynchronously retrieve a Call data like duration, direction, status, timestamps, comments or tags…\n\nTo get Calls information in real time, we recommend using Calls Webhooks events - for instance to log information automatically in your database after a Call."
+      }
+    },
+    "/calls/search": {
+      "get": {
+        "summary": "Search Calls",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "calls": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Call"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "calls"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 0,
+                        "total": 0,
+                        "current_page": 0,
+                        "per_page": 0,
+                        "next_page_link": "string",
+                        "previous_page_link": null
+                      },
+                      "calls": [
+                        {
+                          "id": 0,
+                          "direct_link": "string",
+                          "direction": "string",
+                          "status": "string",
+                          "missed_call_reason": null,
+                          "started_at": 0,
+                          "answered_at": 0,
+                          "ended_at": 0,
+                          "duration": 0,
+                          "voicemail": null,
+                          "recording": null,
+                          "asset": null,
+                          "raw_digits": "string",
+                          "user": {
+                            "id": 0,
+                            "direct_link": "string",
+                            "name": "string",
+                            "email": "string",
+                            "available": true,
+                            "availability_status": "string",
+                            "created_at": "string",
+                            "time_zone": "string",
+                            "language": "string",
+                            "numbers": [
+                              {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "digits": "string",
+                                "created_at": "string",
+                                "country": "string",
+                                "time_zone": "string",
+                                "open": true,
+                                "availability_status": "string",
+                                "is_ivr": true,
+                                "live_recording_activated": true,
+                                "messages": {
+                                  "string": "string"
+                                }
+                              }
+                            ]
+                          },
+                          "contact": null,
+                          "archived": true,
+                          "assigned_to": null,
+                          "transferred_to": null,
+                          "cost": "string",
+                          "number": {
+                            "id": 0,
+                            "direct_link": "string",
+                            "name": "string",
+                            "digits": "string",
+                            "created_at": "string",
+                            "country": "string",
+                            "time_zone": "string",
+                            "open": true,
+                            "availability_status": "string",
+                            "is_ivr": true,
+                            "live_recording_activated": true,
+                            "messages": {
+                              "string": "string"
+                            }
+                          },
+                          "comments": [
+                            {
+                              "id": 0,
+                              "content": "string",
+                              "posted_at": 0,
+                              "posted_by": {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "email": "string",
+                                "available": true,
+                                "availability_status": "string",
+                                "created_at": "string",
+                                "time_zone": "string",
+                                "language": "string",
+                                "numbers": [
+                                  {
+                                    "id": 0,
+                                    "direct_link": "string",
+                                    "name": "string",
+                                    "digits": "string",
+                                    "created_at": "string",
+                                    "country": "string",
+                                    "time_zone": "string",
+                                    "open": true,
+                                    "availability_status": "string",
+                                    "is_ivr": true,
+                                    "live_recording_activated": true,
+                                    "messages": {
+                                      "string": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "tags": [
+                            {
+                              "id": 0,
+                              "name": "string",
+                              "created_at": 0,
+                              "tagged_by": {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "email": "string",
+                                "available": true,
+                                "availability_status": "string",
+                                "created_at": "string",
+                                "time_zone": "string",
+                                "language": "string",
+                                "numbers": [
+                                  {
+                                    "id": 0,
+                                    "direct_link": "string",
+                                    "name": "string",
+                                    "digits": "string",
+                                    "created_at": "string",
+                                    "country": "string",
+                                    "time_zone": "string",
+                                    "open": true,
+                                    "availability_status": "string",
+                                    "is_ivr": true,
+                                    "live_recording_activated": true,
+                                    "messages": {
+                                      "string": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "teams": [
+                            {
+                              "id": 0,
+                              "name": "string",
+                              "direct_link": "string",
+                              "created_at": "string",
+                              "users": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "email": "string",
+                                  "available": true,
+                                  "availability_status": "string",
+                                  "created_at": "string",
+                                  "time_zone": "string",
+                                  "language": "string",
+                                  "numbers": [
+                                    {
+                                      "id": 0,
+                                      "direct_link": "string",
+                                      "name": "string",
+                                      "digits": "string",
+                                      "created_at": "string",
+                                      "country": "string",
+                                      "time_zone": "string",
+                                      "open": true,
+                                      "availability_status": "string",
+                                      "is_ivr": true,
+                                      "live_recording_activated": true,
+                                      "messages": {
+                                        "string": "string"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-calls-search",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "direction",
+            "description": "Direction of the Calls. If specified, can be inbound or outbound."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "user_id",
+            "description": "Unique ID of the User who made or received Calls."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "phone_number",
+            "description": "The calling or receiving phone number of Calls."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "tags",
+            "description": "Array of Tags IDs."
+          }
+        ]
+      }
+    },
+    "/calls/{id}/transfers": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "post": {
+        "summary": "Transfer a Call",
+        "operationId": "post-calls-id-transfers",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Call already ended.\nCall cannot be transferred to a team with more than 25 users.\nInvalid usage of dispatching strategy with user or external phone number."
+          },
+          "404": {
+            "description": "User or Call not found."
+          }
+        },
+        "description": "Calls can be transferred to another User, Team or phone number.\n\nOnly cold transfers are available via the Public API:\n\nTo transfer a Call to another User, provide a user ID in the request's body. A call.transferred Webhook event will be sent.\nIf the agent to whom the call was transferred to is not available, call will be directed to the No one answers strategy: the Unanswered call message will be played.\n\nTo transfer a Call to a Team, provide a team ID in the request's body. A call.transferred Webhook event will be sent. When transferring a call to a team dispatching strategy can be specified with parameter: dispatching_strategy: The \"simultaneous\" strategy (default one if argument is not specified) will ring each available members simultaneously. The \"random\" one will ring each available member one by one.\nWhen call is ringing, transferring to a team is limited to teams with 25 users or less.\n\nTo transfer an Incoming Call to an external phone number, provide a phone number in the request body. When transfer is initiated, a message will be played to the caller informing them that their call is being transferred. Also, no Webhook event will be sent in that scenario.\nTransfers to external phone numbers will only work for inbound calls that have not yet been answered.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "number",
+                    "description": "Unique identifier of the User the Call will be transferred to."
+                  },
+                  "team_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the Team the Call will be transferred to."
+                  },
+                  "number": {
+                    "type": "string",
+                    "description": "External phone number the Call will be transferred to. Format must be e164. More information in the dedicated phone numbers format section."
+                  },
+                  "dispatching_strategy": {
+                    "type": "string",
+                    "description": "Specify dispatching strategy on team transfer, only values 'random' and simultaneous are accepted. This parameter is optional if not specified \"simultaneous\" strategy is implicitly used."
+                  }
+                },
+                "required": [
+                  "user_id"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calls/{id}/comments": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "post": {
+        "summary": "Comment a call",
+        "operationId": "post-calls-id-comments",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Maximum of 5 notes can be added to a Call."
+          }
+        },
+        "description": "Comments (also called Notes) can be added to Calls and a Call can have a maximum of five of them. After five comments added, those requests will fail with a 400 HTTP code. A comment posted via the Public API does not have an owner.\n\nOnce a Comment is posted on a Call, it cannot be updated nor deleted.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Content of the Comment"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/call/{id}/tags": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "post": {
+        "summary": "Tag a call",
+        "operationId": "post-call-id-tags",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "tags": {
+                    "type": "array",
+                    "description": "Array of tags IDs",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "tags"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "tags": [
+                      545
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Tags are created in the Dashboard by Admins and calls can be tagged by Agent from the Phone.\n\nOnce a Tag is associated to a Call, it cannot be removed."
+      }
+    },
+    "/calls/{id}/archive": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "put": {
+        "summary": "Archive a call",
+        "operationId": "put-calls-id-archive",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "call": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "call": {
+                        "id": 0,
+                        "direct_link": "string",
+                        "direction": "string",
+                        "status": "string",
+                        "missed_call_reason": null,
+                        "started_at": 0,
+                        "answered_at": 0,
+                        "ended_at": 0,
+                        "duration": 0,
+                        "voicemail": null,
+                        "recording": null,
+                        "asset": null,
+                        "raw_digits": "string",
+                        "user": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "email": "string",
+                          "available": true,
+                          "availability_status": "string",
+                          "created_at": "string",
+                          "time_zone": "string",
+                          "language": "string",
+                          "numbers": [
+                            {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "digits": "string",
+                              "created_at": "string",
+                              "country": "string",
+                              "time_zone": "string",
+                              "open": true,
+                              "availability_status": "string",
+                              "is_ivr": true,
+                              "live_recording_activated": true,
+                              "messages": {
+                                "welcome": "string"
+                              }
+                            }
+                          ]
+                        },
+                        "contact": null,
+                        "archived": true,
+                        "assigned_to": null,
+                        "transferred_to": null,
+                        "cost": "string",
+                        "number": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "digits": "string",
+                          "created_at": "string",
+                          "country": "string",
+                          "time_zone": "string",
+                          "open": true,
+                          "availability_status": "string",
+                          "is_ivr": true,
+                          "live_recording_activated": true,
+                          "messages": {
+                            "welcome": "string"
+                          }
+                        },
+                        "comments": [
+                          {
+                            "id": 0,
+                            "content": "string",
+                            "posted_at": 0,
+                            "posted_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": {
+                                    "welcome": "string"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "created_at": 0,
+                            "tagged_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": {
+                                    "welcome": "string"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "teams": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "direct_link": "string",
+                            "created_at": "string",
+                            "users": [
+                              {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "email": "string",
+                                "available": true,
+                                "availability_status": "string",
+                                "created_at": "string",
+                                "time_zone": "string",
+                                "language": "string",
+                                "numbers": [
+                                  {
+                                    "id": 0,
+                                    "direct_link": "string",
+                                    "name": "string",
+                                    "digits": "string",
+                                    "created_at": "string",
+                                    "country": "string",
+                                    "time_zone": "string",
+                                    "open": true,
+                                    "availability_status": "string",
+                                    "is_ivr": true,
+                                    "live_recording_activated": true,
+                                    "messages": {
+                                      "welcome": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Missed calls non-archived will be displayed in the To-do view and can be Mark as done (= archived)."
+      }
+    },
+    "/calls/{id}/unarchive": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "get": {
+        "summary": "Unarchive a Call",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "call": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "call": {
+                        "id": 0,
+                        "direct_link": "string",
+                        "direction": "string",
+                        "status": "string",
+                        "missed_call_reason": null,
+                        "started_at": 0,
+                        "answered_at": 0,
+                        "ended_at": 0,
+                        "duration": 0,
+                        "voicemail": null,
+                        "recording": null,
+                        "asset": null,
+                        "raw_digits": "string",
+                        "user": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "email": "string",
+                          "available": true,
+                          "availability_status": "string",
+                          "created_at": "string",
+                          "time_zone": "string",
+                          "language": "string",
+                          "numbers": [
+                            {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "digits": "string",
+                              "created_at": "string",
+                              "country": "string",
+                              "time_zone": "string",
+                              "open": true,
+                              "availability_status": "string",
+                              "is_ivr": true,
+                              "live_recording_activated": true,
+                              "messages": {
+                                "welcome": "string"
+                              }
+                            }
+                          ]
+                        },
+                        "contact": null,
+                        "archived": true,
+                        "assigned_to": null,
+                        "transferred_to": null,
+                        "cost": "string",
+                        "number": {
+                          "id": 0,
+                          "direct_link": "string",
+                          "name": "string",
+                          "digits": "string",
+                          "created_at": "string",
+                          "country": "string",
+                          "time_zone": "string",
+                          "open": true,
+                          "availability_status": "string",
+                          "is_ivr": true,
+                          "live_recording_activated": true,
+                          "messages": {
+                            "welcome": "string"
+                          }
+                        },
+                        "comments": [
+                          {
+                            "id": 0,
+                            "content": "string",
+                            "posted_at": 0,
+                            "posted_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": {
+                                    "welcome": "string"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "created_at": 0,
+                            "tagged_by": {
+                              "id": 0,
+                              "direct_link": "string",
+                              "name": "string",
+                              "email": "string",
+                              "available": true,
+                              "availability_status": "string",
+                              "created_at": "string",
+                              "time_zone": "string",
+                              "language": "string",
+                              "numbers": [
+                                {
+                                  "id": 0,
+                                  "direct_link": "string",
+                                  "name": "string",
+                                  "digits": "string",
+                                  "created_at": "string",
+                                  "country": "string",
+                                  "time_zone": "string",
+                                  "open": true,
+                                  "availability_status": "string",
+                                  "is_ivr": true,
+                                  "live_recording_activated": true,
+                                  "messages": {
+                                    "welcome": "string"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "teams": [
+                          {
+                            "id": 0,
+                            "name": "string",
+                            "direct_link": "string",
+                            "created_at": "string",
+                            "users": [
+                              {
+                                "id": 0,
+                                "direct_link": "string",
+                                "name": "string",
+                                "email": "string",
+                                "available": true,
+                                "availability_status": "string",
+                                "created_at": "string",
+                                "time_zone": "string",
+                                "language": "string",
+                                "numbers": [
+                                  {
+                                    "id": 0,
+                                    "direct_link": "string",
+                                    "name": "string",
+                                    "digits": "string",
+                                    "created_at": "string",
+                                    "country": "string",
+                                    "time_zone": "string",
+                                    "open": true,
+                                    "availability_status": "string",
+                                    "is_ivr": true,
+                                    "live_recording_activated": true,
+                                    "messages": {
+                                      "welcome": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-calls-id-unarchive",
+        "description": "Archived calls can be placed back in the To-do view of the Phone app."
+      }
+    },
+    "/calls/{id}/pause_recording": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "post": {
+        "summary": "Pause recording on a call",
+        "operationId": "post-calls-id-pause_recording",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Call has already ended"
+          },
+          "404": {
+            "description": "Call not found"
+          },
+          "405": {
+            "description": "Recording is disabled on the Call's number."
+          }
+        },
+        "description": "When live recording is actived on a Call, it can be automatically paused via the Public API."
+      }
+    },
+    "/calls/{id}/resume_recording": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call"
+        }
+      ],
+      "post": {
+        "summary": "Resume recording on a call",
+        "operationId": "post-calls-resume_recording",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Call has already ended."
+          },
+          "404": {
+            "description": "Call not found."
+          },
+          "405": {
+            "description": "Recording is disabled on the Call's Number."
+          }
+        }
+      }
+    },
+    "/calls/{id}/recording": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call."
+        }
+      ],
+      "delete": {
+        "summary": "Delete Call recording",
+        "operationId": "delete-calls-id-recording",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Delete the recording of a specific Call. It takes between 10 and 15 minutes to delete a call recording from our servers.\n\nThis action cannot be undone."
+      }
+    },
+    "/calls/{id}/voicemail": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call."
+        }
+      ],
+      "delete": {
+        "summary": "Delete Call voicemail",
+        "operationId": "delete-calls-id-voicemail",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Delete the voicemail of a specific Call. It can take up to 1 minute to delete a call voicemail from our servers.\n\nThis action cannot be undone."
+      }
+    },
+    "/calls/{id}/insight_cards": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Call."
+        }
+      ],
+      "post": {
+        "summary": "Insight Cards",
+        "operationId": "post-calls-id-insight_cards",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Insight Cards display custom data to Agents in their Phone apps during ongoing Calls.\n\nInsight cards will only be seen on a ongoing calls and are not stored after Calls are over.\n\nThree types of content can be sent in an Insight Card:\n\ntitle is a large text. It should describe the name of a custom app.\nshortText is a normal line in the Insight Card section.\nuser is a user card in the Insight Card section displaying the name and availability of the user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "contents": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "Represents lines displayed on the Insight Card",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Type of line.\nPossible values are title, shortText or user (check other tables)."
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Text displayed in the line of the Insight Card\n"
+                        },
+                        "link": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Transform the line in a link."
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "contents"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "contents": [
+                      {
+                        "type": "title",
+                        "text": "My Custom CRM",
+                        "link": "https://my-custom-crm.com"
+                      },
+                      {
+                        "type": "shortText",
+                        "label": "Account ID",
+                        "text": "6789",
+                        "link": "https://my-custom-crm.com/6789"
+                      },
+                      {
+                        "type": "shortText",
+                        "label": "Company name",
+                        "text": "Acme Inc."
+                      },
+                      {
+                        "type": "user",
+                        "label": "Account Owner",
+                        "user_id": 12345
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/calls": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Start an outbound call",
+        "operationId": "post-users-id-calls",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Number not found or invalid number to dial."
+          },
+          "405": {
+            "description": "User not available."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "number_id": {
+                    "type": "number",
+                    "description": "Unique identifier of the Number to use for the call."
+                  },
+                  "to": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The number to dial in E.164 format."
+                  }
+                },
+                "required": [
+                  "number_id",
+                  "to"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "number_id": 123,
+                    "to": "+18001231234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Outbound calls can be automatically started for a User from their Phone app. It is often used to build a Click-to-call feature!\n\nA Number ID and a phone number to dial must be provided in the request's body.\n\nThe User must be available, not on a call and associated to the Number.\n\nNumber must be active (validated), inactive numbers can be seen in the Aircall Dashboard."
+      }
+    },
+    "/users/{id}/dial": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Dial a phone number in the Phone",
+        "operationId": "post-users-id-dial",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Invalid number to dial."
+          },
+          "405": {
+            "description": "User not available."
+          }
+        },
+        "description": "Sending a request to this endpoint will fill the User's Phone app with the to params. They will then be able to start the call within the Phone app and will be free to choose from which Number they want to start the call from. It is often used to build a Click-to-dial feature!\n\nUser must be available and not on a call.\n\nThis feature is also available from the Aircall Everywhere CTI.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The phone number to dial in E.164 format."
+                  }
+                },
+                "required": [
+                  "to"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "to": "+18001231234"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/teams/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Team."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Team",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "team": {
+                      "$ref": "#/components/schemas/Team"
+                    }
+                  },
+                  "required": [
+                    "team"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "team": {
+                        "id": 678,
+                        "name": "Global Sales",
+                        "direct_link": "https://api.aircall.io/v1/teams/678",
+                        "created_at": "2020-03-10T08:31:43.000Z",
+                        "users": [
+                          {
+                            "id": 456,
+                            "direct_link": "https://api.aircall.io/v1/users/4c56",
+                            "name": "John Doe",
+                            "email": "john.doe@aircall.io",
+                            "available": true,
+                            "availability_status": "available",
+                            "created_at": "2019-12-29T10:03:18.000Z",
+                            "time_zone": "America/New_York"
+                          },
+                          {
+                            "id": 457,
+                            "direct_link": "https://api.aircall.io/v1/users/457",
+                            "name": "Amy Rudd",
+                            "email": "amy.rudd@aircall.io",
+                            "available": true,
+                            "availability_status": "custom",
+                            "created_at": "2019-12-30T18:10:21.000Z",
+                            "time_zone": "Etc/UTC"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-teams-id",
+        "description": "Retrieve details of a specific Team."
+      },
+      "delete": {
+        "summary": "Delete a Team",
+        "operationId": "delete-teams-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "Server unable to process the request, error will be described in the troubleshoot field."
+          }
+        },
+        "description": "When deleting Teams, they will be removed from the Numbers call distribution.\n\nUsers and Calls won't be deleted."
+      }
+    },
+    "/teams/{team_id}/users/{user_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "team_id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Team."
+        },
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the User."
+        }
+      ],
+      "post": {
+        "summary": "Add a User to a Team",
+        "operationId": "post-teams-team_id-users-user_id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Users can be added one by one to a Team.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                },
+                "required": [
+                  "team"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "team": {
+                      "id": 679,
+                      "name": "Support USA",
+                      "direct_link": "https://api.aircall.io/v1/teams/679",
+                      "created_at": "2020-03-10T20:29:52.000Z",
+                      "users": [
+                        {
+                          "id": 456,
+                          "direct_link": "https://api.aircall.io/v1/users/4c56",
+                          "name": "John Doe",
+                          "email": "john.doe@aircall.io",
+                          "available": true,
+                          "availability_status": "available",
+                          "created_at": "2019-12-29T10:03:18.000Z",
+                          "time_zone": "America/New_York"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove a User from a Team",
+        "operationId": "delete-teams-team_id-users-user_id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "team": {
+                      "$ref": "#/components/schemas/Team"
+                    }
+                  },
+                  "required": [
+                    "team"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "team": {
+                        "id": 679,
+                        "name": "Support USA",
+                        "direct_link": "https://api.aircall.io/v1/teams/679",
+                        "created_at": "2020-03-10T20:29:52.000Z",
+                        "users": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Server unable to process the request, error will be described in the troubleshoot field."
+          }
+        },
+        "description": "Users can be delete one by one from a Team.\n\nCalls made and received by this User won't be deleted."
+      }
+    },
+    "/teams": {
+      "get": {
+        "summary": "Create a Team",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "teams": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Team"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "teams"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 1,
+                        "total": 1,
+                        "current_page": 1,
+                        "per_page": 20
+                      },
+                      "teams": [
+                        {
+                          "id": 678,
+                          "name": "Global Sales",
+                          "direct_link": "https://api.aircall.io/v1/teams/678",
+                          "created_at": "2020-03-10T08:31:43.000Z",
+                          "users": [
+                            {
+                              "id": 456,
+                              "direct_link": "https://api.aircall.io/v1/users/4c56",
+                              "name": "John Doe",
+                              "email": "john.doe@aircall.io",
+                              "available": true,
+                              "availability_status": "available",
+                              "created_at": "2019-12-29T10:03:18.000Z",
+                              "time_zone": "America/New_York"
+                            },
+                            {
+                              "id": 457,
+                              "direct_link": "https://api.aircall.io/v1/users/457",
+                              "name": "Amy Rudd",
+                              "email": "amy.rudd@aircall.io",
+                              "available": true,
+                              "availability_status": "custom",
+                              "created_at": "2019-12-30T18:10:21.000Z",
+                              "time_zone": "Etc/UTC"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-teams",
+        "description": "Fetch all Teams associated to a company and their information."
+      },
+      "post": {
+        "summary": "Create a Team",
+        "operationId": "post-teams",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Company might have reached the maximum number of teams allowed on their plan. Name must be smaller than 64 characters and unique in the company."
+          }
+        },
+        "description": "A name must be provided when creating a Team.\n\nPlease use the following endpoint to add Users to it.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank if defined."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "name": "Support USA"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/dialer_campaign": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the User."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Dialer Campaign",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "created_at"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "id": 75555,
+                      "number_id": null,
+                      "created_at": "2020-03-21T20:20:04.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User has no active campaign."
+          }
+        },
+        "operationId": "get-users-user_id-dialer_campaign",
+        "description": "A User can have only one active Dialer Campaign.\n\nTo list all the phone numbers associated to it, please refer to the Retrieve phone numbers endpoint."
+      },
+      "post": {
+        "summary": "Create a Dialer Campaign",
+        "operationId": "post-users-user_id-dialer_campaign",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Must include at least one valid phone number."
+          }
+        },
+        "description": "Create an active Dialer Campaign for a User.\n\nA User can have only one active Dialer Campaign.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "phone_numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Array of valid phone numbers.\n"
+                    }
+                  }
+                },
+                "required": [
+                  "phone_numbers"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "phone_numbers": [
+                      "+19161112222",
+                      "+18001112222"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a Dialer Campaign",
+        "operationId": "delete-users-user_id-dialer_campaign",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "User has no active campaign."
+          }
+        },
+        "description": "Dialer Campaign created by Agents or via the Public API can be deleted.\n\nPhone numbers associated to it will be destroyed as well."
+      }
+    },
+    "/users/{user_id}/dialer_campaign/phone_numbers": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "user_id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve phone numbers",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "numbers": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "id",
+                          "number",
+                          "called",
+                          "created_at"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "number": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "called": {
+                            "type": "boolean"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "numbers"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "numbers": [
+                        {
+                          "id": 4671488,
+                          "number": "+18002112223",
+                          "called": false,
+                          "created_at": "2020-03-20T20:42:57.000Z"
+                        },
+                        {
+                          "id": 4671489,
+                          "number": "+18003112224",
+                          "called": false,
+                          "created_at": "2020-03-20T20:42:57.000Z"
+                        },
+                        {
+                          "id": 4671490,
+                          "number": "+18004112225",
+                          "called": false,
+                          "created_at": "2020-03-20T20:42:57.000Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User has no active campaign."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-users-user_id-dialer_campaign-phone_numbers",
+        "description": "A Dialer Campaign is made of a list of phone numbers. Those lists can be retrieved thanks to the following request.\n\n"
+      },
+      "post": {
+        "summary": "Add phone numbers",
+        "operationId": "post-users-user_id-dialer_campaign-phone_numbers",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Must include at least one valid phone number."
+          }
+        },
+        "description": "Phone numbers can be added to an Agent's active Dialer Campaign.\n\nThose phone numbers will be automatically appended in the Phone app.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "phone_numbers": {
+                    "type": "array",
+                    "description": "Array of valid phone numbers.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "phone_numbers"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "phone_numbers": [
+                      "+19161112222",
+                      "+18001112222"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/dialer_campaign/phone_numbers/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the User."
+        },
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the phone number."
+        }
+      ],
+      "delete": {
+        "summary": "Delete a phone number",
+        "operationId": "delete-users-user_id-dialer_campaign-phone_numbers-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Delete one phone number from a Dialer Campaign."
+      }
+    },
+    "/numbers": {
+      "get": {
+        "summary": "List all Numbers",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "numbers": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Number"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "numbers"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 3,
+                        "total": 2,
+                        "current_page": 1,
+                        "per_page": 20,
+                        "next_page_link": null,
+                        "previous_page_link": null
+                      },
+                      "numbers": [
+                        {
+                          "id": 1234,
+                          "direct_link": "https://api.aircall.io/v1/numbers/1234",
+                          "name": "French Office",
+                          "digits": "+33 1 76 11 11 11",
+                          "created_at": "2020-01-02T11:41:01.000Z",
+                          "country": "FR",
+                          "time_zone": "Europe/Paris",
+                          "open": true,
+                          "availability_status": "custom",
+                          "is_ivr": true,
+                          "live_recording_activated": true,
+                          "messages": {
+                            "welcome": "https://example.com/welcome.mp3",
+                            "waiting": "https://example.com/waiting_music.mp3",
+                            "ivr": "https://example.com/ivr_message.mp3",
+                            "voicemail": "https://example.com/voicemail.mp3",
+                            "closed": "https://example.com/closed_message.mp3",
+                            "callback_later": "https://example.com/callback_later.mp3",
+                            "unanswered_call": "https://example.com/unanswered_call.mp3",
+                            "after_hours": "https://example.com/closed_message.mp3",
+                            "ringing_tone": "https://example.com/waiting_music.mp3"
+                          }
+                        },
+                        {
+                          "id": 2345,
+                          "direct_link": "https://api.aircall.io/v1/numbers/2345",
+                          "name": "UK office",
+                          "digits": "+44 20 0000 0000",
+                          "created_at": "2020-01-04T19:28:58.000Z",
+                          "country": "GB",
+                          "time_zone": "Europe/London",
+                          "open": true,
+                          "availability_status": "custom",
+                          "is_ivr": true,
+                          "live_recording_activated": false,
+                          "messages": {
+                            "welcome": "https://example.com/welcome.mp3",
+                            "waiting": "https://example.com/waiting_music.mp3",
+                            "ivr": "https://example.com/ivr_message.mp3",
+                            "voicemail": "https://example.com/voicemail.mp3",
+                            "closed": "https://example.com/closed_message.mp3",
+                            "callback_later": "https://example.com/callback_later.mp3",
+                            "unanswered_call": "https://example.com/unanswered_call.mp3",
+                            "after_hours": "https://example.com/closed_message.mp3",
+                            "ringing_tone": "https://example.com/waiting_music.mp3"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-numbers",
+        "description": "Fetch all Numbers associated to a company and their information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          }
+        ]
+      }
+    },
+    "/numbers/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Number."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Number",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "$ref": "#/components/schemas/Number"
+                    }
+                  },
+                  "required": [
+                    "number"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "number": {
+                        "id": 1234,
+                        "direct_link": "https://api.aircall.io/v1/numbers/1234",
+                        "name": "French Office",
+                        "digits": "+33 1 76 11 11 11",
+                        "created_at": "2020-01-02T11:41:01.000Z",
+                        "country": "FR",
+                        "time_zone": "Europe/Paris",
+                        "open": true,
+                        "availability_status": "custom",
+                        "is_ivr": true,
+                        "live_recording_activated": true,
+                        "messages": {
+                          "welcome": "https://example.com/welcome.mp3",
+                          "waiting": "https://example.com/waiting_music.mp3",
+                          "ivr": "https://example.com/ivr_message.mp3",
+                          "voicemail": "https://example.com/voicemail.mp3",
+                          "closed": "https://example.com/closed_message.mp3",
+                          "callback_later": "https://example.com/callback_later.mp3",
+                          "unanswered_call": "https://example.com/unanswered_call.mp3",
+                          "after_hours": "https://example.com/closed_message.mp3",
+                          "ringing_tone": "https://example.com/waiting_music.mp3"
+                        },
+                        "users": [
+                          {
+                            "id": 456,
+                            "direct_link": "https://api.aircall.io/v1/users/456",
+                            "name": "John Doe",
+                            "email": "john.doe@aircall.io",
+                            "available": true,
+                            "availability_status": "available",
+                            "created_at": "2019-12-29T10:03:18.000Z",
+                            "time_zone": "America/New_York"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-numbers-id",
+        "description": "Retrieve details of a specific Numbers.\n\n"
+      },
+      "put": {
+        "summary": "Update a Number",
+        "operationId": "put-numbers-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Updates a specific Number. Response will be the updated Number.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be empty or null."
+                  },
+                  "availability_status": {
+                    "type": "string",
+                    "description": "Can be open, custom or closed."
+                  },
+                  "messages": {
+                    "$ref": "#/components/schemas/Message"
+                  },
+                  "is_ivr": {
+                    "type": "boolean",
+                    "description": "If true, Number will be converted into an IVR. Classic otherwise."
+                  },
+                  "live_recording_activated": {
+                    "type": "boolean",
+                    "description": "Set to true if you want to enable call recording on the specified Number. It will enable both inbound AND outbound at the same time."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "name": "French Office UPDATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "List all contacts",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "contacts"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 2,
+                        "total": 2,
+                        "current_page": 1,
+                        "per_page": 20
+                      },
+                      "contacts": [
+                        {
+                          "id": 710,
+                          "direct_link": "https://api.aircall.io/v1/contacts/710",
+                          "first_name": "Vicente",
+                          "last_name": "Abad",
+                          "is_shared": true,
+                          "created_at": 1400691054,
+                          "updated_at": 1444336506,
+                          "phone_numbers": [
+                            {
+                              "id": 3367,
+                              "label": "Mobile",
+                              "value": "+34664673697"
+                            }
+                          ]
+                        },
+                        {
+                          "id": 711,
+                          "direct_link": "https://api.aircall.io/v1/contacts/711",
+                          "first_name": "Margaret",
+                          "last_name": "Morrison",
+                          "company_name": "TeleWorm",
+                          "is_shared": true,
+                          "created_at": 1400692007,
+                          "updated_at": 1444336507,
+                          "emails": [
+                            {
+                              "id": 3200,
+                              "label": "Work",
+                              "value": "m.morrison@teleworm.es"
+                            }
+                          ],
+                          "phone_numbers": [
+                            {
+                              "id": 3368,
+                              "label": "Mobile",
+                              "value": "+34768776683"
+                            },
+                            {
+                              "id": 3369,
+                              "label": "Work",
+                              "value": "+49111000460"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-contacts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order_by",
+            "description": "Set the order field, created_at or updated_at."
+          }
+        ],
+        "description": "Fetch all the shared Contacts associated to a company with their phone numbers and emails information."
+      },
+      "post": {
+        "summary": "Create a Contact",
+        "operationId": "post-contacts",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "contact": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "contact"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "contact": {
+                        "id": 719,
+                        "direct_link": "https://api.aircall.io/v1/contacts/719",
+                        "first_name": "Gary",
+                        "last_name": "Jennings",
+                        "information": "external_custom_id:87123",
+                        "is_shared": true,
+                        "created_at": 1585083040,
+                        "updated_at": 1585083040,
+                        "emails": [
+                          {
+                            "id": 9170,
+                            "label": "Office",
+                            "value": "gary.jennings@acme.com"
+                          }
+                        ],
+                        "phone_numbers": [
+                          {
+                            "id": 9171,
+                            "label": "Work",
+                            "value": "+19001112222"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Contacts created via Aircall Public API will be automatically shared across the company.\n\nAt least a first_name, a last_name OR a company_name is required when creating a Contact.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank if defined. Mandatory field if last_name and company_name are empty."
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank if defined. Mandatory field if first_name and company_name are empty."
+                  },
+                  "information": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank if defined."
+                  },
+                  "phone_numbers": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "Array of phone_numbers objects.For each phone_number, label and value must be set.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "emails": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "Array of email address objects. For each email, label and value must be set.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "company_name": {
+                    "type": "string",
+                    "description": "Can't be blank if defined. Mandatory field if first_name and last_name are empty."
+                  }
+                },
+                "required": [
+                  "emails"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "first_name": "Gary",
+                    "last_name": "Jennings",
+                    "information": "external_custom_id:87123",
+                    "phone_numbers": [
+                      {
+                        "label": "Work",
+                        "value": "+19001112222"
+                      }
+                    ],
+                    "emails": [
+                      {
+                        "label": "Office",
+                        "value": "gary.jennings@acme.com"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/search": {
+      "get": {
+        "summary": "Search Contacts",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 1,
+                        "total": 1,
+                        "current_page": 1,
+                        "per_page": 20
+                      },
+                      "contacts": [
+                        {
+                          "id": 711,
+                          "direct_link": "https://api.aircall.io/v1/contacts/711",
+                          "first_name": "Margaret",
+                          "last_name": "Morrison",
+                          "company_name": "TeleWorm",
+                          "is_shared": true,
+                          "created_at": 1400692007,
+                          "updated_at": 1444336507,
+                          "emails": [
+                            {
+                              "id": 3200,
+                              "label": "Work",
+                              "value": "m.morrison@teleworm.es"
+                            }
+                          ],
+                          "phone_numbers": [
+                            {
+                              "id": 3368,
+                              "label": "Mobile",
+                              "value": "+34768776683"
+                            },
+                            {
+                              "id": 3369,
+                              "label": "Work",
+                              "value": "+49111000460"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-contacts-search",
+        "description": "Search within a company's shared Contacts with extra query parameters.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order_by",
+            "description": "Set the order field, created_at or updated_at."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "phone_number",
+            "description": "Phone number of a contact"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "email",
+            "description": "Email address of a contact"
+          }
+        ]
+      }
+    },
+    "/contacts/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Contact."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Contact",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "contact": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "contact"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "contact": {
+                        "id": 710,
+                        "direct_link": "https://api.aircall.io/v1/contacts/710",
+                        "first_name": "Vicente",
+                        "last_name": "Abad",
+                        "is_shared": true,
+                        "created_at": 1400691054,
+                        "updated_at": 1444336506,
+                        "phone_numbers": [
+                          {
+                            "id": 3367,
+                            "label": "Mobile",
+                            "value": "+34664673697"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-contacts-id",
+        "description": "Retrieve details of a specific Contact.\n\nOnly shared contacts can be found."
+      },
+      "post": {
+        "summary": "Update a Contact",
+        "operationId": "post-contacts-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "contact": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "contact"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "contact": {
+                        "id": 710,
+                        "direct_link": "https://api.aircall.io/v1/contacts/710",
+                        "first_name": "Vicente UPDATED",
+                        "last_name": "Abad",
+                        "company_name": "Lerox Inc.",
+                        "is_shared": true,
+                        "created_at": 1400691054,
+                        "updated_at": 1444336506,
+                        "phone_numbers": [
+                          {
+                            "id": 3367,
+                            "label": "Mobile",
+                            "value": "+34664673697"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Update a shared Contact. Response will be the updated Contact.\n\nTo update a Contact's phone numbers or emails, please use the approriate endpoints described below.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "company_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "information": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "first_name": "Vicente UPDATED",
+                    "company_name": "Lerox Inc."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a Contact",
+        "operationId": "delete-contacts-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Delete a contact from the Company.\n\nOnly shared contacts can be deleted."
+      }
+    },
+    "/contacts/{id}/email_details": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Add email to a Contact",
+        "operationId": "post-contacts-id-email_details",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "email_detail": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "email_detail"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "email_detail": {
+                        "id": 5201,
+                        "label": "Work",
+                        "value": "v.lightner@example.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Emails can be added one by one to a Contact.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Aircall stores any email format."
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "Can't be blank if defined."
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "value": "v.lightner@example.com"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{id}/phone_details/{phoneNumberId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Contact."
+        },
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "phoneNumberId",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the phone number."
+        }
+      ],
+      "put": {
+        "summary": "Update a phone number from a Contact",
+        "operationId": "put-contacts-id-phone_details-phoneNumberId",
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "phone_detail": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "phone_detail"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "phone_detail": {
+                        "id": 5200,
+                        "label": "Home UPDATED",
+                        "value": "19161110011"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Phone number's value will be normalized before being stored.\n\nThe value field must be sent each time a phone number is updated.\n\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank if defined."
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Aircall stores any phone number format. It is recommended to store a valid phone number so agent can dial them easily."
+                  }
+                },
+                "required": [
+                  "label",
+                  "value"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "label": "Home UPDATED",
+                    "value": "+19161110011"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a Contact's phone number",
+        "operationId": "delete-contacts-id-phone_details-phoneNumberId",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Phone numbers can be removed from a Contact by using the following endpoint."
+      }
+    },
+    "/contacts/{id}/email_details/{email_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Contact."
+        },
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "email_id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Email address."
+        }
+      ],
+      "put": {
+        "summary": "Update an email from a Contact",
+        "operationId": "put-contacts-id-email_details-emailId",
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "email_detail": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "email_detail"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "email_detail": {
+                        "id": 5201,
+                        "label": "Work",
+                        "value": "v.updated@example.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "The value field must be sent each time an email address is updated.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Aircall stores any email format."
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "Can't be blank if defined."
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "value": "v.updated@example.com"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an email form a Contact",
+        "operationId": "delete-contacts-id-email_details-emailId",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Email addresses can be removed from a Contact by using the following endpoint."
+      }
+    },
+    "/contacts/{id}/phone_details": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Contact."
+        }
+      ],
+      "post": {
+        "summary": "Add phone number to a Contact",
+        "operationId": "post-contacts-id-phone_details",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "phone_detail": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "value"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "phone_detail"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "phone_detail": {
+                        "id": 5200,
+                        "label": "Work",
+                        "value": "19161110000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Phone numbers can be added one by one to a Contact.\n\nPhone number's value will be normalized before being stored.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Aircall stores any phone number format. It is recommended to store a valid phone number so agent can dial them easily."
+                  }
+                },
+                "required": [
+                  "label",
+                  "value"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "label": "Work",
+                    "value": "+19161110000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "summary": "List all Tags",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Tag"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "tags"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 3,
+                        "total": 3,
+                        "current_page": 1,
+                        "per_page": 20
+                      },
+                      "tags": [
+                        {
+                          "id": 678,
+                          "name": "General Inquiries",
+                          "color": "#0662B5",
+                          "description": null
+                        },
+                        {
+                          "id": 679,
+                          "name": "Feedback",
+                          "color": "#008f6c",
+                          "description": null
+                        },
+                        {
+                          "id": 680,
+                          "name": "Spam Call",
+                          "color": "#FCBB26",
+                          "description": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-tags",
+        "description": "Fetch all Tags associated to a company and their information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/from"
+          },
+          {
+            "$ref": "#/components/parameters/to"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a Tag",
+        "operationId": "post-tags",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "tag": {
+                      "$ref": "#/components/schemas/Tag"
+                    }
+                  },
+                  "required": [
+                    "tag"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "tag": {
+                        "id": 681,
+                        "name": "VIP Customer",
+                        "color": "#00B388",
+                        "description": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Aircall will perform validation before inserting new Tag (like presence of a name).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank and must ne formatted in hexadecimal"
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "name": "VIP Customer",
+                    "color": "#00B388"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Tag."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a tag",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "tag": {
+                      "$ref": "#/components/schemas/Tag"
+                    }
+                  },
+                  "required": [
+                    "tag"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "tag": {
+                        "id": 678,
+                        "name": "General Inquiries",
+                        "color": "#0662B5",
+                        "description": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-tags-id",
+        "description": "Retrieve details of a specific Tag."
+      },
+      "put": {
+        "summary": "Update a Tag",
+        "operationId": "put-tags-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "tag": {
+                      "$ref": "#/components/schemas/Tag"
+                    }
+                  },
+                  "required": [
+                    "tag"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "tag": {
+                        "id": 681,
+                        "name": "Tier 2 Customer",
+                        "color": "#00B388"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Some fields can be updated via the Public API.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Can't be blank and must be formatted in Hexadecimal."
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "name": "Tier 2 Customer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a Tag",
+        "operationId": "delete-tags-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Server unable to process the request, error will be described in the troubleshoot field."
+          }
+        },
+        "description": "Tag will be removed from Calls."
+      }
+    },
+    "/webhooks": {
+      "get": {
+        "summary": "List all Webhooks",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "webhooks": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/components/schemas/Webhook"
+                      }
+                    }
+                  },
+                  "required": [
+                    "meta",
+                    "webhooks"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "meta": {
+                        "count": 2,
+                        "total": 2,
+                        "current_page": 1,
+                        "per_page": 20
+                      },
+                      "webhooks": [
+                        {
+                          "id": 1001,
+                          "direct_link": "https://api.aircall.io/v1/webhooks/1001",
+                          "created_at": "2020-04-01T15:56:18.000Z",
+                          "url": "https://my-server.example.com/webhooks/calls",
+                          "active": true,
+                          "token": "abc123def456ghi789",
+                          "events": [
+                            "call.assigned",
+                            "call.transferred",
+                            "call.ringing_on_agent"
+                          ]
+                        },
+                        {
+                          "id": 1002,
+                          "direct_link": "https://api.aircall.io/v1/webhooks/1002",
+                          "created_at": "2020-04-02T09:14:31.000Z",
+                          "url": "https://my-server.example.com/webhooks/numbers",
+                          "active": true,
+                          "token": "4567ghi789abc123def",
+                          "events": [
+                            "number.opened",
+                            "number.closed"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-webhooks",
+        "description": "Fetch all Webhooks associated to a company and their information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/order"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a Webhook",
+        "operationId": "post-webhooks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "webhook": {
+                      "$ref": "#/components/schemas/Webhook"
+                    }
+                  },
+                  "required": [
+                    "webhook"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "webhook": {
+                        "id": 26316,
+                        "direct_link": "https://api.aircall.io/v1/webhooks/26316",
+                        "created_at": "2020-03-24T19:51:24.000Z",
+                        "url": "https://my-server.example.com/webhooks/contacts",
+                        "active": true,
+                        "events": [
+                          "contact.created",
+                          "contact.updated",
+                          "contact.deleted"
+                        ],
+                        "token": "df76g76dpziygs567f0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Webhook creation can be done either from the Aircall Dashboard or via the Public API. Webhook have a list of events attached to it, linked to Calls, Users, Contacts and/or Numbers.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "custom_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": ""
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank and must be a valid URL."
+                  },
+                  "events": {
+                    "type": "array",
+                    "description": "If events field is empty, all events will be attached to this webhook.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "custom_name": "My Custom Workflow",
+                    "url": "https://my-server.example.com/webhooks/contacts",
+                    "events": [
+                      "contact.created",
+                      "contact.updated",
+                      "contact.deleted"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier for the Webhook."
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a Webhook",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "webhook": {
+                      "$ref": "#/components/schemas/Webhook"
+                    }
+                  },
+                  "required": [
+                    "webhook"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "webhook": {
+                        "id": 1001,
+                        "direct_link": "https://api.aircall.io/v1/webhooks/1001",
+                        "created_at": "2020-04-01T15:56:18.000Z",
+                        "url": "https://my-server.example.com/webhooks/calls",
+                        "active": true,
+                        "token": "abc123def456ghi789",
+                        "events": [
+                          "call.assigned",
+                          "call.transferred",
+                          "call.ringing_on_agent"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-webhooks-id",
+        "description": "Retrieve details of a specific Webhook."
+      },
+      "put": {
+        "summary": "Update a Webhook",
+        "operationId": "put-webhooks-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "webhook": {
+                      "$ref": "#/components/schemas/Webhook"
+                    }
+                  },
+                  "required": [
+                    "webhook"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "webhook": {
+                        "id": 26316,
+                        "direct_link": "https://api.aircall.io/v1/webhooks/26316",
+                        "created_at": "2020-03-24T19:51:24.000Z",
+                        "url": "https://my-new-server.example.com/webhooks/contacts",
+                        "active": true,
+                        "events": [
+                          "contact.created",
+                          "contact.updated",
+                          "contact.deleted"
+                        ],
+                        "token": "df76g76dpziygs567f0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Can't be blank and must be a valid URL."
+                  },
+                  "events": {
+                    "type": "array",
+                    "description": "If events field is empty, all events will be attached to this webhook.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "active": {
+                    "type": "boolean",
+                    "description": "Set this field to true to re-activate a Webhook or false to disable it."
+                  },
+                  "custom_name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "url": "https://my-new-server.example.com/webhooks/contacts",
+                    "events": [
+                      "contact.created",
+                      "contact.updated",
+                      "contact.deleted"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Webhook objects can be updated either from the Aircall Dashboard or via the Public API.\n\nThis endpoint is also useful to re-activate Webhooks that are automatically disabled by Aircall (more info in the Webhook usage section)."
+      },
+      "delete": {
+        "summary": "Delete a Webhook",
+        "operationId": "delete-webhooks-id",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Webhook objects can be deleted either from the Aircall Dashboard or via the Public API. Aircall will stop sending events and configuration of the Webhook will be lost."
+      }
+    },
+    "/company": {
+      "get": {
+        "summary": "Retrieve Company information",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "company": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "users_count": {
+                          "type": "number"
+                        },
+                        "numbers_count": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "users_count",
+                        "numbers_count"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "company"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "company": {
+                        "name": "Acme Inc.",
+                        "users_count": 146,
+                        "numbers_count": 28
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-comany",
+        "description": "The Company object is a brief representation of the state of a company with its name, the number of Users and Numbers.\n\nCompanies are not updatable nor destroyable via Aircall Public API. The only way to do so is via the Aircall Dashboard."
+      },
+      "parameters": []
+    },
+    "/integrations/me": {
+      "get": {
+        "summary": "Retrieve Integration information",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "integration": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "name",
+                        "logo",
+                        "company_id",
+                        "status",
+                        "active",
+                        "created_at",
+                        "updated_at",
+                        "number_ids",
+                        "numbers_count"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Name of the Integration."
+                        },
+                        "logo": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "company_id": {
+                          "type": "number"
+                        },
+                        "status": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Status of the integration"
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "description": "true if status == \"active\"."
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "number_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          }
+                        },
+                        "numbers_count": {
+                          "type": "number"
+                        },
+                        "custom_name": {
+                          "type": "string",
+                          "description": "Custom name of the Integration."
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "integration"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "integration": {
+                        "id": 1234,
+                        "name": "My app",
+                        "logo": "https://cdn.aircall.io/applications/standard/staging/ico_91.svg",
+                        "company_id": 1,
+                        "status": "active",
+                        "active": true,
+                        "created_at": "2020-11-02T15:38:16.000+00:00",
+                        "updated_at": "2020-11-02T15:38:29.000+00:00",
+                        "number_ids": [
+                          123456
+                        ],
+                        "numbers_count": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-integrations-me",
+        "description": "Integration information can be retrieved with this GET request. The return of this endpoint is the integration associated to the accessToken.\n\nThis information can only be retrieved for integrations built by aircall, or 3rd party using OAuth. Integrations using Basic Auth aren’t retrievable through this endpoint."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "description": "User Model",
+        "type": "object",
+        "x-examples": {
+          "User": {
+            "id": 456,
+            "direct_link": "https://api.aircall.io/v1/users/456",
+            "name": "John Doe",
+            "email": "john.doe@aircall.io",
+            "available": true,
+            "availability_status": "available",
+            "created_at": "2019-12-29T10:03:18.000Z",
+            "time_zone": "America/New_York",
+            "language": "en-US",
+            "numbers": [
+              {
+                "id": 1234,
+                "direct_link": "https://api.aircall.io/v1/numbers/1234",
+                "name": "French Office",
+                "digits": "+33 1 76 11 11 11",
+                "created_at": "2020-01-02T11:41:01.000Z",
+                "country": "FR",
+                "time_zone": "Europe/Paris",
+                "open": true,
+                "availability_status": "custom",
+                "is_ivr": true,
+                "live_recording_activated": true,
+                "messages": {
+                  "welcome": "https://example.com/welcome.mp3",
+                  "waiting": "https://example.com/waiting_music.mp3",
+                  "ivr": "https://example.com/ivr_message.mp3",
+                  "voicemail": "https://example.com/voicemail.mp3",
+                  "closed": "https://example.com/closed_message.mp3",
+                  "callback_later": "https://example.com/callback_later.mp3",
+                  "unanswered_call": "https://example.com/unanswered_call.mp3",
+                  "after_hours": "https://example.com/closed_message.mp3",
+                  "ringing_tone": "https://example.com/waiting_music.mp3"
+                }
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "availability_status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "time_zone": {
+            "type": "string",
+            "minLength": 1
+          },
+          "language": {
+            "type": "string",
+            "minLength": 1
+          },
+          "numbers": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Number"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "Pagination": {
+        "description": "When retrieving a list of objects with a [GET] request, results are being paginated by Aircall.\n\nPagination information will be presented in the meta object, available in the payload body and described below.",
+        "type": "object",
+        "x-examples": {
+          "Pagination example": {
+            "count": 20,
+            "total": 2234,
+            "current_page": 1,
+            "per_page": 20,
+            "next_page_link": "https://api.aircall.io/v1/calls?page=2&per_page=20",
+            "previous_page_link": ""
+          }
+        },
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "current_page": {
+            "type": "number"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "next_page_link": {
+            "type": "string"
+          },
+          "previous_page_link": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "count",
+          "total",
+          "current_page",
+          "per_page"
+        ]
+      },
+      "Team": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "users": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "direct_link",
+          "created_at",
+          "users"
+        ]
+      },
+      "Comment": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "id": 735,
+            "content": "Please call back this customer!",
+            "posted_at": 1587994808,
+            "posted_by": {
+              "id": 456,
+              "direct_link": "https://api.aircall.io/v1/users/456",
+              "name": "Johnn Doe",
+              "email": "john.doe@aircall.io",
+              "available": true,
+              "availability_status": "available",
+              "created_at": "2019-12-29T10:03:18.000Z"
+            }
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "posted_at": {
+            "type": "number"
+          },
+          "posted_by": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "posted_at",
+          "posted_by"
+        ]
+      },
+      "Number": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "digits": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "country": {
+            "type": "string",
+            "minLength": 1
+          },
+          "time_zone": {
+            "type": "string",
+            "minLength": 1
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "availability_status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "is_ivr": {
+            "type": "boolean"
+          },
+          "live_recording_activated": {
+            "type": "boolean"
+          },
+          "messages": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "users": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "open",
+          "is_ivr",
+          "live_recording_activated"
+        ]
+      },
+      "Call": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "id": 812,
+            "direct_link": "https://api.aircall.io/v1/calls/812",
+            "direction": "outbound",
+            "status": "done",
+            "missed_call_reason": null,
+            "started_at": 1584998199,
+            "answered_at": 1584998205,
+            "ended_at": 1584998210,
+            "duration": 11,
+            "voicemail": null,
+            "recording": null,
+            "asset": null,
+            "raw_digits": "+1 800-123-4567",
+            "user": {
+              "id": 456,
+              "direct_link": "https://api.aircall.io/v1/users/456",
+              "name": "John Doe",
+              "email": "john.doe@aircall.io",
+              "available": true,
+              "availability_status": "available",
+              "created_at": "2019-12-29T10:03:18.000Z",
+              "time_zone": "America/New_York"
+            },
+            "contact": null,
+            "archived": false,
+            "assigned_to": null,
+            "transferred_to": null,
+            "cost": "2.34",
+            "number": {
+              "id": 1234,
+              "direct_link": "https://api.aircall.io/v1/numbers/1234",
+              "name": "French Office",
+              "digits": "+33 1 76 11 11 11",
+              "created_at": "2020-01-02T11:41:01.000Z",
+              "country": "FR",
+              "time_zone": "Europe/Paris",
+              "open": true,
+              "availability_status": "custom",
+              "is_ivr": true,
+              "live_recording_activated": true,
+              "messages": {
+                "welcome": "https://example.com/welcome.mp3"
+              }
+            },
+            "comments": [
+              {
+                "id": 735,
+                "content": "Please call back this customer!",
+                "posted_at": 1587994808,
+                "posted_by": {
+                  "id": 456,
+                  "direct_link": "https://api.aircall.io/v1/users/456",
+                  "name": "Johnn Doe",
+                  "email": "john.doe@aircall.io",
+                  "available": true,
+                  "availability_status": "available",
+                  "created_at": "2019-12-29T10:03:18.000Z"
+                }
+              }
+            ],
+            "tags": [
+              {
+                "id": 678,
+                "name": "General Inquiries",
+                "created_at": 1587995020,
+                "tagged_by": {
+                  "id": 456,
+                  "direct_link": "https://api.aircall.io/v1/users/456",
+                  "name": "Johnn Doe",
+                  "email": "john.doe@aircall.io",
+                  "available": true,
+                  "availability_status": "available",
+                  "created_at": "2019-12-29T10:03:18.000Z"
+                }
+              }
+            ],
+            "teams": [
+              {
+                "id": 678,
+                "name": "Global Sales",
+                "direct_link": "https://api.aircall.io/v1/teams/678",
+                "created_at": "2020-03-10T08:31:43.000Z",
+                "users": [
+                  {
+                    "id": 456,
+                    "direct_link": "https://api.aircall.io/v1/users/4c56",
+                    "name": "John Doe",
+                    "email": "john.doe@aircall.io",
+                    "available": true,
+                    "availability_status": "available",
+                    "created_at": "2019-12-29T10:03:18.000Z",
+                    "time_zone": "America/New_York"
+                  },
+                  {
+                    "id": 457,
+                    "direct_link": "https://api.aircall.io/v1/users/457",
+                    "name": "Amy Rudd",
+                    "email": "amy.rudd@aircall.io",
+                    "available": true,
+                    "availability_status": "custom",
+                    "created_at": "2019-12-30T18:10:21.000Z",
+                    "time_zone": "Etc/UTC"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "direction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "started_at": {
+            "type": "number"
+          },
+          "answered_at": {
+            "type": "number"
+          },
+          "ended_at": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "raw_digits": {
+            "type": "string",
+            "minLength": 1
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "cost": {
+            "type": "string",
+            "minLength": 1
+          },
+          "number": {
+            "$ref": "#/components/schemas/Number"
+          },
+          "comments": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "teams": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "direct_link",
+          "direction",
+          "status",
+          "started_at",
+          "answered_at",
+          "ended_at",
+          "duration",
+          "raw_digits",
+          "user",
+          "archived",
+          "cost",
+          "number",
+          "comments",
+          "tags",
+          "teams"
+        ]
+      },
+      "Tag": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "id": 678,
+            "name": "General Inquiries",
+            "created_at": 1587995020,
+            "tagged_by": {
+              "id": 456,
+              "direct_link": "https://api.aircall.io/v1/users/456",
+              "name": "Johnn Doe",
+              "email": "john.doe@aircall.io",
+              "available": true,
+              "availability_status": "available",
+              "created_at": "2019-12-29T10:03:18.000Z"
+            }
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "tagged_by": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "created_at",
+          "tagged_by"
+        ]
+      },
+      "Message": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "welcome": "https://example.com/welcome.mp3",
+            "waiting": "https://example.com/waiting_music.mp3",
+            "ivr": "https://example.com/ivr_message.mp3",
+            "voicemail": "https://example.com/voicemail.mp3",
+            "closed": "https://example.com/closed_message.mp3",
+            "callback_later": "https://example.com/callback_later.mp3",
+            "unanswered_call": "https://example.com/unanswered_call.mp3",
+            "after_hours": "https://example.com/closed_message.mp3",
+            "ringing_tone": "https://example.com/waiting_music.mp3"
+          }
+        },
+        "properties": {
+          "welcome": {
+            "type": "string",
+            "minLength": 1
+          },
+          "waiting": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ivr": {
+            "type": "string",
+            "minLength": 1
+          },
+          "voicemail": {
+            "type": "string",
+            "minLength": 1
+          },
+          "closed": {
+            "type": "string",
+            "minLength": 1
+          },
+          "callback_later": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unanswered_call": {
+            "type": "string",
+            "minLength": 1
+          },
+          "after_hours": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ringing_tone": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "Contact": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "id": 711,
+            "direct_link": "https://api.aircall.io/v1/contacts/711",
+            "first_name": "Margaret",
+            "last_name": "Morrison",
+            "company_name": "TeleWorm",
+            "information": null,
+            "is_shared": true,
+            "created_at": 1400692007,
+            "updated_at": 1444336507,
+            "emails": [
+              {
+                "id": 3200,
+                "label": "Work",
+                "value": "m.morrison@teleworm.es"
+              }
+            ],
+            "phone_numbers": [
+              {
+                "id": 3368,
+                "label": "Mobile",
+                "value": "+34768776683"
+              },
+              {
+                "id": 3369,
+                "label": "Work",
+                "value": "+49111000460"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "company_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "information": {
+            "type": "string"
+          },
+          "is_shared": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "updated_at": {
+            "type": "number"
+          },
+          "emails": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "value"
+              ]
+            }
+          },
+          "phone_numbers": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "value"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "direct_link",
+          "first_name",
+          "last_name"
+        ]
+      },
+      "Webhook": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "id": 1001,
+            "direct_link": "https://api.aircall.io/v1/webhooks/1001",
+            "created_at": "2020-04-01T15:56:18.000Z",
+            "url": "https://my-server.example.com/webhooks/calls",
+            "active": true,
+            "token": "abc123def456ghi789",
+            "events": [
+              "call.assigned",
+              "call.transferred",
+              "call.ringing_on_agent"
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "direct_link": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string",
+            "minLength": 1
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "OAuth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://dashboard-v2.aircall.io/oauth/authorize",
+            "tokenUrl": "https://api.aircall.io/v1/oauth/token",
+            "refreshUrl": "https://api.aircall.io/v1/oauth/token",
+            "scopes": {
+              "public_api": "Public API"
+            }
+          }
+        },
+        "description": "{login}:{secret}"
+      }
+    },
+    "parameters": {
+      "from": {
+        "name": "from",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Set a minimal creation date for Users (UNIX timestamp)."
+      },
+      "to": {
+        "name": "to",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Set a maximal creation date for Users (UNIX timestamp)."
+      },
+      "order": {
+        "name": "order",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "asc",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "description": "Reorder entries by created_at. Can be asc or desc. Default value is asc."
+      },
+      "per_page": {
+        "name": "per_page",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "default": "20",
+          "minLength": 1,
+          "minimum": 1
+        },
+        "description": "Number of results retrieved per page"
+      },
+      "page": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "allowEmptyValue": true,
+        "description": "Current page. Default 1."
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth": []
+    }
+  ]
+}

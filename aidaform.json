@@ -1,0 +1,180 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AidaForm",
+    "description": "\nAidaForm is a SaaS solution used to create and publish online forms and landing pages, collect and analyze response data, prepare and share the data with other services and tools.\n>\n## Authentication\nThis API uses Tokens to authenticate users. Tokens are passed in the Authorization HTTP Header\n\n``` Authorization: <token> ```\n\n**Token example**\n\n``` L04hKVcrOCgOJxN/E1UfKTEeOjtfPHRlQ2BSN1YWHj8wTm56A2tlfVZ0TA== ```\n\nFirst you have to get a new token on the Account -> Settings page of your AidaForm account. After that you can use it to access other resources.\n",
+    "version": "1.0.2"
+  },
+  "servers": [
+    {
+      "url": "https://api.aidaform.com/v1"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeySecurityScheme": []
+    }
+  ],
+  "paths": {
+    "/forms": {
+      "get": {
+        "summary": "Retrieve forms list",
+        "operationId": "RetrieveFormsList",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormsListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forms/{formId}/responses": {
+      "get": {
+        "summary": "Retrieve responses list for the form",
+        "operationId": "RetrieveResponsesList",
+        "parameters": [
+          {
+            "name": "formId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Timestamp to filter responses not older than",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "example": 1555000000
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Timestamp to filter responses not newer than",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "example": 1555000000
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "example": 10
+            }
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsesListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Form": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+          }
+        }
+      },
+      "Response": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+          }
+        }
+      },
+      "FormsListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Form"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of forms"
+          }
+        }
+      },
+      "ResponsesListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Response"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of responses in the list"
+          },
+          "marker": {
+            "type": "string",
+            "description": "Marker used to query the next page"
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of responses for the form"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeySecurityScheme": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

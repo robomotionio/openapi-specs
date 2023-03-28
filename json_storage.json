@@ -1,0 +1,484 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "https://extendsclass.com/api/json-storage"
+    }
+  ],
+  "info": {
+    "description": "You must create an account to use the API (free). Find your API key in page \"My Account\".\nNote: the old API (without account) is still available for former users.\n\nUsage limits:\n\n    10000 requests per month\n    Bin is limited to 100 KB\n    Quota for an account: 10 MB",
+    "title": "JSON storage",
+    "version": "0.1",
+    "x-apisguru-categories": [
+      "developer_tools"
+    ],
+    "x-origin": [
+      {
+        "converter": {
+          "url": "https://github.com/mermade/oas-kit",
+          "version": "7.0.4"
+        },
+        "format": "openapi",
+        "url": "https://extendsclass.com/json-storage.openapi.json",
+        "version": "3.0"
+      }
+    ],
+    "x-providerName": "extendsclass.com",
+    "x-serviceName": "json-storage",
+    "x-logo": {
+      "url": "https://extendsclass.com/favicon.png"
+    }
+  },
+  "paths": {
+    "/bin": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateStatus"
+                }
+              }
+            },
+            "description": "Bin information (id and URL)"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "'JSON data too large' or 'Security key is too large'"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Security key is required for private bin"
+          }
+        },
+        "summary": "Create a json bin",
+        "description": "Create a json bin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Security-key",
+            "description": "The security key of your bin (maximum of 256 characters). The security key allows to protect your bin against requests, modifications and deletions. The security key is required to update and delete your bin. The security key is required to request the private bins, but not required for the public bins."
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "header",
+            "name": "Private",
+            "description": "The security key is required to request private bins. Public by default."
+          }
+        ],
+        "operationId": "post-bin",
+        "tags": [
+          "bin"
+        ]
+      }
+    },
+    "/bin/{id}": {
+      "delete": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteStatus"
+                }
+              }
+            },
+            "description": "Status of the deletion"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Wrong security key"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bin not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Id must be specified"
+          }
+        },
+        "summary": "Delete a json bin",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Security-key",
+            "description": "Required to delete a bin protected by a security key."
+          }
+        ],
+        "description": "Delete a json bin.",
+        "operationId": "delete-bin",
+        "tags": [
+          "bin"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bin data"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bin not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Id must be specified"
+          }
+        },
+        "summary": "Return a json bin",
+        "description": "Return a json bin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Security-key",
+            "description": "Required to request a private bin."
+          }
+        ],
+        "security": [],
+        "operationId": "get-bin",
+        "tags": [
+          "bin"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateStatus"
+                }
+              }
+            },
+            "description": "Bin data updated"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Wrong security key"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bin not found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "JSON data too large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Id must be specified"
+          }
+        },
+        "summary": "Partially update a json bin with JSON Merge Patch",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "description": "Required to update a bin protected by a security key.",
+            "name": "Security-key"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Content-type",
+            "description": "If you want to use the JSON-PATCH format then put the value: application/json-patch+json"
+          }
+        ],
+        "description": "Partially update a json bin with JSON Merge Patch (default) or JSON PATCH.",
+        "operationId": "patch-bin",
+        "tags": [
+          "bin"
+        ]
+      },
+      "put": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateStatus"
+                }
+              }
+            },
+            "description": "Bin data updated"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Wrong security key"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bin not found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "JSON data too large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Id must be specified"
+          }
+        },
+        "summary": "Update a json bin",
+        "description": "Update a json bin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Security-key",
+            "description": "Required to update a bin protected by a security key."
+          }
+        ],
+        "operationId": "put-bin",
+        "tags": [
+          "bin"
+        ]
+      }
+    },
+    "/bins": {
+      "get": {
+        "summary": "Return all bin id",
+        "tags": [
+          "bins"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "operationId": "get-bins",
+        "description": "Return all bin id."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateStatus": {
+        "properties": {
+          "id": {
+            "title": "Id of the bin",
+            "type": "string"
+          },
+          "status": {
+            "title": "Update status (0: Success)",
+            "type": "integer"
+          },
+          "uri": {
+            "title": "URI of the bin",
+            "type": "string"
+          }
+        }
+      },
+      "DeleteStatus": {
+        "properties": {
+          "status": {
+            "title": "Update status (0: Success)",
+            "type": "integer"
+          }
+        }
+      },
+      "Error": {
+        "properties": {
+          "message": {
+            "title": "Error message",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status (1: Error)",
+            "type": "integer"
+          }
+        }
+      },
+      "UpdateStatus": {
+        "properties": {
+          "data": {
+            "title": "Data updated",
+            "type": "object"
+          },
+          "status": {
+            "title": "Update status (0: Success)",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Api-Key": {
+        "name": "Api-Key",
+        "type": "apiKey",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Api-Key": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "bin"
+    },
+    {
+      "name": "bins"
+    }
+  ]
+}

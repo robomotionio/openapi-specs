@@ -1,0 +1,526 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hexomatic",
+    "version": "1.0",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/hewomatic.com"
+    },
+    "description": "Hexomatic is a comprehensive work automation platform that lets you extract data from websites via scraping recipes and leverage readymade automations that easily scale tasks.",
+    "contact": {
+      "name": "Hexomatic",
+      "url": "https://www.hexomatic.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.hexomatic.com/v2/app/services/v1"
+    }
+  ],
+  "paths": {
+    "/workflows": {
+      "get": {
+        "summary": "List all workflows",
+        "tags": [
+          "workflow"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "workflows": []
+                    }
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "workflows": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Workflow"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-workflows",
+        "description": "Retrieve all your workflows",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete workflows",
+        "operationId": "delete-workflows",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "error": false
+                    }
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "description": "if the error returns false, it means that no error has occurred"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "the message contains information about the error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "To delete one or more workflows",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workflows_ids": {
+                    "type": "array",
+                    "example": [
+                      123,
+                      456
+                    ],
+                    "description": "you should provide array of id or ids to select specific workflow/workflows",
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "required": [
+                  "workflows_ids"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "workflows_ids": [
+                      123,
+                      456
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "tags": [
+          "workflow"
+        ]
+      },
+      "put": {
+        "summary": "Update workflow statuses",
+        "operationId": "put-workflows",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "To update workflows status ",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "workflows_ids": [
+                      351
+                    ],
+                    "active": true
+                  }
+                },
+                "properties": {
+                  "workflows_ids": {
+                    "type": "array",
+                    "description": "you should provide array of id or ids to select specific workflow/workflows",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "active": {
+                    "type": "boolean",
+                    "description": "you should provide true or false to change the selected workflow/workflows status"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "workflows_ids": [
+                      123,
+                      456
+                    ],
+                    "active": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "workflow"
+        ]
+      }
+    },
+    "/workflow-logs": {
+      "get": {
+        "summary": "List workflow logs",
+        "tags": [
+          "logs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "log": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "logs": [
+                        {
+                          "log": "2021-07-02T13:51:08.023Z",
+                          "type": "data_input started"
+                        },
+                        {
+                          "log": "2021-07-02T13:51:08.023Z",
+                          "type": "Passing input data"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "error": false,
+                      "logs": [
+                        {
+                          "log": "2021-07-02T13:51:08.023Z",
+                          "type": "data_input started"
+                        },
+                        {
+                          "log": "2021-07-02T13:51:08.023Z",
+                          "type": "Passing input data"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-workflow-logs",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "workflow_id",
+            "description": "if you did get workflows request you must have recieved all the workflows' ids, you can take YOUR_WORKFLOW_ID from there ",
+            "required": true
+          }
+        ],
+        "description": "List all the logs of one of your workflows."
+      }
+    },
+    "/workflows/{workflow_id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "workflow_id",
+          "in": "path",
+          "required": true,
+          "description": "if you did get workflows request you must have received all the workflows' ids, you can take `WORKFLOW_ID` from there "
+        }
+      ],
+      "get": {
+        "summary": "Get workflow data",
+        "tags": [
+          "data"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "error": false,
+                      "workflow": {
+                        "id": 1,
+                        "name": "New workflow 01.11.21 05:50:30",
+                        "active": false,
+                        "status": "completed",
+                        "data": {
+                          "content": [
+                            [
+                              "https:/example.com/category/23",
+                              "https:/example.com/item/16764253"
+                            ],
+                            [
+                              "",
+                              "https:/example.com/item/16883183"
+                            ]
+                          ],
+                          "headers": [
+                            [
+                              "__url",
+                              "propertyName1"
+                            ]
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "workflow": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "content": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "headers": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "error": false,
+                      "workflow": {
+                        "id": 1,
+                        "name": "New workflow 01.11.21 05:50:30",
+                        "active": false,
+                        "status": "completed",
+                        "data": {
+                          "content": [
+                            [
+                              "https:/example.com/category/23",
+                              "https:/example.com/item/16764253"
+                            ],
+                            [
+                              "",
+                              "https:/example.com/item/16883183"
+                            ]
+                          ],
+                          "headers": [
+                            [
+                              "__url",
+                              "propertyName1"
+                            ]
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-workflows-workflow_id",
+        "description": "Retrieve all the completed workflow data of one of your worklow."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Workflow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer"
+                },
+                "automation_name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "execution_data": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "id": 6,
+            "name": "New workflow 02.07.21 01:50:50",
+            "active": false,
+            "steps": [
+              {
+                "index": 0,
+                "automation_name": "data_input"
+              }
+            ],
+            "execution_data": {
+              "status": ""
+            },
+            "created_at": "2021-07-02T13:51:08.023Z",
+            "updated_at": "2021-07-02T13:51:18.738Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "API Key - 1": {
+        "name": "key",
+        "type": "apiKey",
+        "in": "query"
+      }
+    },
+    "parameters": {
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number"
+        },
+        "description": "this filed is optional and indicates the number of workflows to be received as a result"
+      },
+      "offset": {
+        "name": "offset",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number"
+        },
+        "description": "this filed is optional and indicates the point starting from where the workflows will be provided"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key - 1": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "data"
+    },
+    {
+      "name": "logs"
+    },
+    {
+      "name": "workflow"
+    }
+  ]
+}

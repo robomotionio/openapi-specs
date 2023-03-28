@@ -1,0 +1,5153 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Bookeo",
+    "version": "v2",
+    "x-logo": {
+      "url": "http://logo.clearbit.com/bookeo.com"
+    }
+  },
+  "paths": {
+    "/availability/matchingslots": {
+      "post": {
+        "summary": "Find available slots matching given search parameters",
+        "description": "Create a search for available slots that match the given search parameters.\n Note that there are two different searches possible, /availability/slots and /availability/matchingslots (this endpoint).\n The former simply shows the number of available seats for each available slot. The latter (this one) takes as input the participant numbers, and shows the slots that are available for those numbers, and an estimate of the price.\n Parameters include product code, number of people and options.\n The successful response also contains a \"Location\" HTTP header, which can be invoked to navigate the results of the search.",
+        "tags": [
+          "Availability"
+        ],
+        "parameters": [
+          {
+            "name": "itemsPerPage",
+            "description": ".\nmaximum: 300",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 300,
+              "default": "50"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchingSlotsSearchParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The search was created successfully. The HTTP header \"Location\" contains the URI to use to access the results. It will point to /availability/matchingslots/{pageNavigationToken} .",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchingSlotList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availability/matchingslots/{pageNavigationToken}": {
+      "get": {
+        "summary": "Navigate results of a matching slots search",
+        "tags": [
+          "Availability"
+        ],
+        "parameters": [
+          {
+            "name": "pageNavigationToken",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchingSlotList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availability/slots": {
+      "get": {
+        "summary": "Get information about the availability of products",
+        "description": "Performs a basic search to find available slots and number of seats in each.\n Note that there are two different searches possible, /availability/slots (this endpoint) and /availability/matchingslots .\n The former simply shows the number of available seats for each available slot. The latter takes as input the participant numbers, and shows the slots that are available for those numbers, and an estimate of the price.\n /availability/slots cannot be used for products of type flexibleTime . For those products, use /availability/matchingslots .",
+        "tags": [
+          "Availability"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "description": "the product id (see /settings/products). If not provided, all products of type \"fixed\" or \"fixedCourse\" will be included in the result. If no productId is provided, products that are not bookable by customers wil not be included in the result. If productId is provided, the product must be of type \"fixed\" or \"fixedCourse\". For products of type \"flexibleTime\", use /availability/matchingslots instead.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "description": "the start time to search from. Required unless pageNavigationToken is used.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "description": "the end time to search to. Required unless pageNavigationToken is used. The maximum date range in a single call is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": ".\nmaximum: 300",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 300,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SlotList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "get": {
+        "summary": "Retrieve bookings",
+        "description": "Retrieve existing bookings\n The result is limited by the permissions of the apiKey.\n \n\n It is possible to filter by time booked and/or time of the last change.\n To filter by time booked, the parameters startTime and endTime are required.\n To filter by last time changed, the parameters lastUpdatedStartTime and lastUpdatedEndTime are required.\n It is possible to filter by both at the same time. At least one of the two filters must be used.\n \n\n It is further possible to filter by product id.\n \n\n Do not use this method to periodically poll for new/changed bookings. Use webhooks (see API general documentation) instead.",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "startTime",
+            "description": "if specified, only include bookings that start on or after this time. If specified, endTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "description": "if specified, only include bookings that start on or before this time. If specified, startTime  must be specified as well. The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedStartTime",
+            "description": "if specified, only include bookings that were last changed (or created) on or after this time. If specified, lastUpdatedEndTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedEndTime",
+            "description": "if specified, only include bookings that were last changed (or created) on or before this time. If specified, lastUpdatedStartTime  must be specified as well.  The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "productId",
+            "description": "if not specified, include bookings for all products. If specified, include only bookings for this product",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeCanceled",
+            "description": "if true, canceled bookings are included. If false, only bookings that are not canceled are included",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "name": "expandCustomer",
+            "description": "if true, the full details of the customer are included (provided the application has read permission over the customer)",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "name": "expandParticipants",
+            "description": "if true, full details of the participants are included (provided the application has read permission over the participant)",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingsList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new booking",
+        "description": "When creating a booking for a product of type \"fixed\" or \"fixedCourse\", the eventId is required. eventIds are obtained by calling /availability/slots or /availability/matchingSlots .\n When creating a booking for a product of type \"flexibleTime\", you can either specify the eventId or the startTime (in which case you can optionally specify the endTime. If no endTime is specified, Bookeo will automatically calculate the duration based on the options chosen)",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "previousHoldId",
+            "description": "if specified, deletes the hold with the given id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "notifyUsers",
+            "description": "whether to send a notification email (and possibly SMS, depending on settings) to eligible users",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "notifyCustomer",
+            "description": "whether to send a confirmation email to the customer",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sendCustomerReminders",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sendCustomerThankyou",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "mode",
+            "description": "if present and set to \"backend\", treats the operation as if it was done by a manager. This relaxes some constraints such as when is it possible to change a booking, participants limits for the booking, booking limits (time in advance), and so on.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Booking"
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        }
+      }
+    },
+    "/bookings/{bookingNumber}": {
+      "get": {
+        "summary": "Retrieve a booking",
+        "description": "Retrieve a booking by its booking number",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expandCustomer",
+            "description": "if true, the full details of the customer are included (provided the application has read permission over the customer)",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "name": "expandParticipants",
+            "description": "if true, full details of the participants are included (provided the application has read permission over the participant)",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing booking",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "notifyUsers",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "notifyCustomer",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "mode",
+            "description": "if present and set to \"backend\", treats the operation as if it was done by a manager. This relaxes some constraints such as when is it possible to change a booking, participants limits for the booking, booking limits (time in advance), and so on.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Booking"
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel a booking",
+        "description": "Cancel a booking. Cancelled bookings remain in the system, but no longer show up in the calendar or take up seats.",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "notifyUsers",
+            "description": "if true, notification emails and SMS are sent to authorized users",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "notifyCustomer",
+            "description": "if true, a notification email is sent to the customer",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "applyCancellationPolicy",
+            "description": "if true, the default cancellation policy is applied. This may cause a charge on the credit card on file, if a cancellation fee is due",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "trackInCustomerHistory",
+            "description": "if true, the cancellation will be tracked in the customer's stats",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "cancelRemainingSeries",
+            "description": "if true, and this booking is part of a recurring series, all following bookings will be cancelled as well",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "reason",
+            "description": "an optional reason that explains why the booking was cancelled",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/bookings/{bookingNumber}/customer": {
+      "get": {
+        "summary": "Retrieve the customer associated with a booking",
+        "description": "Retrieve the customer associated with a booking.",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is a custom successful response description.\n         over multiple lines.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/{bookingNumber}/payments": {
+      "get": {
+        "summary": "Get the payments received for a booking",
+        "description": "Get a list of all payments received for a booking. Only payments for which the apiKey has at least read permission will be included",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": ".\nmaximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentsList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a payment to a booking",
+        "description": "Create a payment record associated with a booking",
+        "tags": [
+          "Bookings"
+        ],
+        "parameters": [
+          {
+            "name": "bookingNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "summary": "Retrieve customers",
+        "description": "Get a list of customers.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "currentMembers",
+            "description": "if true, include customers that are current members. this is the default",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "true"
+            }
+          },
+          {
+            "name": "currentNonMembers",
+            "description": "if true, include customers that are not current members. this is the default",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "true"
+            }
+          },
+          {
+            "name": "createdSince",
+            "description": "if present, only include customers created since the given time",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "searchField",
+            "description": "a field on which to apply the search filter. Used only if searchText is specified",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "firstName",
+                "lastName",
+                "emailAddress"
+              ],
+              "default": "name"
+            }
+          },
+          {
+            "name": "searchText",
+            "description": "the text to search for. If not present, all customers are returned",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "number of items per page.\nmaximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "description": "if present, continues navigation after a previous call. pageNavigationToken is included in the response of the first call, if there are more results than itemsPerPage",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "description": "if present, and pageNavigationToken is present, indicates what page to navigate to. Ignored unless pageNavigationToken is present",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomersList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new customer.",
+        "description": "Create a new customer.\n Please note there is a limit to the number of customers that can be imported in Bookeo. Bookeo is primarily a booking system, not a CRM.",
+        "tags": [
+          "Customers"
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Customer"
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/customers/{customerid}/linkedpeople/{id}": {
+      "get": {
+        "summary": "Retrieve a person linked to a customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "customerid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedPerson"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the details of a person linked to a customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "customerid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkedPerson"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a person linked to a customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "customerid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "summary": "Retrieve a customer",
+        "description": "Retrieve a customer by its id",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Customer"
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a customer",
+        "description": "Delete a customer.\n Please note it is not possible to delete customers that have bookings in the future, and that are not cancelled.\n If your application needs to delete a customer with future bookings, make sure to cancel all future bookings for that customer first.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/customers/{id}/authenticate": {
+      "get": {
+        "summary": "Check a customer's password",
+        "description": "The customer's email address is the \"username\" used by Bookeo to authenticate customers.\n So to authenticate a customer your application would typically use GET /customers to search for customers with a given email address, and then GET /customers/{id}/authenticate to authenticate.\n Remember that there may be duplicate customer records with the same email address, ex. due to duplicate importing or manual record creation.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "description": "remember to use URL encoding",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Correct password"
+          },
+          "403": {
+            "description": "Invalid password"
+          }
+        }
+      }
+    },
+    "/customers/{id}/bookings": {
+      "get": {
+        "summary": "Retrieve a customer's bookings",
+        "description": "Get a customer's bookings.",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "beginDate",
+            "description": "if specified, only bookings on or after this date will be included",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "description": "if specified, only bookings on or before this date will be included",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "expandParticipants",
+            "description": "if true, full details of the participants are included (provided the application has read permission over the participant)",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": ".\nmaximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{id}/linkedpeople": {
+      "get": {
+        "summary": "Get the people linked to a customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedPersonList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/holds": {
+      "post": {
+        "summary": "Create a temporary hold to finalize the booking",
+        "description": "Performs a final check of the booking, and reserves required resources/seats to allow finalization of the booking process (ex. process payment).\n The returned object also contains the updated price calculations.\n Normally your application should have no more than one hold in place during a customer booking process.\n Make sure to not leave many holds around. In any case, holds are deleted automatically after a fixed time from creation.\n Note that when creating a hold, the customer field of the booking can be missing, in which case Bookeo will assume a default customer coming from the same country as the account.\n The successful response also contains a \"Location\" HTTP header, which can be used to access the created resource in future invocations.",
+        "tags": [
+          "Holds"
+        ],
+        "parameters": [
+          {
+            "name": "holdDurationSeconds",
+            "description": "the required seats/resources will be reserved for the specified time, ensuring that they cannot be taken by other bookings during this time. The hold cannot be for more than 10 minutes.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "300"
+            }
+          },
+          {
+            "name": "previousHoldId",
+            "description": "if a previous hold was created during the same session with the customer, it will be automatically removed and replaced by the new one.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Booking"
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Hold"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/holds/{id}": {
+      "get": {
+        "summary": "Retrieve a hold previously generated",
+        "tags": [
+          "Holds"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Hold"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a temporary hold",
+        "description": "Delete a temporary hold previously created.\n Note that you can also delete a hold when creating a new hold (ex. when the customer goes back in the booking process and selects a different time), or when creating a booking (i.e. when the customer checks out), without having to make a separate call to this endpoint.",
+        "tags": [
+          "Holds"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "summary": "Get a list of payments received",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "name": "paymentMethod",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "creditCard",
+                "paypal",
+                "bankTransfer",
+                "cash",
+                "checque",
+                "debitCard",
+                "existingCredit",
+                "accountCredit",
+                "moneyVoucher",
+                "other"
+              ]
+            }
+          },
+          {
+            "name": "paymentMethodOther",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 300",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 300,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "summary": "Retrieve a specific payment",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resourceblocks": {
+      "get": {
+        "summary": "Retrieve resource blocks",
+        "description": "Retrieve existing resource blocks\n The result is limited by the permissions of the apiKey.\n \n\n It is possible to filter by time blocked and/or time of the last change.\n To filter by time blocked, the parameters startTime and endTime are required.\n To filter by last time changed, the parameters lastUpdatedStartTime and lastUpdatedEndTime are required.\n It is possible to filter by both at the same time. At least one of the two filters must be used.\n \n\n It is further possible to filter by resource.",
+        "tags": [
+          "ResourceBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "startTime",
+            "description": "if specified, only include blocks that start on or after this time. If specified, endTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "description": "if specified, only include blocks that start on or before this time. If specified, startTime  must be specified as well. The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedStartTime",
+            "description": "if specified, only include blocks that were last changed (or created) on or after this time. If specified, lastUpdatedEndTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedEndTime",
+            "description": "if specified, only include blocks that were last changed (or created) on or before this time. If specified, lastUpdatedStartTime  must be specified as well.  The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "resourceId",
+            "description": "if specified, only include blocks that affect this resource",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceBlocksList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new resource block",
+        "description": "\"blocks\" time for one or more resources, so that they're not available for booking.\n A resource block must be for at least one resource, but it can block more than one.\n When setting the resources in the block, only the id is required.",
+        "tags": [
+          "ResourceBlocks"
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ResourceBlock"
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/resourceblocks/{id}": {
+      "get": {
+        "summary": "Retrieve a block",
+        "description": "Retrieve a block by its id",
+        "tags": [
+          "ResourceBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceBlock"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing block",
+        "description": "A resource block must be for at least one resource, but it can block more than one.\n When setting the resources in the block, only the id is required.",
+        "tags": [
+          "ResourceBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ResourceBlock"
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a block",
+        "tags": [
+          "ResourceBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/seatblocks": {
+      "get": {
+        "summary": "Retrieve seat blocks",
+        "description": "Retrieve existing seat blocks\n The result is limited by the permissions of the apiKey.\n \n\n It is possible to filter by time blocked and/or time of the last change.\n To filter by time blocked, the parameters startTime and endTime are required.\n To filter by last time changed, the parameters lastUpdatedStartTime and lastUpdatedEndTime are required.\n It is possible to filter by both at the same time. At least one of the two filters must be used.\n \n\n It is further possible to filter by product id.",
+        "tags": [
+          "SeatBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "startTime",
+            "description": "if specified, only include blocks that start on or after this time. If specified, endTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "description": "if specified, only include blocks that start on or before this time. If specified, startTime  must be specified as well. The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedStartTime",
+            "description": "if specified, only include blocks that were last changed (or created) on or after this time. If specified, lastUpdatedEndTime must be specified as well.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "lastUpdatedEndTime",
+            "description": "if specified, only include blocks that were last changed (or created) on or before this time. If specified, lastUpdatedStartTime  must be specified as well.  The maximum allowed interval is 31 days.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "productId",
+            "description": "if specified, only include blocks for this product. If not specified, include blocks for any product",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatBlocksList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new seat block",
+        "description": "\"blocks\" a given number of seats, so that they're not available for booking.",
+        "tags": [
+          "SeatBlocks"
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SeatBlock"
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/seatblocks/{id}": {
+      "get": {
+        "summary": "Retrieve a block",
+        "description": "Retrieve a block by its id",
+        "tags": [
+          "SeatBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatBlock"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing block",
+        "description": "Updates an existing seat block",
+        "tags": [
+          "SeatBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SeatBlock"
+        },
+        "responses": {
+          "200": {
+            "description": "The resource was updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a block",
+        "tags": [
+          "SeatBlocks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "required": true,
+            "description": "API Key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/settings/apikeyinfo": {
+      "get": {
+        "summary": "Get information about your own API Key",
+        "tags": [
+          "Settings"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyInfo"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/settings/business": {
+      "get": {
+        "summary": "Get information, location and contact details about the business",
+        "tags": [
+          "Settings"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Business"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/settings/customercustomfields": {
+      "get": {
+        "summary": "Retrieve custom fields about customers and participants",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomFieldDefinitions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/languages": {
+      "get": {
+        "summary": "Retrieve all supported languages",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LanguagesList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/peoplecategories": {
+      "get": {
+        "summary": "Retrieve all supported people categories",
+        "description": "Retrieve the people categories supported by this account.\n This can include the default ones (\"Adults\",\"Children\",\"Infants\") and also custom ones defined by the account (\"Students\", ...)",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeopleCategoryList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/products": {
+      "get": {
+        "summary": "Get information about the products offered",
+        "description": "Get information about all the products (things that can be booked) offered.\n 3 types of product are available:\n - fixed are products with a fixed schedule and a given number of seats. Ex a group tour, a class, a workshop\n - fixedCourse are fixed products that are defined as a course, i.e. comprise of a series of dates\n - flexibleTime are products that describe private appointments, i.e. when one booking uses one resource (teacher, consultant, etc)\n\n Although Bookeo applies a minimum amount of caching, it is recommended to cache these results for 10-15 minutes to improve the performance of your application, as product settings change rarely.",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "description": "if not specified, get all products",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fixed",
+                "fixedCourse",
+                "flexibleTime"
+              ]
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "description": ".\nmaximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "name": "lang",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/resources": {
+      "get": {
+        "summary": "Retrieve all available resources",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 100",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 100,
+              "default": "50"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypesList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/taxes": {
+      "get": {
+        "summary": "Retrieve all taxes used by this business",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxesList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subaccounts": {
+      "get": {
+        "summary": "List all subaccounts in the portal",
+        "tags": [
+          "Subaccounts"
+        ],
+        "parameters": [
+          {
+            "name": "itemsPerPage",
+            "description": "maximum: 300",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 300,
+              "default": "100"
+            }
+          },
+          {
+            "name": "pageNavigationToken",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": "1"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalSubaccountsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subaccounts/{subaccountId}/apikeys": {
+      "post": {
+        "summary": "Create a new API Key for this application to access a subaccount",
+        "description": "Install this application in a subaccount.\n Note that the API key used in this call must be that of the portal manager account. The application installed in the subaccount will be the same as this one, with the same permissions.\n If this application was already installed in the subaccount, its API key will be replaced by the one created in this call.",
+        "tags": [
+          "Subaccounts"
+        ],
+        "parameters": [
+          {
+            "name": "subaccountId",
+            "description": "the id of the subaccount where to install this application",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        }
+      }
+    },
+    "/subaccounts/{subaccountId}/apikeys/{apiKey}": {
+      "delete": {
+        "summary": "Delete the API Key for this application from a subaccount",
+        "description": "Uninstall this application from a subaccount.",
+        "tags": [
+          "Subaccounts"
+        ],
+        "parameters": [
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apiKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    },
+    "/webhooks": {
+      "get": {
+        "summary": "List all webhooks",
+        "description": "Retrieve all the webhooks for this api key",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhooksList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new webhook",
+        "description": "Note that if an existing webhook for the same domain and type was already set for this api key, it will be automatically replaced by this new webhook.\n In other words, there can be only one webhook for each combination of domain and type, for an API key.\n So to upgrade an existing webhook URL, simply create a new one with the same domain and type, but a different URL.\n\n For webhook with domain \"bookings\" and type \"deleted\", the notification will be sent whether the booking is canceled or completely deleted.\n Users can delete bookings by, for example, deleting their associated customer.\n Also note that these \"bookings\" \"deleted\" notifications are sent even for bookings in the past.",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Webhook"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The resource was created successfully. The HTTP response contains a Location header whose value is the resource URI."
+          }
+        }
+      }
+    },
+    "/webhooks/{webhookId}": {
+      "get": {
+        "summary": "Retrieve a webhook",
+        "description": "Retrieve a webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call was completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a webhook",
+        "description": "Delete a webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "apiKey",
+            "description": "API Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Availability",
+      "description": "Operations to query about product availability"
+    },
+    {
+      "name": "Bookings",
+      "description": "Operations to manage bookings"
+    },
+    {
+      "name": "Customers",
+      "description": "Operations to manage customers"
+    },
+    {
+      "name": "Holds",
+      "description": "Operations to create temporary holds before finalizing bookings"
+    },
+    {
+      "name": "Payments",
+      "description": "Operations to manage payments"
+    },
+    {
+      "name": "ResourceBlocks",
+      "description": "Operations to manage resource blocks (blocking out specific times for resources)"
+    },
+    {
+      "name": "SeatBlocks",
+      "description": "Operations to manage seat blocks (blocking out some seats in events)"
+    },
+    {
+      "name": "Settings",
+      "description": "Access account settings"
+    },
+    {
+      "name": "Subaccounts",
+      "description": "Access subaccounts part of a Bookeo Portal"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Manage callback notifications"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.bookeo.com/v2"
+    }
+  ],
+  "components": {
+    "requestBodies": {
+      "Customer": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          }
+        },
+        "required": true
+      },
+      "SeatBlock": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SeatBlock"
+            }
+          }
+        },
+        "required": true
+      },
+      "ResourceBlock": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ResourceBlock"
+            }
+          }
+        },
+        "required": true
+      },
+      "Booking": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Booking"
+            }
+          }
+        },
+        "required": true
+      }
+    },
+    "schemas": {
+      "ApiKeyInfo": {
+        "description": "Provides detailed information about the API Key being used.",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "The unique identifier of the business (Bookeo account) that has installed this key.\n If the application is uninstalled, and then installed again for the same business, the api key would change, but the accountId would not. [read-only]",
+            "readOnly": true
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "accountId",
+          "permissions",
+          "creationTime"
+        ]
+      },
+      "Booking": {
+        "description": "Represents a booking",
+        "properties": {
+          "bookingNumber": {
+            "type": "string",
+            "description": "The unique booking number. Always treat as string [read-only]",
+            "readOnly": true
+          },
+          "eventId": {
+            "type": "string",
+            "description": "When the booking is for a product of type fixed or fixedCourse, this is the id of the slot (see /availability/slots).\n Note that for fixedCourse, Bookeo always returns the eventId of the first class in a course, even if the customer is enrolled starting from a later class.\n In this case, firstCourseEnrolledEvent will be set."
+          },
+          "firstCourseEnrolledEventId": {
+            "type": "string",
+            "description": "If the product is of type fixedCourse, and it is possible to accept late enrolment, this is the id of the event (class) where the actual enrolment starts."
+          },
+          "dropinCourseEnrolledEventId": {
+            "type": "string",
+            "description": "If the product is of type fixedCourse, and it is possible to accept bookings for a single class in the course (drop-in), this is the id of the event (class) actually enrolled in."
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start time of the booking. When creating a booking, either this or eventId must be specified"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end time of the booking.\n When creating a new booking of type flexibleTime, you can specify this field to force an end time. Or you can omit this field, in which case Bookeo will calculate the end time based on product and options chosen."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "The id of the customer this booking is for. When creating a booking, use this to create a booking for an existing customer."
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of this booking, same as the one displayed by Bookeo in the calendar [read-only]",
+            "readOnly": true
+          },
+          "externalRef": {
+            "type": "string",
+            "description": "An external reference number that identifies this booking in an external system. The maximum length is 64 characters."
+          },
+          "participants": {
+            "$ref": "#/components/schemas/Participants"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "Resources involved in a booking, if the booking is for a product of type \"flexibleTime\".\n If the booking is for a different type of product, this field is empty/ignored.\n When creating or updating a booking, only the id of a resource is required. Any name passed is ignored.\n If not specified when creating or updating a booking, Bookeo will automatically assign available resources."
+          },
+          "canceled": {
+            "type": "boolean",
+            "description": "Whether this booking is canceled [read-only]",
+            "readOnly": true
+          },
+          "cancelationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "If the booking is cancelled, this is the time when it was cancelled [read-only]",
+            "readOnly": true
+          },
+          "cancelationAgent": {
+            "type": "string",
+            "description": "If the booking is cancelled, this is the person who cancelled [read-only]",
+            "readOnly": true
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Whether this booking was accepted. If no accept/deny was applicable to the booking, the booking is considered accepted as created. [read-only]",
+            "readOnly": true
+          },
+          "sourceIp": {
+            "type": "string",
+            "description": "The IP address from where this booking was created"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the booking was created [read-only]",
+            "readOnly": true
+          },
+          "creationAgent": {
+            "type": "string",
+            "description": "The person that created the booking [read-only]",
+            "readOnly": true
+          },
+          "lastChangeTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the booking was last updated. If the booking was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          },
+          "lastChangeAgent": {
+            "type": "string",
+            "description": "The person who last updated this booking. If the booking was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          },
+          "productName": {
+            "type": "string",
+            "description": "The name of the product this booking is for [read-only]",
+            "readOnly": true
+          },
+          "productId": {
+            "type": "string",
+            "description": "The id of the product this booking is for. For a full list of products and their ids, see /settings/products"
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingOption"
+            }
+          },
+          "privateEvent": {
+            "type": "boolean",
+            "description": "Whether this booking reserves the entire event. Only available for products that allow it."
+          },
+          "promotionCodeInput": {
+            "type": "string",
+            "description": "Optional promotion code input, can be used when creating or updating a booking\n It could be a single code, or a list of codes separated by comma (ex. multiple coupon codes)\n In general, applications creating bookings can simply ask the customer to input a promotion code (like they would on Bookeo's web interface) and pass the input in this field.\n Bookeo will then parse and validate any text entered"
+          },
+          "promotionName": {
+            "type": "string",
+            "description": "The name of the promotion that was applied to this booking. [read-only]",
+            "readOnly": true
+          },
+          "couponCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "If a promotion of type \"multiple coupon codes\" was applied to this booking, this is the list of coupon codes used [read-only]",
+            "readOnly": true
+          },
+          "giftVoucherCodeInput": {
+            "type": "string",
+            "description": "A gift voucher code applicable to this booking. This field is only set by the application, when creating or updating a booking.\n It is possible to specify multiple codes, separated by commas.\n No more than one specific (as opposed to \"generic\", value-based) gift voucher can be used per booking."
+          },
+          "specificVoucherCode": {
+            "type": "string",
+            "description": "When the booking used a service specific voucher (i.e. as opposed to a \"generic\" voucher, based on a fixed amount), the code of the voucher is reported here. [read-only]",
+            "readOnly": true
+          },
+          "initialPayments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            },
+            "description": "When creating a new booking, an application can also record one or more payment associated to the booking (ex. if the customer has paid a deposit or the full amount online)\n This field is never set by Bookeo, and is ignored unless this is a new booking being created."
+          }
+        },
+        "required": [
+          "title",
+          "participants",
+          "creationTime",
+          "creationAgent",
+          "productId"
+        ]
+      },
+      "BookingLimit": {
+        "properties": {
+          "peopleCategoryId": {
+            "type": "string",
+            "description": "If not present, this limit represents the limit for the total number of people in the booking.\n If present, this limit represents how many people in the given category can be included in a single booking.\n To obtain a list of people categories for an account, call /settings/peoplecategories [read-only]",
+            "readOnly": true
+          },
+          "min": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "max": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "min",
+          "max"
+        ]
+      },
+      "BookingOption": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the option.\n It must match the id of an existing ChoiceOption, NumberOption, OnOffOption or TextOption for the product.\n See /settings/products to retrieve the list of options for each product\n When submitting a booking, either the id or the name field are required. If both are supplied, Bookeo will only consider the id field."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the option\n It must match the name of an existing ChoiceOption, NumberOption, OnOffOption or TextOption for the product.\n See /settings/products to retrieve the list of options for each product.\n When submitting a booking, either the id or the name field are required. If both are supplied, Bookeo will only consider the id field"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the option. For checkbox-type options, possible values are \"true\" and \"false\".\n For choice options, this is the name (i.e. plain text) of the chosen value, not the id"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "BookingsList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Booking"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "Business": {
+        "description": "Represents a Bookeo account, i.e. the business taking bookings, selling products, etc.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique id for this business (Bookeo account) [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "legalIdentifiers": {
+            "type": "string",
+            "description": "Tax ID, Vat ID, other legal identifiers [read-only]",
+            "readOnly": true
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "websiteURL": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "emailAddress": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "streetAddress": {
+            "$ref": "#/components/schemas/StreetAddress"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the business, provided by the business itself. The content is in HTML. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phoneNumbers",
+          "streetAddress"
+        ]
+      },
+      "ChoiceCustomField": {
+        "description": "Represents a custom field where the customer must choose a value from one of possible values",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this field [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A description for the field [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some fields may only be accessible to users/staff.\n If this field is false, applications should not show this field to customers, or ask them to input a value for this field. [read-only]",
+            "readOnly": true
+          },
+          "forCustomer": {
+            "type": "boolean",
+            "description": "Whether this field is about a customer (person making the booking) [read-only]",
+            "readOnly": true
+          },
+          "forParticipants": {
+            "type": "boolean",
+            "description": "Whether this field is about participants (people the booking). If true, the app should ask this field about every participant in the booking. [read-only]",
+            "readOnly": true
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The order index (starting from 0) of this field. The order is relative to all fields, of any type. So a number field could have index 0, then a text field could have index 1, then another number field have index 2. [read-only]",
+            "readOnly": true
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChoiceCustomFieldValue"
+            },
+            "description": "The possible values for this field [read-only]",
+            "readOnly": true
+          },
+          "defaultValueId": {
+            "type": "string",
+            "description": "The id of the default ChoiceCustomFieldValue, if a default value is set. Empty otherwise [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "forCustomer",
+          "forParticipants",
+          "index",
+          "values"
+        ]
+      },
+      "ChoiceCustomFieldValue": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description"
+        ]
+      },
+      "ChoiceOption": {
+        "description": "Represent an option where the customer must choose a value from one of possible values",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this option [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some options may only be accessible to users/staff.\n If this field is false, applications should not show this option to customers, or ask them to input a value for this option. [read-only]",
+            "readOnly": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "If an option is not enabled, it should not be used for new bookings. It may still be present in old bookings, created when the option was enabled. [read-only]",
+            "readOnly": true
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChoiceOptionValue"
+            },
+            "description": "The possible values for this option [read-only]",
+            "readOnly": true
+          },
+          "defaultValueId": {
+            "type": "string",
+            "description": "The id of the default ChoiceOptionValue, if a default value is set. Empty otherwise [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "enabled",
+          "values"
+        ]
+      },
+      "ChoiceOptionValue": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description"
+        ]
+      },
+      "CourseEvent": {
+        "properties": {
+          "eventNumber": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The index of the event in the course. The first event is number 1. [read-only]",
+            "readOnly": true
+          },
+          "eventId": {
+            "type": "string",
+            "description": "The eventId of the event. The eventId of the first event in the course uniquely identifies the course [read-only]",
+            "readOnly": true
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "eventNumber",
+          "eventId",
+          "startTime",
+          "endTime"
+        ]
+      },
+      "CourseSchedule": {
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseEvent"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "events",
+          "title"
+        ]
+      },
+      "CustomField": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the field.\n It must match the id of an existing customer custom field, as returned by a call to GET /settings/customercustomfields\n When creating or updating a customer, either the id or the name property are required. If both are supplied, Bookeo will only consider the id property."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the field.\n It must match the name of an existing customer custom field, as returned by a call to GET /settings/customercustomfields\n When creating or updating a customer, either the id or the name property are required. If both are supplied, Bookeo will only consider the id property."
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the field. For checkbox-type options, possible values are \"true\" and \"false\"\n For choice fields, this is the name (i.e. plain text) of the chosen value, not the id"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "CustomFieldDefinitions": {
+        "properties": {
+          "choiceFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChoiceCustomField"
+            },
+            "description": "A list of choice custom fields. The property is not present if there are no choice fields [read-only]",
+            "readOnly": true
+          },
+          "numberFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NumberCustomField"
+            },
+            "description": "A list of number custom fields. The property is not present if there are no number fields [read-only]",
+            "readOnly": true
+          },
+          "onOffFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnOffCustomField"
+            },
+            "description": "A list of on/off custom fields. The property is not present if there are no on/off fields [read-only]",
+            "readOnly": true
+          },
+          "textFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TextCustomField"
+            },
+            "description": "A list of text custom fields. The property is not present if there are no text fields [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "Customer": {
+        "description": "Represents a customer",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID that identifies this person [read-only]",
+            "readOnly": true
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "streetAddress": {
+            "$ref": "#/components/schemas/StreetAddress"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "startTimeOfNextBooking": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start time of the next booking. null if there are no bookings starting after 'now'. [read-only]",
+            "readOnly": true
+          },
+          "startTimeOfPreviousBooking": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start time of the last booking that occurred before 'now'. It is updated only after that booking's stop time [read-only]",
+            "readOnly": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomField"
+            }
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female",
+              "unknown"
+            ],
+            "description": "The gender of this person."
+          },
+          "facebookId": {
+            "type": "string"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "languageCode": {
+            "type": "string",
+            "description": "The language code that is preferred by the customer. It is set only if the customer has selected a specific language when creating or reviewing the booking, otherwise it is not set and the default language is assumed.\n The format is a modified version of the Internet standard rfc5646, replacing the - character (dash) with a _ character (underscore). Example: en_US"
+          },
+          "acceptSmsReminders": {
+            "type": "boolean"
+          },
+          "numBookings": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of bookings that this customer has made [read-only]",
+            "readOnly": true
+          },
+          "numCancelations": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of booking cancellations that were tracked for this customer [read-only]",
+            "readOnly": true
+          },
+          "numNoShows": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of no-shows for this customer [read-only]",
+            "readOnly": true
+          },
+          "member": {
+            "type": "boolean",
+            "description": "Whether this customer is currently a member [read-only]",
+            "readOnly": true
+          },
+          "membershipEnd": {
+            "type": "string",
+            "format": "date",
+            "description": "When the membership expires. If the membership is not set to expire, this field is not set. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "creationTime"
+        ]
+      },
+      "CustomersList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "Duration": {
+        "properties": {
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "description": "If this is greater than 0, it means that the product's duration is meant to be \"full day\", i.e. until the end of the last day. In this case, hours and minutes will always be 0. [read-only]",
+            "readOnly": true
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "days",
+          "hours",
+          "minutes"
+        ]
+      },
+      "Hold": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "totalPayable": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "expiration": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time at which this hold will expire [read-only]",
+            "readOnly": true
+          },
+          "applicableMoneyCredit": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "applicableGiftVoucherCredit": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "applicablePrepaidCredits": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Indicates the number of prepaid credits that would be applied to the booking if it was saved.\n Note that if prepaid credits are applicable, the total price would be reduced, and possibly be 0 if the credit can pay for the entire booking.\n This field is present only if the hold is being made on behalf of an existing customer. New customers cannot have pre-existing credit [read-only]",
+            "readOnly": true
+          },
+          "promotionApplicable": {
+            "type": "boolean",
+            "description": "Indicates whether the promotion code/coupon codes, if sent as part of the request, were applicable [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "price",
+          "totalPayable",
+          "expiration"
+        ]
+      },
+      "Image": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the image [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "Language": {
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "customersDefault": {
+            "type": "boolean",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "tag",
+          "name",
+          "customersDefault"
+        ]
+      },
+      "LanguagesList": {
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Language"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "LinkedPerson": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Globally unique ID that identifies this person [read-only]",
+            "readOnly": true
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "streetAddress": {
+            "$ref": "#/components/schemas/StreetAddress"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "startTimeOfNextBooking": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start time of the next booking. null if there are no bookings starting after 'now'. [read-only]",
+            "readOnly": true
+          },
+          "startTimeOfPreviousBooking": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start time of the last booking that occurred before 'now'. It is updated only after that booking's stop time [read-only]",
+            "readOnly": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomField"
+            }
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female",
+              "unknown"
+            ],
+            "description": "The gender of this person."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "The id of the customer to whom this person is linked. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "creationTime",
+          "customerId"
+        ]
+      },
+      "LinkedPersonList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkedPerson"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "MatchingSlot": {
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "courseSchedule": {
+            "$ref": "#/components/schemas/CourseSchedule"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "Unique id that identifies the slot, it can be used to create bookings for this slot [read-only]",
+            "readOnly": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "Resources involved in this slot. This field is only included for products of type fixed or fixedCourse.\n Only resources whose type is \"public\" are listed here. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "startTime",
+          "endTime",
+          "eventId"
+        ]
+      },
+      "MatchingSlotList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchingSlot"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info"
+        ]
+      },
+      "MatchingSlotsSearchParameters": {
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "the unique product id. To get a list of products and their ids, see /settings/products"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "peopleNumbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeopleNumber"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingOption"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          }
+        },
+        "required": [
+          "productId",
+          "startTime",
+          "endTime",
+          "peopleNumbers"
+        ]
+      },
+      "Money": {
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "The amount. It is expressed as a string type to avoid the risk of rounding issues with floating point arithmetic when used to handle decimal amounts.\n Ex.: \"16.50\""
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code in ISO 4217 format. Ex.: \"USD\""
+          }
+        },
+        "required": [
+          "amount",
+          "currency"
+        ]
+      },
+      "NumberCustomField": {
+        "description": "Represents a custom field where the customer can input an integer number within a range",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this field [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A description for the field [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some fields may only be accessible to users/staff.\n If this field is false, applications should not show this field to customers, or ask them to input a value for this field. [read-only]",
+            "readOnly": true
+          },
+          "forCustomer": {
+            "type": "boolean",
+            "description": "Whether this field is about a customer (person making the booking) [read-only]",
+            "readOnly": true
+          },
+          "forParticipants": {
+            "type": "boolean",
+            "description": "Whether this field is about participants (people the booking). If true, the app should ask this field about every participant in the booking. [read-only]",
+            "readOnly": true
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The order index (starting from 0) of this field. The order is relative to all fields, of any type. So a number field could have index 0, then a text field could have index 1, then another number field have index 2. [read-only]",
+            "readOnly": true
+          },
+          "minValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "defaultValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "forCustomer",
+          "forParticipants",
+          "index",
+          "minValue",
+          "maxValue",
+          "defaultValue"
+        ]
+      },
+      "NumberOption": {
+        "description": "Represent an option where the customer can input an integer number within a range",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this option [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some options may only be accessible to users/staff.\n If this field is false, applications should not show this option to customers, or ask them to input a value for this option. [read-only]",
+            "readOnly": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "If an option is not enabled, it should not be used for new bookings. It may still be present in old bookings, created when the option was enabled. [read-only]",
+            "readOnly": true
+          },
+          "minValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "maxValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "defaultValue": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "enabled",
+          "minValue",
+          "maxValue",
+          "defaultValue"
+        ]
+      },
+      "OnOffCustomField": {
+        "description": "Represents a custom field where the customer can choose between a true/false, checked/unchecked state",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this field [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A description for the field [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some fields may only be accessible to users/staff.\n If this field is false, applications should not show this field to customers, or ask them to input a value for this field. [read-only]",
+            "readOnly": true
+          },
+          "forCustomer": {
+            "type": "boolean",
+            "description": "Whether this field is about a customer (person making the booking) [read-only]",
+            "readOnly": true
+          },
+          "forParticipants": {
+            "type": "boolean",
+            "description": "Whether this field is about participants (people the booking). If true, the app should ask this field about every participant in the booking. [read-only]",
+            "readOnly": true
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The order index (starting from 0) of this field. The order is relative to all fields, of any type. So a number field could have index 0, then a text field could have index 1, then another number field have index 2. [read-only]",
+            "readOnly": true
+          },
+          "defaultState": {
+            "type": "boolean",
+            "description": "The default value for the field [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "forCustomer",
+          "forParticipants",
+          "index",
+          "defaultState"
+        ]
+      },
+      "OnOffOption": {
+        "description": "Represent an option where the customer can choose between a true/false, checked/unchecked state",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this option [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some options may only be accessible to users/staff.\n If this field is false, applications should not show this option to customers, or ask them to input a value for this option. [read-only]",
+            "readOnly": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "If an option is not enabled, it should not be used for new bookings. It may still be present in old bookings, created when the option was enabled. [read-only]",
+            "readOnly": true
+          },
+          "defaultState": {
+            "type": "boolean",
+            "description": "The default value for the option [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "enabled",
+          "defaultState"
+        ]
+      },
+      "PaginationInfo": {
+        "properties": {
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "pageNavigationToken": {
+            "type": "string",
+            "description": "If there are more than 1 pages of items available, you can use this token in more calls (combined with pageNumber) to navigate the results. When navigating pages, you do not need to include the search parameters again - just pageNavigationToken and pageNumber.\n If there is only one page, this field is not present in the response. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "totalItems",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "Participant": {
+        "description": "Represents a participant in a booking",
+        "properties": {
+          "personId": {
+            "type": "string",
+            "description": "This field can be:\n - PSELF if this participant is the customer that made the booking.\n - PNEW if this is a new person. This value is never set by Bookeo, but can be set by the application to create new participants.\n - PUNKNOWN if no information about the participant is recorded.\n - id of an existing LinkedPerson"
+          },
+          "peopleCategoryId": {
+            "type": "string",
+            "description": "The id of the PeopleCategory to which this participant belongs to. See /settings/peoplecategories"
+          },
+          "categoryIndex": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Index in the category, starting from 1. Ex. the first adult will be Adult 1"
+          },
+          "personDetails": {
+            "$ref": "#/components/schemas/LinkedPerson"
+          }
+        },
+        "required": [
+          "personId",
+          "peopleCategoryId",
+          "categoryIndex"
+        ]
+      },
+      "Participants": {
+        "properties": {
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeopleNumber"
+            },
+            "description": "The number of participants in the booking, for each PeopleCategory.\n When reading a booking, this field is always present.\n This field is required when creating or updating a booking"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Participant"
+            },
+            "description": "Details about the participants in the booking, if available.\n When reading a booking, this field is present only if the parameter expandParticipants is set to true.\n When creating or updating a booking, this field is optional"
+          }
+        },
+        "required": [
+          "numbers"
+        ]
+      },
+      "Payment": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this record was created [read-only]",
+            "readOnly": true
+          },
+          "receivedTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this payment was received"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the payment. Shown to customer where appropriate.\n Ex. \"Deposit\", \"Balance payment\", \"Additional fee\", etc"
+          },
+          "description": {
+            "type": "string",
+            "description": "Indicates what the payment was for (ex. \"Booking 1234\", \"Prepaid package ABC\", \"Gift voucher XYZ\") [read-only]",
+            "readOnly": true
+          },
+          "comment": {
+            "type": "string",
+            "description": "An optional comment tracked with the payment. Not shown to customers."
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "creditCard",
+              "paypal",
+              "bankTransfer",
+              "cash",
+              "checque",
+              "debitCard",
+              "existingCredit",
+              "accountCredit",
+              "moneyVoucher",
+              "other"
+            ]
+          },
+          "paymentMethodOther": {
+            "type": "string",
+            "description": "If paymentMethod is 'other', this field is required, and it specifies what other method was used"
+          },
+          "agent": {
+            "type": "string",
+            "description": "Who registered this payment.\n If this field is not present, it means that the customer paid online on Bookeo's booking page [read-only]",
+            "readOnly": true
+          },
+          "customerId": {
+            "type": "string",
+            "description": "The id of customer associated with this payment [read-only]",
+            "readOnly": true
+          },
+          "gatewayName": {
+            "type": "string",
+            "description": "The name of the payment gateway that processed the payment (if it was processed by a payment gateway) [read-only]",
+            "readOnly": true
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "The transaction number/id as provided by the payment gateway that processed the payment - if any [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "creationTime",
+          "receivedTime",
+          "reason",
+          "amount",
+          "paymentMethod"
+        ]
+      },
+      "PaymentMethod": {
+        "required": []
+      },
+      "PaymentsList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "PeopleCategory": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "numSeats": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many seats a unit of this category actually takes. Ex a category \"Family\" may take up 4 seats. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "numSeats"
+        ]
+      },
+      "PeopleCategoryList": {
+        "properties": {
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeopleCategory"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "PeopleNumber": {
+        "properties": {
+          "peopleCategoryId": {
+            "type": "string",
+            "description": "The id of the PeopleCategory to which these participants belong to. See /settings/peoplecategories"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Indicates how many people of this category are in the booking"
+          }
+        },
+        "required": [
+          "peopleCategoryId",
+          "number"
+        ]
+      },
+      "PhoneNumber": {
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "mobile",
+              "work",
+              "home",
+              "fax"
+            ]
+          }
+        },
+        "required": [
+          "number",
+          "type"
+        ]
+      },
+      "PortalSubaccount": {
+        "description": "Represents a Bookeo account, i.e. the business taking bookings, selling products, etc.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique id for this subaccount [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique account name [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "PortalSubaccountsList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PortalSubaccount"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "Price": {
+        "properties": {
+          "totalGross": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "totalNet": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "totalTaxes": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "totalPaid": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceTax"
+            },
+            "description": "A breakdown of all taxes paid. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "totalGross",
+          "totalNet",
+          "totalTaxes",
+          "totalPaid",
+          "taxes"
+        ]
+      },
+      "PriceRate": {
+        "properties": {
+          "peopleCategoryId": {
+            "type": "string",
+            "description": "If no peopleCategoryId is present, this means that the price is PER BOOKING, regardless of the number of participants.\n To obtain a list of people category ids for an account, call /settings/peoplecategories [read-only]",
+            "readOnly": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/Money"
+          }
+        },
+        "required": []
+      },
+      "PriceTax": {
+        "description": "Represents the amount of tax applied to a price, for a particular Tax",
+        "properties": {
+          "taxId": {
+            "type": "string",
+            "description": "The unique id of the tax. See GET /settings/taxes to obtain a list of taxes [read-only]",
+            "readOnly": true
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          }
+        },
+        "required": [
+          "taxId",
+          "amount"
+        ]
+      },
+      "Product": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "productId": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this product [read-only]",
+            "readOnly": true
+          },
+          "productCode": {
+            "type": "string",
+            "description": "The product code chosen for this product by the account manager.\n It can (but rarely does) change [read-only]",
+            "readOnly": true
+          },
+          "bookingLimits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingLimit"
+            },
+            "description": "Defines, for each people category, how many people can be present in a single booking.\n If a people category is not included here, it means it is not supported in this product. [read-only]",
+            "readOnly": true
+          },
+          "defaultRates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceRate"
+            },
+            "description": "Define the STANDARD rates (prices) for each people category.\n These are the headline rates only. The business may have set special prices/rules, which will be calculated by Bookeo.\n If a product does not have any price, this field is not included. [read-only]",
+            "readOnly": true
+          },
+          "duration": {
+            "$ref": "#/components/schemas/Duration"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "fixedCourse",
+              "flexibleTime"
+            ],
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "membersOnly": {
+            "type": "boolean",
+            "description": "Whether this product can only be booked by current members [read-only]",
+            "readOnly": true
+          },
+          "prepaidOnly": {
+            "type": "boolean",
+            "description": "Whether this product can only be booked by customers who have purchased prepaid credits for it. [read-only]",
+            "readOnly": true
+          },
+          "acceptDeny": {
+            "type": "boolean",
+            "description": "Whether the business has reserved the faculty to accept/deny any booking for this product.\n If this field is true, any booking submitted MAY not be confirmed immediately, but instead tracked as a 'pending request'. [read-only]",
+            "readOnly": true
+          },
+          "apiBookingsAllowed": {
+            "type": "boolean",
+            "description": "Whether API applications can query availability and create bookings for this product.\n The account manager can block some products from being booked via the API. [read-only]",
+            "readOnly": true
+          },
+          "dropInOnly": {
+            "type": "boolean",
+            "description": "For products of type fixedCourse, this property is true if an application can only make drop-in (single class) bookings for the course.\n An application can book multiple (even all) classes in the course by making multiple separate bookings.\n The endpoint GET /availability/slots will contain a list of all classes in the course, in the CourseSchedule schema of the response. [read-only]",
+            "readOnly": true
+          },
+          "allowPrivateEvents": {
+            "type": "boolean",
+            "description": "Whether a booking for this product can ask to reserve the entire event (i.e. all seats available) [read-only]",
+            "readOnly": true
+          },
+          "choiceOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChoiceOption"
+            },
+            "description": "A list of ChoiceOption that are available for this product. The field is not present if there are no ChoiceOption [read-only]",
+            "readOnly": true
+          },
+          "numberOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NumberOption"
+            },
+            "description": "A list of NumberOption that are available for this product. The field is not present if there are no NumberOption [read-only]",
+            "readOnly": true
+          },
+          "onOffOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnOffOption"
+            },
+            "description": "A list of OnOffOption that are available for this product. The field is not present if there are no OnOffOption [read-only]",
+            "readOnly": true
+          },
+          "textOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TextOption"
+            },
+            "description": "A list of TextOption that are available for this product. The field is not present if there are no TextOption [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "name",
+          "productId",
+          "productCode",
+          "bookingLimits",
+          "duration",
+          "type",
+          "membersOnly",
+          "prepaidOnly",
+          "acceptDeny",
+          "apiBookingsAllowed",
+          "dropInOnly"
+        ]
+      },
+      "ProductList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "Resource": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the resource. [read-only]",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "ResourceBlock": {
+        "description": "Represents a block",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique id [read-only]",
+            "readOnly": true
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of this block"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "Resources whose time is blocked."
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the block was created [read-only]",
+            "readOnly": true
+          },
+          "creationAgent": {
+            "type": "string",
+            "description": "The person that created the block [read-only]",
+            "readOnly": true
+          },
+          "lastChangeTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the block was last updated. If the block was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          },
+          "lastChangeAgent": {
+            "type": "string",
+            "description": "The person who last updated this block. If the block was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "startTime",
+          "endTime",
+          "resources",
+          "creationTime",
+          "creationAgent"
+        ]
+      },
+      "ResourceBlocksList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceBlock"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "ResourceType": {
+        "description": "Types of resource used in private bookings or events.\n Consultants, teachers, guides, vehicles, etc.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether this type of resources should be shown to customers, and can be used as filter to search for availability [read-only]",
+            "readOnly": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "ResourceTypesList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceType"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "SeatBlock": {
+        "description": "Represents a block over a number of seats",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique id [read-only]",
+            "readOnly": true
+          },
+          "eventId": {
+            "type": "string",
+            "description": "The id of the event"
+          },
+          "productId": {
+            "type": "string",
+            "description": "The id of the product this seat block is for"
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of this block"
+          },
+          "numSeats": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of seats reserved\n The special value -1 indicates \"all available seats left\"."
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The starting time of the event [read-only]",
+            "readOnly": true
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the block was created [read-only]",
+            "readOnly": true
+          },
+          "creationAgent": {
+            "type": "string",
+            "description": "The person that created the block [read-only]",
+            "readOnly": true
+          },
+          "lastChangeTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time when the block was last updated. If the block was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          },
+          "lastChangeAgent": {
+            "type": "string",
+            "description": "The person who last updated this block. If the block was never changed after creation, this field is not present. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "eventId",
+          "productId",
+          "numSeats",
+          "creationTime",
+          "creationAgent"
+        ]
+      },
+      "SeatBlocksList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeatBlock"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "Slot": {
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "eventId": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "numSeatsAvailable": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of seats available in the slot\n If the product if of type fixedCourse, and it is too late to enroll in the full course but only drop-in is possible, this property will not be present. Only numSeatsAvailableAsDropin will be included. [read-only]",
+            "readOnly": true
+          },
+          "numSeatsAvailableAsDropin": {
+            "type": "integer",
+            "format": "int32",
+            "description": "If the product is of type fixedCourse and the booking of a drop-in class is available, this property shows the number of seats available in the slot, for a drop-in booking.\n In any other case this property is not present [read-only]",
+            "readOnly": true
+          },
+          "courseSchedule": {
+            "$ref": "#/components/schemas/CourseSchedule"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "Resources involved in this slot. This field is only included for products of type fixed or fixedCourse.\n Only resources whose type is \"public\" are listed here. [read-only]",
+            "readOnly": true
+          },
+          "privateEvent": {
+            "type": "boolean",
+            "description": "If this slot represents a private event. In a private event, only one booking per slot is possible. [read-only]",
+            "readOnly": true
+          },
+          "privateEventOption": {
+            "type": "boolean",
+            "description": "If this slot is not a private event by default, but the customer can choose to book it as a private event. Even if a slot itself is not a private event, sometimes the customer has the option to book the slot reserving the entire event anyway, typically paying a different price. In the API, this can be done by setting the property privateEvent in the Booking object when creating a booking. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "productId",
+          "eventId",
+          "startTime",
+          "endTime"
+        ]
+      },
+      "SlotList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Slot"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      },
+      "StreetAddress": {
+        "properties": {
+          "address1": {
+            "type": "string"
+          },
+          "address2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "Country code in ISO 3166-1 format"
+          },
+          "state": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "Tax": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "TaxesList": {
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tax"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "TelephoneNumber": {
+        "description": "Describes a phone/fax number",
+        "required": []
+      },
+      "TextCustomField": {
+        "description": "Represents a custom field where the customer can input some free text.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this field [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": "A description for the field [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some fields may only be accessible to users/staff.\n If this field is false, applications should not show this field to customers, or ask them to input a value for this field. [read-only]",
+            "readOnly": true
+          },
+          "forCustomer": {
+            "type": "boolean",
+            "description": "Whether this field is about a customer (person making the booking) [read-only]",
+            "readOnly": true
+          },
+          "forParticipants": {
+            "type": "boolean",
+            "description": "Whether this field is about participants (people the booking). If true, the app should ask this field about every participant in the booking. [read-only]",
+            "readOnly": true
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The order index (starting from 0) of this field. The order is relative to all fields, of any type. So a number field could have index 0, then a text field could have index 1, then another number field have index 2. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "forCustomer",
+          "forParticipants",
+          "index"
+        ]
+      },
+      "TextOption": {
+        "description": "Represent an option where the customer can input some free text.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique, never changing id that identifies this option [read-only]",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "shownToCustomers": {
+            "type": "boolean",
+            "description": "Some options may only be accessible to users/staff.\n If this field is false, applications should not show this option to customers, or ask them to input a value for this option. [read-only]",
+            "readOnly": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "If an option is not enabled, it should not be used for new bookings. It may still be present in old bookings, created when the option was enabled. [read-only]",
+            "readOnly": true
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether an input is required for this option [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shownToCustomers",
+          "enabled",
+          "required"
+        ]
+      },
+      "Webhook": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": " [read-only]",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL that Bookeo will request when an event triggers the webhook.\n The protocol must be https"
+          },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "bookings",
+              "seatblocks",
+              "resourceblocks",
+              "customers",
+              "payments"
+            ],
+            "description": "What type of object this webhook applies to"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "created",
+              "updated",
+              "deleted"
+            ],
+            "description": "What type of operation triggers this webhook"
+          },
+          "blockedTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "If this field is present, it indicates that the webhook was blocked at this time.\n The blockedReason will indicate the reason for the block. Typically, a webhook gets blocked when too many consecutive notifications are dropped due to repeat conection errors.\n Once a webhook is blocked, no more notifications will be sent to it. Your application will need to fix the cause of the block, and then create a new webhook. [read-only]",
+            "readOnly": true
+          },
+          "blockedReason": {
+            "type": "string",
+            "description": "The reason why the webhook was blocked. [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "domain",
+          "type"
+        ]
+      },
+      "WebhooksList": {
+        "properties": {
+          "info": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Webhook"
+            },
+            "description": " [read-only]",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "info",
+          "data"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "secret key": {
+        "name": "secretKey",
+        "type": "apiKey",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "secret key": []
+    }
+  ]
+}

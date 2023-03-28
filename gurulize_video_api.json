@@ -1,0 +1,154 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Gurulize Video API",
+    "version": "1.0",
+    "summary": "Gurulize Video API is a service to create and start video conference with a simple API call",
+    "contact": {
+      "url": "https://gurulize.com",
+      "name": "Gurulize"
+    },
+    "description": "Instead of launching an all-in-one e-consultancy application with Gurulize,  you can integrate your existing application utilizing  Gurulize Video API.",
+    "x-logo": {
+      "url": "https://gurulize.com/wp-content/uploads/2019/10/logo-1024x291.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://webrtc.gurulize.com"
+    }
+  ],
+  "paths": {
+    "/webrtc-meeting/room/create": {
+      "get": {
+        "summary": "Generate a video room",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "hostUrl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "guestUrl": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "uuid",
+                    "hostUrl",
+                    "guestUrl"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "uuid": "444f4061-3494-4e60-a552-c4316ac6702d",
+                      "hostUrl": "https://webrtc.gurulize.com/?rop=V_US2qRjrTFn&urp=gN-mYTXkrV7pVPMr_jUfqSE4gBmZzEKi2MI1cOfnUxtFr4S-YacER5lkFG2dkFIUU%22",
+                      "guestUrl": "https://webrtc.gurulize.com/?rop=GFPyacAAOrPc&urp=gN-mYTXkrV7pVPMr_jUfqSE4gBmZzEKi2MI1cOfnUxtFr4S-YacER5lkFG2dkFIU%22"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-webrtc-meeting-room-create",
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "durationInMinutes",
+            "description": "Max call duration in minutes"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "type",
+            "description": "Video (fixed for now)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "The time to start the conversation in unix timestamp format and the start time  in milliseconds (not seconds) and should be sent according to the UTC timezone value",
+            "name": "startDate"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "username",
+            "description": "Username associated with the password (in security schema)"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "BY_HOST"
+              ]
+            },
+            "in": "query",
+            "name": "endHow",
+            "description": "AUTOMATIC, BY_HOST"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "END_TIME",
+                "END_OF_DURATION"
+              ]
+            },
+            "in": "query",
+            "name": "endWhen",
+            "description": "END_TIME, END_OF_DURATION"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr"
+              ]
+            },
+            "in": "query",
+            "name": "lang",
+            "description": "en,tr"
+          }
+        ],
+        "description": "Endpoint for starting a new video conference room"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "password": {
+        "name": "password",
+        "type": "apiKey",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "password": []
+    }
+  ]
+}

@@ -1,0 +1,3961 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Superdocu API",
+    "version": "2.0.0",
+    "description": "This API covers contacts management, requests creation and workflows details, in order to be able to manage requests within existing workflows.\n\nYou can retrieve all information about requests thanks to contact's workflows endpoints. With these ids you can fetch and updates data. It is not currently possible to destroy\nrequests and contacts' workflows.\n\n\nThis API follows [JSON API](https://jsonapi.org/) specification."
+  },
+  "paths": {
+    "/api/v1/documents/{id}/public_url": {
+      "get": {
+        "summary": "Get document public url",
+        "tags": [
+          "[v1] Documents"
+        ],
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "42"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "document",
+                          "enum": [
+                            "document"
+                          ]
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "public_url": {
+                              "type": "string",
+                              "example": "https://cloud.storage.com/public/dummy.png",
+                              "description": "Public URL of the file. This public URL and the file expire in 1 day\n                      after the first generation. Check `expires_at` for the exact date."
+                            },
+                            "checksum": {
+                              "type": "string",
+                              "example": "31b98675d69938ecbb731e97a8416ba8",
+                              "description": "MD5 Message-Digest Algorithm by RSA Data\nSecurity, Inc., described in RFC1321,\n                      digest\nof 128 bits (16 bytes)\n                      \n\n                      \n\nThis\nvalue can be computed on a unix system with the following\ncommand: `openssl md5 /path/to/file`\n                      \n\n\n                     \n\nThe system computes it with\n`Digest::MD5.hexdigest` from ruby core lib."
+                            },
+                            "expires_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2020-01-02T11:25:32.617+01:00"
+                            }
+                          },
+                          "required": [
+                            "public_url",
+                            "checksum",
+                            "expires_at"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/tags": {
+      "get": {
+        "summary": "Get the contacts tags list",
+        "tags": [
+          "[v1] Contacts Tags"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ContactTag"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a contact tag",
+        "tags": [
+          "[v1] Contacts Tags"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Contact tag created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ContactTag"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "contact_tag",
+                        "enum": [
+                          "contact_tag"
+                        ]
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Employee"
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/tags/{id}": {
+      "delete": {
+        "summary": "Destroy contact tag",
+        "tags": [
+          "[v1] Contacts Tags"
+        ],
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Contact tag destroyed"
+          },
+          "404": {
+            "description": "Contact tag not found"
+          }
+        }
+      }
+    },
+    "/api/v1/contacts": {
+      "get": {
+        "summary": "Get the contacts list",
+        "tags": [
+          "[v1] Contacts"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "description": "You can filter thanks to filter[contact_tag] on contact tags IDs,\nand on emails thanks to filter[email]",
+        "parameters": [
+          {
+            "name": "filter[contact_tag]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1,2",
+              "description": "Contact tags ids to filter"
+            }
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "john@dummy.fr,jack@dummy.fr",
+              "description": "Contact emails to filter"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "example": 1,
+              "description": "Page to request. Default to 1."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2,
+                          "description": "Number of pages for this request"
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 25,
+                          "description": "Number of items by page"
+                        }
+                      },
+                      "required": [
+                        "total_pages",
+                        "per_page"
+                      ]
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "self": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=2",
+                          "description": "Current link of the resource"
+                        },
+                        "first": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=1",
+                          "description": "First page of the resource"
+                        },
+                        "prev": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=1",
+                          "description": "Previous page of the resource"
+                        },
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=3",
+                          "description": "Next page of the resource"
+                        },
+                        "last": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=6",
+                          "description": "Last page of the resource"
+                        }
+                      },
+                      "required": [
+                        "self",
+                        "first",
+                        "prev",
+                        "next",
+                        "last"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a contact",
+        "tags": [
+          "[v1] Contacts"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "contact",
+                        "enum": [
+                          "contact"
+                        ]
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "first_name": {
+                            "type": "string",
+                            "example": "John"
+                          },
+                          "last_name": {
+                            "type": "string",
+                            "example": "Doe"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "john.doe@company.com"
+                          },
+                          "phone": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "0836656565"
+                          },
+                          "status": {
+                            "type": "string",
+                            "default": "enabled",
+                            "example": "enabled",
+                            "enum": [
+                              "enabled",
+                              "disabled"
+                            ]
+                          },
+                          "locale": {
+                            "type": "string",
+                            "example": "fr",
+                            "default": "en",
+                            "description": "If there is a default locale value on current\ncompany, it will takes this one",
+                            "nullable": true
+                          },
+                          "tracking_params": {
+                            "type": "object",
+                            "description": "Tracking params, allowed keys: utm_source,\nutm_campaign, utm_medium, utm_content, utm_term",
+                            "nullable": true,
+                            "properties": {
+                              "utm_source": {
+                                "type": "string",
+                                "description": "Utm source"
+                              },
+                              "utm_campaign": {
+                                "type": "string",
+                                "description": "Utm campaign"
+                              },
+                              "utm_medium": {
+                                "type": "string",
+                                "description": "Utm medium"
+                              },
+                              "utm_content": {
+                                "type": "string",
+                                "description": "Utm content"
+                              },
+                              "utm_term": {
+                                "type": "string",
+                                "description": "Utm term"
+                              }
+                            }
+                          }
+                        },
+                        "required": [
+                          "first_name",
+                          "last_name",
+                          "email"
+                        ]
+                      }
+                    }
+                  },
+                  "relationships": {
+                    "type": "object",
+                    "properties": {
+                      "tags": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "1"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "contact_tag",
+                                  "enum": [
+                                    "contact_tag"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/{id}": {
+      "get": {
+        "summary": "Get contact details",
+        "tags": [
+          "[v1] Contacts"
+        ],
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update contact details",
+        "tags": [
+          "[v1] Contacts"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/{id}/invite": {
+      "post": {
+        "summary": "Invite contact",
+        "tags": [
+          "[v1] Contacts"
+        ],
+        "deprecated": true,
+        "description": "Sends an invitation email to contact with a link to his dashboard.\nThe contact has to have at least one request.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation sent"
+          },
+          "404": {
+            "description": "Contact not found"
+          },
+          "422": {
+            "description": "Contact can not be invited"
+          }
+        }
+      }
+    },
+    "/api/v1/requests": {
+      "post": {
+        "summary": "Create a new request",
+        "tags": [
+          "[v1] Requests"
+        ],
+        "deprecated": true,
+        "description": "Create a request associated to a specific workflow.\n\nThis endpoint creates all documents associated to this workflow.\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Request created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Request"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "request",
+                        "enum": [
+                          "request"
+                        ]
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "My request name"
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "My request description"
+                          },
+                          "contact_id": {
+                            "type": "integer",
+                            "example": 51
+                          },
+                          "workflow_id": {
+                            "type": "integer",
+                            "example": 3
+                          }
+                        },
+                        "required": [
+                          "contact_id",
+                          "workflow_id"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requests/{id}": {
+      "get": {
+        "summary": "Get a request",
+        "tags": [
+          "[v1] Requests"
+        ],
+        "deprecated": true,
+        "description": "Get a request with documents groups\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Request"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workflows": {
+      "get": {
+        "summary": "Get the workflows list",
+        "tags": [
+          "[v1] Workflows"
+        ],
+        "deprecated": true,
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workflows found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/checklist_requests/{id}": {
+      "get": {
+        "summary": "Get a checklist request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Get a checklist request with checks\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checklist request found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ChecklistRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Checklist request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a checklist request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Update a form request with answers values\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checklist request updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ChecklistRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "answers": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "checklist_item_id": {
+                              "type": "integer",
+                              "description": "Checklist item ID",
+                              "example": 42
+                            },
+                            "checked": {
+                              "type": "string",
+                              "enum": [
+                                "0",
+                                "1"
+                              ],
+                              "description": "Value for the item. 1 = checked, 0 = unchecked",
+                              "example": "1"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/documents_requests/{id}": {
+      "get": {
+        "summary": "Get a documents request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Get a documents request with documents groups. The 200 responses\nrenders associated documents groups with their documents. Check the example\nbelow.\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documents request found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": {
+                        "id": "721",
+                        "type": "documents_request",
+                        "attributes": {
+                          "description": null,
+                          "created_at": "2022-09-15T14:53:08.135+02:00",
+                          "status": "pending",
+                          "name": "Client",
+                          "contact_id": 2433
+                        },
+                        "relationships": {
+                          "contact": {
+                            "data": {
+                              "id": "2433",
+                              "type": "contact"
+                            }
+                          },
+                          "documents_groups": {
+                            "data": [
+                              {
+                                "id": "768",
+                                "type": "documents_group"
+                              },
+                              {
+                                "id": "769",
+                                "type": "documents_group"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "id": "489",
+                          "type": "document",
+                          "attributes": {
+                            "original_filename": "dummy.png",
+                            "status": "waiting_for_validation"
+                          },
+                          "links": {
+                            "public_url": "https://api.superdocu.com/api/v2/documents/489/public_url"
+                          }
+                        },
+                        {
+                          "id": "768",
+                          "type": "documents_group",
+                          "attributes": {
+                            "name": "Name",
+                            "description": null,
+                            "status": "waiting_for_validation",
+                            "expiration_date": null
+                          },
+                          "relationships": {
+                            "documents": {
+                              "data": [
+                                {
+                                  "id": "489",
+                                  "type": "document"
+                                }
+                              ]
+                            },
+                            "contact": {
+                              "data": {
+                                "id": "2433",
+                                "type": "contact"
+                              }
+                            },
+                            "documents_request": {
+                              "data": {
+                                "id": "721",
+                                "type": "documents_request"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "490",
+                          "type": "document",
+                          "attributes": {
+                            "original_filename": "dummy.png",
+                            "status": "waiting_for_validation"
+                          },
+                          "links": {
+                            "public_url": "https://api.superdocu.com/api/v2/documents/490/public_url"
+                          }
+                        },
+                        {
+                          "id": "769",
+                          "type": "documents_group",
+                          "attributes": {
+                            "name": "Name",
+                            "description": null,
+                            "status": "waiting_for_validation",
+                            "expiration_date": null
+                          },
+                          "relationships": {
+                            "documents": {
+                              "data": [
+                                {
+                                  "id": "490",
+                                  "type": "document"
+                                }
+                              ]
+                            },
+                            "contact": {
+                              "data": {
+                                "id": "2433",
+                                "type": "contact"
+                              }
+                            },
+                            "documents_request": {
+                              "data": {
+                                "id": "721",
+                                "type": "documents_request"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/DocumentsRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Documents request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/documents/{id}": {
+      "delete": {
+        "summary": "Destroy document",
+        "tags": [
+          "[v2] Documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Document destroyed"
+          },
+          "404": {
+            "description": "Document not found"
+          }
+        }
+      }
+    },
+    "/api/v2/form_requests/{id}": {
+      "get": {
+        "summary": "Get a form request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Get a form request with answers\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Form request found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": {
+                        "id": "411",
+                        "type": "form_request",
+                        "attributes": {
+                          "name": "My form",
+                          "description": null,
+                          "created_at": "2022-09-15T14:53:08.781+02:00",
+                          "status": "waiting_for_validation",
+                          "contact_id": 2437,
+                          "form_template_id": 432
+                        },
+                        "relationships": {
+                          "contact": {
+                            "data": {
+                              "id": "2437",
+                              "type": "contact"
+                            }
+                          },
+                          "answers": {
+                            "data": [
+                              {
+                                "id": "405",
+                                "type": "answer"
+                              },
+                              {
+                                "id": "406",
+                                "type": "answer"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "id": "405",
+                          "type": "answer",
+                          "attributes": {
+                            "value": "I like trains",
+                            "name": "Input",
+                            "form_name": "My form",
+                            "form_input_id": 775
+                          }
+                        },
+                        {
+                          "id": "406",
+                          "type": "answer",
+                          "attributes": {
+                            "value": "I like trains",
+                            "name": "Input",
+                            "form_name": "My form",
+                            "form_input_id": 776
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/FormRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Form request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a form request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Update a form request with answers values\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Form request updated",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": {
+                        "id": "413",
+                        "type": "form_request",
+                        "attributes": {
+                          "name": "My form",
+                          "description": null,
+                          "created_at": "2022-09-15T14:53:09.141+02:00",
+                          "status": "waiting_for_validation",
+                          "contact_id": 2439,
+                          "form_template_id": 434
+                        },
+                        "relationships": {
+                          "contact": {
+                            "data": {
+                              "id": "2439",
+                              "type": "contact"
+                            }
+                          },
+                          "answers": {
+                            "data": [
+                              {
+                                "id": "407",
+                                "type": "answer"
+                              },
+                              {
+                                "id": "408",
+                                "type": "answer"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "id": "407",
+                          "type": "answer",
+                          "attributes": {
+                            "value": "new_I like trains",
+                            "name": "Input",
+                            "form_name": "My form",
+                            "form_input_id": 777
+                          }
+                        },
+                        {
+                          "id": "408",
+                          "type": "answer",
+                          "attributes": {
+                            "value": "I like trains",
+                            "name": "Input",
+                            "form_name": "My form",
+                            "form_input_id": 778
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/FormRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "answers": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "form_input_id": {
+                              "type": "integer",
+                              "description": "Form Input ID for this answer"
+                            },
+                            "value": {
+                              "type": "string",
+                              "description": "Value for the answer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/form_requests/{id}/approve": {
+      "put": {
+        "summary": "Approve a form request",
+        "tags": [
+          "[v2] Requests"
+        ],
+        "description": "Update a form request with answers values\n\n",
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Form request approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/FormRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/contacts/tags": {
+      "get": {
+        "summary": "Get the contacts tags list",
+        "tags": [
+          "[v2] Contacts Tags"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ContactTag"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a contact tag",
+        "tags": [
+          "[v2] Contacts Tags"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Contact tag created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ContactTag"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "contact_tag",
+                        "enum": [
+                          "contact_tag"
+                        ]
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Employee"
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/contacts/tags/{id}": {
+      "delete": {
+        "summary": "Destroy contact tag",
+        "tags": [
+          "[v2] Contacts Tags"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Contact tag destroyed"
+          },
+          "404": {
+            "description": "Contact tag not found"
+          }
+        }
+      }
+    },
+    "/api/v2/contacts/{contact_id}/workflows": {
+      "get": {
+        "summary": "Get the contacts workflows list",
+        "tags": [
+          "[v2] Contact's workflows"
+        ],
+        "description": "Renders all workflows associated to a specific contact, with states\nand modules ids/types to lookup data on them",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact's workflows found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "354",
+                          "type": "contact_workflow",
+                          "attributes": {
+                            "name": "Onboarding",
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:10.505+02:00",
+                            "status": "work_in_progress",
+                            "workflow_id": 448
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2443",
+                                "type": "contact"
+                              }
+                            },
+                            "form_requests": {
+                              "data": [
+                                {
+                                  "id": "416",
+                                  "type": "form_request"
+                                }
+                              ]
+                            },
+                            "checklist_requests": {
+                              "data": [
+                                {
+                                  "id": "211",
+                                  "type": "checklist_request"
+                                }
+                              ]
+                            },
+                            "documents_requests": {
+                              "data": [
+                                {
+                                  "id": "725",
+                                  "type": "document_request"
+                                }
+                              ]
+                            },
+                            "contact_workflow_states": {
+                              "data": [
+                                {
+                                  "id": "736",
+                                  "type": "contact_workflow_state"
+                                },
+                                {
+                                  "id": "737",
+                                  "type": "contact_workflow_state"
+                                },
+                                {
+                                  "id": "738",
+                                  "type": "contact_workflow_state"
+                                },
+                                {
+                                  "id": "739",
+                                  "type": "contact_workflow_state"
+                                }
+                              ]
+                            },
+                            "current_contact_workflow_state": {
+                              "data": {
+                                "id": "736",
+                                "type": "contact_workflow_state"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "355",
+                          "type": "contact_workflow",
+                          "attributes": {
+                            "name": "Onboarding",
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:10.602+02:00",
+                            "status": "done",
+                            "workflow_id": 449
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2443",
+                                "type": "contact"
+                              }
+                            },
+                            "form_requests": {
+                              "data": []
+                            },
+                            "checklist_requests": {
+                              "data": []
+                            },
+                            "documents_requests": {
+                              "data": []
+                            },
+                            "contact_workflow_states": {
+                              "data": [
+                                {
+                                  "id": "740",
+                                  "type": "contact_workflow_state"
+                                }
+                              ]
+                            },
+                            "current_contact_workflow_state": {
+                              "data": {
+                                "id": "740",
+                                "type": "contact_workflow_state"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "included": [
+                        {
+                          "id": "736",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "Screen #2",
+                            "request_id": null,
+                            "module_id": 460,
+                            "module_type": "screen",
+                            "request_type": null
+                          }
+                        },
+                        {
+                          "id": "737",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "My form",
+                            "request_id": 416,
+                            "module_id": 437,
+                            "module_type": "form",
+                            "request_type": "form_request"
+                          }
+                        },
+                        {
+                          "id": "738",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "Tenant",
+                            "request_id": 725,
+                            "module_id": 4169,
+                            "module_type": "documents",
+                            "request_type": "documents_request"
+                          }
+                        },
+                        {
+                          "id": "739",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "My checklist",
+                            "request_id": 211,
+                            "module_id": 244,
+                            "module_type": "checklist",
+                            "request_type": "checklist_request"
+                          }
+                        },
+                        {
+                          "id": "740",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "Screen #3",
+                            "request_id": null,
+                            "module_id": 461,
+                            "module_type": "screen",
+                            "request_type": null
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ContactWorkflow"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/contacts/{contact_id}/workflows/{workflow_id}": {
+      "get": {
+        "summary": "Get a specific contacts workflow",
+        "tags": [
+          "[v2] Contact's workflows"
+        ],
+        "description": "Renders workflow associated to a specific contact, with states\nand modules ids/types/basic data",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact's workflow found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": {
+                        "id": "356",
+                        "type": "contact_workflow",
+                        "attributes": {
+                          "name": "Onboarding",
+                          "description": null,
+                          "created_at": "2022-09-15T14:53:10.854+02:00",
+                          "status": "work_in_progress",
+                          "workflow_id": 450
+                        },
+                        "relationships": {
+                          "contact": {
+                            "data": {
+                              "id": "2444",
+                              "type": "contact"
+                            }
+                          },
+                          "form_requests": {
+                            "data": [
+                              {
+                                "id": "417",
+                                "type": "form_request"
+                              }
+                            ]
+                          },
+                          "checklist_requests": {
+                            "data": [
+                              {
+                                "id": "212",
+                                "type": "checklist_request"
+                              }
+                            ]
+                          },
+                          "documents_requests": {
+                            "data": [
+                              {
+                                "id": "726",
+                                "type": "document_request"
+                              }
+                            ]
+                          },
+                          "contact_workflow_states": {
+                            "data": [
+                              {
+                                "id": "741",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "742",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "743",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "744",
+                                "type": "contact_workflow_state"
+                              }
+                            ]
+                          },
+                          "current_contact_workflow_state": {
+                            "data": {
+                              "id": "741",
+                              "type": "contact_workflow_state"
+                            }
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "id": "741",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "Screen #4",
+                            "request_id": null,
+                            "module_id": 462,
+                            "module_type": "screen",
+                            "request_type": null
+                          }
+                        },
+                        {
+                          "id": "742",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "My form",
+                            "request_id": 417,
+                            "module_id": 438,
+                            "module_type": "form",
+                            "request_type": "form_request"
+                          }
+                        },
+                        {
+                          "id": "743",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "Tenant",
+                            "request_id": 726,
+                            "module_id": 4173,
+                            "module_type": "documents",
+                            "request_type": "documents_request"
+                          }
+                        },
+                        {
+                          "id": "744",
+                          "type": "contact_workflow_state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "module_name": "My checklist",
+                            "request_id": 212,
+                            "module_id": 245,
+                            "module_type": "checklist",
+                            "request_type": "checklist_request"
+                          }
+                        },
+                        {
+                          "id": "726",
+                          "type": "documents_request",
+                          "attributes": {
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:10.870+02:00",
+                            "status": "pending",
+                            "name": "Tenant",
+                            "contact_id": 2444,
+                            "workflow_id": 450,
+                            "workflow_name": "Onboarding"
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2444",
+                                "type": "contact"
+                              }
+                            },
+                            "documents_groups": {
+                              "data": [
+                                {
+                                  "id": "773",
+                                  "type": "documents_group"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": "417",
+                          "type": "form_request",
+                          "attributes": {
+                            "name": "My form",
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:10.864+02:00",
+                            "status": "missing",
+                            "contact_id": 2444,
+                            "form_template_id": 438,
+                            "workflow_name": "Onboarding"
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2444",
+                                "type": "contact"
+                              }
+                            },
+                            "answers": {
+                              "data": []
+                            }
+                          }
+                        },
+                        {
+                          "id": "212",
+                          "type": "checklist_request",
+                          "attributes": {
+                            "name": "My checklist",
+                            "status": "missing",
+                            "created_at": "2022-09-15T14:53:10.880+02:00",
+                            "contact_id": 2444,
+                            "checklist_template_id": 245,
+                            "workflow_name": "Onboarding",
+                            "items": [
+                              {
+                                "id": 444,
+                                "name": "Input",
+                                "checked": false
+                              },
+                              {
+                                "id": 445,
+                                "name": "Input",
+                                "checked": false
+                              }
+                            ]
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2444",
+                                "type": "contact"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ContactWorkflow"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact's workflow not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/NotFound"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Destroy contact's workflow",
+        "tags": [
+          "[v2] Contact's workflows"
+        ],
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Contact's workflow destroyed"
+          },
+          "404": {
+            "description": "Contact's workflow not found"
+          }
+        }
+      }
+    },
+    "/api/v2/contacts": {
+      "get": {
+        "summary": "Get the contacts list",
+        "tags": [
+          "[v2] Contacts"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "description": "You can filter thanks to filter[contact_tag] on contact tags IDs,\nand on emails thanks to filter[email]",
+        "parameters": [
+          {
+            "name": "filter[contact_tag]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1,2",
+              "description": "Contact tags ids to filter"
+            }
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "john@dummy.fr,jack@dummy.fr",
+              "description": "Contact emails to filter"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "example": 1,
+              "description": "Page to request. Default to 1."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2,
+                          "description": "Number of pages for this request"
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 25,
+                          "description": "Number of items by page"
+                        }
+                      },
+                      "required": [
+                        "total_pages",
+                        "per_page"
+                      ]
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "self": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=2",
+                          "description": "Current link of the resource"
+                        },
+                        "first": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=1",
+                          "description": "First page of the resource"
+                        },
+                        "prev": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=1",
+                          "description": "Previous page of the resource"
+                        },
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=3",
+                          "description": "Next page of the resource"
+                        },
+                        "last": {
+                          "type": "string",
+                          "example": "https://api.superdocu.com/api/v1/contacts?page=6",
+                          "description": "Last page of the resource"
+                        }
+                      },
+                      "required": [
+                        "self",
+                        "first",
+                        "prev",
+                        "next",
+                        "last"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a contact",
+        "tags": [
+          "[v2] Contacts"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "contact",
+                        "enum": [
+                          "contact"
+                        ]
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "first_name": {
+                            "type": "string",
+                            "example": "John"
+                          },
+                          "last_name": {
+                            "type": "string",
+                            "example": "Doe"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "john.doe@company.com"
+                          },
+                          "phone": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "0836656565"
+                          },
+                          "status": {
+                            "type": "string",
+                            "default": "enabled",
+                            "example": "enabled",
+                            "enum": [
+                              "enabled",
+                              "disabled"
+                            ]
+                          },
+                          "locale": {
+                            "type": "string",
+                            "example": "fr",
+                            "default": "en",
+                            "description": "If there is a default locale value on current\ncompany, it will takes this one",
+                            "nullable": true
+                          },
+                          "tracking_params": {
+                            "type": "object",
+                            "description": "Tracking params, allowed keys: utm_source,\nutm_campaign, utm_medium, utm_content, utm_term",
+                            "nullable": true,
+                            "properties": {
+                              "utm_source": {
+                                "type": "string",
+                                "description": "Utm source"
+                              },
+                              "utm_campaign": {
+                                "type": "string",
+                                "description": "Utm campaign"
+                              },
+                              "utm_medium": {
+                                "type": "string",
+                                "description": "Utm medium"
+                              },
+                              "utm_content": {
+                                "type": "string",
+                                "description": "Utm content"
+                              },
+                              "utm_term": {
+                                "type": "string",
+                                "description": "Utm term"
+                              }
+                            }
+                          }
+                        },
+                        "required": [
+                          "first_name",
+                          "last_name",
+                          "email"
+                        ]
+                      }
+                    }
+                  },
+                  "relationships": {
+                    "type": "object",
+                    "properties": {
+                      "tags": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "1"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "example": "contact_tag",
+                                  "enum": [
+                                    "contact_tag"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/contacts/{id}": {
+      "get": {
+        "summary": "Get contact details",
+        "tags": [
+          "[v2] Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update contact details",
+        "tags": [
+          "[v2] Contacts"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntity"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Destroy the contact",
+        "tags": [
+          "[v2] Contacts"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact destroyed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/workflows": {
+      "get": {
+        "summary": "Get the workflows list",
+        "tags": [
+          "[v2] Workflows"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workflows found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "454",
+                          "type": "workflow",
+                          "attributes": {
+                            "name": "Onboarding"
+                          },
+                          "relationships": {
+                            "states": {
+                              "data": [
+                                {
+                                  "id": "967",
+                                  "type": "state"
+                                },
+                                {
+                                  "id": "968",
+                                  "type": "state"
+                                },
+                                {
+                                  "id": "969",
+                                  "type": "state"
+                                },
+                                {
+                                  "id": "970",
+                                  "type": "state"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "included": [
+                        {
+                          "id": "466",
+                          "type": "screen",
+                          "attributes": {
+                            "name": "Screen #8",
+                            "kind": "screen"
+                          }
+                        },
+                        {
+                          "id": "967",
+                          "type": "state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "kind": "screen"
+                          },
+                          "relationships": {
+                            "module": {
+                              "data": {
+                                "id": "466",
+                                "type": "screen"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "440",
+                          "type": "form",
+                          "attributes": {
+                            "name": "My form",
+                            "kind": "form"
+                          }
+                        },
+                        {
+                          "id": "968",
+                          "type": "state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "kind": "form"
+                          },
+                          "relationships": {
+                            "module": {
+                              "data": {
+                                "id": "440",
+                                "type": "form"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "4202",
+                          "type": "provider_kind",
+                          "attributes": {
+                            "name": "Tenant",
+                            "kind": "provider_kind"
+                          }
+                        },
+                        {
+                          "id": "969",
+                          "type": "state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "kind": "provider_kind"
+                          },
+                          "relationships": {
+                            "module": {
+                              "data": {
+                                "id": "4202",
+                                "type": "provider_kind"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "247",
+                          "type": "checklist",
+                          "attributes": {
+                            "name": "My checklist",
+                            "kind": "checklist"
+                          }
+                        },
+                        {
+                          "id": "970",
+                          "type": "state",
+                          "attributes": {
+                            "name": "Step 1",
+                            "kind": "checklist"
+                          },
+                          "relationships": {
+                            "module": {
+                              "data": {
+                                "id": "247",
+                                "type": "checklist"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Workflow"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/workflows/{workflow_id}/contacts/{contact_id}/invite": {
+      "post": {
+        "summary": "Invite contact to specific workflow",
+        "tags": [
+          "[v2] Workflows"
+        ],
+        "security": [
+          {
+            "jwt_bearer_token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Contact invited",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "autogenerated_example": {
+                    "summary": "Auto-generated example",
+                    "value": {
+                      "data": {
+                        "id": "360",
+                        "type": "contact_workflow",
+                        "attributes": {
+                          "name": "Onboarding",
+                          "description": null,
+                          "created_at": "2022-09-15T14:53:14.037+02:00",
+                          "status": "work_in_progress",
+                          "workflow_id": 455
+                        },
+                        "relationships": {
+                          "contact": {
+                            "data": {
+                              "id": "2462",
+                              "type": "contact"
+                            }
+                          },
+                          "form_requests": {
+                            "data": [
+                              {
+                                "id": "419",
+                                "type": "form_request"
+                              }
+                            ]
+                          },
+                          "checklist_requests": {
+                            "data": [
+                              {
+                                "id": "214",
+                                "type": "checklist_request"
+                              }
+                            ]
+                          },
+                          "documents_requests": {
+                            "data": [
+                              {
+                                "id": "729",
+                                "type": "document_request"
+                              }
+                            ]
+                          },
+                          "contact_workflow_states": {
+                            "data": [
+                              {
+                                "id": "751",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "752",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "753",
+                                "type": "contact_workflow_state"
+                              },
+                              {
+                                "id": "754",
+                                "type": "contact_workflow_state"
+                              }
+                            ]
+                          },
+                          "current_contact_workflow_state": {
+                            "data": {
+                              "id": "751",
+                              "type": "contact_workflow_state"
+                            }
+                          }
+                        }
+                      },
+                      "included": [
+                        {
+                          "id": "729",
+                          "type": "documents_request",
+                          "attributes": {
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:14.054+02:00",
+                            "status": "pending",
+                            "name": "Tenant",
+                            "contact_id": 2462,
+                            "workflow_id": 455,
+                            "workflow_name": "Onboarding"
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2462",
+                                "type": "contact"
+                              }
+                            },
+                            "documents_groups": {
+                              "data": [
+                                {
+                                  "id": "775",
+                                  "type": "documents_group"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": "419",
+                          "type": "form_request",
+                          "attributes": {
+                            "name": "My form",
+                            "description": null,
+                            "created_at": "2022-09-15T14:53:14.048+02:00",
+                            "status": "missing",
+                            "contact_id": 2462,
+                            "form_template_id": 441,
+                            "workflow_name": "Onboarding"
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2462",
+                                "type": "contact"
+                              }
+                            },
+                            "answers": {
+                              "data": []
+                            }
+                          }
+                        },
+                        {
+                          "id": "214",
+                          "type": "checklist_request",
+                          "attributes": {
+                            "name": "My checklist",
+                            "status": "missing",
+                            "created_at": "2022-09-15T14:53:14.064+02:00",
+                            "contact_id": 2462,
+                            "checklist_template_id": 248,
+                            "workflow_name": "Onboarding",
+                            "items": [
+                              {
+                                "id": 450,
+                                "name": "Input",
+                                "checked": false
+                              },
+                              {
+                                "id": 451,
+                                "name": "Input",
+                                "checked": false
+                              }
+                            ]
+                          },
+                          "relationships": {
+                            "contact": {
+                              "data": {
+                                "id": "2462",
+                                "type": "contact"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ContactWorkflow"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "{host}",
+      "variables": {
+        "host": {
+          "default": "https://api.superdocu.com"
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "869"
+          },
+          "type": {
+            "type": "string",
+            "example": "contact",
+            "enum": [
+              "contact"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "example": "John"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe"
+              },
+              "email": {
+                "type": "string",
+                "example": "john.doe@company.com"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "example": "0836656565"
+              },
+              "status": {
+                "type": "string",
+                "default": "enabled",
+                "example": "enabled",
+                "enum": [
+                  "enabled",
+                  "disabled"
+                ]
+              },
+              "locale": {
+                "type": "string",
+                "example": "fr",
+                "default": "en",
+                "description": "If there is a default locale value on current company,\nit will takes this one",
+                "nullable": true
+              },
+              "tracking_params": {
+                "type": "object",
+                "description": "Tracking params, allowed keys: utm_source, utm_campaign,\nutm_medium, utm_content, utm_term",
+                "nullable": true,
+                "properties": {
+                  "utm_source": {
+                    "type": "string",
+                    "description": "Utm source"
+                  },
+                  "utm_campaign": {
+                    "type": "string",
+                    "description": "Utm campaign"
+                  },
+                  "utm_medium": {
+                    "type": "string",
+                    "description": "Utm medium"
+                  },
+                  "utm_content": {
+                    "type": "string",
+                    "description": "Utm content"
+                  },
+                  "utm_term": {
+                    "type": "string",
+                    "description": "Utm term"
+                  }
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2020-01-02T11:25:32.617+01:00"
+              }
+            },
+            "required": [
+              "first_name",
+              "last_name",
+              "email",
+              "phone",
+              "status",
+              "locale",
+              "tracking_params",
+              "created_at"
+            ]
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "contact_tags": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "contact_tag",
+                          "enum": [
+                            "contact_tag"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type"
+                      ]
+                    }
+                  }
+                }
+              },
+              "requests": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "request",
+                          "enum": [
+                            "request"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "24"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "contact_tag",
+                  "enum": [
+                    "contact_tag"
+                  ]
+                },
+                "attributes": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Employee"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "attributes"
+        ]
+      },
+      "ContactTag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24"
+          },
+          "type": {
+            "type": "string",
+            "example": "contact_tag",
+            "enum": [
+              "contact_tag"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Employee"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        }
+      },
+      "Workflow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "160"
+          },
+          "type": {
+            "type": "string",
+            "example": "workflow",
+            "enum": [
+              "workflow"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "New application"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "attributes"
+        ]
+      },
+      "ContactWorkflow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "424"
+          },
+          "type": {
+            "type": "string",
+            "example": "contact_workflow",
+            "enum": [
+              "contact_workflow"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Onboarding",
+                "description": "Name of this contact's workflow. Original workflow name\nby default"
+              }
+            }
+          }
+        }
+      },
+      "DocumentsRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "42"
+          },
+          "type": {
+            "type": "string",
+            "example": "documents_request",
+            "enum": [
+              "documents_request"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "example": "complete",
+                "description": "Status of the documents request"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-01-02T11:25:32.617+01:00"
+              }
+            },
+            "required": [
+              "status",
+              "created_at"
+            ]
+          }
+        }
+      },
+      "FormRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "42"
+          },
+          "type": {
+            "type": "string",
+            "example": "form_request",
+            "enum": [
+              "form_request"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "example": "complete",
+                "description": "Status of the form request"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-01-02T11:25:32.617+01:00"
+              }
+            },
+            "required": [
+              "status",
+              "created_at"
+            ]
+          }
+        }
+      },
+      "ChecklistRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "42"
+          },
+          "type": {
+            "type": "string",
+            "example": "checklist_request",
+            "enum": [
+              "checklist_request"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "example": "complete",
+                "description": "Status of the checklist request"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-01-02T11:25:32.617+01:00"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Item unique ID",
+                      "example": 42
+                    },
+                    "name": {
+                      "type": "stromg",
+                      "description": "Name of this item",
+                      "example": "Go to the moon"
+                    },
+                    "checked": {
+                      "type": "boolean",
+                      "description": "Is this item checked?",
+                      "example": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "checked"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "status",
+              "created_at",
+              "items"
+            ]
+          }
+        }
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "42"
+          },
+          "type": {
+            "type": "string",
+            "example": "request",
+            "enum": [
+              "request"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My request name"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "example": "My request description"
+              },
+              "contact_id": {
+                "type": "integer",
+                "example": 51
+              },
+              "workflow_id": {
+                "type": "integer",
+                "example": 3
+              },
+              "status": {
+                "type": "string",
+                "example": "complete",
+                "description": "Status of the request",
+                "enum": [
+                  "pending",
+                  "no_document",
+                  "complete"
+                ]
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2020-01-02T11:25:32.617+01:00"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "contact_id",
+              "workflow_id",
+              "status",
+              "created_at"
+            ]
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "documents_groups": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "documents_group",
+                          "enum": [
+                            "documents_group"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocumentsGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/Document"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "attributes"
+        ]
+      },
+      "DocumentsGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "937"
+          },
+          "type": {
+            "type": "string",
+            "example": "documents_group",
+            "enum": [
+              "documents_group"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Proof of identity",
+                "description": "Name of documents group, can be a custom one or from a\ntemplate"
+              },
+              "description": {
+                "type": "string",
+                "example": "Passport or driver licence",
+                "description": "Description of documents group, can be a custom one or\nfrom a template"
+              },
+              "status": {
+                "type": "string",
+                "example": "approved",
+                "description": "Status of documents group",
+                "enum": [
+                  "missing",
+                  "waiting_for_validation",
+                  "rejected",
+                  "requested",
+                  "expired",
+                  "almost_expired",
+                  "approved"
+                ]
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "documents": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "document",
+                          "enum": [
+                            "document"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "337"
+          },
+          "type": {
+            "type": "string",
+            "example": "document",
+            "enum": [
+              "document"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "original_filename": {
+                "type": "string",
+                "example": "proof_of_identify.pdf",
+                "description": "Original name of file"
+              },
+              "status": {
+                "type": "string",
+                "example": "approved",
+                "description": "Status of document",
+                "enum": [
+                  "missing",
+                  "waiting_for_validation",
+                  "rejected",
+                  "expired",
+                  "approved"
+                ]
+              }
+            }
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "public_url": {
+                "type": "string",
+                "example": "https://api.superdocu.com/api/v1/documents/1/public_url",
+                "description": "API Url to get a public url of this document"
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "404",
+                  "enum": [
+                    "404"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Resource not found",
+                  "enum": [
+                    "Resource not found"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "BadRequest": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "400",
+                  "enum": [
+                    "400"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Bad request",
+                  "enum": [
+                    "Bad request"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "UnprocessableEntity": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "422",
+                  "enum": [
+                    "422"
+                  ]
+                },
+                "detail": {
+                  "type": "string",
+                  "example": "email is not valid"
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "pointer": {
+                      "type": "string",
+                      "example": "/data/attributes/contact/email"
+                    }
+                  },
+                  "required": [
+                    "pointer"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "detail"
+              ]
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "jwt_bearer_token": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Token"
+      }
+    }
+  }
+}
