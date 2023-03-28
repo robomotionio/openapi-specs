@@ -1,0 +1,3971 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "2.70.0.405850",
+    "title": "Keap REST API",
+    "termsOfService": "https://keap.com/legal",
+    "contact": {
+      "name": "Keap",
+      "url": "https://developer.keap.com/get-support/"
+    },
+    "description": "# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->"
+  },
+  "tags": [
+    {
+      "name": "Contact",
+      "description": "Contacts-V2-Endpoint"
+    },
+    {
+      "name": "Tags",
+      "description": "Tags-V2-Endpoint"
+    }
+  ],
+  "paths": {
+    "/v2/contacts": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "List Contacts",
+        "description": "Retrieves a list of contacts",
+        "operationId": "listContactsUsingGET_3",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "description": "page token",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Attribute and direction to order items by. E.g. 'given_name desc'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Total number of items to return per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Create a Contact",
+        "description": "Creates a new contact as the authenticated user. NB: Contact must contain at least one item in `email_addresses` or `phone_numbers` and `country_code` is required if `region` is specified.",
+        "operationId": "createContactUsingPOST_3",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreatePatchContactRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/links/types": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Create a Contact Link Type",
+        "description": "Creates a new type of contact link.",
+        "operationId": "createContactLinkTypeUsingPOST_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactLinkTypeRequest"
+              }
+            }
+          },
+          "description": "request",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactLinkType"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/{contact_id}": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Retrieve a Contact",
+        "description": "Retrieves a single Contact",
+        "operationId": "getContactUsingGET_3",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma-delimited list of Contact properties to include in the response. (Available fields are: `score_value`, `addresses`, `anniversary`, `birthday`, `company`, `contact_type`, `custom_fields`, `create_time`, `email_addresses`, `fax_numbers`, `job_title`, `update_date`, `leadsource_id`,`middle_name`, `origin`, `owner_id`, `phone_numbers`, `preferred_locale`, `preferred_name`,`prefix`, `relationships`, `social_accounts`, `source_type`, `spouse_name`, `suffix`, `time_zone`,`website`, `tag_ids`)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Delete a Contact",
+        "description": "Deletes the specified contact.",
+        "operationId": "deleteContactUsingDELETE_3",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Update a Contact",
+        "description": "Updates a contact with only the values provided in the request.",
+        "operationId": "patchContactUsingPATCH_1",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "description": "An optional list of properties to be updated. If set, only the provided properties will be updated and others will be skipped.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "enum": [
+                "addresses",
+                "anniversary",
+                "birthday",
+                "company",
+                "contact_type",
+                "custom_fields",
+                "email_addresses",
+                "family_name",
+                "fax_numbers",
+                "given_name",
+                "job_title",
+                "lead_source_id",
+                "links",
+                "middle_name",
+                "notes",
+                "opt_in_reason",
+                "origin",
+                "owner_id",
+                "phone_numbers",
+                "preferred_locale",
+                "preferred_name",
+                "prefix",
+                "referral_code",
+                "social_accounts",
+                "source_type",
+                "spouse_name",
+                "suffix",
+                "time_zone",
+                "website"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreatePatchContactRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/{contact_id}/links": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "List contact links",
+        "description": "Retrieves a list of linked contacts",
+        "operationId": "listContactLinksUsingGET_1",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactLinksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/{contact_id}/notes": {
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "List Notes",
+        "description": "Retrieves a list of notes",
+        "operationId": "listNotesUsingGET_2",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListNotesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Create a Note",
+        "description": "Creates a new note as the authenticated user. Either a \"title\" or \"body\" is required",
+        "operationId": "createNoteUsingPOST_2",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoteRequest"
+              }
+            }
+          },
+          "description": "request",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts/{contact_id}/notes/{note_id}": {
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Get a Note",
+        "description": "Get the specified note",
+        "operationId": "getNoteUsingGET_2",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "path",
+            "description": "note_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNoteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Delete a Note",
+        "description": "Deletes the specified note",
+        "operationId": "deleteNoteUsingDELETE_2",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "path",
+            "description": "note_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Update a note",
+        "description": "Update a note for a contact",
+        "operationId": "updateNoteUsingPATCH",
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "contact_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "path",
+            "description": "note_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "description": "An optional list of fields to be updated. If set, only the provided properties will be updated and others will be skipped.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "enum": [
+                "contact_id",
+                "text",
+                "title",
+                "type",
+                "user_id"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNoteRequest"
+              }
+            }
+          },
+          "description": "updateNoteRequest",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateNoteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts:link": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Link a contact",
+        "description": "Links two contacts together using the provided link type id",
+        "operationId": "linkContactsUsingPOST_1",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/LinkContactsRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/contacts:unlink": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Delete link between two contacts",
+        "description": "Deletes link between two contacts by using the provided contact ids and link id",
+        "operationId": "unlinkContactsUsingPOST_1",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/LinkContactsRequest"
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "List Tags",
+        "description": "Retrieve a list of tags defined in the application.\nTo search for null or empty fields use filter==NONE",
+        "operationId": "listTagsUsingGET_3",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTagsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Create Tag",
+        "description": "Create a new tag",
+        "operationId": "createTagUsingPOST_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateTagRequest"
+              }
+            }
+          },
+          "description": "tag",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/categories": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "List Tag Categories",
+        "description": "Retrieve a list of tag categories defined in the application\nTo search for null or empty fields use filter==NONE",
+        "operationId": "listTagCategoriesUsingGET_1",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTagCategoriesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Create Tag Category",
+        "description": "Create a new tag category",
+        "operationId": "createTagCategoryUsingPOST_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateTagCategoryRequest"
+              }
+            }
+          },
+          "description": "request",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/categories/{category_id}": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Retrieve a Tag Category",
+        "description": "Returns the tag category with the specified category_id",
+        "operationId": "getCategoryUsingGET_1",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "category_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTagCategoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/categories/{tag_category_id}": {
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete Tag Category",
+        "description": "Deletes the specified Tag Category",
+        "operationId": "deleteTagCategoryUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "tag_category_id",
+            "in": "path",
+            "description": "tag_category_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Update a Tag Category",
+        "description": "Updates a tag category with only the values provided in the request",
+        "operationId": "patchTagCategoryUsingPATCH_1",
+        "parameters": [
+          {
+            "name": "tag_category_id",
+            "in": "path",
+            "description": "tag_category_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "description": "An optional list of fields to be updated. If set, only the fields provided in the update_mask will be updated and others will be skipped.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "enum": [
+                "name",
+                "description"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateTagCategoryRequest"
+              }
+            }
+          },
+          "description": "tagCategory"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateTagCategoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/{tag_id}": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Retrieve a Tag",
+        "description": "Returns the tag with the specified tagId",
+        "operationId": "getTagUsingGET_3",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete Tag",
+        "description": "Delete Tag by tag id",
+        "operationId": "deleteTagUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Update a Tag",
+        "description": "Updates a tag with only the values provided in the request",
+        "operationId": "patchTagUsingPATCH_1",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "description": "An optional list of fields to be updated. If set, only the fields provided in the update_mask will be updated and others will be skipped.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "enum": [
+                "name",
+                "description",
+                "category"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateTagRequest"
+              }
+            }
+          },
+          "description": "tag"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateTagResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/{tag_id}/companies": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "List Tagged Companies",
+        "description": "Retrieves a list of companies that have the given tag applied\nTo search for null or empty fields use filter==NONE",
+        "operationId": "listCompaniesForTagIdUsingGET_3",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTaggedCompaniesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/{tag_id}/contacts": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Retrieve a list of contacts with specific tag",
+        "description": "Retrieve a list of contacts\nTo search for null or empty fields use filter==NONE",
+        "operationId": "listContactsWithTagIdUsingGET_1",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Search filter to apply to results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTaggedContactsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/{tag_id}/contacts:applyTags": {
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Apply Tags",
+        "description": "Apply Tag to a list of contact records",
+        "operationId": "applyTagsUsingPOST_1",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ApplyRemoveTagRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplyTagsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tags/{tag_id}/contacts:removeTags": {
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Remove Tags",
+        "description": "Remove a Tag from a list of contact records",
+        "operationId": "removeTagsUsingPOST_1",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "tag_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ApplyRemoveTagRequest"
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.infusionsoft.com/crm/rest"
+    }
+  ],
+  "components": {
+    "requestBodies": {
+      "CreatePatchContactRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreatePatchContactRequest"
+            }
+          }
+        },
+        "description": "contact"
+      },
+      "LinkContactsRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/LinkContactsRequest"
+            }
+          }
+        },
+        "description": "linkContactsRequest",
+        "required": true
+      },
+      "ApplyRemoveTagRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApplyRemoveTagRequest"
+            }
+          }
+        },
+        "description": "applyRemoveTagRequest",
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts.infusionsoft.com/app/oauth/authorize",
+            "tokenUrl": "https://api.infusionsoft.com/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "CustomFieldValue": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Origin": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomFieldMetaData": {
+        "type": "object",
+        "properties": {
+          "field_type": {
+            "type": "string",
+            "enum": [
+              "CURRENCY",
+              "DATE",
+              "DATE_TIME",
+              "DAY_OF_WEEK",
+              "DECIMAL_NUMBER",
+              "DRILLDOWN",
+              "DROPDOWN",
+              "EMAIL",
+              "LIST_BOX",
+              "MONTH",
+              "NAME",
+              "PERCENT",
+              "PHONE_NUMBER",
+              "RADIO",
+              "SOCIAL_SECURITY_NUMBER",
+              "STATE",
+              "TEXT",
+              "TEXT_AREA",
+              "USER",
+              "USER_LIST_BOX",
+              "WEBSITE",
+              "WHOLE_NUMBER",
+              "YEAR",
+              "YES_NO"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "label": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldOption"
+            }
+          },
+          "record_type": {
+            "type": "string",
+            "enum": [
+              "CONTACT",
+              "REFERRAL_PARTNER",
+              "OPPORTUNITY",
+              "TASK_NOTE_APPOINTMENT",
+              "COMPANY",
+              "ORDER",
+              "SUBSCRIPTION"
+            ]
+          }
+        }
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "fax_number": {
+            "$ref": "#/components/schemas/FaxNumber"
+          },
+          "id": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "phone_number": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          },
+          "update_time": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user_id": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completion_time": {
+            "type": "string"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string",
+            "description": "On initial object the returned value for this property may not accurately represent the exact stored value."
+          },
+          "created_by_user_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "due_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "modification_time": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "CRITICAL",
+              "ESSENTIAL",
+              "NONESSENTIAL"
+            ]
+          },
+          "remind_time_mins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "CALL",
+              "APPOINTMENT",
+              "FAX",
+              "LETTER",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "CreateCustomFieldResponse": {
+        "type": "object",
+        "properties": {
+          "custom_field": {
+            "$ref": "#/components/schemas/CustomFieldMetaData"
+          }
+        }
+      },
+      "CreateCompanyRequest": {
+        "type": "object",
+        "required": [
+          "company_name"
+        ],
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "fax_number": {
+            "$ref": "#/components/schemas/FaxNumber"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "phone_number": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "ListContactLinksResponse": {
+        "type": "object",
+        "properties": {
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactLink"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListUserResponse": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string",
+            "enum": [
+              "ADDRESS_FIELD_UNSPECIFIED",
+              "BILLING",
+              "SHIPPING",
+              "OTHER"
+            ]
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string"
+          },
+          "locality": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "region_code": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "zip_four": {
+            "type": "string"
+          }
+        }
+      },
+      "LeadSourceCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ContactLinkType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "max_links": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateUpdateTagCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePatchContactRequest": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          },
+          "anniversary_date": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "company": {
+            "$ref": "#/components/schemas/BasicCompany"
+          },
+          "contact_type": {
+            "type": "string"
+          },
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "email_addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddressRequest"
+            }
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "fax_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaxNumber"
+            }
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "job_title": {
+            "type": "string"
+          },
+          "leadsource_id": {
+            "type": "string"
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/OriginRequest"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "preferred_locale": {
+            "type": "string",
+            "example": "en_US"
+          },
+          "preferred_name": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "referral_code": {
+            "type": "string"
+          },
+          "social_accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialAccount"
+            }
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "SOURCE_TYPE_UNSPECIFIED",
+              "API",
+              "APPOINTMENT",
+              "FORM_API_HOSTED",
+              "FORM_API_INTERNAL",
+              "IMPORT",
+              "INTERNAL_FORM",
+              "LANDING_PAGE",
+              "MANUAL",
+              "OTHER",
+              "UNKNOWN",
+              "WEBFORM"
+            ]
+          },
+          "spouse_name": {
+            "type": "string"
+          },
+          "suffix": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "ListTasksResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          }
+        }
+      },
+      "CategoryReference": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "GetTagCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "PatchUserRequestV2": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddressRequest"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "fax_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaxNumber"
+            }
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "FaxNumber": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "FAX_NUMBER_FIELD_UNSPECIFIED",
+              "FAX1",
+              "FAX2"
+            ]
+          },
+          "number": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateBatchResponse": {
+        "type": "object",
+        "properties": {
+          "create_time": {
+            "type": "string"
+          },
+          "created_by_user_id": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ListTaggedContactsResponse": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicContact"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListProvincesResponse": {
+        "type": "object",
+        "required": [
+          "provinces"
+        ],
+        "properties": {
+          "provinces": {
+            "type": "array",
+            "description": "A key-value pair of province code and province name.",
+            "items": {
+              "$ref": "#/components/schemas/Provinces"
+            }
+          }
+        }
+      },
+      "ListNotesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Note"
+            }
+          }
+        }
+      },
+      "EmailAddress": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "email_opt_status": {
+            "type": "string",
+            "enum": [
+              "UNENGAGED_MARKETABLE",
+              "SINGLE_OPT_IN",
+              "DOUBLE_OPT_IN",
+              "CONFIRMED",
+              "UNENGAGED_NON_MARKETABLE",
+              "NON_MARKETABLE",
+              "LOCKDOWN",
+              "BOUNCE",
+              "HARD_BOUNCE",
+              "MANUAL",
+              "ADMIN",
+              "SYSTEM",
+              "LIST_UNSUBSCRIBE",
+              "FEEDBACK",
+              "SPAM",
+              "INVALID",
+              "DEACTIVATED"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "enum": [
+              "EMAIL_FIELD_UNSPECIFIED",
+              "EMAIL1",
+              "EMAIL2",
+              "EMAIL3"
+            ]
+          },
+          "is_opt_in": {
+            "type": "boolean"
+          },
+          "opt_in_reason": {
+            "type": "string"
+          }
+        }
+      },
+      "ListCountriesResponse": {
+        "type": "object",
+        "required": [
+          "countries"
+        ],
+        "properties": {
+          "countries": {
+            "type": "array",
+            "description": "A key-value pair of country code and country name.",
+            "items": {
+              "$ref": "#/components/schemas/Country"
+            }
+          }
+        }
+      },
+      "ListTaggedCompaniesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tagged_companies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaggedCompany"
+            }
+          }
+        }
+      },
+      "CreateCustomFieldRequest": {
+        "type": "object",
+        "required": [
+          "field_type",
+          "label"
+        ],
+        "properties": {
+          "field_type": {
+            "type": "string",
+            "enum": [
+              "CURRENCY",
+              "DATE",
+              "DATE_TIME",
+              "DAY_OF_WEEK",
+              "DECIMAL_NUMBER",
+              "DRILLDOWN",
+              "DROPDOWN",
+              "EMAIL",
+              "LIST_BOX",
+              "MONTH",
+              "NAME",
+              "PERCENT",
+              "PHONE_NUMBER",
+              "RADIO",
+              "SOCIAL_SECURITY_NUMBER",
+              "STATE",
+              "TEXT",
+              "TEXT_AREA",
+              "USER",
+              "USER_LIST_BOX",
+              "WEBSITE",
+              "WHOLE_NUMBER",
+              "YEAR",
+              "YES_NO"
+            ]
+          },
+          "group_id": {
+            "type": "string",
+            "description": "An optional tab group to place the field under in the interface.  If not specified, will default to the 'Custom Fields' tab."
+          },
+          "label": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCustomFieldOptionRequest"
+            }
+          },
+          "user_group_id": {
+            "type": "string",
+            "description": "An optional user group to choose from when selecting values for User or UserListBox fields."
+          }
+        }
+      },
+      "LeadSource": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/LeadSourceCategory"
+          },
+          "description": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "medium": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "status_is_active": {
+            "type": "boolean"
+          },
+          "vendor": {
+            "type": "string"
+          }
+        }
+      },
+      "BasicContact": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "required": [
+          "assigned_to_user_id"
+        ],
+        "properties": {
+          "assigned_to_user_id": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completion_time": {
+            "type": "string"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "due_time": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "CRITICAL",
+              "ESSENTIAL",
+              "NONESSENTIAL"
+            ]
+          },
+          "remind_time_mins": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Value in minutes before start_date to show pop-up reminder.  Acceptable values are [5,10,15,30,60,120,240,480,1440,2880]"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "CALL",
+              "APPOINTMENT",
+              "FAX",
+              "LETTER",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "UpdateTagResponse": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryReference"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user": {
+            "$ref": "#/components/schemas/BasicUser"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "last_updated_by_user_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string"
+          }
+        }
+      },
+      "Throwable": {
+        "type": "object",
+        "properties": {
+          "cause": {
+            "$ref": "#/components/schemas/Throwable"
+          },
+          "localizedMessage": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stackTrace": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StackTraceElement"
+            }
+          },
+          "suppressed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Throwable"
+            }
+          }
+        }
+      },
+      "ListCompaniesResponse": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Company"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "link_type_id": {
+            "type": "string"
+          },
+          "linked_contact_id": {
+            "type": "string"
+          }
+        }
+      },
+      "LinkContactsRequest": {
+        "type": "object",
+        "properties": {
+          "contact1_id": {
+            "type": "string"
+          },
+          "contact2_id": {
+            "type": "string"
+          },
+          "link_type_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateUpdateTagRequest": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryReference"
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ListTagsResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          }
+        }
+      },
+      "ObjectModel": {
+        "type": "object",
+        "properties": {
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldMetaData"
+            }
+          },
+          "optional_properties": {
+            "type": "array",
+            "description": "These fields are not transmitted by default on this model, but can be requested by specifying them in a comma-separated list in the optional_properties query parameter.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "fax_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaxNumber"
+            }
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "global_user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "keap_id": {
+            "type": "string"
+          },
+          "partner": {
+            "type": "boolean"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "social_accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialAccount"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Invited",
+              "Inactive",
+              "NotAUser"
+            ]
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string"
+          },
+          "updated_by": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateReferralRequest": {
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "expiration_time": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "referral_partner_id": {
+            "type": "string"
+          },
+          "referral_time": {
+            "type": "string"
+          },
+          "referral_type": {
+            "type": "string",
+            "enum": [
+              "COOKIE",
+              "PERMANENT",
+              "MANUAL"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "ListTagCategoriesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tag_categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          }
+        }
+      },
+      "UpdateTaskResponse": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user_id": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completion_time": {
+            "type": "string"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string",
+            "description": "On initial object the returned value for this property may not accurately represent the exact stored value."
+          },
+          "created_by_user_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "due_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "modification_time": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "CRITICAL",
+              "ESSENTIAL",
+              "NONESSENTIAL"
+            ]
+          },
+          "remind_time_mins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "CALL",
+              "APPOINTMENT",
+              "FAX",
+              "LETTER",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "UpdateNoteRequest": {
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "properties": {
+          "contact_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "A value for either \"title\" or \"type\" is required."
+          },
+          "type": {
+            "type": "string",
+            "description": "A value for either \"title\" or \"type\" is required. The value may be one of \"Appointment\", \"Call\", \"Email\", \"Fax\", \"Letter\" or \"Other\" in Keap Max/Pro, or an admin-configured value in Classic."
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateTagCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "StackTraceElement": {
+        "type": "object",
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "lineNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "methodName": {
+            "type": "string"
+          },
+          "nativeMethod": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BatchResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "ERROR",
+              "FAILED_VALIDATION"
+            ]
+          }
+        }
+      },
+      "ContactLink": {
+        "type": "object",
+        "properties": {
+          "contact1_id": {
+            "type": "string"
+          },
+          "contact2_id": {
+            "type": "string"
+          },
+          "link_type_id": {
+            "type": "string"
+          },
+          "link_type_name": {
+            "type": "string"
+          }
+        }
+      },
+      "ListContactsResponse": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "PatchCompanyRequest": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "fax_number": {
+            "$ref": "#/components/schemas/FaxNumber"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "phone_number": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "BasicUser": {
+        "type": "object",
+        "properties": {
+          "email_address": {
+            "type": "string"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Batch": {
+        "type": "object",
+        "properties": {
+          "create_time": {
+            "type": "string"
+          },
+          "created": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_by_user_id": {
+            "type": "string"
+          },
+          "failed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "string"
+          },
+          "record_type": {
+            "type": "string",
+            "enum": [
+              "CONTACT",
+              "COMPANY",
+              "NOTE",
+              "TAG",
+              "TASK"
+            ]
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BatchResult"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "COMPLETE",
+              "ERROR",
+              "PROCESSING"
+            ]
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApplyTagsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CustomFieldOption": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldOption"
+            }
+          }
+        }
+      },
+      "OriginRequest": {
+        "type": "object",
+        "properties": {
+          "ip_address": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateCustomFieldOptionRequest": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCustomFieldOptionRequest"
+            }
+          }
+        }
+      },
+      "GetUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "keap_id": {
+            "type": "string"
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "preferred_name": {
+            "type": "string"
+          },
+          "sub": {
+            "type": "string"
+          }
+        }
+      },
+      "ListLeadSourcesResponse": {
+        "type": "object",
+        "properties": {
+          "leadsources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeadSource"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateNoteRequest": {
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "A value for either \"title\" or \"type\" is required."
+          },
+          "type": {
+            "type": "string",
+            "description": "A value for either \"title\" or \"type\" is required. The value may be one of \"Appointment\", \"Call\", \"Email\", \"Fax\", \"Letter\" or \"Other\" in Keap Max/Pro, or an admin-configured value in Classic."
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "TaggedCompany": {
+        "type": "object",
+        "properties": {
+          "applied_time": {
+            "type": "string"
+          },
+          "company": {
+            "$ref": "#/components/schemas/Company"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "cause": {
+            "$ref": "#/components/schemas/Throwable"
+          },
+          "localizedMessage": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stackTrace": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StackTraceElement"
+            }
+          },
+          "suppressed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Throwable"
+            }
+          }
+        }
+      },
+      "SocialAccount": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SOCIAL_ACCOUNT_TYPE_UNSPECIFIED",
+              "FACEBOOK",
+              "LINKED_IN",
+              "TWITTER",
+              "INSTAGRAM",
+              "SNAPCHAT",
+              "YOUTUBE",
+              "PINTEREST"
+            ]
+          }
+        }
+      },
+      "CreatePatchTaskRequest": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user_id": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completion_time": {
+            "type": "string"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "due_time": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "CRITICAL",
+              "ESSENTIAL",
+              "NONESSENTIAL"
+            ]
+          },
+          "remind_time_mins": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Value in minutes before start_date to show pop-up reminder.  Acceptable values are [5,10,15,30,60,120,240,480,1440,2880]"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "CALL",
+              "APPOINTMENT",
+              "FAX",
+              "LETTER",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "UpdateNoteResponse": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user": {
+            "$ref": "#/components/schemas/BasicUser"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "last_updated_by_user_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string"
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          },
+          "anniversary_date": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "company": {
+            "$ref": "#/components/schemas/BasicCompany"
+          },
+          "contact_type": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "custom_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "email_addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            }
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "fax_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaxNumber"
+            }
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "job_title": {
+            "type": "string"
+          },
+          "leadsource_id": {
+            "type": "string"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Origin"
+          },
+          "owner_id": {
+            "type": "string"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumber"
+            }
+          },
+          "preferred_locale": {
+            "type": "string",
+            "example": "en_US"
+          },
+          "preferred_name": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "referral_code": {
+            "type": "string"
+          },
+          "score_value": {
+            "type": "string"
+          },
+          "social_accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialAccount"
+            }
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "SOURCE_TYPE_UNSPECIFIED",
+              "API",
+              "APPOINTMENT",
+              "FORM_API_HOSTED",
+              "FORM_API_INTERNAL",
+              "IMPORT",
+              "INTERNAL_FORM",
+              "LANDING_PAGE",
+              "MANUAL",
+              "OTHER",
+              "UNKNOWN",
+              "WEBFORM"
+            ]
+          },
+          "spouse_name": {
+            "type": "string"
+          },
+          "suffix": {
+            "type": "string"
+          },
+          "tag_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateContactLinkTypeRequest": {
+        "type": "object",
+        "properties": {
+          "max_links": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Provinces": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateUserRequestV2": {
+        "type": "object",
+        "required": [
+          "email_address",
+          "given_name"
+        ],
+        "properties": {
+          "admin": {
+            "type": "boolean"
+          },
+          "email_address": {
+            "$ref": "#/components/schemas/EmailAddressRequest"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "partner": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GetNoteResponse": {
+        "type": "object",
+        "properties": {
+          "assigned_to_user": {
+            "$ref": "#/components/schemas/BasicUser"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "last_updated_by_user_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string"
+          }
+        }
+      },
+      "Referral": {
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "expiration_time": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "referral_partner_id": {
+            "type": "string"
+          },
+          "referral_time": {
+            "type": "string"
+          },
+          "referral_type": {
+            "type": "string",
+            "enum": [
+              "COOKIE",
+              "PERMANENT",
+              "MANUAL"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "ApplyRemoveTagRequest": {
+        "type": "object",
+        "properties": {
+          "contact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "BasicCompany": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "PhoneNumber": {
+        "type": "object",
+        "properties": {
+          "extension": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string",
+            "enum": [
+              "PHONE_NUMBER_FIELD_UNSPECIFIED",
+              "PHONE1",
+              "PHONE2",
+              "PHONE3",
+              "PHONE4",
+              "PHONE5"
+            ]
+          },
+          "number": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "EmailAddressRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string",
+            "enum": [
+              "EMAIL_FIELD_UNSPECIFIED",
+              "EMAIL1",
+              "EMAIL2",
+              "EMAIL3"
+            ]
+          },
+          "opt_in_reason": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateLeadSourceRequest": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/LeadSourceCategory"
+          },
+          "description": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          },
+          "medium": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "status_is_active": {
+            "type": "boolean"
+          },
+          "vendor": {
+            "type": "string"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryReference"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "BatchCreateContactRequest": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreatePatchContactRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+}

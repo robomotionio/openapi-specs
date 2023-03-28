@@ -1,0 +1,2077 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Octopush API",
+    "version": "1.0",
+    "summary": "Octopush SMS Gateway API",
+    "description": "Octopush allows you to automate sending SMS with your applications, software and information systems.\nIntegrate SMS using our SMS HTTP API.\nWith Octopush you can send SMS messages to more than 196 countries that are directly connected to our infrastructure for the best price with our SMS gateway API.",
+    "x-logo": {
+      "url": "https://www.octopush-dm.com/public/images/template/logo-octopush-2021-2x.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.octopush.com/v1/public"
+    }
+  ],
+  "paths": {
+    "/sms-campaign/send": {
+      "post": {
+        "summary": "Send SMS",
+        "operationId": "post-sms-campaign-send",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "sms_ticket": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "number_of_contacts": {
+                      "type": "number"
+                    },
+                    "total_cost": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "sms_ticket",
+                    "number_of_contacts",
+                    "total_cost"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "sms_ticket": "sms_5f3fbce61266e",
+                      "number_of_contacts": 1,
+                      "total_cost": 5.00502839
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "sms_ticket": "sms_5f3fbce61266e",
+                      "number_of_contacts": 1,
+                      "total_cost": 5.00502839
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "code": 121,
+                      "message": "Mention STOP is missing."
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "code": 121,
+                      "message": "Mention STOP is missing."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This sends a simple SMS.\n\n    simple (1 contact)\n    campaign (up to 500 contacts)\n\nYou must indicate your phone numbers in the “recipients” parameter, which is an array containing objects of type “contact”.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Message text (from 1 to 1224 characters)."
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "phone_number": {
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "type": "string"
+                        },
+                        "param1": {
+                          "type": "string"
+                        },
+                        "param2": {
+                          "type": "string"
+                        },
+                        "param3": {
+                          "type": "string"
+                        },
+                        "param4": {
+                          "type": "string"
+                        },
+                        "param5": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Campaign Type: [“sms_premium”,”sms_low_cost”]",
+                    "enum": [
+                      "sms_premium",
+                      "sms_low_cost"
+                    ]
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "Sender of the message (if the user allows it), 3-11 alphanumeric characters (a-zA-Z0-9)."
+                  },
+                  "send_at": {
+                    "type": "string",
+                    "description": "When you want to send the sms campaign. Format: DateTime ISO8601 (for ex: “2018-10-03T07:42:39-07:00”)"
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "Campaign purpose: (transactional/alert or marketing) : [“alert”,”wholesale”]",
+                    "enum": [
+                      "alert",
+                      "wholesale"
+                    ]
+                  },
+                  "with_replies": {
+                    "type": "boolean",
+                    "description": "“True” for getting back recipient replies"
+                  },
+                  "simulation_mode": {
+                    "type": "boolean",
+                    "description": "(optional) If this value is “true”, your request will be simulated, and you will receive a fake result. Only some minimal validations will be executed."
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "description": "(optional) To avoid sending same request multiple times, setup an request ID. In case the duplication will be detected, a validation error will be returned. A request_id will expire after 24 hours."
+                  },
+                  "auto_optimize_text": {
+                    "type": "boolean",
+                    "description": "(optional) By transmitting this field with “false” value, your text will not be optimized by Octopush robot (your message could contain unicode characters, or useless spaces that could increase the number of needed SMS for each contact)"
+                  }
+                },
+                "required": [
+                  "text",
+                  "recipients",
+                  "type",
+                  "sender",
+                  "purpose"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "recipients": [
+                      {
+                        "phone_number": "+442038828112",
+                        "first_name": "Axelle",
+                        "last_name": "Durand",
+                        "param3": "Mme"
+                      }
+                    ],
+                    "text": "This is a premium SMS with stop mention. STOP at XXXXX",
+                    "type": "sms_premium",
+                    "purpose": "wholesale",
+                    "sender": "Company X"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/sms-campaign-on-list/create": {
+      "post": {
+        "summary": "Send SMS to a list",
+        "operationId": "post-sms-campaign-on-list-create",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "ticket_number": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "ticket_number"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "ticket_number": "sms_5f3fbce61266e"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "ticket_number": "sms_5f3fbce61266e"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "code": 121,
+                      "message": "Mention STOP is missing."
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "code": 121,
+                      "message": "Mention STOP is missing."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This service allows you to create a SMS campaign on a contact list.\n\nThis is an asynchronous process. This allows you to give dispatch orders without suffering a timeout. 4 services allow you to operate this type of sending:\n\n    Creating the campaign on a list of contacts.\n    Getting the status of the campaign (calculating, ready to send, failed)\n    Deleting a list campaign\n    Validating sending a list campaign",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "description": "Name of the list to be used for the campaign."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Message text (from 1 to 1224 characters non unicode)."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Campaign Type : [“sms_vocal”]",
+                    "enum": [
+                      "sms_vocal"
+                    ]
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "Sender of the message (if the user allows it), 3-11 alphanumeric characters (a-zA-Z0-9)."
+                  },
+                  "send_at": {
+                    "type": "string",
+                    "description": "When you want to send the sms campaign. Format: DateTime ISO8601 (for ex: “2018-10-03T07:42:39-07:00”).\n"
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "Campaign purpose: “alert” or “wholesale”: [“alert”,”wholesale”]",
+                    "enum": [
+                      "alert",
+                      "wholesale"
+                    ]
+                  },
+                  "with_replies": {
+                    "type": "boolean",
+                    "description": "“True” for getting back recipient replies"
+                  },
+                  "auto_optimize_text": {
+                    "type": "boolean",
+                    "description": "(optional) By transmitting this field with “false” value, your text will not be optimized by Octopush robot (your message could contain unicode characters, or useless spaces that could increase the number of needed SMS for each contact)."
+                  }
+                },
+                "required": [
+                  "list_name",
+                  "text",
+                  "type",
+                  "sender",
+                  "purpose"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "list_name": "my_list",
+                    "text": "This is a Premium SMS with STOP. STOP at 30101",
+                    "type": "sms_premium",
+                    "purpose": "wholesale",
+                    "sender": "Company X"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/sms-campaign-on-list/status": {
+      "get": {
+        "summary": "Status SMS in a campaign list",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "number_of_contacts": {
+                      "type": "number"
+                    },
+                    "cost": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "number_of_contacts",
+                    "cost",
+                    "status"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "number_of_contacts": 20,
+                      "cost": 2.58,
+                      "status": "ready_to_be_send"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "number_of_contacts": 20,
+                      "cost": 2.58,
+                      "status": "ready_to_be_send"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-sms-campaign-on-list-status",
+        "description": "This service allows you to obtain the status of a text message campaign on a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "ticket_number",
+            "description": "This is the ticket_number transmitted by Octopush after the call to the creation function",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/sms-campaign-on-list/send": {
+      "post": {
+        "summary": "Confirm SMS on list",
+        "operationId": "post-sms-campaign-on-list-send",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "sending_date": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "sending_date"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "sending_date": "2021-06-01T12:00:00+03:00"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "sending_date": "2021-06-01T12:00:00+03:00"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "description": "This service allows you to confirm the sending of a campaign whose status is “ready_to_be_sent”.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ticket_number": {
+                    "type": "string",
+                    "description": "This is the ticket_number transmitted by Octopush after the call to the creation function"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "ticket_number": "sms0000xx0000xx"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/sms-campaign-on-list/cancel": {
+      "delete": {
+        "summary": "Cancel an SMS on list",
+        "operationId": "delete-sms-campaign-on-list-cancel",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ticket_number": {
+                    "type": "string",
+                    "description": "This is the ticket_number transmitted by Octopush after the call to the creation function"
+                  }
+                },
+                "required": [
+                  "ticket_number"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/wallet/check-balance": {
+      "get": {
+        "summary": "Check SMS balance",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "wallet_packs": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "wallet_pack_id",
+                          "credit",
+                          "expiration_date"
+                        ],
+                        "properties": {
+                          "wallet_pack_id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "credit": {
+                            "type": "number"
+                          },
+                          "expiration_date": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "amount",
+                    "unit",
+                    "wallet_packs"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "amount": 204,
+                      "unit": "sms_premium",
+                      "wallet_packs": [
+                        {
+                          "wallet_pack_id": "bacf3d83-1524-13eb-a5e2-0242af120002",
+                          "credit": 12.54,
+                          "expiration_date": "2030-10-23T13:41:46+02:00"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "amount": 12.54,
+                      "unit": "euros"
+                    }
+                  },
+                  "example-2": {
+                    "value": {
+                      "amount": 204,
+                      "unit": "sms_premium",
+                      "wallet_packs": [
+                        {
+                          "wallet_pack_id": "bacf3d83-1524-13eb-a5e2-0242af120002",
+                          "credit": 12.54,
+                          "expiration_date": "2030-10-23T13:41:46+02:00"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-wallet-check-balance",
+        "description": "This web service allows you to retrieve your balance by SMS.\nThe result gives you your balance in Premium and LowCost.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "with_details",
+            "description": "(optional) Adds the details of all the packs in your portfolio."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country_code",
+            "description": "(optional) Code of the country where you want to get your balance. You must also fill in the product_name."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "product_name",
+            "description": "(optional) Name of the product in which you want to get your balance (sms_low_cost, sms_premium, vocal_sms, hlr). You must also fill in the country_code."
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "country_codes",
+            "description": "(optional) The list of countries for which you wish to obtain the number of credits per product."
+          },
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/user/campaign-parameters/edit": {
+      "patch": {
+        "summary": "Modify configuration",
+        "operationId": "patch-user-campaign-parameters-edit",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "sms_campaign_alert_parameters": {
+                      "alert_type": "sms_low_cost",
+                      "alert_bound": 150,
+                      "alert_email_to": "my_email@email.com",
+                      "alert_phone_number_to": "+336971433333"
+                    },
+                    "campaign_parameters": {
+                      "sender_for_sms_premium": "12345",
+                      "sender_for_vocal_sms": "12345",
+                      "phone_number_for_test_sms": "+3356478465456"
+                    },
+                    "callbacks": {
+                      "callback_url_for_inbounds": "https://mywebhook.dns/webhook-1",
+                      "callback_url_for_sms_deliveries": "https://mywebhook.dns/webhook-2",
+                      "callback_url_for_blacklisted_numbers": "https://mywebhook.dns/webhook-3",
+                      "callback_url_for_vocal_sms_deliveries": "https://mywebhook.dns/webhook-4",
+                      "email_for_inbounds": "my_email@email.com"
+                    }
+                  }
+                },
+                "properties": {
+                  "sms_campaign_alert_parameters": {
+                    "type": "object",
+                    "required": [
+                      "alert_type",
+                      "alert_bound",
+                      "alert_email_to",
+                      "alert_phone_number_to"
+                    ],
+                    "description": "Table with alert parameters.",
+                    "properties": {
+                      "alert_type": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Type of SMS to decide the alert threshold."
+                      },
+                      "alert_bound": {
+                        "type": "number",
+                        "description": "Warning threshold."
+                      },
+                      "alert_email_to": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "E-mail address to which to send alerts."
+                      },
+                      "alert_phone_number_to": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Mobile phone number to send alerts to."
+                      }
+                    }
+                  },
+                  "campaign_parameters": {
+                    "type": "object",
+                    "required": [
+                      "sender_for_sms_premium",
+                      "sender_for_vocal_sms",
+                      "phone_number_for_test_sms"
+                    ],
+                    "description": "Table with campaign parameters.",
+                    "properties": {
+                      "sender_for_sms_premium": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Default sender for your SMS campaigns. 3 to 11 alphanumeric characters."
+                      },
+                      "sender_for_vocal_sms": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Default sender for your voice campaigns. 3 to 11 numeric characters."
+                      },
+                      "phone_number_for_test_sms": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Default phone number presented when creating a campaign on your online interface."
+                      }
+                    }
+                  },
+                  "callbacks": {
+                    "type": "object",
+                    "required": [
+                      "callback_url_for_inbounds",
+                      "callback_url_for_sms_deliveries",
+                      "callback_url_for_blacklisted_numbers",
+                      "callback_url_for_vocal_sms_deliveries",
+                      "email_for_inbounds"
+                    ],
+                    "description": "Table containing callback URLs.",
+                    "properties": {
+                      "callback_url_for_inbounds": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL where you would like to receive AR SMS callbacks."
+                      },
+                      "callback_url_for_sms_deliveries": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL where you would like to receive unsubscribe requests (stops)."
+                      },
+                      "callback_url_for_blacklisted_numbers": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL where you would like to receive callbacks from AR SMS Vocal."
+                      },
+                      "callback_url_for_vocal_sms_deliveries": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL where you would like to receive inbound SMS callbacks."
+                      },
+                      "email_for_inbounds": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Email address to which you would like incoming SMS messages to be forwarded."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "sms_campaign_alert_parameters",
+                  "campaign_parameters",
+                  "callbacks"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/user/campaign-parameters": {
+      "get": {
+        "summary": "Retrieve configuration",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "sms_campaign_alert_parameters": {
+                      "type": "object",
+                      "properties": {
+                        "alert_type": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alert_bound": {
+                          "type": "number"
+                        },
+                        "alert_email_to": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "alert_phone_number_to": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "alert_type",
+                        "alert_bound",
+                        "alert_email_to",
+                        "alert_phone_number_to"
+                      ]
+                    },
+                    "campaign_parameters": {
+                      "type": "object",
+                      "properties": {
+                        "sender_for_sms_premium": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "sender_for_vocal_sms": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "phone_number_for_test_sms": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "sender_for_sms_premium",
+                        "sender_for_vocal_sms",
+                        "phone_number_for_test_sms"
+                      ]
+                    },
+                    "callbacks": {
+                      "type": "object",
+                      "properties": {
+                        "callback_url_for_inbounds": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "callback_url_for_deliveries": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "callback_url_for_blacklisted_numbers": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "callback_url_for_vocal_sms_deliveries": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "email_for_inbounds": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "callback_url_for_inbounds",
+                        "callback_url_for_deliveries",
+                        "callback_url_for_blacklisted_numbers",
+                        "callback_url_for_vocal_sms_deliveries",
+                        "email_for_inbounds"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "sms_campaign_alert_parameters",
+                    "campaign_parameters",
+                    "callbacks"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "sms_campaign_alert_parameters": {
+                        "alert_type": "sms_premium",
+                        "alert_bound": 150,
+                        "alert_email_to": "my_email@email.com",
+                        "alert_phone_number_to": "+33611121314"
+                      },
+                      "campaign_parameters": {
+                        "sender_for_sms_premium": "12345",
+                        "sender_for_vocal_sms": "12345",
+                        "phone_number_for_test_sms": "+33611121314"
+                      },
+                      "callbacks": {
+                        "callback_url_for_inbounds": "https://mywebhook.dns/webhook-1",
+                        "callback_url_for_deliveries": "https://mywebhook.dns/webhook-2",
+                        "callback_url_for_blacklisted_numbers": "https://mywebhook.dns/webhook-3",
+                        "callback_url_for_vocal_sms_deliveries": "https://mywebhook.dns/webhook-4",
+                        "email_for_inbounds": "my_email@email.com"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-user-campaign-parameters",
+        "description": "Allows you to recover your default configuration for your SMS campaigns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/voice-campaign/send": {
+      "post": {
+        "summary": "Send Voice SMS",
+        "operationId": "post-voice-campaign-send",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "ticket_number": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "number_of_contacts": {
+                      "type": "number"
+                    },
+                    "total_cost": {
+                      "type": "number"
+                    },
+                    "estimated_duration": {
+                      "type": "number"
+                    },
+                    "residual_credit": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "ticket_number",
+                    "number_of_contacts",
+                    "total_cost",
+                    "estimated_duration",
+                    "residual_credit"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "ticket_number": "voice_5f44ebf9e47b7",
+                      "number_of_contacts": 1,
+                      "total_cost": 0.05,
+                      "estimated_duration": 30,
+                      "residual_credit": 149.95
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "ticket_number": "voice_5f44ebf9e47b7",
+                      "number_of_contacts": 1,
+                      "total_cost": 0.05,
+                      "estimated_duration": 30,
+                      "residual_credit": 149.95
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "voice_language": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "number"
+                            },
+                            "message": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "voice_language"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "errors"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "code": 400,
+                      "message": "Payload validation error.",
+                      "errors": {
+                        "voice_language": {
+                          "code": 442,
+                          "message": "Voice language not supported."
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "code": 400,
+                      "message": "Payload validation error.",
+                      "errors": {
+                        "voice_language": {
+                          "code": 442,
+                          "message": "Voice language not supported."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This sends a Voice SMS in modes:\n\n    simple (1 contact)\n    campaign (up to 500 contacts)\n\nYou must indicate your phone numbers in the “recipients” parameter, which is an array containing objects of type “contact”.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Message text (from 1 to 1224 characters non unicode)."
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "description": "List of Contact objects array of objects:",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "phone_number": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "Sender of the message (if the user allows it), 3-11 alphanumeric characters (a-zA-Z0-9)."
+                  },
+                  "send_at": {
+                    "type": "string",
+                    "description": "When you want to send the sms campaign. Format: DateTime ISO8601 (for ex: “2018-10-03T07:42:39-07:00”)."
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "Campaign purpose: (transactional/alert or marketing) : [“alert”,”wholesale”]",
+                    "enum": [
+                      "alert",
+                      "wholesale"
+                    ]
+                  },
+                  "voice_gender": {
+                    "type": "string",
+                    "description": "Voice gender [‘male’, ‘female’]",
+                    "enum": [
+                      "male",
+                      "female"
+                    ]
+                  },
+                  "voice_language": {
+                    "type": "string",
+                    "description": "Voice Language [‘en-US’, ‘en-GB’, ‘el-GR’, ‘pl-PL’, ‘hu-HU’, ‘sv-SE’, ‘de-DE’, ‘es-ES’, ‘es-LA’, ‘fr-FR’, ‘it-IT’, ‘pt-BR’, ‘ru-RU’]",
+                    "enum": [
+                      "en-US",
+                      "en-GB",
+                      "el-GR",
+                      "pl-PL",
+                      "hu-HU",
+                      "sv-SE",
+                      "de-DE",
+                      "es-ES",
+                      "es-LA",
+                      "fr-FR",
+                      "it-IT",
+                      "pt-BR",
+                      "ru-RU"
+                    ]
+                  },
+                  "simulation_mode": {
+                    "type": "boolean",
+                    "description": "(optional) If this value is “true”, your request will be simulated, and you will receive a fake result. Only some minimal validations will be executed."
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "description": "(optional) To avoid sending same request multiple times, setup an request ID. In case the duplication will be detected, a validation error will be returned. A request_id will expire after 24 hours."
+                  }
+                },
+                "required": [
+                  "text",
+                  "recipients",
+                  "sender",
+                  "purpose",
+                  "voice_gender",
+                  "voice_language"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "recipients": [
+                      {
+                        "phone_number": "+37379967255"
+                      }
+                    ],
+                    "text": "Here is a Voice SMS to listen to",
+                    "purpose": "alert",
+                    "sender": "12345",
+                    "voice_gender": "female",
+                    "voice_language": "en-GB"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/voice-campaign-on-list/create": {
+      "post": {
+        "summary": "Sending Voice SMS to a list",
+        "operationId": "post-voice-campaign-on-list-create",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "ticket_number": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "ticket_number"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "ticket_number": "voice_5f44ebf9e47b7"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "ticket_number": "voice_5f44ebf9e47b7"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "voice_language": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "number"
+                            },
+                            "message": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "voice_language"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "errors"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "code": 400,
+                      "message": "Payload validation error.",
+                      "errors": {
+                        "voice_language": {
+                          "code": 442,
+                          "message": "Voice language not supported."
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "code": 400,
+                      "message": "Payload validation error.",
+                      "errors": {
+                        "voice_language": {
+                          "code": 442,
+                          "message": "Voice language not supported."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This service allows you to create a Voice SMS campaign on a contact list.\n\nThis is a asynchronous process. This allows you to give dispatch orders without suffering a timeout. 4 services allow you to operate this type of sending:\n\n    Creation of the SMS Voice campaign on a list of contacts.\n    Getting the status of the campaign (calculating, ready to send, failed)\n    Deleting a Voice SMS campaign on list\n    Validating the sending of a Voice SMS campaign on list",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "description": "Name of the list to be used for the campaign."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Message text (from 1 to 1224 characters non unicode)."
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "description": "List of Contact objects array of objects:",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "phone_number": {
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "type": "string"
+                        },
+                        "param1": {
+                          "type": "string"
+                        },
+                        "param2": {
+                          "type": "string"
+                        },
+                        "param3": {
+                          "type": "string"
+                        },
+                        "param4": {
+                          "type": "string"
+                        },
+                        "param5": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "Sender of the message (if the user allows it), 3-11 alphanumeric characters (a-zA-Z0-9)."
+                  },
+                  "send_at": {
+                    "type": "string",
+                    "description": "When you want to send the sms campaign. Format: DateTime ISO8601 (for ex: “2018-10-03T07:42:39-07:00”)."
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "Campaign purpose: (transactional/alert or marketing) : [“alert”,”wholesale”]",
+                    "enum": [
+                      "alert",
+                      "wholesale"
+                    ]
+                  },
+                  "voice_gender": {
+                    "type": "string",
+                    "description": "Voice gender [‘male’, ‘female’]",
+                    "enum": [
+                      "male",
+                      "female"
+                    ]
+                  },
+                  "voice_language": {
+                    "type": "string",
+                    "description": "Voice Language [‘en-US’, ‘en-GB’, ‘el-GR’, ‘pl-PL’, ‘hu-HU’, ‘sv-SE’, ‘de-DE’, ‘es-ES’, ‘es-LA’, ‘fr-FR’, ‘it-IT’, ‘pt-BR’, ‘ru-RU’]",
+                    "enum": [
+                      "en-US",
+                      "en-GB",
+                      "el-GR",
+                      "pl-PL",
+                      "hu-HU",
+                      "sv-SE",
+                      "de-DE",
+                      "es-ES",
+                      "es-LA",
+                      "fr-FR",
+                      "it-IT",
+                      "pt-BR",
+                      "ru-RU"
+                    ]
+                  },
+                  "simulation_mode": {
+                    "type": "boolean",
+                    "description": "(optional) If this value is “true”, your request will be simulated, and you will receive a fake result. Only some minimal validations will be executed."
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "description": "(optional) To avoid sending same request multiple times, setup an request ID. In case the duplication will be detected, a validation error will be returned. A request_id will expire after 24 hours."
+                  }
+                },
+                "required": [
+                  "text",
+                  "recipients",
+                  "sender",
+                  "purpose",
+                  "voice_gender",
+                  "voice_language"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "recipients": [
+                      {
+                        "phone_number": "+442038828112",
+                        "first_name": "Alex"
+                      }
+                    ],
+                    "text": "{first_name}, you have 1 Voice SMS",
+                    "sender": "12345",
+                    "voice_gender": "female",
+                    "voice_language": "en-GB"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/voice-campaign-on-list/status": {
+      "get": {
+        "summary": "Status Voice SMS on a list",
+        "tags": [],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "number_of_contacts": {
+                      "type": "number"
+                    },
+                    "cost": {
+                      "type": "number"
+                    },
+                    "estimated_duration": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "number_of_contacts",
+                    "cost",
+                    "estimated_duration",
+                    "status"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "number_of_contacts": 147,
+                      "cost": 9.32,
+                      "estimated_duration": 3.5,
+                      "status": "ready_to_be_sent"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "number_of_contacts": 147,
+                      "cost": 9.32,
+                      "estimated_duration": 3.5,
+                      "status": "ready_to_be_sent"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-voice-campaign-on-list-status",
+        "description": "This service allows you to obtain the status of a Voice SMS campaign on a list.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "ticket_number",
+            "description": "This is the ticket transmitted by Octopush after the calling the creation function"
+          },
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/voice-campaign-on-list/send": {
+      "post": {
+        "summary": "Confirm Voice SMS on a list",
+        "operationId": "post-voice-campaign-on-list-send",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "This service allows you to confirm the sending of a voice campaign whose status is “ready_to_be_sent”",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "ticket_number": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "ticket_number"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "ticket_number": "voice_xxxx0000xxxx0000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/voice-campaign-on-list/cancel": {
+      "delete": {
+        "summary": "Cancel Voice SMS on a list",
+        "operationId": "delete-voice-campaign-on-list-cancel",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "Allows you to cancel a Voice SMS campaign sent to a list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "ticket_number": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "ticket_number"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "ticket_number": "voice_5f3fbce61266e"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "ticket_number": "voice_5f3fbce61266e"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contact/create": {
+      "post": {
+        "summary": "Add a contact",
+        "operationId": "post-contact-create",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "contacts": [
+                      {
+                        "phone_number": "+111222233334444",
+                        "first_name": "Axelle",
+                        "last_name": "Durand",
+                        "param3": "Mme"
+                      },
+                      {
+                        "phone_number": "+2222333334444555",
+                        "first_name": "John",
+                        "last_name": "Smith",
+                        "param3": "M"
+                      }
+                    ],
+                    "list_name": "my_list"
+                  }
+                },
+                "properties": {
+                  "contacts": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "List of contact objects:",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "phone_number": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "param3": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "phone_number",
+                        "first_name",
+                        "last_name",
+                        "param3"
+                      ]
+                    }
+                  },
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the list to which the contact should be added."
+                  }
+                },
+                "required": [
+                  "contacts",
+                  "list_name"
+                ]
+              }
+            }
+          }
+        },
+        "description": "This web service allows you to add a contact to a list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/contact-list/create": {
+      "post": {
+        "summary": "Create a contact list",
+        "operationId": "post-contact-list-create",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Allows you to create a blank contact list.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "list_name": "my_list"
+                  }
+                },
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the list to be created."
+                  }
+                },
+                "required": [
+                  "list_name"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/contact/delete": {
+      "delete": {
+        "summary": "Delete a contact",
+        "operationId": "delete-contact-delete",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "phone_numbers": {
+                    "type": "array",
+                    "items": {
+                      "required": [],
+                      "properties": {}
+                    }
+                  },
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "phone_numbers",
+                  "list_name"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "phone_numbers": [
+                      "+12312345",
+                      "+3234132323"
+                    ],
+                    "list_name": "my_list"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This web service allows you to delete one or more contacts from your account or from a particular list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/contact-list/empty": {
+      "post": {
+        "summary": "Empty a contact list",
+        "operationId": "post-contact-list-empty",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "This web service allows you to empty a contact list. This service is synchronous.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "list_name": "my_list"
+                  }
+                },
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the list to be emptied."
+                  }
+                },
+                "required": [
+                  "list_name"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/contact-list/delete": {
+      "delete": {
+        "summary": "",
+        "operationId": "delete-contact-list-delete",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "description": "This web service allows you to remove a contact list. This service is synchronous.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "list_name": "my_list"
+                  }
+                },
+                "properties": {
+                  "list_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the list to be removed."
+                  }
+                },
+                "required": [
+                  "list_name"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    },
+    "/contact/hlr-request": {
+      "post": {
+        "summary": "HRL Lookup – Number Verification",
+        "operationId": "post-contact-hlr-request",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "phone_number",
+                      "is_valid",
+                      "country_code",
+                      "mnc",
+                      "mcc"
+                    ],
+                    "properties": {
+                      "phone_number": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "is_valid": {
+                        "type": "boolean"
+                      },
+                      "country_code": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "mnc": {
+                        "type": "number"
+                      },
+                      "mcc": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "phone_number": "+33611223344",
+                        "is_valid": true,
+                        "country_code": "FR",
+                        "mnc": 1,
+                        "mcc": "FR"
+                      },
+                      {
+                        "phone_number": "+33611223345",
+                        "is_valid": false,
+                        "country_code": null,
+                        "mnc": null,
+                        "mcc": null
+                      },
+                      {
+                        "phone_number": "+33611223346",
+                        "is_valid": true,
+                        "country_code": "FR",
+                        "mnc": 1,
+                        "mcc": "FR"
+                      }
+                    ]
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": [
+                      {
+                        "phone_number": "+33611223344",
+                        "is_valid": true,
+                        "country_code": "FR",
+                        "mnc": 1,
+                        "mcc": "FR"
+                      },
+                      {
+                        "phone_number": "+33611223345",
+                        "is_valid": false,
+                        "country_code": null,
+                        "mnc": null,
+                        "mcc": null
+                      },
+                      {
+                        "phone_number": "+33611223346",
+                        "is_valid": true,
+                        "country_code": "FR",
+                        "mnc": 1,
+                        "mcc": "FR"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Allows you to check the validity of a telephone line.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "phone_numbers": {
+                    "type": "array",
+                    "items": {
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                },
+                "required": [
+                  "phone_numbers"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "phone_numbers": [
+                      "+33611223344",
+                      "+33611223345",
+                      "+33611223346"
+                    ]
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "phone_numbers": [
+                      "+33611223344",
+                      "+33611223345",
+                      "+33611223346"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api-login"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "API Key": {
+        "name": "api-key",
+        "type": "apiKey",
+        "in": "header",
+        "description": ""
+      }
+    },
+    "parameters": {
+      "api-login": {
+        "name": "api-login",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "API login in format ******@email.org"
+      }
+    }
+  },
+  "security": [
+    {
+      "API Key": []
+    }
+  ]
+}

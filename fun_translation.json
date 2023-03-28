@@ -1,0 +1,134 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fun Translation",
+    "version": "1.0",
+    "description": "Transform your text into a Yoda sentence",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/funtranslations.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.funtranslations.com/translate",
+      "description": "Translation"
+    }
+  ],
+  "paths": {
+    "/yoda": {
+      "post": {
+        "summary": "",
+        "operationId": "post-yoda",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "total"
+                      ]
+                    },
+                    "contents": {
+                      "type": "object",
+                      "properties": {
+                        "translated": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "translation": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "translated",
+                        "text",
+                        "translation"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "contents"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "success": {
+                        "total": 1
+                      },
+                      "contents": {
+                        "translated": "A sentence to translate, this is",
+                        "text": "This is a sentence to translate",
+                        "translation": "yoda"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Translate from English to yoda.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "text": "This is a sentence to translate"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "X-FunTranslations-Api-Secret": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header",
+        "description": ""
+      },
+      "api_key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "query"
+      }
+    }
+  }
+}

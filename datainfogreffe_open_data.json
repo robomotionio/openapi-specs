@@ -1,0 +1,422 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "DataInfoGreffe (Open Data)",
+    "description": "Open Data from Datainfogreffe",
+    "x-logo": {
+      "url": "https://opendata.datainfogreffe.fr/assets/favicon"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://opendata.datainfogreffe.fr"
+    }
+  ],
+  "tags": [
+    {
+      "name": "api"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ErrorModel": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/records/1.0/search/": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "api",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dataset",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": " ID du jeu de données "
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": " Requête en texte intégral "
+          },
+          {
+            "in": "query",
+            "name": "facet",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "required": false,
+            "description": " Nom des facettes à activer dans les résultats"
+          },
+          {
+            "in": "query",
+            "name": "geofilter.distance",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Un point WGS84 et une distance en mètres pour le géopositionnement"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": " Critère de tri (champ ou -champ) "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "refine",
+            "description": " Refinements à prendre en compte "
+          }
+        ],
+        "cache": {
+          "expire": "3600",
+          "public": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "nhits": {
+                      "type": "number"
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "dataset": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "timezone": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "q": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "rows": {
+                          "type": "number"
+                        },
+                        "start": {
+                          "type": "number"
+                        },
+                        "sort": {
+                          "type": "array",
+                          "items": {
+                            "required": [],
+                            "properties": {}
+                          }
+                        },
+                        "format": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "facet": {
+                          "type": "array",
+                          "items": {
+                            "required": [],
+                            "properties": {}
+                          }
+                        }
+                      },
+                      "required": [
+                        "dataset",
+                        "timezone",
+                        "q",
+                        "rows",
+                        "start",
+                        "sort",
+                        "format",
+                        "facet"
+                      ]
+                    },
+                    "records": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "datasetid",
+                          "recordid",
+                          "record_timestamp"
+                        ],
+                        "properties": {
+                          "datasetid": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "recordid": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "fields": {
+                            "type": "object",
+                            "properties": {
+                              "departement": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "ville": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "num_dept": {
+                                "type": "number"
+                              },
+                              "code_greffe": {
+                                "type": "number"
+                              },
+                              "date_immatriculation": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "ca_1": {
+                                "type": "number"
+                              },
+                              "ca_2": {
+                                "type": "number"
+                              },
+                              "ca_3": {
+                                "type": "number"
+                              },
+                              "siren": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "forme_juridique": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "resultat_3": {
+                                "type": "number"
+                              },
+                              "resultat_1": {
+                                "type": "number"
+                              },
+                              "fiche_identite": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "duree_1": {
+                                "type": "number"
+                              },
+                              "date_de_publication": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "statut": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "nic": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "code_ape": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "adresse": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "duree_3": {
+                                "type": "number"
+                              },
+                              "libelle_ape": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "effectif_1": {
+                                "type": "number"
+                              },
+                              "effectif_2": {
+                                "type": "number"
+                              },
+                              "effectif_3": {
+                                "type": "number"
+                              },
+                              "denomination": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "tranche_ca_millesime_1": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "tranche_ca_millesime_3": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "tranche_ca_millesime_2": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "code_postal": {
+                                "type": "number"
+                              },
+                              "date_de_cloture_exercice_1": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "date_de_cloture_exercice_2": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "date_de_cloture_exercice_3": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "greffe": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "millesime_3": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "millesime_1": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "region": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "departement",
+                              "ville",
+                              "num_dept",
+                              "code_greffe",
+                              "date_immatriculation",
+                              "ca_1",
+                              "siren",
+                              "forme_juridique",
+                              "resultat_3",
+                              "resultat_1",
+                              "fiche_identite",
+                              "duree_1",
+                              "date_de_publication",
+                              "statut",
+                              "nic",
+                              "code_ape",
+                              "adresse",
+                              "duree_3",
+                              "libelle_ape",
+                              "effectif_1",
+                              "effectif_3",
+                              "denomination",
+                              "ca_3",
+                              "tranche_ca_millesime_1",
+                              "tranche_ca_millesime_3",
+                              "tranche_ca_millesime_2",
+                              "code_postal",
+                              "date_de_cloture_exercice_1",
+                              "date_de_cloture_exercice_3",
+                              "greffe",
+                              "millesime_3",
+                              "millesime_1",
+                              "region"
+                            ]
+                          },
+                          "record_timestamp": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    },
+                    "facet_groups": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "name"
+                        ],
+                        "properties": {
+                          "facets": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "minItems": 1,
+                            "items": {
+                              "required": [
+                                "count",
+                                "path",
+                                "state",
+                                "name"
+                              ],
+                              "properties": {
+                                "count": {
+                                  "type": "number"
+                                },
+                                "path": {
+                                  "type": "string",
+                                  "minLength": 1
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "minLength": 1
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "nhits",
+                    "parameters",
+                    "records",
+                    "facet_groups"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

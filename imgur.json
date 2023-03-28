@@ -1,0 +1,3274 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Imgur",
+    "description": "Imgur's API exposes the entire Imgur infrastructure via a standardized programmatic interface. Using Imgur's API, you can do just about anything you can do on imgur.com, while using your programming language of choice. If you're familiar with the APIs of Twitter, Amazon's S3, del.icio.us, or a host of other web services, you'll feel right at home.\n\nThe full documentation is available at: http://api.imgur.com",
+    "version": "v1",
+    "contact": {
+      "name": "Meta API",
+      "url": "https://www.meta-api.io"
+    },
+    "x-logo": {
+      "url": "https://assets.brandfetch.io/4d4c554f21ff4b1.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.imgur.com",
+      "description": "Base URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Memegen"
+    },
+    {
+      "name": "Conversation"
+    },
+    {
+      "name": "Custom Gallery"
+    },
+    {
+      "name": "Notification"
+    },
+    {
+      "name": "Image"
+    },
+    {
+      "name": "Album"
+    },
+    {
+      "name": "Gallery"
+    },
+    {
+      "name": "Comment"
+    },
+    {
+      "name": "Account"
+    }
+  ],
+  "paths": {
+    "/3/image/{id}/favorite": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Image Favorite",
+        "description": "Favorite an image with the given ID. The user is required to be logged in to favorite the image.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations/report/{username}": {
+      "post": {
+        "tags": [
+          "Conversation"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Report Sender",
+        "description": "Report a user for sending messages that are against the Terms of Service.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Gallery item ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Submit to Gallery",
+        "description": "Add an Album or Image to the Gallery.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The title of the image. This is required."
+                  },
+                  "terms": {
+                    "type": "string",
+                    "format": "number",
+                    "description": "If the user has not accepted our terms yet, this endpoint will return an error. To by-pass the terms in general simply set this value to 1."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the gallery item",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Remove from Gallery",
+        "description": "This allows the user to remove their content from the gallery.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations/{recipient}": {
+      "post": {
+        "tags": [
+          "Conversation"
+        ],
+        "parameters": [
+          {
+            "name": "recipient",
+            "in": "path",
+            "required": true,
+            "description": "The recipient username, this person will receive the message",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Message Creation",
+        "description": "Create a new message.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The message itself, similar to the body of an email."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/memegen/defaults": {
+      "get": {
+        "tags": [
+          "Memegen"
+        ],
+        "operationId": "Default Memes",
+        "description": "et the list of default memes.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations/block/{username}": {
+      "post": {
+        "tags": [
+          "Conversation"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Block Sender",
+        "description": "Block the user from sending messages to the user that is logged in.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations/{id}": {
+      "delete": {
+        "tags": [
+          "Conversation"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Conversation Deletion",
+        "description": "Delete a conversation by the given ID.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations/{id}/{page}/{offset}": {
+      "get": {
+        "tags": [
+          "Conversation"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "required": true,
+            "description": "Additional offset in current page, defaults to 0.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "Page of message thread. Starting at 1 for the most recent 25 messages and counting upwards. Defaults to 1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Conversation",
+        "description": "Get information about a specific conversation. Includes messages.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/conversations": {
+      "get": {
+        "tags": [
+          "Conversation"
+        ],
+        "operationId": "Conversation List",
+        "description": "Get list of all conversations for the logged in user.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/image/{id}": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Image Update",
+        "description": "Updates the title or description of an image. You can only update an image you own and is associated with your account. For an anonymous image, {id} must be the image's deletehash.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The title of the image."
+                  },
+                  "description": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The description of the image."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Image"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID or deletehash of the image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Image Delete",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Image"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Image",
+        "description": "Get information about an image",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/comment/{id}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Gallery item ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album / Image Comment",
+        "description": "Information about a specific comment. This action also allows any of the additional actions provided in the Comment Endpoint.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/comments/{sort}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "best | top | new - defaults to best",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album / Image Comments",
+        "description": "Comment on an image in the gallery.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/report": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the gallery item",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album / Image Reporting",
+        "description": "Report an Image in the gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/album/{id}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the gallery album",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Album",
+        "description": "Get additional information about an album in the gallery.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/random/random/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "A page of random gallery images, from 0-50. Pages are regenerated every hour.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Random Gallery Images",
+        "description": "Returns a random set of gallery images.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/vote/tag/{t_name}/{vote}": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the gallery item",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "t_name",
+            "in": "path",
+            "required": true,
+            "description": "Name of the tag (implicitly created, if doesn't exist)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vote",
+            "in": "path",
+            "required": true,
+            "description": "'up' or 'down'",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Tag Voting",
+        "description": "Vote for a tag, 'up' or 'down' vote. Send the same value again to undo a vote.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/tags": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the gallery item",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Item Tags",
+        "description": "View tags for a gallery item",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/t/{t_name}/{image_id}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the image.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "t_name",
+            "in": "path",
+            "required": true,
+            "description": "The name of the tag.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Tag Image",
+        "description": "View a single image in a gallery tag",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/t/{t_name}/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "viral | time | top - defaults to viral",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the sort is \"top\", day | week | month | year | all, defaults to week",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "t_name",
+            "in": "path",
+            "required": true,
+            "description": "The name of the tag.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Tag",
+        "description": "View images for a gallery tag",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/r/{subreddit}/{image_id}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the image.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subreddit",
+            "in": "path",
+            "required": true,
+            "description": "A valid sub-reddit name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Subreddit Image",
+        "description": "View a single image in the subreddit",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g/memes/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "viral | time | top - defaults to viral",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the sort is \"top\", day | week | month | year | all, defaults to week",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Memes Subgallery",
+        "description": "View images for memes subgallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g/memes/{image_id}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the image.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Memes Subgallery Image",
+        "description": "View a single image in the memes gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g/unblock_tag": {
+      "post": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "operationId": "Filtered Out Gallery Remove",
+        "description": "Remove a filtered out tag",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Name of the tag to unblock."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/g/block_tag": {
+      "post": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "operationId": "Filtered Out Gallery Add",
+        "description": "Filter out a tag",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Name of the tag to block."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/g/filtered_out": {
+      "get": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "operationId": "Filtered Out Tags",
+        "description": "Retrieve a list of the user's filtered out tags",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g/{id}/add_tags": {
+      "put": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the custom gallery.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery Add Tags",
+        "description": "Add tags to a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tags": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Array of tags (e.g. 'cats,dogs')"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/g/{id}": {
+      "delete": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the custom gallery.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery Deletion",
+        "description": "Remove a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the custom gallery.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery Update",
+        "description": "Update a custom gallery's name",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Name for the custom gallery."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/g/{id}/remove_tags": {
+      "delete": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "required": true,
+            "description": "Array of tags (e.g. 'cats,dogs')",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the custom gallery.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery Remove Tags",
+        "description": "Remove tags from a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album/{album}/remove_images": {
+      "delete": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "album",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Remove Images from an Album",
+        "description": "Takes parameter, ids[], as an array of ids and removes from the album. For anonymous albums, {album} should be the deletehash that is returned at creation.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g": {
+      "post": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "operationId": "Custom Gallery Creation",
+        "description": "Create a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tags": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Array of tags (e.g. 'cats,dogs')"
+                  },
+                  "name": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Name for the custom gallery."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "operationId": "User Custom Galleries",
+        "description": "Fetch a user's custom galleries",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/verifyemail": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Verify User's E-mail",
+        "description": "Checks to see if user has verified their email address",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Send Verification E-mail",
+        "description": "Sends an email to the user to verify that their email is valid to upload to gallery. Must be logged in as the user to send.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/settings": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Update Account Settings",
+        "description": "Change the account settings",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bio": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The biography of the user, is displayed in the gallery profile page."
+                  },
+                  "accepted_gallery_terms": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "true | false - The user agreement to the Imgur Gallery terms."
+                  },
+                  "username": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "A valid Imgur username (between 4 and 63 alphanumeric characters)"
+                  },
+                  "album_privacy": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "public | hidden | secret - Sets the default privacy level of albums the users creates"
+                  },
+                  "messaging_enabled": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "true | false - Allows the user to enable / disable private messages"
+                  },
+                  "public_images": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Set the users images to private or public by default"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/g/{gallery_id}/{image_id}": {
+      "get": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "gallery_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the gallery.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the image.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery Image",
+        "description": "View a single image in a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/g/{gallery_id}/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Custom Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "gallery_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID for the custom gallery.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "viral | time | top - defaults to viral",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the sort is \"top\", day | week | month | year | all, defaults to week",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Custom Gallery",
+        "description": "View images for a custom gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/comment/{id}": {
+      "post": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Reply Creation",
+        "description": "Create a reply for the given comment.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image_id": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The ID of the image in the gallery that you wish to comment on"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The ID of the image in the gallery that you wish to comment on"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment Delete",
+        "description": "Delete a comment, will be marked as deleted if there are any replies",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment",
+        "description": "Get comment information",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album/{id}": {
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Set Album Images",
+        "description": "Sets the images for an album, removes all other images and only uses the images in this request. (Not available for anonymous albums.)",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids[]": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The image ids that you want to be added to the album."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album",
+        "description": "Get album information",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album delete",
+        "description": "This deletes an album, the user must be logged in to do this",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album/{id}/favorite": {
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album Favorite",
+        "description": "Favorite an album with a given ID. The user is required to be logged in to favorite the album.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album/{album}": {
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "album",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album Update",
+        "description": "Update the information of an album. For anonymous albums, {album} should be the deletehash that is returned at creation.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The title of the album"
+                  },
+                  "description": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The description of an album"
+                  },
+                  "privacy": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Sets the privacy level of the album. Values are : public | hidden | secret"
+                  },
+                  "layout": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Sets the layout to display the album. Values are : blog | grid | horizontal | vertical"
+                  },
+                  "cover": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The ID of an image that you want to be the cover of the album"
+                  },
+                  "ids[]": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The image ids that you want to be included in the album."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/account/{username}/notifications/replies": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "new",
+            "in": "query",
+            "required": false,
+            "description": "boolean - false for all notifications, true for only non-viewed notification. Default is true.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Replies",
+        "description": "Returns all of the reply notifications for the user. Required to be logged in as that user",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/submissions/{page}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "Starting at page 0",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "Account Submissions",
+        "description": "Return the images a user has submitted to the gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/gallery_profile": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Gallery Profile",
+        "description": "Returns the totals for the gallery profile.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/favorites": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Favorites",
+        "description": "Returns the users favorited images, only accessible if you're logged in as the user.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/notification/{id}": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Notification",
+        "description": "Returns data about a specific notification",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Notification"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the notification",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Notification Viewed",
+        "description": "Mark a notification as viewed.  This will stop the notification from showing up in the standard requests. Also works as PUT or DELETE request",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/gallery_favorites": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Gallery Favorites",
+        "description": "Return the images the user has favorited in the gallery.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Upload Image to Gallery",
+        "description": "This allows a user to upload an image to the gallery, you're required to be logged in for this to work.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "terms": {
+                    "type": "string",
+                    "format": "number",
+                    "description": "If set to 1, the terms of the gallery are set.  This also allows you to by-pass our terms.  If you wish to set your own terms to upload the gallery there will be an error returned if they have not accepted the terms.",
+                    "example": "1"
+                  },
+                  "title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "This is the title that will be set in the gallery.",
+                    "example": "Awesome Image Title"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the gallery image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Image",
+        "description": "Get additional information about an image in the gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/comments/ids": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Gallery item ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Comment Ids",
+        "description": "List all of the comment ids in an array for a gallery item",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/comment/{id}/report": {
+      "post": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the comment",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Report Comment",
+        "description": "Report a comment for being vulgar",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/r/{subreddit}/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "time | top - defaults to time",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the sort is \"top\", day | week | month | year | all, defaults to week",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "subreddit",
+            "in": "path",
+            "required": true,
+            "description": "A valid subreddit name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Subreddit Galleries",
+        "description": "View gallery images for a subreddit",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/notification": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "operationId": "Notifications",
+        "description": "Get all the notifications for the user that's currently logged in",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/image": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "operationId": "Image Upload",
+        "description": "Upload an image",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The type of image being uploaded : binary, url, base64"
+                  },
+                  "title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "A title for the image"
+                  },
+                  "description": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "A description of the image"
+                  },
+                  "album": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "ID of the album to upload to"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The binary data, a url string, or base64 data"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}/vote/{vote}": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vote",
+            "in": "path",
+            "required": true,
+            "description": "'up' or 'down'",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Image Vote",
+        "description": "Vote for an image, {vote} is up or down (also works for Gallery Albums if you replace 'album' with 'image' in the route)",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}/comment/{id}": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Comment Reply",
+        "description": "Reply to a comment in the gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The reply to a comment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Image Comment Delete",
+        "description": "Delete a comment from an image",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/search/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "q_all",
+            "in": "query",
+            "required": false,
+            "description": "Search for all of these words (and)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q_any",
+            "in": "query",
+            "required": false,
+            "description": "Search for any of these words (or)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q_exactly",
+            "in": "query",
+            "required": false,
+            "description": "Search for exactly this word or phrase",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q_not",
+            "in": "query",
+            "required": false,
+            "description": "Exclude results matching this",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q_type",
+            "in": "query",
+            "required": false,
+            "description": "Show results for any file type, jpg | png | gif | anigif (animated gif) | album",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q_size_px",
+            "in": "query",
+            "required": false,
+            "description": "Size ranges, small (500 pixels square or less) | med (500 to 2,000 pixels square) | big (2,000 to 5,000 pixels square) | lrg (5,000 to 10,000 pixels square) | huge (10,000 square pixels and above)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "time | viral - defaults to time",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the sort is \"top\", day | week | month | year | all, defaults to week",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Query string (note: if advanced search parameters are set, this query string is ignored). This parameter also supports boolean operators (AND, OR, NOT) and indices (tag: user: title: ext: subreddit: album: meme:). An example compound query would be 'title: cats AND dogs ext: gif'",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Search",
+        "description": "Search the gallery for a given query string",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}/votes": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID for the gallery item",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Item Votes",
+        "description": "Get the vote information for an image in the gallery (also works for gallery albums by replacing 'image' with 'album' in the route)",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}/comments": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Image Comments",
+        "description": "The Comments of a Gallery Image",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/image/{id}/comment": {
+      "post": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Comment Creation",
+        "description": "Create a comment, the user must be logged in with OAuth 2 for this to work. Also, works for gallery albums if you replace 'image' with 'album' in the route",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The comment you want to create on image",
+                    "example": "So long, and thanks for all the fish."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/gallery/{id}/comments/count": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Gallery item ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery Comment Count",
+        "description": "The number of comments on an item in the gallery",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/gallery/{section}/{sort}/{window}/{page}": {
+      "get": {
+        "tags": [
+          "Gallery"
+        ],
+        "parameters": [
+          {
+            "name": "showViral",
+            "in": "query",
+            "required": false,
+            "description": "true | false - Show or hide viral images from the 'user' section. Defaults to true",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "viral | time - defaults to viral",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "integer - the data paging number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "section",
+            "in": "path",
+            "required": true,
+            "description": "hot | top | user - defaults to hot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "path",
+            "required": true,
+            "description": "Change the date range of the request if the section is \"top\", day | week | month | year | all, defaults to day",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Gallery",
+        "description": "Returns the images in the gallery. For example the main gallery is /3/gallery/hot/viral/0",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/image/{id}": {
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Delete Account Image",
+        "description": "Delete an image that belongs to the logged in user",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Image Information",
+        "description": "Return information about a specific image. This endpoint works the same as the Image Endpoint. You can use any of the additional actions that the image endpoint with this endpoint.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/comment/{id}/replies": {
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment Replies",
+        "description": "View the comment and the thread of replies",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/comments/ids": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment IDs",
+        "description": "Return an array of all of the comment IDs.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/comment/{id}/vote/{vote}": {
+      "post": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vote",
+            "in": "path",
+            "required": true,
+            "description": "The {vote} variable can only be set as \"up\" or \"down\".",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment Vote",
+        "description": "Vote for a comment, :vote is up or down",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album/{id}/images": {
+      "get": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Album Images",
+        "description": "Return all of the images in the album",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/comments/count": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Comment Count",
+        "description": "Return a count of all of the comments associated with the account.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/album": {
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "operationId": "Album Upload",
+        "description": "This is how you upload an album",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Title": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The title of the album"
+                  },
+                  "privacy": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Sets the privacy level of the album. Values are : public | hidden | secret"
+                  },
+                  "layout": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Sets the layout to display the album. Values are : blog | grid | horizontal | vertical"
+                  },
+                  "cover": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The ID of an image that you want to be the cover of the album"
+                  },
+                  "ids[]": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The images you want to include in the album"
+                  },
+                  "Description": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The description of the album"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/album/{id}/add": {
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Add Album Images",
+        "description": "Takes parameter, ids[], as an array of ids to add to the album. Alternatively, the ids parameter can take a comma delimted string of ids. See below for examples. (Not available for anonymous albums. Adding images to an anonymous album is only available during image uploading.)",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids[]": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "IDs of images to be added to the album, can be sent as array with multiple images",
+                    "example": "UdJ7r"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/album/{album_id}/image/{image_id}": {
+      "get": {
+        "tags": [
+          "Album"
+        ],
+        "parameters": [
+          {
+            "name": "album_id",
+            "in": "path",
+            "required": true,
+            "description": "The 5 character string for the album id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "description": "The id for the image",
+            "schema": {
+              "type": "string",
+              "example": "s"
+            }
+          }
+        ],
+        "operationId": "Album Image",
+        "description": "Get information about an image in an album, any additional actions found in Image Endpoint will also work.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/stats": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Statistics",
+        "description": "Return the statistics about the account.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/message": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Send Message",
+        "description": "Send a message to the user in the URL from the user that's currently logged in. Set the variables subject (the subject of the message) and body (the body of the message) accordingly. A user must be logged in to send a message to another user.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The subject of the message"
+                  },
+                  "parent_id": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The ID of the first message in the thread, by setting this, the message will be threaded to the given message."
+                  },
+                  "body": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "The text of the message. Similar to the body of an email."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/3/account/{username}/images/count": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Images Count",
+        "description": "Returns the total number of images associated with the account.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/notifications/{type}": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Notifications",
+        "description": "Return all of the notifications associated with the account. Defaults to return only new notifications, however you can set the GET variable, new, to false to return all of the notifications. You're required to be logged in as the user to view this information.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{user}/settings": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Settings",
+        "description": "Get the account settings if you're logged in as the user",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/notifications/messages": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "new",
+            "in": "query",
+            "required": false,
+            "description": "false for all notifications, true for only non-viewed notification. Default is true.",
+            "schema": {
+              "type": "string",
+              "example": true
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Messages",
+        "description": "Returns all messages sent to the user, formatted as a notification. Required to be logged in to view this information.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/images/ids": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Images Ids",
+        "description": "Returns an array of Image IDs that are associated with the account.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/likes": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Likes",
+        "description": "Return an array of images that have been upvoted by the user.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/images/{page}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Images",
+        "description": "Return all of the images associated with the account. You can page through the images by setting the page, this defaults to 0.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/album/{id}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Album Information",
+        "description": "Get More information about a specific album",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Album Deletion",
+        "description": "Delete an account album",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}": {
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "Username of the account",
+            "schema": {
+              "type": "string",
+              "example": "ilikemuffins"
+            }
+          }
+        ],
+        "operationId": "Account Deletion",
+        "description": "Delete a user account, you can only access this if you're logged in as the user.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "Username of the account",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Creation",
+        "description": "You must send recaptcha information with this request. Use this as the public captcha key: 6LeZbt4SAAAAAG2ccJykgGk_oAqjFgQ1y6daNz-H",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recaptcha_challenge_field": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Challenge field for the captcha"
+                  },
+                  "recaptcha_response_field": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Response field for the captcha attempt"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account",
+        "description": "Request standard user information.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/comment/{id}": {
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Comment Deletion",
+        "description": "Delete a comment. You are required to be logged in as the user whom created the comment.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/comments/{sort}/{page}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "path",
+            "required": true,
+            "description": "'best', 'worst', 'oldest', or 'newest'. Defaults to 'newest'.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "Page number (50 items per page). Defaults to 0.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Comments",
+        "description": "The comments that the user has made",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/albums/{page}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "integer - allows you to set the page number so you don't have to retrieve all the data at once.",
+            "schema": {
+              "type": "number",
+              "example": "0"
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Albums",
+        "description": "Get all the albums associated with the account. Must be logged in as the user to see secret and hidden albums.",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/albums/count": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Album Count",
+        "description": "The number of albums an account contains",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/3/account/{username}/albums/ids": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "Account Album Ids",
+        "description": "Get all of the ids for all of the albums associated with the account",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://api.imgur.com/oauth2/authorize",
+            "tokenUrl": "https://api.imgur.com/oauth2/token",
+            "scopes": {},
+            "refreshUrl": "https://api.imgur.com/oauth2/token"
+          }
+        }
+      },
+      "ClientId": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Format : Client-ID YOUR_CLIENT_ID"
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth": []
+    }
+  ]
+}

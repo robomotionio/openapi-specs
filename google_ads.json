@@ -1,0 +1,486 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Google Ads",
+    "version": "1.0",
+    "description": "The Google Ads API is the modern programmatic interface to Google Ads and the next generation of the AdWords API. It enables developers to interact directly with the Google Ads platform, vastly increasing the efficiency of managing large or complex Google Ads accounts and campaigns. Some typical use cases include:\n- Automated account management\n- Custom reporting\n- Ad management based on inventory\n- Manage Smart Bidding strategies\n\nWith the Google Ads API you can build software that manages accounts from the customer level down to the keyword level. The API can do what the Google Ads UI does, but programmatically.\n\nTypes of companies that can benefit from the Google Ads API include:\n- Ad agencies\n- Search Engine Marketing (SEM) companies\n- Big brands managing a large number of accounts, with needs beyond the capabilities of the Google Ads UI.",
+    "contact": {
+      "url": "https://developers.google.com/google-ads/api/rest/overview",
+      "name": "Google Ads API"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://googleads.googleapis.com/v10"
+    }
+  ],
+  "paths": {
+    "/customers/{customerId}:generateKeywordIdeas": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "customerId",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the customer with the recommendation."
+        }
+      ],
+      "post": {
+        "summary": "customers.generateKeywordIdeas",
+        "operationId": "customers.generateKeywordIdeas",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "description": "Results of generating keyword ideas.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "keywordIdeaMetrics": {
+                            "type": "object",
+                            "description": "The historical metrics for the keyword.",
+                            "properties": {
+                              "monthlySearchVolumes": {
+                                "type": "array",
+                                "description": "Approximate number of searches on this query for the past twelve months.",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "month": {
+                                      "type": "string",
+                                      "description": "The month of the search volume.",
+                                      "enum": [
+                                        "UNSPECIFIED",
+                                        "UNKNOWN",
+                                        "JANUARY",
+                                        "FEBRUARY",
+                                        "MARCH",
+                                        "APRIL",
+                                        "MAY",
+                                        "JUNE",
+                                        "JULY",
+                                        "AUGUST",
+                                        "SEPTEMBER",
+                                        "OCTOBER",
+                                        "NOVEMBER",
+                                        "DECEMBER"
+                                      ]
+                                    },
+                                    "year": {
+                                      "type": "string",
+                                      "description": "he year of the search volume (e.g. 2020)."
+                                    },
+                                    "monthlySearches": {
+                                      "type": "string",
+                                      "description": "Approximate number of searches for the month. A null value indicates the search volume is unavailable for that month."
+                                    }
+                                  }
+                                }
+                              },
+                              "competition": {
+                                "type": "string",
+                                "description": "The competition level for the query.",
+                                "enum": [
+                                  "UNSPECIFIED",
+                                  "UNKNOWN",
+                                  "LOW",
+                                  "MEDIUM",
+                                  "HIGH"
+                                ]
+                              },
+                              "avgMonthlySearches": {
+                                "type": "string",
+                                "description": "Approximate number of monthly searches on this query averaged for the past 12 months."
+                              },
+                              "competitionIndex": {
+                                "type": "string",
+                                "description": "The competition index for the query in the range [0, 100]. Shows how competitive ad placement is for a keyword. The level of competition from 0-100 is determined by the number of ad slots filled divided by the total number of ad slots available. If not enough data is available, null is returned."
+                              },
+                              "lowTopOfPageBidMicros": {
+                                "type": "string",
+                                "description": "Top of page bid low range (20th percentile) in micros for the keyword."
+                              },
+                              "highTopOfPageBidMicros": {
+                                "type": "string",
+                                "description": "Top of page bid high range (80th percentile) in micros for the keyword."
+                              }
+                            }
+                          },
+                          "keywordAnnotations": {
+                            "type": "object",
+                            "description": "The annotations for the keyword. The annotation data is only provided if requested.",
+                            "properties": {
+                              "concepts": {
+                                "type": "array",
+                                "description": "The list of concepts for the keyword.",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "description": "The concept name for the keyword in the conceptGroup."
+                                    },
+                                    "conceptGroup": {
+                                      "type": "object",
+                                      "description": "The concept group of the concept details.",
+                                      "properties": {
+                                        "name": {
+                                          "type": "string",
+                                          "description": "The concept group name."
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "description": "The concept group type.",
+                                          "enum": [
+                                            "UNSPECIFIED",
+                                            "UNKNOWN",
+                                            "BRAND",
+                                            "OTHER_BRANDS",
+                                            "NON_BRAND"
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "text": {
+                            "type": "string",
+                            "description": "Text of the keyword idea. As in Keyword Plan historical metrics, this text may not be an actual keyword, but the canonical form of multiple keywords. See KeywordPlanKeywordHistoricalMetrics message in KeywordPlanService."
+                          }
+                        }
+                      }
+                    },
+                    "aggregateMetricResults": {
+                      "type": "object",
+                      "description": "The aggregate metrics for all keyword ideas.",
+                      "properties": {
+                        "deviceSearches": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "device": {
+                                "type": "string",
+                                "description": "The device type.",
+                                "enum": [
+                                  "UNSPECIFIED",
+                                  "UNKNOWN",
+                                  "MOBILE",
+                                  "TABLET",
+                                  "DESKTOP",
+                                  "CONNECTED_TV",
+                                  "OTHER"
+                                ]
+                              },
+                              "searchCount": {
+                                "type": "string",
+                                "description": "The total searches for the device."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "nextPageToken": {
+                      "type": "string",
+                      "description": "Pagination token used to retrieve the next page of results. Pass the content of this string as the pageToken attribute of the next request. nextPageToken is not returned for the last page."
+                    },
+                    "totalSize": {
+                      "type": "string",
+                      "description": "Total number of results available."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a list of keyword ideas.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "geoTargetConstants": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "description": "The resource names of the location to target. Max 10",
+                    "minItems": 0,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "includeAdultKeywords": {
+                    "type": "boolean",
+                    "description": "If true, adult keywords will be included in response. The default value is false."
+                  },
+                  "pageToken": {
+                    "type": "string",
+                    "description": "Token of the page to retrieve. If not specified, the first page of results will be returned. To request next page of results use the value obtained from nextPageToken in the previous response. The request fields must match across pages."
+                  },
+                  "pageSize": {
+                    "type": "integer",
+                    "description": "Number of results to retrieve in a single page. A maximum of 10,000 results may be returned, if the pageSize exceeds this, it is ignored. If unspecified, at most 10,000 results will be returned. The server may decide to further limit the number of returned resources. If the response contains fewer than 10,000 results it may not be assumed as last page of results."
+                  },
+                  "keywordPlanNetwork": {
+                    "type": "string",
+                    "enum": [
+                      "UNSPECIFIED",
+                      "UNKNOWN",
+                      "GOOGLE_SEARCH",
+                      "GOOGLE_SEARCH_AND_PARTNERS"
+                    ],
+                    "description": "Targeting network."
+                  },
+                  "keywordAnnotation": {
+                    "type": "array",
+                    "description": "The keyword annotations to include in response.",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "UNSPECIFIED",
+                        "UNKNOWN",
+                        "KEYWORD_CONCEPT"
+                      ]
+                    }
+                  },
+                  "aggregateMetrics": {
+                    "type": "object",
+                    "description": "The aggregate fields to include in response.",
+                    "properties": {
+                      "aggregateMetricTypes": {
+                        "type": "string",
+                        "enum": [
+                          "UNSPECIFIED",
+                          "UNKNOWN",
+                          "DEVICE"
+                        ],
+                        "description": "The list of aggregate metrics to fetch data."
+                      }
+                    }
+                  },
+                  "historicalMetricsOptions": {
+                    "type": "object",
+                    "description": "The options for historical metrics data.",
+                    "properties": {
+                      "yearMonthRange": {
+                        "type": "object",
+                        "description": "The year month range for historical metrics. If not specified the searches will be returned for past 12 months. Searches data is available for the past 4 years. If the search volume is not available for the entire yearMonthRange provided, the subset of the year month range for which search volume is available will be returned.",
+                        "properties": {
+                          "start": {
+                            "type": "object",
+                            "description": "The inclusive start year month.",
+                            "properties": {
+                              "year": {
+                                "type": "string",
+                                "description": "The year (e.g. 2020)."
+                              },
+                              "month": {
+                                "type": "string",
+                                "description": "The month of the year. (e.g. FEBRUARY).",
+                                "enum": [
+                                  "UNSPECIFIED",
+                                  "UNKNOWN",
+                                  "JANUARY",
+                                  "FEBRUARY",
+                                  "MARCH",
+                                  "APRIL",
+                                  "MAY",
+                                  "JUNE",
+                                  "JULY",
+                                  "AUGUST",
+                                  "SEPTEMBER",
+                                  "OCTOBER",
+                                  "NOVEMBER",
+                                  "DECEMBER"
+                                ]
+                              }
+                            }
+                          },
+                          "end": {
+                            "type": "object",
+                            "description": "The inclusive end year month.",
+                            "properties": {
+                              "year": {
+                                "type": "string",
+                                "description": "The year (e.g. 2020)."
+                              },
+                              "month": {
+                                "type": "string",
+                                "description": "The month of the year. (e.g. FEBRUARY).",
+                                "enum": [
+                                  "UNSPECIFIED",
+                                  "UNKNOWN",
+                                  "JANUARY",
+                                  "FEBRUARY",
+                                  "MARCH",
+                                  "APRIL",
+                                  "MAY",
+                                  "JUNE",
+                                  "JULY",
+                                  "AUGUST",
+                                  "SEPTEMBER",
+                                  "OCTOBER",
+                                  "NOVEMBER",
+                                  "DECEMBER"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "The resource name of the language to target."
+                  },
+                  "seed": {
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "keywords": {
+                            "type": "array",
+                            "description": "Requires at least one keyword.",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "The URL to crawl in order to generate keyword ideas."
+                          }
+                        },
+                        "description": "A Keyword and a specific Url to generate ideas from e.g. cars, www.example.com/cars."
+                      },
+                      {
+                        "properties": {
+                          "keywords": {
+                            "type": "array",
+                            "description": "Requires at least one keyword.",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "A Keyword or phrase to generate ideas from, e.g. cars."
+                      },
+                      {
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "description": "The URL to crawl in order to generate keyword ideas."
+                          }
+                        },
+                        "description": "A specific url to generate ideas from, e.g. www.example.com/cars."
+                      },
+                      {
+                        "properties": {
+                          "site": {
+                            "type": "string",
+                            "description": "The domain name of the site. If the customer requesting the ideas doesn't own the site provided only public information is returned."
+                          }
+                        },
+                        "description": "The site to generate ideas from, e.g. www.example.com."
+                      }
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "language"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "geoTargetConstants": [
+                      "string"
+                    ],
+                    "includeAdultKeywords": true,
+                    "pageToken": "string",
+                    "pageSize": 0,
+                    "keywordPlanNetwork": "UNSPECIFIED",
+                    "keywordAnnotation": [
+                      "UNSPECIFIED"
+                    ],
+                    "aggregateMetrics": {
+                      "aggregateMetricTypes": "UNSPECIFIED"
+                    },
+                    "historicalMetricsOptions": {
+                      "yearMonthRange": {
+                        "start": {
+                          "year": "string",
+                          "month": "UNSPECIFIED"
+                        },
+                        "end": {
+                          "year": "string",
+                          "month": "UNSPECIFIED"
+                        }
+                      }
+                    },
+                    "language": "string",
+                    "seed": {
+                      "keywords": [
+                        "string"
+                      ],
+                      "url": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "customers"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://www.googleapis.com/oauth2/v3/auth",
+            "tokenUrl": "https://www.googleapis.com/oauth2/v3/token",
+            "scopes": {
+              "https://www.googleapis.com/auth/adwords": "adwords"
+            },
+            "refreshUrl": "https://www.googleapis.com/oauth2/v3/token"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": [
+        "https://www.googleapis.com/auth/adwords"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "customers"
+    }
+  ]
+}

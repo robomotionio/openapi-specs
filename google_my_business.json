@@ -1,0 +1,919 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Google My Business API",
+    "version": "2.0",
+    "description": "Google My Business API to manage and retrieve statistics about your business location and services.\nThe implementation is still in progress. Please contact the Meta API team at contact@meta-api.io to get more informations",
+    "contact": {
+      "name": "Meta API",
+      "email": "contact@meta-api.io",
+      "url": "https://www.meta-api.io"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://mybusiness.googleapis.com"
+    },
+    {
+      "url": "https://mybusinessbusinessinformation.googleapis.com"
+    },
+    {
+      "url": "https://mybusinessaccountmanagement.googleapis.com"
+    }
+  ],
+  "paths": {
+    "/v4/accounts/{account}/locations:reportInsights": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "account",
+          "in": "path",
+          "required": true,
+          "description": "The account resource name."
+        }
+      ],
+      "post": {
+        "summary": "Report Insights",
+        "operationId": "post-v4-name-locations:reportInsights",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "locationMetrics": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/LocationMetrics"
+                      }
+                    },
+                    "locationDrivingDirectionMetrics": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a report containing insights on one or more metrics by location.\n\nNote: Insight reports are limited to a batch size of 10 locationNames per call.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "locationNames": {
+                    "type": "array",
+                    "description": "A collection of locations to fetch insights for, specified by their names.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "basicRequest": {
+                    "$ref": "#/components/schemas/BasicRequest"
+                  },
+                  "drivingDirectionsRequest": {
+                    "$ref": "#/components/schemas/DrivingDirectionMetricsRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth": [
+              "https://www.googleapis.com/auth/plus.business.manage",
+              "https://www.googleapis.com/auth/business.manage"
+            ]
+          }
+        ]
+      }
+    },
+    "/v4/accounts/{account}/locations": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "account",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List locations",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-v4-account-locations",
+        "description": "Lists the locations for the specified account.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "How many locations to fetch per page. Default is 100, minimum is 1, and maximum page size is 100."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageToken",
+            "description": "If specified, it fetches the next page of locations. The page token is returned by previous calls to locations.list when there were more locations than could fit in the requested page size."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filter",
+            "description": "A filter constraining the locations to return. The response includes only entries that match the filter. If filter is empty, then constraints are applied and all locations (paginated) are retrieved for the requested account.  For more information about valid fields and example usage, see Work with Location Data Guide."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orderBy",
+            "description": "Sorting order for the request. Multiple fields should be comma-separated, following SQL syntax. The default sorting order is ascending. To specify descending order, a suffix \" desc\" should be added. Valid fields to orderBy are locationName and storeCode. For example: \"locationName, storeCode desc\" or \"locationName\" or \"storeCode desc\""
+          }
+        ]
+      }
+    },
+    "/v1/accounts/{account}/locations": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "account",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List locations",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-v4-account-locations",
+        "description": "New endpoint due to Google My Business migration. Must be used with https://mybusinessbusinessinformation.googleapis.com base URL\n\nLists the locations for the specified account.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "How many locations to fetch per page. Default is 100, minimum is 1, and maximum page size is 100."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageToken",
+            "description": "If specified, it fetches the next page of locations. The page token is returned by previous calls to locations.list when there were more locations than could fit in the requested page size."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filter",
+            "description": "A filter constraining the locations to return. The response includes only entries that match the filter. If filter is empty, then constraints are applied and all locations (paginated) are retrieved for the requested account.  For more information about valid fields and example usage, see Work with Location Data Guide."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orderBy",
+            "description": "Sorting order for the request. Multiple fields should be comma-separated, following SQL syntax. The default sorting order is ascending. To specify descending order, a suffix \" desc\" should be added. Valid fields to orderBy are locationName and storeCode. For example: \"locationName, storeCode desc\" or \"locationName\" or \"storeCode desc\""
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "readMask",
+            "required": true,
+            "description": "Required. Read mask to specify what fields will be returned in the response.  This is a comma-separated list of fully qualified names of fields. Example: \"name,phoneNumbers,languageCode,serviceItems.price\". See here to get all the available fields: https://developers.google.com/my-business/reference/businessinformation/rest/v1/accounts.locations#Location"
+          }
+        ]
+      }
+    },
+    "/v4/accounts": {
+      "get": {
+        "summary": "List accounts",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "accounts": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "name",
+                          "accountName",
+                          "type",
+                          "role",
+                          "accountNumber",
+                          "permissionLevel"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "accountName": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "type": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "role": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "state": {
+                            "type": "object",
+                            "properties": {
+                              "status": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "vettedStatus": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "vettedStatus"
+                            ]
+                          },
+                          "accountNumber": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "permissionLevel": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    },
+                    "nextPageToken": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "accounts",
+                    "nextPageToken"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "accounts": [
+                        {
+                          "name": "accounts/103704870591340695263",
+                          "accountName": "Google Pages",
+                          "type": "PERSONAL",
+                          "state": {
+                            "status": "VERIFIED",
+                            "vettedStatus": "NOT_VETTED"
+                          },
+                          "profilePhotoUrl": "//lh3.googleusercontent.com/a/default-user=s132"
+                        },
+                        {
+                          "name": "accounts/100077149060212202875",
+                          "accountName": "2W DDP",
+                          "type": "LOCATION_GROUP",
+                          "role": "OWNER",
+                          "state": {
+                            "status": "VERIFICATION_REQUESTED",
+                            "vettedStatus": "NOT_VETTED"
+                          },
+                          "accountNumber": "5291038636",
+                          "permissionLevel": "OWNER_LEVEL"
+                        }
+                      ],
+                      "nextPageToken": "abc123"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v4-accounts",
+        "description": "Lists all of the accounts for the authenticated user. This includes all accounts that the user owns, as well as any accounts for which the user has management rights.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "How many accounts to fetch per page. Default is 20, minimum is 2, and maximum page size is 20."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageToken",
+            "description": "If specified, the next page of accounts is retrieved. The pageToken is returned when a call to accounts.list returns more results than can fit into the requested page size."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "The resource name of the account for which the list of directly accessible accounts is to be retrieved. This only makes sense for Organizations and User Groups. If empty, will return accounts.list for the authenticated user."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filter",
+            "description": "A filter constraining the accounts to return. The response includes only entries that match the filter. If filter is empty, then no constraints are applied and all accounts (paginated) are retrieved for the requested account.  For example, a request with the filter type=USER_GROUP will only return user groups."
+          }
+        ]
+      }
+    },
+    "/v1/accounts": {
+      "get": {
+        "summary": "List accounts",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "accounts": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "name",
+                          "accountName",
+                          "type",
+                          "role",
+                          "accountNumber",
+                          "permissionLevel"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "accountName": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "type": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "role": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "state": {
+                            "type": "object",
+                            "properties": {
+                              "status": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "vettedStatus": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "vettedStatus"
+                            ]
+                          },
+                          "accountNumber": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "permissionLevel": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    },
+                    "nextPageToken": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "accounts",
+                    "nextPageToken"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "accounts": [
+                        {
+                          "name": "accounts/103704870591340695263",
+                          "accountName": "Google Pages",
+                          "type": "PERSONAL",
+                          "state": {
+                            "status": "VERIFIED",
+                            "vettedStatus": "NOT_VETTED"
+                          },
+                          "profilePhotoUrl": "//lh3.googleusercontent.com/a/default-user=s132"
+                        },
+                        {
+                          "name": "accounts/100077149060212202875",
+                          "accountName": "2W DDP",
+                          "type": "LOCATION_GROUP",
+                          "role": "OWNER",
+                          "state": {
+                            "status": "VERIFICATION_REQUESTED",
+                            "vettedStatus": "NOT_VETTED"
+                          },
+                          "accountNumber": "5291038636",
+                          "permissionLevel": "OWNER_LEVEL"
+                        }
+                      ],
+                      "nextPageToken": "abc123"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v4-accounts",
+        "description": "New endpoint due to Google My Business migration. Must be used with https://mybusinessaccountmanagement.googleapis.com base URL\n\nLists all of the accounts for the authenticated user. This includes all accounts that the user owns, as well as any accounts for which the user has management rights.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "How many accounts to fetch per page. Default is 20, minimum is 2, and maximum page size is 20."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageToken",
+            "description": "If specified, the next page of accounts is retrieved. The pageToken is returned when a call to accounts.list returns more results than can fit into the requested page size."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "description": "The resource name of the account for which the list of directly accessible accounts is to be retrieved. This only makes sense for Organizations and User Groups. If empty, will return accounts.list for the authenticated user."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filter",
+            "description": "A filter constraining the accounts to return. The response includes only entries that match the filter. If filter is empty, then no constraints are applied and all accounts (paginated) are retrieved for the requested account.  For example, a request with the filter type=USER_GROUP will only return user groups."
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/v4/{accountId}/locations/{locationId}/reviews": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "accountId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "locationId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List of reviews",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "reviews": [
+                        {
+                          "name": "",
+                          "reviewId": "",
+                          "reviewer": {
+                            "profilePhotoUrl": "",
+                            "displayName": "",
+                            "isAnonymous": true
+                          },
+                          "starRating": "",
+                          "comment": "",
+                          "createTime": "",
+                          "updateTime": "",
+                          "reviewReply": {
+                            "comment": "",
+                            "updateTime": ""
+                          }
+                        }
+                      ],
+                      "averageRating": 2,
+                      "totalReviewCount": 2,
+                      "nextPageToken": ""
+                    }
+                  },
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "reviewId": {
+                            "type": "string"
+                          },
+                          "reviewer": {
+                            "type": "object",
+                            "properties": {
+                              "profilePhotoUrl": {
+                                "type": "string"
+                              },
+                              "displayName": {
+                                "type": "string"
+                              },
+                              "isAnonymous": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "starRating": {
+                            "type": "string"
+                          },
+                          "comment": {
+                            "type": "string"
+                          },
+                          "createTime": {
+                            "type": "string"
+                          },
+                          "updateTime": {
+                            "type": "string"
+                          },
+                          "reviewReply": {
+                            "type": "object",
+                            "properties": {
+                              "comment": {
+                                "type": "string"
+                              },
+                              "updateTime": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "averageRating": {
+                      "type": "number"
+                    },
+                    "totalReviewCount": {
+                      "type": "number"
+                    },
+                    "nextPageToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v4-parent-reviews",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "How many reviews to fetch per page. The maximum pageSize is 50."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageToken",
+            "description": "If specified, it fetches the next page of reviews."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orderBy",
+            "description": "Specifies the field to sort reviews by. If unspecified, the order of reviews returned will default to updateTime desc. Valid orders to sort by are rating, rating desc and updateTime desc."
+          }
+        ],
+        "description": "Returns the paginated list of reviews for the specified location. This operation is only valid if the specified location is verified."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BasicRequest": {
+        "title": "BasicRequest",
+        "type": "object",
+        "properties": {
+          "metricRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricRequest"
+            }
+          },
+          "timeRange": {
+            "$ref": "#/components/schemas/TimeRange"
+          }
+        },
+        "description": "A request to include basic metric insights in the report."
+      },
+      "MetricRequest": {
+        "title": "MetricRequest",
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string",
+            "enum": [
+              "METRIC_UNSPECIFIED",
+              "ALL",
+              "QUERIES_DIRECT",
+              "QUERIES_INDIRECT",
+              "VIEWS_MAPS",
+              "VIEWS_SEARCH",
+              "ACTIONS_WEBSITE",
+              "ACTIONS_PHONE",
+              "ACTIONS_DRIVING_DIRECTIONS",
+              "PHOTOS_VIEWS_MERCHANT",
+              "PHOTOS_VIEWS_CUSTOMERS",
+              "PHOTOS_COUNT_MERCHANT",
+              "PHOTOS_COUNT_CUSTOMERS",
+              "LOCAL_POST_VIEWS_SEARCH",
+              "LOCAL_POST_ACTIONS_CALL_TO_ACTION"
+            ]
+          },
+          "option": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "METRIC_OPTION_UNSPECIFIED",
+                "AGGREGATED_TOTAL",
+                "AGGREGATED_DAILY",
+                "BREAKDOWN_DAY_OF_WEEK",
+                "BREAKDOWN_HOUR_OF_DAY"
+              ]
+            }
+          }
+        }
+      },
+      "TimeRange": {
+        "title": "TimeRange",
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Epoch timestamp for the start of the range (inclusive).\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine fractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+            "format": "time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Epoch timestamp for the end of the range (exclusive).\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine fractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\"."
+          }
+        }
+      },
+      "DrivingDirectionMetricsRequest": {
+        "title": "DrivingDirectionMetricsRequest",
+        "type": "object",
+        "properties": {
+          "numDays": {
+            "type": "string",
+            "enum": [
+              "SEVEN",
+              "THIRTY",
+              "NINETY"
+            ],
+            "description": "The number of days to aggregate data for. Results returned will be available data over the last number of requested days. Valid values are 7, 30, and 90."
+          },
+          "languageCode": {
+            "type": "string",
+            "description": "The BCP 47 code for the language. If a language code is not provided, it defaults to English."
+          }
+        },
+        "description": "A request to include insights about driving-direction requests in the report."
+      },
+      "LocationMetrics": {
+        "title": "LocationMetrics",
+        "type": "object",
+        "description": "A series of Metrics and BreakdownMetrics associated with a Location over some time range.",
+        "properties": {
+          "locationName": {
+            "type": "string",
+            "description": "The location resource name these values belong to."
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "IANA timezone for the location."
+          },
+          "metricValues": {
+            "type": "string"
+          }
+        }
+      },
+      "MetricValue": {
+        "title": "MetricValue",
+        "type": "object",
+        "description": "A value for a single Metric from a starting time.",
+        "properties": {
+          "metric": {
+            "type": "string",
+            "description": "The metric for which the value applies."
+          },
+          "totalValue": {
+            "$ref": "#/components/schemas/DimensionalMetricValue"
+          },
+          "dimensionalValues": {
+            "type": "array",
+            "description": "Dimensional values for this metric.",
+            "items": {
+              "$ref": "#/components/schemas/DimensionalMetricValue"
+            }
+          }
+        }
+      },
+      "DimensionalMetricValue": {
+        "title": "DimensionalMetricValue",
+        "type": "object",
+        "description": "A value for a single metric with a given time dimension.",
+        "properties": {
+          "metricOption": {
+            "$ref": "#/components/schemas/MetricOption"
+          },
+          "timeDimension": {
+            "$ref": "#/components/schemas/TimeDimension"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value. If no value is set, then the requested data is missing."
+          }
+        }
+      },
+      "MetricOption": {
+        "type": "string",
+        "title": "MetricOption",
+        "enum": [
+          "METRIC_OPTION_UNSPECIFIED",
+          "AGGREGATED_TOTAL",
+          "AGGREGATED_DAILY",
+          "BREAKDOWN_DAY_OF_WEEK"
+        ],
+        "description": "Option to specify how data should be displayed in the response."
+      },
+      "TimeDimension": {
+        "title": "TimeDimension",
+        "type": "object",
+        "description": "The dimension for which data is divided over.",
+        "properties": {
+          "dayOfWeek": {
+            "$ref": "#/components/schemas/DayOfWeek"
+          },
+          "timeOfDay": {
+            "$ref": "#/components/schemas/TImeOfDay"
+          },
+          "timeRange": {
+            "$ref": "#/components/schemas/TimeRange"
+          }
+        }
+      },
+      "DayOfWeek": {
+        "type": "string",
+        "title": "DayOfWeek",
+        "description": "Represents a day of the week.",
+        "enum": [
+          "DAY_OF_WEEK_UNSPECIFIED",
+          "MONDAY",
+          "TUESDAY",
+          "WEDNESDAY",
+          "THURSDAY",
+          "FRIDAY",
+          "SATURDAY",
+          "SUNDAY"
+        ]
+      },
+      "TImeOfDay": {
+        "title": "TImeOfDay",
+        "type": "object",
+        "description": "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and google.protobuf.Timestamp.",
+        "properties": {
+          "hours": {
+            "type": "number",
+            "description": "Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value \"24:00:00\" for scenarios like business closing time."
+          },
+          "minutes": {
+            "type": "number",
+            "description": "Minutes of hour of day. Must be from 0 to 59."
+          },
+          "seconds": {
+            "type": "number",
+            "description": "Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds."
+          },
+          "nanos": {
+            "type": "number",
+            "description": "Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+            "tokenUrl": "https://oauth2.googleapis.com/token",
+            "refreshUrl": "https://oauth2.googleapis.com/token",
+            "scopes": {
+              "https://www.googleapis.com/auth/plus.business.manage": "",
+              "https://www.googleapis.com/auth/business.manage": ""
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": []
+    }
+  ]
+}

@@ -1,0 +1,805 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Google Maps",
+    "x-logo": {
+      "url": "https://cdn.clc2l.com/t/g/o/google-maps-dIzrp8.png"
+    }
+  },
+  "security": [
+    {
+      "ApiKey": []
+    }
+  ],
+  "x-mapi-quota": {
+    "limit": 1000,
+    "duration": 1
+  },
+  "paths": {
+    "/geocode/json": {
+      "get": {
+        "description": "Transform an address to latitude and longitude",
+        "x-mapi-expire": 86400,
+        "x-mapi-cache-public": true,
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "description": "Address of the location",
+            "required": false,
+            "x-mapi-params": [
+              {
+                "class": "Place",
+                "property": "address"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "latlng",
+            "in": "query",
+            "description": "latitude and longitude of the location",
+            "required": false,
+            "x-mapi-params": [
+              {
+                "pattern": "$Geo.latitude,$Geo.longitude"
+              }
+            ],
+            "example": "40.714224,-73.961452",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapsResults"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "cache": {
+          "expire": "3600",
+          "public": true
+        }
+      }
+    },
+    "/place/nearbysearch/json": {
+      "get": {
+        "description": "Search a place near a location",
+        "x-mapi-expire": 3600,
+        "x-mapi-cache-public": true,
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "description": "location specified by a latitude and a longitude",
+            "required": true,
+            "x-mapi-params": [
+              {
+                "pattern": "$Geo.latitude,$Geo.longitude"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "type of place search (see available list)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "radius",
+            "in": "query",
+            "description": "radius of search (max 50000)",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "cache": {
+          "expire": "3600",
+          "public": true
+        }
+      }
+    },
+    "/place/details/json": {
+      "get": {
+        "description": "Get place details",
+        "x-mapi-expire": 3600,
+        "x-mapi-cache-public": true,
+        "parameters": [
+          {
+            "name": "placeid",
+            "in": "query",
+            "description": "placeid from Google Place API",
+            "required": true,
+            "x-mapi-params": [
+              {
+                "class": "Place",
+                "property": "google_place_id"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Language of results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceResults"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "cache": {
+          "expire": "86400",
+          "public": true
+        }
+      }
+    },
+    "/directions/json": {
+      "get": {
+        "description": "Get direction between two address",
+        "x-mapi-expire": 300,
+        "x-mapi-cache-public": true,
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "query",
+            "description": "origin address",
+            "required": true,
+            "x-mapi-params": [
+              {
+                "class": "Place",
+                "property": "address"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "description": "destination address",
+            "required": true,
+            "x-mapi-params": [
+              {
+                "class": "Place",
+                "property": "address"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "description": "mode of transport (driving, walking, byclicling, transit)",
+            "required": false,
+            "x-mapi-params": [
+              {
+                "class": "Transport",
+                "property": "mode"
+              }
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Language of results",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransportResults"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "cache": {
+          "expire": "300",
+          "public": true
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://maps.googleapis.com/maps/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "key",
+        "description": "Scope delimiter is a space"
+      }
+    },
+    "schemas": {
+      "MapsResults": {
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "address_components": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AddressComponents"
+                  }
+                },
+                "formatted_address": {
+                  "type": "string",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "address"
+                  }
+                },
+                "geometry": {
+                  "$ref": "#/components/schemas/Geometry"
+                },
+                "place_id": {
+                  "type": "string",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "google_place_id"
+                  }
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PlaceResults": {
+        "properties": {
+          "result": {
+            "type": "object",
+            "properties": {
+              "address_components": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AddressComponents"
+                }
+              },
+              "formatted_address": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "address"
+                }
+              },
+              "name": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "name"
+                }
+              },
+              "geometry": {
+                "$ref": "#/components/schemas/Geometry"
+              },
+              "opening_hours": {
+                "$ref": "#/components/schemas/OpeningHours"
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PhotosComponent"
+                },
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "photos"
+                }
+              },
+              "rating": {
+                "type": "number",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "rating"
+                }
+              },
+              "price_level": {
+                "type": "integer",
+                "description": "Price level from 0 (free) to 4 (very expensive)",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "price_level"
+                }
+              },
+              "reviews": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Review"
+                },
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "reviews"
+                }
+              },
+              "website": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "website"
+                }
+              },
+              "international_phone_number": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "phone_number"
+                }
+              },
+              "types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "x-mapi-model": {
+                  "class": "Place",
+                  "property": "types"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchResponse": {
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "geometry": {
+                  "$ref": "#/components/schemas/Geometry"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "opening_hours": {
+                  "type": "object",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "opening_hours"
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "name"
+                  }
+                },
+                "photos": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhotosComponent"
+                  },
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "photos"
+                  }
+                },
+                "place_id": {
+                  "type": "string",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "google_place_id"
+                  }
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "types"
+                  }
+                },
+                "vicinity": {
+                  "type": "string",
+                  "x-mapi-model": {
+                    "class": "Place",
+                    "property": "address"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TransportResults": {
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "geocoded_waypoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Waypoints"
+            }
+          },
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Route"
+            }
+          }
+        }
+      },
+      "AddressComponents": {
+        "properties": {
+          "long_name": {
+            "type": "string"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PhotosComponent": {
+        "properties": {
+          "height": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "html_attributes": {
+            "type": "array"
+          },
+          "photo_reference": {
+            "type": "string"
+          }
+        }
+      },
+      "Geometry": {
+        "properties": {
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "x-mapi-model": {
+                  "class": "Geo",
+                  "property": "latitude"
+                }
+              },
+              "lng": {
+                "type": "number",
+                "x-mapi-model": {
+                  "class": "Geo",
+                  "property": "longitude"
+                }
+              }
+            }
+          },
+          "location_type": {
+            "type": "string"
+          },
+          "viewport": {
+            "type": "object",
+            "properties": {
+              "northeast": {
+                "$ref": "#/components/schemas/LatLng"
+              },
+              "southwest": {
+                "$ref": "#/components/schemas/LatLng"
+              }
+            }
+          }
+        }
+      },
+      "LatLng": {
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        }
+      },
+      "OpeningHours": {
+        "properties": {
+          "open_now": {
+            "type": "boolean"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          },
+          "weekday_text": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Period": {
+        "properties": {
+          "close": {
+            "type": "object",
+            "properties": {
+              "day": {
+                "type": "integer"
+              },
+              "time": {
+                "type": "string"
+              }
+            }
+          },
+          "open": {
+            "type": "object",
+            "properties": {
+              "day": {
+                "type": "integer"
+              },
+              "time": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Review": {
+        "properties": {
+          "author_name": {
+            "type": "string"
+          },
+          "author_language": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "text": {
+            "type": "string"
+          },
+          "time": {
+            "type": "integer"
+          },
+          "relative_time_description": {
+            "type": "string"
+          }
+        }
+      },
+      "Waypoints": {
+        "properties": {
+          "geocoder_status": {
+            "type": "string"
+          },
+          "place_id": {
+            "type": "string"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Legs": {
+        "properties": {
+          "summary": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "x-mapi-model": {
+                  "class": "Transport",
+                  "property": "duration"
+                }
+              },
+              "text": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Transport",
+                  "property": "duration_human"
+                }
+              }
+            }
+          },
+          "distance": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "x-mapi-model": {
+                  "class": "Transport",
+                  "property": "distance"
+                }
+              },
+              "text": {
+                "type": "string",
+                "x-mapi-model": {
+                  "class": "Transport",
+                  "property": "distance_human"
+                }
+              }
+            }
+          },
+          "start_location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "end_location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "start_address": {
+            "type": "string",
+            "x-mapi-model": {
+              "class": "Transport",
+              "property": "address_departure"
+            }
+          },
+          "end_address": {
+            "type": "string",
+            "x-mapi-model": {
+              "class": "Transport",
+              "property": "address_destination"
+            }
+          }
+        }
+      },
+      "Route": {
+        "properties": {
+          "legs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Legs"
+            }
+          },
+          "fare": {
+            "$ref": "#/components/schemas/Fare"
+          }
+        }
+      },
+      "Fare": {
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

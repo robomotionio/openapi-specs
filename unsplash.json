@@ -1,0 +1,576 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Unsplash",
+    "description": "Unsplash APIs",
+    "contact": {},
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.unsplash.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/photos/{id}": {
+      "get": {
+        "tags": [
+          "Misc"
+        ],
+        "summary": "Unsplash Photo Info",
+        "description": "Photo Information from unsplash API",
+        "operationId": "UnsplashPhotoInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Photo"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/photos": {
+      "get": {
+        "tags": [
+          "Misc"
+        ],
+        "summary": "Unsplash Photos Search",
+        "description": "Unsplash searching photos",
+        "operationId": "UnsplashPhotosSearch",
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 30
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 2
+            }
+          },
+          {
+            "name": "orientation",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "portrait"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Photo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/search/photos": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "total_pages": {
+                      "type": "number"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Photo"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-search-photos",
+        "description": "Search a photo",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "query",
+            "description": "Search terms.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "page",
+            "description": "Page number to retrieve. (Optional; default: 1)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "per_page",
+            "description": "Number of items per page. (Optional; default: 10)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order_by",
+            "description": "How to sort the photos. (Optional; default: relevant). Valid values are latest and relevant."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "collections",
+            "description": "Collection ID(‘s) to narrow search. Optional. If multiple, comma-separated."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "content_filter",
+            "description": "Limit results by content safety. (Optional; default: low). Valid values are low and high."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "color",
+            "description": "Filter results by color. Optional. Valid values are: black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, and blue."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orientation",
+            "description": "ilter by photo orientation. Optional. (Valid values: landscape, portrait, squarish)"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "client_id": {
+        "type": "apiKey",
+        "description": "",
+        "name": "client_id",
+        "in": "query"
+      }
+    },
+    "schemas": {
+      "Photo": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "updated_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1
+          },
+          "blur_hash": {
+            "type": "string",
+            "minLength": 1
+          },
+          "downloads": {
+            "type": "number"
+          },
+          "likes": {
+            "type": "number"
+          },
+          "liked_by_user": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exif": {
+            "type": "object",
+            "properties": {
+              "make": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "exposure_time": {
+                "type": "string",
+                "minLength": 1
+              },
+              "aperture": {
+                "type": "string",
+                "minLength": 1
+              },
+              "focal_length": {
+                "type": "string",
+                "minLength": 1
+              },
+              "iso": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "make",
+              "model",
+              "exposure_time",
+              "aperture",
+              "focal_length",
+              "iso"
+            ]
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "country": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            },
+            "required": [
+              "city",
+              "country",
+              "position"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "required": [
+                "title"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "current_user_collections": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "required": [
+                "id",
+                "title",
+                "published_at",
+                "last_collected_at",
+                "updated_at"
+              ],
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "published_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "last_collected_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "updated_at": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cover_photo": {},
+                "user": {}
+              }
+            }
+          },
+          "urls": {
+            "type": "object",
+            "properties": {
+              "raw": {
+                "type": "string",
+                "minLength": 1
+              },
+              "full": {
+                "type": "string",
+                "minLength": 1
+              },
+              "regular": {
+                "type": "string",
+                "minLength": 1
+              },
+              "small": {
+                "type": "string",
+                "minLength": 1
+              },
+              "thumb": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "raw",
+              "full",
+              "regular",
+              "small",
+              "thumb"
+            ]
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "self": {
+                "type": "string",
+                "minLength": 1
+              },
+              "html": {
+                "type": "string",
+                "minLength": 1
+              },
+              "download": {
+                "type": "string",
+                "minLength": 1
+              },
+              "download_location": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "self",
+              "html",
+              "download",
+              "download_location"
+            ]
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "updated_at": {
+                "type": "string",
+                "minLength": 1
+              },
+              "username": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "portfolio_url": {
+                "type": "string",
+                "minLength": 1
+              },
+              "bio": {
+                "type": "string",
+                "minLength": 1
+              },
+              "location": {
+                "type": "string",
+                "minLength": 1
+              },
+              "total_likes": {
+                "type": "number"
+              },
+              "total_photos": {
+                "type": "number"
+              },
+              "total_collections": {
+                "type": "number"
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "html": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "photos": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "likes": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "portfolio": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "self",
+                  "html",
+                  "photos",
+                  "likes",
+                  "portfolio"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "updated_at",
+              "username",
+              "name",
+              "portfolio_url",
+              "bio",
+              "location",
+              "total_likes",
+              "total_photos",
+              "total_collections",
+              "links"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "width",
+          "height",
+          "color",
+          "blur_hash",
+          "downloads",
+          "likes",
+          "liked_by_user",
+          "description",
+          "exif",
+          "location",
+          "tags",
+          "current_user_collections",
+          "urls",
+          "links",
+          "user"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "client_id": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Misc",
+      "description": ""
+    }
+  ]
+}

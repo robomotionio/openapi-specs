@@ -1,0 +1,1929 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Scrapfly API",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.scrapfly.io"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "name": "key",
+        "type": "apiKey",
+        "in": "query",
+        "description": "You can retrieve your api from your dashboard. Keep in mind API key belongs to environments (LIVE & TEST) and projects"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "scrape",
+      "description": "Web Scraping API",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://scrapfly.io/docs/scrape-api/getting-started"
+      }
+    },
+    {
+      "name": "account",
+      "description": "Scrapfly Account API",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://scrapfly.io/docs/account"
+      }
+    }
+  ],
+  "paths": {
+    "/account": {
+      "get": {
+        "summary": "Account API",
+        "description": "Retrieve your account information",
+        "tags": [
+          "account"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK - Everything good!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "account": {
+                      "type": "object",
+                      "properties": {
+                        "account_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "c347c6e7-02be-4928-b3fe-2027f6c64ed1"
+                        },
+                        "timezone": {
+                          "type": "string",
+                          "example": "Europe/Paris"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    },
+                    "projects": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "default",
+                            "description": "Name of the project"
+                          },
+                          "scrape_request_limit": {
+                            "type": "integer",
+                            "nullable": true,
+                            "example": 300,
+                            "description": "Scrape request quota for the given project"
+                          },
+                          "scrape_request_count": {
+                            "type": "integer",
+                            "example": 12,
+                            "description": "Number of scrape request during the period"
+                          }
+                        }
+                      }
+                    },
+                    "subscription": {
+                      "type": "object",
+                      "properties": {
+                        "plan_name": {
+                          "type": "string",
+                          "example": "FREE"
+                        },
+                        "max_concurrency": {
+                          "type": "integer",
+                          "example": 5,
+                          "description": "Maximum concurrent scrape defined by your plan"
+                        },
+                        "period": {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "string",
+                              "format": "Y-m-d H:i:s T",
+                              "example": "2020-07-29 23:49:04 UTC"
+                            },
+                            "end": {
+                              "type": "string",
+                              "format": "Y-m-d H:i:s T",
+                              "example": "2020-07-29 23:49:04 UTC"
+                            }
+                          }
+                        },
+                        "extra_scrape_allowed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "billing": {
+                          "type": "object",
+                          "properties": {
+                            "ongoing_payment": {
+                              "$ref": "#/paths/~1account/get/responses/200/content/application~1json/schema/properties/subscription/properties/billing/properties/plan_price"
+                            },
+                            "plan_price": {
+                              "type": "object",
+                              "properties": {
+                                "amount": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "example": 10
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "format": "ISO4217",
+                                  "example": "USD"
+                                }
+                              }
+                            },
+                            "extra_scrape_request_price": {
+                              "$ref": "#/paths/~1account/get/responses/200/content/application~1json/schema/properties/subscription/properties/billing/properties/plan_price"
+                            },
+                            "current_extra_scrape_request_price": {
+                              "$ref": "#/paths/~1account/get/responses/200/content/application~1json/schema/properties/subscription/properties/billing/properties/plan_price"
+                            }
+                          }
+                        },
+                        "usage": {
+                          "type": "object",
+                          "properties": {
+                            "scrape": {
+                              "description": "Scrape API usage metrics",
+                              "type": "object",
+                              "properties": {
+                                "current": {
+                                  "type": "integer",
+                                  "example": 1000
+                                },
+                                "quota": {
+                                  "type": "integer",
+                                  "example": 1000
+                                },
+                                "remaining": {
+                                  "type": "integer",
+                                  "example": 30
+                                }
+                              }
+                            },
+                            "quota": {
+                              "type": "object",
+                              "properties": {
+                                "schedule": {
+                                  "type": "object",
+                                  "properties": {
+                                    "current": {
+                                      "description": "Schedule used by your account",
+                                      "type": "integer",
+                                      "example": 1
+                                    },
+                                    "limit": {
+                                      "description": "Remaining Schedule",
+                                      "type": "integer",
+                                      "example": 1
+                                    }
+                                  }
+                                },
+                                "spider": {
+                                  "type": "object",
+                                  "properties": {
+                                    "current": {
+                                      "description": "Spider used by your account",
+                                      "type": "integer",
+                                      "example": 1
+                                    },
+                                    "limit": {
+                                      "description": "Remaining Spider",
+                                      "type": "integer",
+                                      "example": 1
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "access-control-allow-headers": {
+                "description": "*",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "access-control-allow-methods": {
+                "description": "*",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "access-control-allow-origin": {
+                "description": "*",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Check the docs and the message to find ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "HTTP Error Object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "http_code": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "reason": {
+                      "description": "HTTP reason of status",
+                      "type": "string"
+                    },
+                    "error_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Error ID to be identified when contacting support for easier investigation"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Description of the issue in order to help you to understand and fix the problem if it comes by your side"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-error-id": {
+                "description": "Error ID to be identified when contacting support for easier investigation",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "$ref": "#/paths/~1account/get/responses/400/content/application~1json"
+              }
+            },
+            "headers": {
+              "x-error-id": {
+                "description": "Error ID to be identified when contacting support for easier investigation",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error: Server error, we are working on it",
+            "content": {
+              "application/json": {
+                "$ref": "#/paths/~1account/get/responses/400/content/application~1json"
+              }
+            },
+            "headers": {
+              "x-error-id": {
+                "description": "Error ID to be identified when contacting support for easier investigation",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable: Server maintenance retry later",
+            "content": {
+              "application/json": {
+                "$ref": "#/paths/~1account/get/responses/400/content/application~1json"
+              }
+            },
+            "headers": {
+              "x-error-id": {
+                "description": "Error ID to be identified when contacting support for easier investigation",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scrape": {
+      "parameters": [
+        {
+          "name": "url",
+          "in": "query",
+          "description": "Url of upstream website to scrape",
+          "required": true,
+          "example": "https://api.myip.com",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "render_js",
+          "in": "query",
+          "description": "Enable or disable javascript rendering.\nSee more: https://scrapfly.io/docs/scrape-api/javascript-rendering\n",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "country",
+          "in": "query",
+          "description": "Define proxy location by providing country iso2",
+          "required": false,
+          "example": "de",
+          "schema": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 20
+          }
+        },
+        {
+          "name": "proxified_response",
+          "in": "query",
+          "description": "Return upstream response, body, response, status_code",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "tags",
+          "in": "query",
+          "description": "Add tags in order to easily filter in monitoring. See more about monitoring: https://scrapfly.io/docs/monitoring",
+          "required": false,
+          "example": "?tags=tag1&tags=tag2 or tags=tag1,tag2",
+          "style": "form",
+          "explode": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "js",
+          "in": "query",
+          "description": "Javascript to be executed on upstream website. Request render_js enabled.\nSee more: https://scrapfly.io/docs/scrape-api/javascript-rendering#javascript_execution\n",
+          "required": false,
+          "example": "Y21WMGRYSnVJRUZ5Y21GNUxtWnliMjBvWkc5amRXMWxiblF1Y1hWbGNubFRaV3hsWTNSdmNrRnNiQ2duZEdRdWRHbDBiR1VnUGlCaEp5a3BMbTFoY0Nnb1pXd3BJRDArSUdWc0xuUmxlSFJEYjI1MFpXNTBLUT09",
+          "schema": {
+            "type": "string",
+            "format": "base64"
+          }
+        },
+        {
+          "name": "rendering_wait",
+          "in": "query",
+          "description": "Rendering wait is expressed in seconds, It allow you to wait after the page was loaded before capture the content.\nSome website can be slow or render relevant part after the dom was loaded.\nRendering wait is effective only when javascript rendering is enabled.\nSee more : https://scrapfly.io/docs/scrape-api/javascript-rendering\n",
+          "required": false,
+          "example": 5,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 15
+          }
+        },
+        {
+          "name": "wait_for_selector",
+          "in": "query",
+          "description": "When rendering JS is enabled, wait the selector (css or xpath) is present in page. When wait_of_selector is set, rendering_wait is ignored",
+          "required": false,
+          "example": "#test:visible",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "graphql_query",
+          "in": "query",
+          "description": "Graphql query to executed to parse HTML content.\nSee more about graphql feature: https://scrapfly.io/docs/scrape-api/graphql\n",
+          "required": false,
+          "example": "specs: query(selector: \"ul > li\") {\n    spec: text(selector: \"\")\n}\n",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "cache",
+          "in": "query",
+          "description": "Enable or Disable cache feature.\nSee more about cache : https://scrapfly.io/docs/scrape-api/cache\n",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "cache_clear",
+          "in": "query",
+          "description": "Force cache eviction, even if TTL is not reached. Only effective if cache activated",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "cache_ttl",
+          "in": "query",
+          "description": "Set cache time to live, expressed in seconds. When now() + ttl is reached, cache is evicted automatically. Only effective if cache activated",
+          "required": false,
+          "example": "1500",
+          "schema": {
+            "type": "integer",
+            "default": "8600"
+          }
+        },
+        {
+          "name": "headers",
+          "in": "query",
+          "description": "Pass custom header to upstream website",
+          "required": false,
+          "example": "?headers=Content-Type:application/json&headers=Cookie:auth=1",
+          "explode": true,
+          "style": "form",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "retry",
+          "in": "query",
+          "description": "Enable or disable retry. If enabled, retry are automatically handle for response >= 500 and network issues",
+          "required": false,
+          "example": "false",
+          "schema": {
+            "type": "string",
+            "default": "true",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "correlation_id",
+          "in": "query",
+          "description": "Correlation ID allow you to group scrape request (same worker / process) for example, to filter it in monitoring section",
+          "required": false,
+          "example": "53b6423a-23fa-4980-80ec-a5bcc7dfb469",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "dns",
+          "in": "query",
+          "description": "Enable or Disable to capture DNS information.\nSee more: https://scrapfly.io/docs/scrape-api/dns\n",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "ssl",
+          "in": "query",
+          "description": "Enable or Disable to capture SSL information",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "proxy_pool",
+          "in": "query",
+          "description": "If you have subscribed to a dedicated pool, you can select which proxy pool to use",
+          "required": false,
+          "example": "public_pool",
+          "schema": {
+            "type": "string",
+            "default": "public_pool"
+          }
+        },
+        {
+          "name": "session",
+          "in": "query",
+          "description": "Session name, allow you to share session across requests on same domain or subdomain. Must be alphanumeric, max length 255 chars",
+          "required": false,
+          "example": "my_session_name",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "session_sticky_proxy",
+          "in": "query",
+          "description": "Enable or Disable to keep session running on same proxy. Effective only if session is enabled",
+          "required": false,
+          "example": "false",
+          "schema": {
+            "type": "string",
+            "default": "true",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "asp",
+          "in": "query",
+          "description": "Enable or Disable ASP feature",
+          "required": false,
+          "example": "true",
+          "schema": {
+            "type": "string",
+            "default": "false",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "screenshots",
+          "in": "query",
+          "description": "Screenshots to take",
+          "required": false,
+          "example": "?screenshots[example]=fullpage",
+          "explode": true,
+          "style": "form",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "$ref": "#/paths/~1scrape/parameters/3"
+        }
+      ],
+      "get": {
+        "summary": "GET",
+        "description": "Scrape Upstream website via GET method\n",
+        "tags": [
+          "scrape"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK - Everything good!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "UUID of the scrape, also used for the related log",
+                      "example": "accec315-d6e3-411e-9c3e-e91ae71ee882"
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "UUID of the scrape, also used for the related log",
+                          "example": "accec315-d6e3-411e-9c3e-e91ae71ee882"
+                        },
+                        "project": {
+                          "type": "string",
+                          "description": "Name of the project related to your API key",
+                          "example": "market_price"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "url",
+                          "example": "http://httpbin.org/anything",
+                          "description": "Url of upstream website to scrape"
+                        },
+                        "headers": {
+                          "description": "Headers passed to the upstream website",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "Content-Type": "application/json",
+                            "Accept": "text/html"
+                          }
+                        },
+                        "session": {
+                          "type": "string",
+                          "nullable": true,
+                          "pattern": "/[a-zA-Z.-]+/",
+                          "description": "Session name, if set, session feature is enabled. See more about session feature: https://scrapfly.io/docs/scrape-api/session",
+                          "example": "my_session"
+                        },
+                        "session_sticky_proxy": {
+                          "type": "boolean",
+                          "example": true,
+                          "default": true,
+                          "description": "Effective only if session is enabled. Keep the same proxy across navigation session. See more about session feature: https://scrapfly.io/docs/scrape-api/session"
+                        },
+                        "cache": {
+                          "description": "Enable or Disable cache feature.\nSee more about cache : https://scrapfly.io/docs/scrape-api/cache\n",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "cache_ttl": {
+                          "type": "integer",
+                          "example": 86400,
+                          "description": "Set cache time to live, expressed in seconds. When now() + ttl is reached, cache is evicted automatically. Only effective if cache activated"
+                        },
+                        "cache_clear": {
+                          "description": "Force cache eviction, even if TTL is not reached. Only effective if cache activated",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "render_js": {
+                          "description": "Rendering wait is expressed in seconds, It allow you to wait after the page was loaded before capture the content.\nSome website can be slow or render relevant part after the dom was loaded.\nRendering wait is effective only when javascript rendering is enabled.\nSee more : https://scrapfly.io/docs/scrape-api/javascript-rendering\n",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "retry": {
+                          "description": "Enable or disable retry. If enabled, retry are automatically handle for response >= 500 and network issues",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "method": {
+                          "description": "HTTP Method used to scrape the upstream website",
+                          "type": "string",
+                          "enum": [
+                            "GET",
+                            "POST",
+                            "HEAD",
+                            "PUT",
+                            "PATCH"
+                          ],
+                          "example": true
+                        },
+                        "origin": {
+                          "description": "Origin of API call. Origin are filterable from monitoring. See more about monitoring: https://scrapfly.io/docs/monitoring",
+                          "type": "string",
+                          "enum": [
+                            "UI",
+                            "API",
+                            "SCHEDULER",
+                            "SPIDER"
+                          ],
+                          "example": "UI"
+                        },
+                        "webhook_name": {
+                          "description": "Name of the webhook to retrieve the scrape response. When webhook_name is set, scrape are asynchronous.\nThe API will respond instantly without doing the scrape. You scrape is queued and processed as soon as possible\n",
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "env": {
+                          "description": "Environment where Scrape request is executed",
+                          "type": "string",
+                          "enum": [
+                            "LIVE",
+                            "PROD"
+                          ]
+                        },
+                        "body": {
+                          "description": "Body forwarded to the upstream website when POST, PATCH, PUT method is used",
+                          "type": "string",
+                          "example": ""
+                        },
+                        "asp": {
+                          "description": "Enable or Disable ASP feature. See more: https://scrapfly.io/docs/scrape-api/anti-scraping-protection",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "ssl": {
+                          "description": "Enable or Disable SSL feature. See more: https://scrapfly.io/docs/scrape-api/ssl",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "dns": {
+                          "description": "Enable or Disable DNS feature. See more: https://scrapfly.io/docs/scrape-api/dns",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "country": {
+                          "description": "Define proxy location by providing country iso2",
+                          "type": "string",
+                          "example": "fr",
+                          "minLength": 2,
+                          "maxLength": 2
+                        },
+                        "debug": {
+                          "description": "Enable or disable debugging. See more: https://scrapfly.io/docs/scrape-api/debug",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "log_eviction_date": {
+                          "description": "Date when log will be evicted by the system. Everything related to the log will be deleted (screenshot, debug, cache)",
+                          "type": "string",
+                          "format": "Y-m-d H:i:s T",
+                          "example": "2020-08-05 23:49:04 UTC"
+                        },
+                        "correlation_id": {
+                          "description": "Correlation ID allow you to group scrape request (same worker / process) for example, to filter it in monitoring section",
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "a2e042d8-699c-4491-b694-9ff3675deeba"
+                        },
+                        "tags": {
+                          "description": "Add tags in order to easily filter in monitoring. See more about monitoring: https://scrapfly.io/docs/monitoring",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": [
+                            "default",
+                            "test"
+                          ]
+                        },
+                        "graphql_query": {
+                          "description": "Graphql query to executed to parse HTML content.\nSee more about graphql feature: https://scrapfly.io/docs/scrape-api/graphql\n",
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "schedule_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "js": {
+                          "description": "Javascript to be executed on upstream website. Request render_js enabled.\nSee more: https://scrapfly.io/docs/scrape-api/javascript-rendering#javascript_execution\n",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "rendering_wait": {
+                          "description": "Rendering wait is expressed in seconds, It allow you to wait after the page was loaded before capture the content. Some website can be slow or render relevant part after the dom was loaded. Rendering wait is effective only when javascript rendering is enabled.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 15
+                        },
+                        "proxy_pool": {
+                          "description": "If you have subscribed to a dedicated pool, you can select which proxy pool to use",
+                          "type": "string",
+                          "example": "public_pool"
+                        }
+                      }
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "log_url": {
+                          "type": "string",
+                          "example": "https://scrapfly.io/dashboard/log/accec315-d6e3-411e-9c3e-e91ae71ee882"
+                        },
+                        "status": {
+                          "description": "State of the request. Useful when using async scrape to track pending status. See more about webhook https://scrapfly.io/docs/scrape-api/webhook",
+                          "type": "string",
+                          "enum": [
+                            "PENDING",
+                            "DONE"
+                          ],
+                          "example": "DONE"
+                        },
+                        "status_code": {
+                          "description": "HTTP response code, only present if the upstream website respond",
+                          "nullable": true,
+                          "type": "integer",
+                          "example": 200
+                        },
+                        "reason": {
+                          "description": "HTTP reason",
+                          "type": "string",
+                          "example": "OK"
+                        },
+                        "success": {
+                          "description": "Shortcut to determine if the upstream response is a success. If ASP is enabled and failed, success will be marked as failed even if the upstream response is a success",
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "url": {
+                          "description": "Effective scraped URL after redirections resolution. Full redirection chain is available in context.redirects",
+                          "type": "string",
+                          "format": "url",
+                          "example": "http://httpbin.org/anything"
+                        },
+                        "content": {
+                          "type": "string",
+                          "description": "Upstream scraped content",
+                          "example": "<!DOCTYPE html><html>....</html>"
+                        },
+                        "duration": {
+                          "description": "Effective time to scrape the upstream target. Expressed in second",
+                          "type": "number",
+                          "format": "float",
+                          "example": 0.41
+                        },
+                        "size": {
+                          "description": "Bandwidth consumed",
+                          "type": "number",
+                          "format": "bit",
+                          "example": "2323538"
+                        },
+                        "format": {
+                          "description": "Format of the upstream scraped content. If the content is binary, the content is base64 encoded. You are able to download file, image, etc.",
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "binary"
+                          ],
+                          "example": "text"
+                        },
+                        "request_headers": {
+                          "description": "Headers include in the requests after resolution by our system",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "Content-Type": "application/json",
+                            "Accept": "text/html"
+                          }
+                        },
+                        "response_headers": {
+                          "description": "Upstream response headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "Content-Type": "application/json",
+                            "Accept": "text/html"
+                          }
+                        },
+                        "cookies": {
+                          "description": "Upstream cookies",
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "Cookie object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "session-id"
+                              },
+                              "value": {
+                                "type": "string",
+                                "example": "259-1382201-5204655"
+                              },
+                              "expires": {
+                                "type": "string",
+                                "format": "Y-m-d H:i:s T",
+                                "example": "2020-07-29 23:49:04 UTC"
+                              },
+                              "path": {
+                                "type": "string",
+                                "example": "/"
+                              },
+                              "comment": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "domain": {
+                                "type": "string",
+                                "example": ".amazon.fr"
+                              },
+                              "max_age": {
+                                "type": "integer",
+                                "nullable": true,
+                                "example": 3600
+                              },
+                              "secure": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "http_only": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "version": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "size": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        },
+                        "ssl": {
+                          "type": "object",
+                          "nullable": true,
+                          "description": "SSL information - Only available if SSL is activated - More information: https://scrapfly.io/docs/scrape-api/ssl",
+                          "properties": {
+                            "certs": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "description": "SSL certificate representation",
+                                "properties": {
+                                  "validity_period": {
+                                    "type": "object",
+                                    "properties": {
+                                      "not_valid_before": {
+                                        "type": "string",
+                                        "format": "Y-m-d H:i:s T",
+                                        "example": "2020-07-29 23:49:04 UTC"
+                                      },
+                                      "not_valid_after": {
+                                        "type": "string",
+                                        "format": "Y-m-d H:i:s T",
+                                        "example": "2020-07-29 23:49:04 UTC"
+                                      }
+                                    }
+                                  },
+                                  "version": {
+                                    "type": "string",
+                                    "example": "2"
+                                  },
+                                  "serial_number": {
+                                    "type": "string",
+                                    "example": "15511154429359216763915851913648262204"
+                                  },
+                                  "subject_name_hash": {
+                                    "type": "integer",
+                                    "example": "1513450353"
+                                  },
+                                  "algorithm": {
+                                    "type": "string",
+                                    "example": "sha256WithRSAEncryption"
+                                  },
+                                  "issuer": {
+                                    "type": "object",
+                                    "properties": {
+                                      "C": {
+                                        "type": "string",
+                                        "example": "US"
+                                      },
+                                      "O": {
+                                        "type": "string",
+                                        "example": "Amazon"
+                                      },
+                                      "OU": {
+                                        "type": "string",
+                                        "example": "Server CA 1B"
+                                      },
+                                      "CN": {
+                                        "type": "string",
+                                        "example": "Amazon"
+                                      }
+                                    }
+                                  },
+                                  "subject": {
+                                    "type": "object",
+                                    "properties": {
+                                      "CN": {
+                                        "type": "string",
+                                        "example": "httpbin.org"
+                                      }
+                                    }
+                                  },
+                                  "extensions": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    },
+                                    "example": {
+                                      "authorityKeyIdentifier": "keyid:59:A4:66:06:52:A0:7B:95:92:3C:A3:94:07:27:96:74:5B:F9:3D:D0\n",
+                                      "subjectKeyIdentifier": "4D:47:D7:1B:DA:3A:E5:FB:D0:31:40:CA:CE:35:D6:54:B9:C8:EF:A5",
+                                      "subjectAltName": "DNS:httpbin.org, DNS:*.httpbin.org",
+                                      "keyUsage": "Digital Signature, Key Encipherment",
+                                      "extendedKeyUsage": "TLS Web Server Authentication, TLS Web Client Authentication",
+                                      "crlDistributionPoints": "\nFull Name:\n  URI:http://crl.sca1b.amazontrust.com/sca1b.crl\n",
+                                      "authorityInfoAccess": "OCSP - URI:http://ocsp.sca1b.amazontrust.com\nCA Issuers - URI:http://crt.sca1b.amazontrust.com/sca1b.crt\n",
+                                      "basicConstraints": "CA:FALSE",
+                                      "ct_precert_scts": "Signed Certificate Timestamp:\n    Version   : v1 (0x0)\n    Log ID    : EE:4B:BD:B7:75:CE:60:BA:E1:42:69:1F:AB:E1:9E:66:\n                A3:0F:7E:5F:B0:72:D8:83:00:C4:7B:89:7A:A8:FD:CB\n    Timestamp : Jan 18 01:26:21.019 2020 GMT\n    Extensions: none\n    Signature : ecdsa-with-SHA256\n                30:45:02:21:00:81:00:82:78:B4:00:81:AD:D1:F0:07:\n                86:67:18:81:93:CB:7F:FD:17:1B:99:F4:62:28:1E:07:\n                D7:E5:18:DE:7D:02:20:79:76:3E:C7:BA:16:42:62:12:\n                85:70:AB:05:27:6A:79:36:17:AE:CC:50:71:61:3A:66:\n                90:32:43:17:2C:75:45\nSigned Certificate Timestamp:\n    Version   : v1 (0x0)\n    Log ID    : 87:75:BF:E7:59:7C:F8:8C:43:99:5F:BD:F3:6E:FF:56:\n                8D:47:56:36:FF:4A:B5:60:C1:B4:EA:FF:5E:A0:83:0F\n    Timestamp : Jan 18 01:26:21.098 2020 GMT\n    Extensions: none\n    Signature : ecdsa-with-SHA256\n                30:45:02:20:10:CC:62:29:B6:B0:5F:1E:1E:95:B5:67:\n                BF:F2:43:59:62:4F:06:BC:21:14:A3:89:D0:5D:F5:95:\n                48:C1:EE:A6:02:21:00:EC:33:CE:4D:A4:60:73:F7:07:\n                DC:EC:C8:19:2B:BA:74:B6:9E:7B:91:7F:61:19:26:0B:\n                D4:E2:91:68:96:4C:2F"
+                                    }
+                                  },
+                                  "public_key": {
+                                    "type": "string",
+                                    "example": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApFxnGvqYGUel320/nRE2\n81GA6WAOVwY+Npl79AIz45bHXcxNu+LeMEuGBvrl2EuccQJGXpCY8+sCzFRmcCZs\nMtTzUdj6R/QbWR7OFjf6Z6w1AiKccc7iKlRUF/tWAuoLr1b6L9+JfAkJAUL35VV7\n/vIs9IZ8uWJDhEB2wU6rRZO+2RBvHGM7oeBNda1/maukjLNYmJ+pxSnrsRTMh3dH\nUCxZ47h2UZhj2SWCPlW+SMsYNM/JkURnzSy0lgq/woVeM5g4nOpWuljO1scJ0ZRb\nR3I+3JveGEd3sQi8e6HkWFtImGklhirXxE/t86GP86s+XbwnABIML12h09M3mTJq\nEwIDAQAB\n-----END PUBLIC KEY-----\n"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "dns": {
+                          "type": "array",
+                          "nullable": true,
+                          "description": "DNS information - Only available if DNS is enabled - More information: https://scrapfly.io/docs/scrape-api/dns",
+                          "items": {
+                            "type": "array",
+                            "nullable": true,
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "example": {
+                            "A": [
+                              {
+                                "host": "127.0.0.1",
+                                "ttl": 20
+                              },
+                              {
+                                "host": "192.168.0.1",
+                                "ttl": 20
+                              }
+                            ],
+                            "TXT": [
+                              {
+                                "text": "v=spf1 -all"
+                              },
+                              {
+                                "ttl": 299
+                              }
+                            ]
+                          }
+                        },
+                        "iframes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "Iframe Object",
+                            "properties": {
+                              "url": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://images-eu.ssl-images-amazon.com/images/G/08/ape/sf/whitelisted/desktop/sf-1.50.a806ece._V407242073_.html"
+                              },
+                              "uri": {
+                                "$ref": "#/paths/~1scrape/get/responses/200/content/application~1json/schema/properties/context/properties/uri"
+                              },
+                              "content": {
+                                "type": "string",
+                                "example": "<!DOCTYPE html><html>....</html>"
+                              }
+                            }
+                          }
+                        },
+                        "screenshots": {
+                          "type": "object",
+                          "description": "The key of the array is the name of the screenshot. See more about screenshot feature: https://scrapfly.io/docs/scrape-api/screenshot",
+                          "additionalProperties": {
+                            "type": "object",
+                            "description": "Screenshot Object",
+                            "properties": {
+                              "extension": {
+                                "type": "string",
+                                "enum": [
+                                  "png"
+                                ],
+                                "example": "png"
+                              },
+                              "format": {
+                                "type": "string",
+                                "enum": [
+                                  "fullpage",
+                                  "element"
+                                ],
+                                "example": "fullpage"
+                              },
+                              "css_selector": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "#pricing"
+                              },
+                              "size": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Size expressed in bytes",
+                                "example": 81401
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://scrapfly.io/c347c6e7-02be-4928-b3fe-2027f6c64ed1/scrape/screenshot/1c204ad0-d564-4160-9a48-99dbc7788296/{name_of_screenshot}",
+                                "description": "Public URL of screenshot"
+                              }
+                            }
+                          }
+                        },
+                        "error": {
+                          "schema": {
+                            "type": "object",
+                            "nullable": true,
+                            "description": "If error is returned",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "description": "Error code",
+                                "example": "ERR::THROTTLE::MAX_REQUEST_RATE_EXCEEDED"
+                              },
+                              "http_code": {
+                                "type": "integer",
+                                "format": "int32",
+                                "example": 429
+                              },
+                              "scrape_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "7c61352c-f1a7-4ea6-a0b8-198d7ac6fe1a"
+                              },
+                              "retryable": {
+                                "type": "boolean",
+                                "description": "Indicate if the error is retryable or not"
+                              },
+                              "doc_url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "URL to see the related documentation about error base on error_code"
+                              },
+                              "error_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "Error ID to be identified when contacting support for easier investigation",
+                                "example": "9993a546-b899-4927-b788-04f5c4e473d5"
+                              },
+                              "message": {
+                                "type": "string",
+                                "description": "Details of error, hit are given in order to debug easily"
+                              },
+                              "description": {
+                                "description": "Generic description of the error",
+                                "type": "string",
+                                "example": "Your scrape request as been throttle. Too much request during the last minute. If it's not expected, please check your throttle configuration for the given project and env"
+                              }
+                            }
+                          }
+                        },
+                        "browser_data": {
+                          "type": "object",
+                          "nullable": true,
+                          "description": "Captured related data when render_js is enabled. See more about Javascript Rendering feature: https://scrapfly.io/docs/scrape-api/javascript-rendering",
+                          "properties": {
+                            "xhr_call": {
+                              "type": "object",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "description": "URL of XHR call",
+                                  "format": "uri",
+                                  "example": "https://www.amazon.fr/ah/ajax/counter?ctr=desktop_ajax_atf&exp=1598043364894&rId=5"
+                                },
+                                "headers": {
+                                  "description": "Header passed along the XHR call",
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "example": {
+                                    "Content-Type": "application/json",
+                                    "Accept": "text/html"
+                                  }
+                                },
+                                "method": {
+                                  "description": "Method used for the XHR called",
+                                  "enum": [
+                                    "POST",
+                                    "PUT",
+                                    "PATCH",
+                                    "GET",
+                                    "HEAD",
+                                    "DELETE"
+                                  ],
+                                  "type": "string",
+                                  "example": "GET"
+                                },
+                                "body": {
+                                  "nullable": true,
+                                  "type": "string",
+                                  "description": "Body pass along the XHR call"
+                                },
+                                "response": {
+                                  "nullable": true,
+                                  "type": "object",
+                                  "description": "Response object belong to the xhr call",
+                                  "properties": {
+                                    "status": {
+                                      "type": "integer",
+                                      "description": "HTTP status code",
+                                      "example": "200"
+                                    },
+                                    "headers": {
+                                      "description": "HTTP headers",
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      },
+                                      "example": {
+                                        "Content-Type": "application/json",
+                                        "Accept": "text/html"
+                                      }
+                                    },
+                                    "body": {
+                                      "type": "string",
+                                      "description": "Body response",
+                                      "nullable": true
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "local_storage_data": {
+                              "description": "Collected local storage data",
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              },
+                              "example": {
+                                "a-font-class": "a-ember",
+                                "csm:adb": "adblk_no"
+                              }
+                            },
+                            "session_storage_data": {
+                              "description": "Collected session storage data",
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              },
+                              "example": {
+                                "a-font-class": "a-ember",
+                                "csm:adb": "adblk_no"
+                              }
+                            },
+                            "javascript_evaluation_result": {
+                              "type": "array",
+                              "nullable": true,
+                              "description": "Result of the executed JS script passed via js. If no result is return, result will be null.\nIf javascript is returned, key value dictionary is returned.\nIf scalar is returned, the result is the same type of returned scalar (string, int, float, bool)\n",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "context": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "string",
+                          "format": "Y-m-d H:i:s T",
+                          "example": "2020-07-29 23:49:04 UTC"
+                        },
+                        "proxy": {
+                          "type": "object",
+                          "properties": {
+                            "zone": {
+                              "type": "string",
+                              "example": "public_pool"
+                            },
+                            "country": {
+                              "type": "string",
+                              "format": "country_iso2",
+                              "example": "fr"
+                            },
+                            "ipv4": {
+                              "type": "string",
+                              "format": "ipv4",
+                              "example": "127.0.0.1"
+                            }
+                          }
+                        },
+                        "fingerprint": {
+                          "type": "string",
+                          "example": "1e85c129b984123e724fb48d09e9000f192d48b3"
+                        },
+                        "env": {
+                          "type": "string",
+                          "enum": [
+                            "LIVE",
+                            "TEST"
+                          ]
+                        },
+                        "project": {
+                          "type": "string",
+                          "example": "LIVE"
+                        },
+                        "session": {
+                          "type": "object",
+                          "description": "Session information if feature is enabled. See more about session feature: https://scrapfly.io/docs/scrape-api/session",
+                          "nullable": true,
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "name of session"
+                            },
+                            "correlation_id": {
+                              "type": "string",
+                              "description": "correlation_id used for the session, passed in configuration. If no correlation_id has been configured, 'default' is set"
+                            },
+                            "identity": {
+                              "type": "string",
+                              "description": "Unique identity of the session computed from env, project, correlation_id"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "Y-m-d H:i:s T",
+                              "example": "2020-09-15 12:44:15 UTC"
+                            },
+                            "cookie_jar": {
+                              "type": "array",
+                              "descriptions": "All cookies present in the session",
+                              "items": {
+                                "$ref": "#/paths/~1scrape/get/responses/200/content/application~1json/schema/properties/result/properties/cookies/items"
+                              }
+                            },
+                            "last_used_at": {
+                              "type": "string",
+                              "format": "Y-m-d H:i:s T",
+                              "example": "2020-09-15 12:44:15 UTC",
+                              "description": "Last usage date"
+                            },
+                            "expire_at": {
+                              "type": "string",
+                              "format": "Y-m-d H:i:s T",
+                              "example": "2020-09-22 12:44:50 UTC",
+                              "description": "Date of expiration"
+                            },
+                            "referer": {
+                              "type": "string",
+                              "format": "uri",
+                              "nullable": true,
+                              "description": "Previous page visited with the session, will be used to fill referer header"
+                            }
+                          }
+                        },
+                        "cookies": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/paths/~1scrape/get/responses/200/content/application~1json/schema/properties/result/properties/cookies/items"
+                          }
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "url",
+                          "example": "http://httpbin.org/anything"
+                        },
+                        "retry": {
+                          "type": "integer",
+                          "example": 0,
+                          "description": "Number of internal retry - Connectivity, Retryable Upstream errors"
+                        },
+                        "redirects": {
+                          "description": "Ordered record of the redirections before accessing to the scraped content",
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "http_code": {
+                                "type": "integer",
+                                "format": "int32",
+                                "description": "HTTP code of redirection",
+                                "example": 301
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://httpbin.org/anything"
+                              }
+                            }
+                          }
+                        },
+                        "debug": {
+                          "type": "object",
+                          "description": "Debug result - Only available when debug is activated.\nSee more about debug feature : description: https://scrapfly.io/docs/scrape-api/debug\"\n",
+                          "nullable": true,
+                          "properties": {
+                            "response_url": {
+                              "type": "string",
+                              "format": "url",
+                              "description": "Public url to access to the API response captured and replay against",
+                              "example": "https://scrapfly.io/scrape/debug/bc81d792-416e-4221-89d6-df5358833fce"
+                            },
+                            "debug": {
+                              "type": "string",
+                              "nullable": true,
+                              "description": "Public url to access taken screenshot - Only available when javascript rendering is activated"
+                            }
+                          }
+                        },
+                        "cache": {
+                          "type": "object",
+                          "nullable": true,
+                          "description": "See more about cache feature: https://scrapfly.io/docs/scrape-api/cache",
+                          "properties": {
+                            "state": {
+                              "type": "string",
+                              "enum": [
+                                "MISS",
+                                "HIT"
+                              ],
+                              "description": "MISS = the real version and the upstream website has been scraped, HIT = cached version returned",
+                              "example": "MISS"
+                            },
+                            "entry": {
+                              "type": "object",
+                              "properties": {
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "Y-m-d H:i:s T",
+                                  "example": "2020-07-29 23:49:04 UTC",
+                                  "description": "Creation of date of cache"
+                                },
+                                "last_used_at": {
+                                  "type": "string",
+                                  "format": "Y-m-d H:i:s T",
+                                  "example": "2020-07-29 23:49:04 UTC",
+                                  "description": "Relate the last time the cache has been returned as response of scrape request"
+                                },
+                                "fingerprint": {
+                                  "type": "string",
+                                  "example": "38c7b2d0d521c1c53ca85bb163312133954e5d80",
+                                  "description": "Unique key to identify your cache - Also good to understand if cache unique key changed"
+                                },
+                                "ttl": {
+                                  "type": "integer",
+                                  "example": 86400,
+                                  "description": "Time to live of cache, expressed in seconds. Cache expiration = created_at + ttl which is available through expires_at."
+                                },
+                                "expires_at": {
+                                  "type": "string",
+                                  "format": "Y-m-d H:i:s T",
+                                  "example": "2020-07-29 23:49:04 UTC"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "is_xml_http_request": {
+                          "description": "Detect if request intent to be XHR request based on headers",
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "webhook": {
+                          "type": "object",
+                          "description": "Webhook information - More information: https://scrapfly.io/docs/scrape-api/webhook",
+                          "properties": {
+                            "uuid": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "UUID of the scrape, also used for the related log",
+                              "example": "accec315-d6e3-411e-9c3e-e91ae71ee882"
+                            }
+                          }
+                        },
+                        "spider": {
+                          "type": "object",
+                          "properties": {
+                            "uuid": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "UUID of the scrape, also used for the related log",
+                              "example": "accec315-d6e3-411e-9c3e-e91ae71ee882"
+                            }
+                          }
+                        },
+                        "schedule": {
+                          "type": "object",
+                          "properties": {
+                            "uuid": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "UUID of the scrape, also used for the related log",
+                              "example": "accec315-d6e3-411e-9c3e-e91ae71ee882"
+                            }
+                          }
+                        },
+                        "asp": {
+                          "type": "object",
+                          "description": "ASP result if feature is enabled. See more about ASP: https://scrapfly.io/docs/scrape-api/anti-scraping-protection",
+                          "nullable": true,
+                          "properties": {
+                            "uuid": {
+                              "type": "string",
+                              "format": "session_identity",
+                              "description": "Session identity on which ASP rely",
+                              "example": "3375a5d49895472125d73bd5c89032afd0a24909"
+                            },
+                            "shield_name": {
+                              "type": "string",
+                              "desription": "name of the shield that has been trigger during the scrape"
+                            },
+                            "success": {
+                              "type": "boolean",
+                              "desicription": "Indicate if the shield bypass correctly the challenge"
+                            },
+                            "challenge": {
+                              "type": "object",
+                              "description": "Challenge result",
+                              "properties": {
+                                "success": {
+                                  "type": "boolean",
+                                  "description": "Indicate if the challenge has been resolved"
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "enum": [
+                                    "detected",
+                                    "unsolvable",
+                                    "errored",
+                                    "solved",
+                                    "solving"
+                                  ]
+                                },
+                                "context": {
+                                  "type": "object",
+                                  "nullable": true,
+                                  "description": "Contextual data of the challenge. It depends of the kind of captcha you encounter. It's useful when digging into debug"
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "geetest",
+                                    "recatpcha",
+                                    "hcaptcha",
+                                    "image"
+                                  ]
+                                },
+                                "result": {
+                                  "type": "object",
+                                  "description": null,
+                                  "properties": {
+                                    "solution": {
+                                      "type": "object",
+                                      "nullable": true,
+                                      "description": "All elements of the solution. Structure depends of type of the solution"
+                                    },
+                                    "error": {
+                                      "type": "object",
+                                      "nullable": true,
+                                      "desciption": "Related error to ASP. If error happened, the whole scrape will be marked as error and follow the structure described here :  https://scrapfly.io/docs/scrape-api/errors",
+                                      "properties": {
+                                        "code": {
+                                          "type": "string",
+                                          "description": "Error code"
+                                        },
+                                        "message": {
+                                          "type": "string",
+                                          "description": "Description of the error"
+                                        }
+                                      }
+                                    },
+                                    "duration": {
+                                      "type": "number",
+                                      "format": "float",
+                                      "description": "Time spent to solve the challenge",
+                                      "example": "5.34"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "uri": {
+                          "type": "object",
+                          "description": "URI Object",
+                          "properties": {
+                            "root_domain": {
+                              "type": "string",
+                              "format": "hostname",
+                              "example": "httpbin.org"
+                            },
+                            "base_url": {
+                              "type": "string",
+                              "format": "url",
+                              "example": "http://httpbin.org"
+                            },
+                            "host": {
+                              "type": "string",
+                              "format": "hostname",
+                              "example": "httpbin.org"
+                            },
+                            "scheme": {
+                              "type": "string",
+                              "example": "http"
+                            },
+                            "query": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            },
+                            "fragment": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            },
+                            "port": {
+                              "type": "integer",
+                              "example": 80
+                            },
+                            "params": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            }
+                          }
+                        },
+                        "cost": {
+                          "type": "object",
+                          "nullable": false,
+                          "description": "Cost information with details and total consumed",
+                          "properties": {
+                            "details": {
+                              "type": "object",
+                              "description": "Detailed total cost",
+                              "properties": {
+                                "code": {
+                                  "type": "string",
+                                  "enum": [
+                                    "PROXY_DATACENTER_NETWORK",
+                                    "PROXY_RESIDENTIAL_NETWORK",
+                                    "RENDERING_JS",
+                                    "ASP_SHIELD"
+                                  ],
+                                  "description": "Category of cost in computer format",
+                                  "example": "PROXY_DATACENTER_NETWORK"
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "description": "Explanation of cost entry"
+                                },
+                                "amount": {
+                                  "type": "integer",
+                                  "example": 1,
+                                  "description": "API call amount"
+                                }
+                              }
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 1,
+                              "description": "Total cost consumed for the call"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-scrapfly-api-cost": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "x-scrapfly-remaining-scrape": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "access-control-allow-headers": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "access-control-allow-methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "access-control-allow-origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "link": {
+                "description": "Contain link which refer to the log",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "$ref": "#/paths/~1scrape/get/responses/200/content/application~1json"
+              }
+            },
+            "headers": {
+              "x-error-id": {
+                "description": "Error ID to be identified when contacting support for easier investigation",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1scrape/get/responses/400"
+          },
+          "403": {
+            "$ref": "#/paths/~1scrape/get/responses/400"
+          },
+          "429": {
+            "$ref": "#/paths/~1scrape/get/responses/400"
+          },
+          "500": {
+            "$ref": "#/paths/~1scrape/get/responses/400"
+          },
+          "503": {
+            "$ref": "#/paths/~1scrape/get/responses/400"
+          }
+        }
+      },
+      "head": {
+        "summary": "HEAD",
+        "description": "Scrapfly Scrape API",
+        "tags": [
+          "scrape"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "$ref": "#/paths/~1scrape/get/responses"
+        }
+      },
+      "post": {
+        "summary": "POST",
+        "description": "Scrapfly Scrape API",
+        "tags": [
+          "scrape"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Body forwarded to upstream website",
+          "required": false,
+          "content": {
+            "*/*": {
+              "schema": {
+                "description": "Pass whatever you want, body will be forward to upstream website as POST request",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "$ref": "#/paths/~1scrape/get/responses"
+        }
+      },
+      "put": {
+        "summary": "PUT",
+        "description": "Scrapfly Scrape API",
+        "tags": [
+          "scrape"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Body forwarded to upstream website",
+          "required": false,
+          "content": {
+            "*/*": {
+              "schema": {
+                "description": "Pass whatever you want, body will be forward to upstream website as PUT request",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "$ref": "#/paths/~1scrape/get/responses"
+        }
+      },
+      "patch": {
+        "summary": "PATCH",
+        "description": "Scrapfly Scrape API",
+        "tags": [
+          "scrape"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Body forwarded to upstream website",
+          "required": false,
+          "content": {
+            "*/*": {
+              "schema": {
+                "description": "Pass whatever you want, body will be forward to upstream website as PATCH request",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "$ref": "#/paths/~1scrape/get/responses"
+        }
+      }
+    }
+  }
+}

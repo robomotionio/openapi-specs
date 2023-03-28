@@ -1,0 +1,527 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Airtable",
+    "version": "1.0.1",
+    "x-logo": {
+      "url": "https://airtable.com/images/favicon/baymax/apple-touch-icon.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.airtable.com/v0"
+    }
+  ],
+  "paths": {
+    "/{baseId}/{baseName}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "description": "Id of your table"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseName",
+          "in": "path",
+          "required": true,
+          "description": "Name of your table"
+        }
+      ],
+      "get": {
+        "summary": "List table records",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Records found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "fields": {
+                            "type": "object"
+                          },
+                          "createdTime": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "createdTime"
+                        ]
+                      }
+                    },
+                    "offset": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "records",
+                    "offset"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found"
+          }
+        },
+        "operationId": "get-records",
+        "description": "To list records from your base, issue a GET request to the base endpoint.\n\nReturned records do not include any fields with \"empty\" values, e.g. \"\", [], or false.\n\nYou can filter, sort, and format the results with the following query parameters. Note that these parameters need to be URL encoded. You can use our API URL encoder tool to help with this. If you are using a helper library like Airtable.js, these parameters will be automatically encoded.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "maxRecords",
+            "description": "The maximum total number of records that will be returned in your requests. If this value is larger than pageSize (which is 100 by default), you may have to load multiple pages to reach this total. See the Pagination section below for more. "
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "fields",
+            "description": "Only data for fields whose names are in this list will be included in the result. If you don't need every field, you can use this parameter to reduce the amount of data transferred. "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "filterByFormula",
+            "description": " A formula used to filter records. The formula will be evaluated for each record, and if the result is not 0, false, \"\", NaN, [], or #Error! the record will be included in the response.  If combined with the view parameter, only records in that view which satisfy the formula will be returned.  For example, to only include records where firstname isn't empty, pass in NOT({firstname} = '') as a parameter"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "The number of records returned in each request. Must be less than or equal to 100. Default is 100. See the Pagination section below for more. "
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": " A list of sort objects that specifies how the records will be ordered. Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either \"asc\" or \"desc\". The default direction is \"asc\".  The sort parameter overrides the sorting of the view specified in the view parameter. If neither the sort nor the view parameter is included, the order of records is arbitrary.   For example, to sort records by firstname in descending order, pass in:  [{field: \"firstname\", direction: \"desc\"}]"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "view",
+            "description": "The name or ID of a view in the Table 1 table. If set, only the records in that view will be returned. The records will be sorted according to the order of the view unless the sort parameter is included, which overrides that order. Fields hidden in this view will be returned in the results. To only return a subset of fields, use the fields parameter. "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "cellFormat",
+            "description": "  The format that should be used for cell values. Supported values are:  json: cells will be formatted as JSON, depending on the field type.  string: cells will be formatted as user-facing strings, regardless of the field type. Note: You should not rely on the format of these strings, as it is subject to change.  The default is json."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "timeZone",
+            "description": "  The time zone that should be used to format dates when using string as the cellFormat. This parameter is required when using string as the cellFormat."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "userLocale",
+            "description": "The user locale that should be used to format dates when using string as the cellFormat. This parameter is required when using string as the cellFormat. "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "If there are more records, the response will contain an offset. To fetch the next page of records, include offset in the next request's parameters. "
+          }
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create record",
+        "operationId": "post-record",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "fields": {
+                            "type": "object"
+                          },
+                          "createdTime": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "createdTime"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "To create new records, issue a POST request to the endpoint.\nYour request body should include an array of up to 10 record objects. Each of these objects should have one key, fields, which contains all of your record's cell values by field name. You can include all, some, or none of the field values.\n\nReturns an array of record objects created if the call succeeded, including record IDs which will uniquely identify the records within your base.\n\nTo create new attachments in PJ, set the field value to an array of attachment objects. When creating an attachment, url is required, and filename is optional. Airtable will download the file at the given url and keep its own copy of it. All other attachment object properties will be generated server-side soon afterward.\n\nTo add collaborators to Feature lead, set the field value to an array of user objects. Each user object must contain either an id or an email that uniquely identifies a user who this base is shared with. An id takes precedence over email if both are present. Any missing properties will be filled in automatically based on the matching user.\n\nThe Airtable API will perform best-effort automatic data conversion from string values if the typecast parameter is passed in (click to show example). Automatic conversion is disabled by default to ensure data integrity, but it may be helpful for integrating with 3rd party data sources.\n\nYou can also include a single record object at the top level. Click here to show an example.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "records": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fields": {
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "fields"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "records"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update record",
+        "operationId": "patch-record",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "fields": {
+                            "type": "object"
+                          },
+                          "createdTime": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "createdTime"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "records": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "fields": {
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "records"
+                ]
+              }
+            }
+          }
+        },
+        "description": "To update your base records, issue a request to the endpoint. A PATCH request will only update the fields you specify, leaving the rest as they were. A PUT request will perform a destructive update and clear all unspecified cell values. The example at the right uses the non-destructive PATCH method. Click here to show a destructive PUT request.\n\nYour request body should include an array of up to 10 record objects. Each of these objects should have an id property representing the record ID and a fields property which contains all of your record's cell values by field name. You can include all, some, or none of the field values.\n\nTo add attachments to PJ, add new attachment objects to the existing array. Be sure to include all existing attachment objects that you wish to retain. For the new attachments being added, url is required, and filename is optional. To remove attachments, include the existing array of attachment objects, excluding any that you wish to remove.\n\nTo add collaborators to Feature lead, set the field value to an array of user objects. Be sure to include all existing user objects that you wish to retain, and exclude any that you wish to deselect. Each new user object must contain either an id or an email that uniquely identifies a user who this base is shared with. An id takes precedence over email if both are present. Any missing properties will be filled in automatically based on the matching user.\n\nTo select new options in Environnement and Clients, add new option names to the existing array. Be sure to include all existing option names that you wish to retain. To deselect options, include the existing array of option names, excluding any that you wish to deselect.\n\nAutomatic data conversion for update actions can be enabled via typecast parameter. See create record for details.\n\nYou can also include a single record object at the top level. Click here to show an example."
+      },
+      "delete": {
+        "summary": "Delete record",
+        "operationId": "delete-record",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "required": [
+                          "id",
+                          "deleted"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "deleted": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "To delete Roadmap records, issue a DELETE request to the endpoint.\nYour request should include a URL-encoded array of up to 10 record IDs to delete.\n\nYou can also issue a DELETE request to the record endpoint to delete a single record.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "records[]",
+            "description": "Max 10 records id to delete"
+          }
+        ]
+      }
+    },
+    "/{baseId}/{baseName}/{recordName}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "description": "Id of your table"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseName",
+          "in": "path",
+          "required": true,
+          "description": "Name of your table"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "recordName",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "GET record",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "fields": {
+                      "type": "object"
+                    },
+                    "createdTime": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "fields",
+                    "createdTime"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-record",
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "To retrieve an existing record in your base table, issue a GET request to the record endpoint.\nAny \"empty\" fields (e.g. \"\", [], or false) in the record will not be returned.\n\nIn attachment objects included in the retrieved record (PJ), only id, url, and filename are always returned. Other attachment properties may not be included."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Record": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fields": {
+            "type": "object"
+          },
+          "createdTime": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "fields",
+          "createdTime"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer"
+      }
+    },
+    "parameters": {
+      "baseId": {
+        "name": "baseId",
+        "in": "path",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Id of your base"
+      },
+      "baseName": {
+        "name": "baseName",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Name of your base"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

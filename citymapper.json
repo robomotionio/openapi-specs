@@ -1,0 +1,3068 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Powered by Citymapper API",
+    "version": "v1.2.0",
+    "description": "# Introduction\n\n### **Add journey planning and turn-by-turn navigation to your products with our APIs.**\n\nOur APIs are powered by our industry-leading global transport data and custom routing algorithms trained on\nbillions of trips.\n\nWith our journey planning APIs you can:\n\n- Calculate public transport routes and travel times\n- Retrieve live departure information for public transport routes\n- Calculate walk, cycling, e-scooter and motor scooter routes and travel times, including turn-by-turn instructions\n\nDeveloping a mobile app? See our iOS and Android SDK [here](/).\n\n### **Ready to start? [Get access ➡](http://citymapper.com/developer-access)**\n\n&nbsp;\n\n**Other resources:**\n\n[SDK documentation](/)\n\n[Deep link documentation](https://citymapper.com/news/2386/launch-citymapper-for-directions)\n\n[Learn more about Powered by Citymapper](https://citymapper.com/powers)\n\n# Support\n\n### Have questions?\n\nCheck out our FAQ [here](/support/faq.html).\n\n### **Have product feedback or suggestions?**\n\nWe'd love to hear about your experiences using our APIs, and features you'd like to see next.\nPlease contribute feedback [here](https://form.jotform.com/213393057055353), and keep an eye out for future\nproduct releases.\n\n### **Have a sales question?**\n\nIf you are an enterprise user, or require functionality not available in our public APIs, our sales team are\nhere to help.\n\nPlease [contact us](https://citymapper.com/contact/powered) with a description of your project or business\nneed and we'll be in touch.\n\n# Pricing and Terms\n\n### Get started for free\n\nYour first 5,000 monthly requests* across our products are free, making it easy to start building. \n\n[Sign up and get started here.](http://citymapper.com/developer-access)\n\n### Paid plans to help you grow\n\nReady to launch, or have higher volume requirements?\n\nOur usage-based pricing enables you to scale quickly and flexibly. \n\nFor further details, please [contact our sales team](https://citymapper.com/contact/powered).\n\n### **Powered by Citymapper pricing**\n\n| Monthly requests* | Monthly cost  |\n| ----------------- | ------------- |\n| Up to 5,000       | Free          |\n| Over 5,000        | Contact Sales |\n\n*A request is defined as a single call which successfully returns a directions or navigation result.\nMonthly requests are aggregated across all Powered by Citymapper products. If you're not on a paid plan,\nyou'll be notified via email once you exceed the free usage allowance in a given month (the month-long\nperiod aligns with the calendar month). Additional requests will no longer return results for the\nremainder of that month, and your free usage allowance will reset at the start of the next month.\n\n### Terms of service\n\nFind our terms of service [here](http://citymapper.com/developer-terms).\n\n# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->"
+  },
+  "servers": [
+    {
+      "url": "https://api.external.citymapper.com"
+    },
+    {
+      "url": "https://[custom-endpoint].external.citymapper.com"
+    }
+  ],
+  "paths": {
+    "/api/1/traveltimes": {
+      "get": {
+        "summary": "Travel times between two locations",
+        "tags": [
+          "endpoints"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "walk_travel_time_minutes": {
+                      "type": "integer",
+                      "description": "Estimated walking time between the two given points in minutes",
+                      "example": 52
+                    },
+                    "transit_time_minutes": {
+                      "type": "integer",
+                      "description": "Estimated public transit travel time between the two given points in minutes",
+                      "example": 29
+                    },
+                    "bike_time_minutes": {
+                      "type": "integer",
+                      "description": "Estimated bicycle travel time between two points in minutes",
+                      "example": 21
+                    },
+                    "scooter_time_minutes": {
+                      "type": "integer",
+                      "description": "Estimated e-scooter travel time between two points in minutes",
+                      "example": 19
+                    },
+                    "motorscooter_time_minutes": {
+                      "type": "integer",
+                      "description": "Estimated motor scooter travel time between two points in minutes",
+                      "example": 22
+                    }
+                  }
+                },
+                "examples": {
+                  "Success (Default traveltime_types)": {
+                    "value": {
+                      "walk_travel_time_minutes": 66,
+                      "transit_time_minutes": 49
+                    }
+                  },
+                  "Success (Bike & Transit)": {
+                    "value": {
+                      "bike_time_minutes": 36,
+                      "transit_time_minutes": 42
+                    }
+                  },
+                  "Success (All Types)": {
+                    "value": {
+                      "walk_travel_time_minutes": 66,
+                      "bike_time_minutes": 36,
+                      "transit_time_minutes": 44,
+                      "scooter_time_minutes": 29,
+                      "motorscooter_time_minutes": 22
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Start Out of Coverage": {
+                    "value": {
+                      "message": "start coord is not inside coverage area",
+                      "error_code": "coverage-start"
+                    }
+                  },
+                  "End Out of Coverage": {
+                    "value": {
+                      "message": "end coord is not inside coverage area",
+                      "error_code": "coverage-end"
+                    }
+                  },
+                  "Missing Required Parameter": {
+                    "value": {
+                      "message": "'start' parameter not present",
+                      "error_code": "request-format"
+                    }
+                  },
+                  "Bad Input Example": {
+                    "value": {
+                      "message": "'end' parameter should have format '<latitude>,<longitude>'",
+                      "error_code": "request-format"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "operationId": "traveltime",
+        "description": "Determines the travel time in various modes of travel between the given two points at the time the request\nis made. If the call returns code `200`, at least one of the `*_time_minutes` fields will be populated.\nOtherwise, a code `400` response will be returned.\n\nA request outside of the API coverage areas will be signaled with a code `400` response containing an\n`error_code` value of `coverage-start` or `coverage-end`. These failures are fast/resource-efficient\nand are not billed, so there's no need to pre-filter potential requests by location.\n\nSuccessful responses (HTTP code `200`) will consume one \"Travel Time\" credit for each\ntime returned. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "51.525246,0.084672"
+            },
+            "in": "query",
+            "description": "The geographical start point of the trip, in WGS84 'latitude,longitude' format.\nCoordinates should be in decimal, and only the first 6 digits of precision will be used.\n",
+            "name": "start",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "51.559098,0.074503"
+            },
+            "in": "query",
+            "description": "The geographical end point of the trip, in WGS84 'latitude,longitude' format.\nCoordinates should be in decimal, and only the first 6 digits of precision will be used.\n",
+            "name": "end",
+            "required": true
+          },
+          {
+            "name": "traveltime_types",
+            "description": "A comma-separated list of different travel time types to attempt to request.\nEach request value corresponds to a particular field in the response (response\nfields will only be present when Citymapper was able to calculate a time for\nthat travel time type).\n\n| value | response property | description |\n| ----- | ----------------- | ------------|\n| walk | walk_travel_time_minutes | Walking |\n| transit | transit_time_minutes | Public transit travel |\n| bike | bike_time_minutes | Bicycle travel (riding the entire way) |\n| scooter | scooter_time_minutes | Standing e-scooter travel (riding the entire way) |\n| motorscooter | motorscooter_time_minutes | Seated motor scooter travel (riding the entire way) |\n\nWhen this field is omitted or empty, a default value of `walk,transit` will be used.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "walk",
+                  "transit",
+                  "bike",
+                  "scooter",
+                  "motorscooter"
+                ]
+              },
+              "explode": false,
+              "example": "bike,transit"
+            },
+            "in": "query"
+          }
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/api/1/directions/scooterride": {
+      "get": {
+        "operationId": "scooterridedirections",
+        "summary": "E-scooter directions between two points (ride only)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "Gets a scooter route between two points, providing enough information to render it on a map,\nalong with a duration estimate. (These results are optimized for small battery-powered scooters\nthat the rider stands on.)\n\nThis call assumes that the rider has a scooter at the `start` point, and provides an e-scooter\nroute from there to the `end` point if both are within Citymapper's supported areas. The resulting\nroute should contain a single scooter leg, though the `path_annotations` property of the Leg may\nindicate sections during which the user should walk beside the scooter.\n\nThis call does not incorporate any information about scooter operators' coverage\nor parking areas, but other API calls may be available to do so.\n\nSuccessful responses (HTTP code `200`) will consume one \"Scooter Route\" credit\n(or one \"Scooter Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Scooter Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "escooter"
+                              ],
+                              "duration_seconds": 797,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "path_annotations": [
+                                {
+                                  "start_index": 1,
+                                  "end_index": 3,
+                                  "should_walk": true
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/scooter": {
+      "get": {
+        "operationId": "scooterdirections",
+        "summary": "E-scooter directions between two points (hire vehicles)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "**NOTE this API is not available through open access, please contact sales**.\nPlease contact Citymapper using the details provided at the top\nof the page for information on integrating and using this API.\n\nGets an e-scooter route between two points, including any initial and final walks.\nThe resulting Route provides enough information to render it on a map,\nalong with a duration estimate.\nThese results are optimized for small battery-powered scooters that the rider stands on.\n\nThis call can be used in several different ways:\n  \n**Use any scooter of the specified Brand**\n\nThis is the simplest call, only requiring `start`, `end`, and `brand_id`.\nCitymapper assumes that the user is at the `start` point, and chooses a\nscooter of the specified Brand, if possible.\n\n**Use a scooter at a specified location**\n\nBy adding `original_vehicle_location` to `start`, `end`, and `brand_id`,\nCitymapper plans a Route that assumes the scooter is at the given location.\n\n**Update a Route in progress**\n\nIn order to retrieve an updated Route that includes rerouting from the\nuser's current location if they've diverged from the planned Route,\nthe caller can add the `current_location` and `ride_state` properties,\nwhich indicates which Leg of the resulting Route should be rerouted\naround the user's `current_location`.\n\nSuccessful responses (HTTP code `200`) will consume one \"Scooter Route\" credit\n(or one \"Scooter Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "name": "brand_id",
+            "description": "The ID of the Brand of e-scooters to use for this route. This is necessary in order to\ndetermine the location of available scooters, along with any associated coverage and\nparking restrictions.\n",
+            "schema": {
+              "type": "string",
+              "example": "ScooterBrand"
+            },
+            "in": "query",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideState"
+          },
+          {
+            "$ref": "#/components/parameters/directionsCurrentLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideStartLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideEndLocation"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Scooter Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 211,
+                              "path": "_flyHbjPDZBTBNDJ"
+                            },
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "escooter"
+                              ],
+                              "duration_seconds": 586,
+                              "services": {
+                                "id": "ScooterBrand",
+                                "name": "Scooter Brand",
+                                "vehicle_types": [
+                                  "escooter"
+                                ],
+                                "brand": {
+                                  "id": "ScooterBrand",
+                                  "name": "Scooter Brand",
+                                  "image_key": "scooter-brand"
+                                },
+                                "color": "#000000",
+                                "text_color": "#FFFFFF"
+                              },
+                              "path": "_flyHbjPDZBTBNDJ"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/bikeride": {
+      "get": {
+        "operationId": "bikeridedirections",
+        "summary": "Bike directions between two points (ride only)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "Gets a bike route between two points, providing enough information to render it on a map, along with a duration estimate.\n\nThis call assumes that the rider has a bicycle at the `start` point, and provides a biking route from there to the `end` point\nif both are within Citymapper's supported areas. The resulting route should contain a single bike leg, though the `path_annotations`\nproperty of the Leg may indicate sections during which the user should walk beside the bike.\n\nThis call does not incorporate any information about bike operators' coverage\nor parking areas, but other API calls may be available to do so.\n\nSuccessful responses (HTTP code `200`) will consume one \"Bike Route\" credit\n(or one \"Bike Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/bikeProfiles"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Bike Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "bike"
+                              ],
+                              "duration_seconds": 797,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "path_annotations": [
+                                {
+                                  "start_index": 1,
+                                  "end_index": 3,
+                                  "should_walk": true
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/bike": {
+      "get": {
+        "operationId": "bikedirections",
+        "summary": "Bike directions between two points (hire vehicles)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "**NOTE this API is not available through open access, please contact sales**.\nPlease contact Citymapper using the details provided at the top\nof the page for information on integrating and using this API.\n\nGets an bike route between two points, including any initial and final walks.\nThe resulting Route provides enough information to render it on a map,\nalong with a duration estimate.\n\nThis call can be used in several different ways:\n  \n**Use any bike of the specified Brand**\n\nThis is the simplest call, only requiring `start`, `end`, and `brand_id`.\nCitymapper assumes that the user is at the `start` point, and chooses a\nbike of the specified Brand, if possible.\n\n**Use a bike at a specified location**\n\nBy adding `original_vehicle_location` to `start`, `end`, and `brand_id`,\nCitymapper plans a Route that assumes the bike is at the given location.\n\n**Update a Route in progress**\n\nIn order to retrieve an updated Route that includes rerouting from the\nuser's current location if they've diverged from the planned Route,\nthe caller can add the `current_location` and `ride_state` properties,\nwhich indicates which Leg of the resulting Route should be rerouted\naround the user's `current_location`.\n\nSuccessful responses (HTTP code `200`) will consume one \"Bike Route\" credit\n(or one \"Bike Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "name": "brand_id",
+            "description": "The ID of the Brand of bike to use for this route. This is necessary in order to\ndetermine the location of available bikes, along with any associated coverage and\nparking restrictions.\n",
+            "schema": {
+              "type": "string",
+              "example": "BikeBrand"
+            },
+            "in": "query",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideState"
+          },
+          {
+            "$ref": "#/components/parameters/directionsCurrentLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideStartLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideEndLocation"
+          },
+          {
+            "$ref": "#/components/parameters/bikeProfiles"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Bike Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 211,
+                              "path": "_flyHbjPDZBTBNDJ"
+                            },
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "bike"
+                              ],
+                              "duration_seconds": 586,
+                              "services": {
+                                "id": "BikeBrand",
+                                "name": "Bike Brand",
+                                "vehicle_types": [
+                                  "bike"
+                                ],
+                                "brand": {
+                                  "id": "BikeBrand",
+                                  "name": "Bike Brand",
+                                  "image_key": "bike-brand"
+                                },
+                                "color": "#000000",
+                                "text_color": "#FFFFFF"
+                              },
+                              "path": "_flyHbjPDZBTBNDJ"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/motorscooterride": {
+      "get": {
+        "operationId": "motorscooterridedirections",
+        "summary": "Motor scooter directions between two points (ride only)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "Gets a motorscooter route between two points, providing enough information to render it on a map, along\nwith a duration estimate. (These results are optimized for larger internal combustion or electric scooters\nwhere the rider is seated.)\n\nThis call assumes that the rider has a scooter at the `start` point, and provides an e-scooter route\nfrom there to the `end` point if both are within Citymapper's supported areas. The resulting route should\ncontain a single scooter leg, though the `path_annotations` property of the Leg may indicate sections\nduring which the user should walk beside the scooter.\n\nThis call does not incorporate any information about scooter operators' coverage\nor parking areas, but other API calls may be available to do so.\n\nSuccessful responses (HTTP code `200`) will consume one \"Motor Scooter Route\" credit\n(or one \"Motor Scooter Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Scooter Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "motorscooter"
+                              ],
+                              "duration_seconds": 797,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "path_annotations": [
+                                {
+                                  "start_index": 1,
+                                  "end_index": 3,
+                                  "should_walk": true
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/motorscooter": {
+      "get": {
+        "operationId": "motorscooterdirections",
+        "summary": "Motor scooter directions between two points (hire vehicles)",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "**NOTE this API is not available through open access, please contact sales**.\nPlease contact Citymapper using the details provided at the top\nof the page for information on integrating and using this API.\n\nGets a motorscooter route between two points, including any initial and final walks.\nThe resulting Route provides enough information to render it on a map,\nalong with a duration estimate.\n(These results are optimized for larger internal combustion or electric scooters\nwhere the rider is seated.)\n\n**NOTE:** The resulting Route currently assumes that the user can ride directly to\nthe specified `end` location, not taking into account any parking or coverage zones.\nThus, the resulting Route will contain only an initial Leg of `travel_mode` `walk`\nand a second Leg of `travel_mode` `self_piloted`. A future update will incorporate\nparking and coverage zones and add a final `walk` Leg.\n\nThis call can be used in several different ways:\n  \n**Use any scooter of the specified Brand**\n\nThis is the simplest call, only requiring `start`, `end`, and `brand_id`.\nCitymapper assumes that the user is at the `start` point, and chooses a\nscooter of the specified Brand, if possible.\n\n**Use a scooter at a specified location**\n\nBy adding `original_vehicle_location` to `start`, `end`, and `brand_id`,\nCitymapper plans a Route that assumes the scooter is at the given location.\n\n**Update a Route in progress**\n\nIn order to retrieve an updated Route that includes rerouting from the\nuser's current location if they've diverged from the planned Route,\nthe caller can add the `current_location` and `ride_state` properties,\nwhich indicates which Leg of the resulting Route should be rerouted\naround the user's `current_location`.\n\nSuccessful responses (HTTP code `200`) will consume one \"Motor Scooter Route\" credit\n(or one \"Motor Scooter Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "name": "brand_id",
+            "description": "The ID of the Brand of scooters to use for this route. This is necessary in order to\ndetermine the location of available scooters, along with any associated coverage and\nparking restrictions.\n",
+            "schema": {
+              "type": "string",
+              "example": "ScooterBrand"
+            },
+            "in": "query",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideState"
+          },
+          {
+            "$ref": "#/components/parameters/directionsCurrentLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideStartLocation"
+          },
+          {
+            "$ref": "#/components/parameters/directionsRideEndLocation"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Scooter Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 797,
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 211,
+                              "path": "_flyHbjPDZBTBNDJ"
+                            },
+                            {
+                              "travel_mode": "self_piloted",
+                              "vehicle_types": [
+                                "motorscooter"
+                              ],
+                              "duration_seconds": 586,
+                              "services": {
+                                "id": "ScooterBrand",
+                                "name": "Scooter Brand",
+                                "vehicle_types": [
+                                  "motorscooter"
+                                ],
+                                "brand": {
+                                  "id": "ScooterBrand",
+                                  "name": "Scooter Brand",
+                                  "image_key": "scooter-brand"
+                                },
+                                "color": "#000000",
+                                "text_color": "#FFFFFF"
+                              },
+                              "path": "_flyHbjPDZBTBNDJ"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/walk": {
+      "get": {
+        "operationId": "walkdirections",
+        "summary": "Walking directions between two points",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "Gets a walking route between two points, providing enough information to render it on a map, along\nwith a duration estimate.\n\nWalking routes are expected to have a single Leg with a `travel_mode` of `walk`.\n\nIf Citymapper can't compute walking directions for those points (generally for coverage reasons),\nthe API will return a code `400` response.\n\nSuccessful responses (HTTP code `200`) will consume one \"Walk Route\" credit\n(or one \"Walk Reroute\" credit if `reroute_signature` is used) for each\nHTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/walkProfiles"
+          },
+          {
+            "$ref": "#/components/parameters/rerouteSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Sample Walk": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524247,
+                              "lon": -0.10641
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.507752,
+                              "lon": -0.110081
+                            }
+                          },
+                          "duration_seconds": 1854,
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 1854,
+                              "path": "shxgaBdwnEZMzBiAv@?j@XnJ~JhBhBdCtDfEzGpDkEzA{BpE}G`KoOv@kALo@Cw@uC_NOwBImCH{CRuAd@mBhAmCtAaCzCkD`DmCjAwAnJjYzEdS~GpYl@e@`CjJzHbXj@`B|AlAXa@tA{@hBoArB}AxBcB~N_LvBuArFiDAwA\\i@vIsFzOmJ|AaApAk@rEqBbQwHdGqBzCnBtBq@`KgCt@Q~F_B`G}A~@UlEaAr@ORE\\GbB_@RG`DcApFcAAEbAUvLiChBg@nE{@xPkDz@Y`C_@`BKbE]dFzFbAMzAt@rMmAfFe@jE}@tI{A|AYxCk@zCiBvEeDdAU`ScBdAg@hD[vSwCle@yGlGy@bDc@z@Mt@Fp@x@~@d@\\@r@CjL}AzGeA~h@sHrIuAdFi@xAYfEi@xF{@bAKxZiElQcBj@ExCShFQd`@Ah_@l@C`BfHn@pCjB~JpKfGzJ\\e@t@{@\\k@`@s@j@PnBYlBw@vCaBnCsANCpCNz@_@hC{@nCu@tCMbC?hdCdEtD]pDMxJ}@bAgAbACG~TARMhf@j@jAGbU^nYZ~GnBlQNh@nCvKpC~KtBdMr@~DV|EH|r@LtDRrBP|A~@xEv@~D_BhB_@~Ik@lH}DlEoAd@rB`S`A@BlM",
+                              "instructions": [
+                                {
+                                  "path_index": 0,
+                                  "description_text": "Walk South on Clerkenwell Close",
+                                  "type": "depart"
+                                },
+                                {
+                                  "path_index": 3,
+                                  "distance_meters": 12,
+                                  "time_seconds": 9,
+                                  "description_text": "Turn right onto Clerkenwell Close",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 8,
+                                  "distance_meters": 59,
+                                  "time_seconds": 44,
+                                  "description_text": "Turn left onto Clerkenwell Close",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 26,
+                                  "distance_meters": 150,
+                                  "time_seconds": 118,
+                                  "description_text": "Turn right onto Clerkenwell Green",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 33,
+                                  "distance_meters": 149,
+                                  "time_seconds": 112,
+                                  "description_text": "Turn left onto Farringdon Road",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 76,
+                                  "distance_meters": 447,
+                                  "time_seconds": 367,
+                                  "description_text": "Slight right onto Farringdon Street",
+                                  "type": "turn",
+                                  "type_direction": "slight_right"
+                                },
+                                {
+                                  "path_index": 117,
+                                  "distance_meters": 739,
+                                  "time_seconds": 561,
+                                  "description_text": "Turn right onto Watergate",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 118,
+                                  "distance_meters": 3,
+                                  "time_seconds": 3,
+                                  "description_text": "Turn left",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 122,
+                                  "distance_meters": 71,
+                                  "time_seconds": 53,
+                                  "description_text": "Turn left",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 144,
+                                  "distance_meters": 375,
+                                  "time_seconds": 282,
+                                  "description_text": "Turn right",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 148,
+                                  "distance_meters": 72,
+                                  "time_seconds": 54,
+                                  "description_text": "Continue straight on Upper Ground",
+                                  "type": "turn",
+                                  "type_direction": "straight"
+                                },
+                                {
+                                  "path_index": 164,
+                                  "distance_meters": 239,
+                                  "time_seconds": 185,
+                                  "description_text": "Turn right",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 167,
+                                  "distance_meters": 30,
+                                  "time_seconds": 22,
+                                  "description_text": "Turn right",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 169,
+                                  "distance_meters": 17,
+                                  "time_seconds": 13,
+                                  "description_text": "Turn left",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 170,
+                                  "distance_meters": 23,
+                                  "time_seconds": 17,
+                                  "description_text": "Turn left",
+                                  "type": "turn",
+                                  "type_direction": "left"
+                                },
+                                {
+                                  "path_index": 171,
+                                  "distance_meters": 4,
+                                  "time_seconds": 3,
+                                  "description_text": "Turn right",
+                                  "type": "turn",
+                                  "type_direction": "right"
+                                },
+                                {
+                                  "path_index": 172,
+                                  "distance_meters": 16,
+                                  "time_seconds": 12,
+                                  "description_text": "Arrive at your destination",
+                                  "type": "arrive"
+                                }
+                              ]
+                            }
+                          ],
+                          "signature": "v1.eJxtkMtOwzAQRf9ltjjp2InrxF9AN2UBEguEUBS7lWliV44DQlX+nUlCWVB2fsy952gu0AafrE+gL2DG2CQXPGheyZKB9WZ+bkOIZgANkucSlZKCZZhzjlhxmBh09ki/L5R3Q2p8a0GLEiW77Wt/S6piLcG63gKDPhhKwWfTneg2XOdEKeQ6ti0UsV4ZRHtcGmE8ZV3whs4USE1MN6qULtVPvFxMk+tnjECBGeeZKJ44ai60kHeIGnGzf3jePd5T44eNw8IR07KHc3DzjuAQl3WZzXsYo7dfCq5Kb878sZppZNaf/0fmNQmqaiXD9A0DoW3iLrtbq3uV5gbbkpyVbELQf6gVXGh9"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/transit": {
+      "get": {
+        "operationId": "transitdirections",
+        "summary": "Transit directions between two points",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "Computes several public transportation routes between two points.\n\nBy default, the results will contain up to 3 Routes. Each one will contain several\nLegs: usually one at the start and end of the Route with `travel_mode` of `walk`, with at least\none with `travel_mode` of `transit` in between.\n\nSuccessful responses (HTTP code `200`) will consume one \"Transit Route\" credit\nfor each HTTP response. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/time"
+          },
+          {
+            "$ref": "#/components/parameters/timeType"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                },
+                "examples": {
+                  "Chelsea Market to JFK": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 40.74244,
+                              "lon": -74.006144
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 40.643351,
+                              "lon": -73.7892
+                            }
+                          },
+                          "duration_seconds": 3628,
+                          "route_departure_time": "2020-08-19T08:10:21-04:00",
+                          "route_arrival_time": "2020-08-19T09:11:08-04:00",
+                          "price": {
+                            "formatted": "$18.25",
+                            "amount": "18.25",
+                            "currency": "USD"
+                          },
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 474,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "updatable_detail": {
+                                "leg_departure_time": "2020-08-19T08:10:21-04:00",
+                                "leg_arrival_time": "2020-08-19T08:18:15-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "transit",
+                              "vehicle_types": [
+                                "subway",
+                                "metro",
+                                "rail"
+                              ],
+                              "duration_seconds": 240,
+                              "services": [
+                                {
+                                  "id": "C",
+                                  "name": "C",
+                                  "vehicle_types": [
+                                    "subway",
+                                    "metro",
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "NewYorkSubway",
+                                    "image_key": "us-nyc-subway"
+                                  },
+                                  "image_key": "us-nyc-subway-c",
+                                  "image_replaces_name": true,
+                                  "color": "#2850AD",
+                                  "background_color": "#2850AD",
+                                  "text_color": "#FFFFFF"
+                                },
+                                {
+                                  "id": "E",
+                                  "name": "E",
+                                  "vehicle_types": [
+                                    "subway",
+                                    "metro",
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "NewYorkSubway",
+                                    "image_key": "us-nyc-subway"
+                                  },
+                                  "image_key": "us-nyc-subway-e",
+                                  "image_replaces_name": true,
+                                  "color": "#2850AD",
+                                  "background_color": "#2850AD",
+                                  "text_color": "#FFFFFF"
+                                }
+                              ],
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "stops": [
+                                {
+                                  "id": "Subway8Av14St",
+                                  "name": "8 Av - 14 St",
+                                  "coordinates": {
+                                    "lat": 40.740893,
+                                    "lon": -74.00169
+                                  }
+                                },
+                                {
+                                  "id": "Subway23StCE",
+                                  "name": "23 St",
+                                  "coordinates": {
+                                    "lat": 40.745906,
+                                    "lon": -73.998041
+                                  }
+                                },
+                                {
+                                  "id": "Subway34StPennStationACE",
+                                  "name": "34 St - Penn Station",
+                                  "coordinates": {
+                                    "lat": 40.752287,
+                                    "lon": -73.993391
+                                  }
+                                }
+                              ],
+                              "updatable_detail": {
+                                "departures": [
+                                  {
+                                    "service_id": "E",
+                                    "type": "frequency",
+                                    "frequency_seconds_range": [
+                                      188,
+                                      188
+                                    ],
+                                    "platform_description": "Uptown"
+                                  },
+                                  {
+                                    "service_id": "C",
+                                    "type": "frequency",
+                                    "frequency_seconds_range": [
+                                      720,
+                                      1080
+                                    ],
+                                    "platform_description": "Uptown"
+                                  }
+                                ],
+                                "live_departure_availability": "additional_request",
+                                "statuses": [
+                                  {
+                                    "type": "travel_affected",
+                                    "title": "Changed Frequency",
+                                    "description": "<C> trains are running approximately every 12-18 minutes between 168 St and Euclid Av.",
+                                    "service_ids": [
+                                      "C"
+                                    ]
+                                  },
+                                  {
+                                    "type": "travel_affected",
+                                    "title": "Changed Frequency",
+                                    "description": "<E> trains are running approximately every 6-8 minutes between Jamaica Center - Parsons/Archer and World Trade Center.",
+                                    "service_ids": [
+                                      "E"
+                                    ]
+                                  }
+                                ],
+                                "leg_departure_time": "2020-08-19T08:21:30-04:00",
+                                "leg_arrival_time": "2020-08-19T08:25:30-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 200,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "updatable_detail": {
+                                "leg_departure_time": "2020-08-19T08:25:30-04:00",
+                                "leg_arrival_time": "2020-08-19T08:28:50-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "transit",
+                              "vehicle_types": [
+                                "rail"
+                              ],
+                              "duration_seconds": 1380,
+                              "services": [
+                                {
+                                  "id": "LIRRBabylon",
+                                  "name": "Babylon",
+                                  "vehicle_types": [
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "LIRR",
+                                    "image_key": "us-nyc-lirr"
+                                  },
+                                  "image_key": "us-nyc-lirr-babylon",
+                                  "image_replaces_name": false,
+                                  "color": "#00985F",
+                                  "background_color": "#00985F",
+                                  "text_color": "#FFFFFF"
+                                },
+                                {
+                                  "id": "LIRRLongBeach",
+                                  "name": "Lg Beach",
+                                  "vehicle_types": [
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "LIRR",
+                                    "image_key": "us-nyc-lirr"
+                                  },
+                                  "image_key": "us-nyc-lirr-long-beach",
+                                  "image_replaces_name": false,
+                                  "color": "#FF6319",
+                                  "background_color": "#FF6319",
+                                  "text_color": "#FFFFFF"
+                                },
+                                {
+                                  "id": "LIRRPortJefferson",
+                                  "name": "Port Jeff",
+                                  "vehicle_types": [
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "LIRR",
+                                    "image_key": "us-nyc-lirr"
+                                  },
+                                  "image_key": "us-nyc-lirr-port-jefferson",
+                                  "image_replaces_name": false,
+                                  "color": "#0039A6",
+                                  "background_color": "#0039A6",
+                                  "text_color": "#FFFFFF"
+                                },
+                                {
+                                  "id": "LIRRRonkonkoma",
+                                  "name": "Ronkonkoma",
+                                  "vehicle_types": [
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "LIRR",
+                                    "image_key": "us-nyc-lirr"
+                                  },
+                                  "image_key": "us-nyc-lirr-ronkonkoma",
+                                  "image_replaces_name": false,
+                                  "color": "#A626AA",
+                                  "background_color": "#A626AA",
+                                  "text_color": "#FFFFFF"
+                                }
+                              ],
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "stops": [
+                                {
+                                  "id": "RailStationPennStation",
+                                  "name": "New York Penn",
+                                  "coordinates": {
+                                    "lat": 40.750239,
+                                    "lon": -73.992829
+                                  }
+                                },
+                                {
+                                  "id": "RailStationForestHills",
+                                  "name": "Forest Hills",
+                                  "coordinates": {
+                                    "lat": 40.719576,
+                                    "lon": -73.844814
+                                  }
+                                },
+                                {
+                                  "id": "RailStationKewGardens",
+                                  "name": "Kew Gardens",
+                                  "coordinates": {
+                                    "lat": 40.709649,
+                                    "lon": -73.830888
+                                  }
+                                },
+                                {
+                                  "id": "RailStationJamaica",
+                                  "name": "Jamaica",
+                                  "coordinates": {
+                                    "lat": 40.6996,
+                                    "lon": -73.80853
+                                  }
+                                }
+                              ],
+                              "updatable_detail": {
+                                "departures": [
+                                  {
+                                    "service_id": "LIRRBabylon",
+                                    "type": "scheduled",
+                                    "scheduled_time": "2020-08-19T08:33:00-04:00",
+                                    "short_name": "28",
+                                    "frequency_seconds_range": [
+                                      188,
+                                      188
+                                    ],
+                                    "platform_description": "Uptown"
+                                  }
+                                ],
+                                "live_departure_availability": "additional_request",
+                                "statuses": [
+                                  {
+                                    "type": "travel_affected",
+                                    "title": "Service Alert",
+                                    "description": "About 90% of our regular weekday trains are running. While we're running on the Essential Schedule, off peak fares remain in effect on all LIRR trains, including trains operating in traditional peak/rush hour time periods. To minimize contact with crew members, use MTA eTix on smartphones and activate eTix just before boarding. Ticket machines are available at most stations for cash &amp; credit card purchases. Remember: If you're using MTA services, you must wear a face covering (mask/bandana/scarf) at the station and for the entire duration of your train ride.",
+                                    "service_ids": [
+                                      "LIRRBabylon",
+                                      "LIRRLongBeach",
+                                      "LIRRPortJefferson",
+                                      "LIRRRonkonkoma"
+                                    ]
+                                  }
+                                ],
+                                "leg_departure_time": "2020-08-19T08:33:00-04:00",
+                                "leg_arrival_time": "2020-08-19T08:56:00-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 60,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "updatable_detail": {
+                                "leg_departure_time": "2020-08-19T08:56:00-04:00",
+                                "leg_arrival_time": "2020-08-19T08:57:00-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "transit",
+                              "vehicle_types": [
+                                "metro",
+                                "rail"
+                              ],
+                              "duration_seconds": 420,
+                              "services": [
+                                {
+                                  "id": "AirTrainAirtrainjfk",
+                                  "name": "AirTrain JFK",
+                                  "vehicle_types": [
+                                    "metro",
+                                    "rail"
+                                  ],
+                                  "brand": {
+                                    "id": "AirTrain",
+                                    "image_key": "us-nyc-airtrain"
+                                  },
+                                  "image_key": "us-nyc-airtrain-jfk",
+                                  "image_replaces_name": true,
+                                  "color": "#008CD1",
+                                  "background_color": "#008CD1"
+                                }
+                              ],
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "stops": [
+                                {
+                                  "id": "AirTrainJamaica",
+                                  "name": "Jamaica",
+                                  "coordinates": {
+                                    "lat": 40.6989,
+                                    "lon": -73.80845
+                                  }
+                                },
+                                {
+                                  "id": "AirTrainFederalCircle",
+                                  "name": "Federal Circle",
+                                  "coordinates": {
+                                    "lat": 40.65982,
+                                    "lon": -73.80349
+                                  }
+                                },
+                                {
+                                  "id": "AirTrainJFKTerminal1",
+                                  "name": "Terminal 1",
+                                  "coordinates": {
+                                    "lat": 40.643378,
+                                    "lon": -73.789097
+                                  }
+                                }
+                              ],
+                              "updatable_detail": {
+                                "departures": [
+                                  {
+                                    "service_id": "AirTrainAirtrainjfk",
+                                    "type": "frequency",
+                                    "frequency_seconds_range": [
+                                      750,
+                                      750
+                                    ],
+                                    "platform_description": "Airport Terminals"
+                                  },
+                                  {
+                                    "service_id": "C",
+                                    "type": "frequency",
+                                    "frequency_seconds_range": [
+                                      720,
+                                      1080
+                                    ],
+                                    "platform_description": "Uptown"
+                                  }
+                                ],
+                                "live_departure_availability": "none_available",
+                                "leg_departure_time": "2020-08-19T09:02:30-04:00",
+                                "leg_arrival_time": "2020-08-19T09:09:30-04:00"
+                              }
+                            },
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 98,
+                              "path": "_flyHbjPDZBTBNDJ",
+                              "updatable_detail": {
+                                "leg_departure_time": "2020-08-19T09:09:30-04:00",
+                                "leg_arrival_time": "2020-08-19T09:11:08-04:00"
+                              }
+                            }
+                          ],
+                          "signature": "eJyNUl2P0zAQ/CuRX0mOtWMncR9B3IdAgFQQD6dTZOKlyjVnF9vhkKL+d+ykRaEPJyQ/2Lvj2ZnRTqRTjmwyxkSdZ0SPToXemlihpYBYQaPjYyJKa4fexzuhBctuVfjR46B9nn2wRluTbd/RTH6+ybOv70n811nr9AwX9EpALaq8gCsKdQ1l6hv1hP9HdozoR9f2RuPv+COJGnCXqO8nonsflOkSFZMXDhhLBezOIhiHkwjJkoQnq2cJz2rYp7dfITldkFVZJQHTmrem8m8whEsAWsqSb9eUwSnj+5BKzo4B237O4p4s/t6MvirJQ5oZlAtnHuCM1jOPD/bQdnY0qdcsAlZOK3nhlJb/OI1xy1Pc4mWn0LCTU84ackySDq7vsD3gMovOW+Bwt0wi474YZg9nb73ZtQ5/juhDdJkgDWje8AqK70qLgoOoCykoFoyXkgvAqqkbsvI+XSxLSr8+xy/peltKlr0d0O3RPOMwxLv1mGfXyrkoI4lKyxL6BcyAQQFNQdkXKjfxMPYK6Abg9cdP3+62t4n4Fzp/yvD4B94v0po="
+                        }
+                      ],
+                      "language": "en-US"
+                    }
+                  },
+                  "London Bus Route": {
+                    "value": {
+                      "routes": [
+                        {
+                          "start": {
+                            "coordinates": {
+                              "lat": 51.524387,
+                              "lon": -0.106324
+                            }
+                          },
+                          "end": {
+                            "coordinates": {
+                              "lat": 51.50758,
+                              "lon": -0.107744
+                            }
+                          },
+                          "duration_seconds": 1395,
+                          "price": {
+                            "formatted": "£1.50",
+                            "amount": "1.50",
+                            "currency": "GBP"
+                          },
+                          "legs": [
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 230,
+                              "path": "_flyHbjPDZBTBNDJ"
+                            },
+                            {
+                              "travel_mode": "transit",
+                              "vehicle_types": [
+                                "bus"
+                              ],
+                              "path": "_flyHbjPDZBTBNDJ"
+                            },
+                            {
+                              "travel_mode": "walk",
+                              "duration_seconds": 213,
+                              "path": "_flyHbjPDZBTBNDJ"
+                            }
+                          ],
+                          "signature": "eJyNUl2P0zAQ/CuRX0mOtWMncR9B3IdAgFQQD6dTZOKlyjVnF9vhkKL+d+ykRaEPJyQ/2Lvj2ZnRTqRTjmwyxkSdZ0SPToXemlihpYBYQaPjYyJKa4fexzuhBctuVfjR46B9nn2wRluTbd/RTH6+ybOv70n811nr9AwX9EpALaq8gCsKdQ1l6hv1hP9HdozoR9f2RuPv+COJGnCXqO8nonsflOkSFZMXDhhLBezOIhiHkwjJkoQnq2cJz2rYp7dfITldkFVZJQHTmrem8m8whEsAWsqSb9eUwSnj+5BKzo4B237O4p4s/t6MvirJQ5oZlAtnHuCM1jOPD/bQdnY0qdcsAlZOK3nhlJb/OI1xy1Pc4mWn0LCTU84ackySDq7vsD3gMovOW+Bwt0wi474YZg9nb73ZtQ5/juhDdJkgDWje8AqK70qLgoOoCykoFoyXkgvAqqkbsvI+XSxLSr8+xy/peltKlr0d0O3RPOMwxLv1mGfXyrkoI4lKyxL6BcyAQQFNQdkXKjfxMPYK6Abg9cdP3+62t4n4Fzp/yvD4B94v0po="
+                        }
+                      ],
+                      "language": "en-US"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/directions/scenario": {
+      "get": {
+        "operationId": "scenariodirections",
+        "summary": "Scenario based directions between two points",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "**NOTE** This API requires the use of a Scenario ID to select the routing scenario\nused to determine the type and properties of Routes returned from this endpoint.\nPlease contact Citymapper using the details provided at the top of the page for\ninformation on integrating and using this API.\n\nComputes Routes between two points based on a provided scenario.\n\nOne or more groups of routes can be provided depending on a scenario.\nEach group will contain several Routes. Each Route will contain one or more Legs.\n\nSuccessful responses (HTTP code `200`) will consume \"Scenario Route\" credits\ndepending on a provided scenario and may vary. Unsuccessful calls will not consume any credits.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/scenarioID"
+          },
+          {
+            "$ref": "#/components/parameters/routeStartEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/routeEndEndpointCoordinate"
+          },
+          {
+            "$ref": "#/components/parameters/time"
+          },
+          {
+            "$ref": "#/components/parameters/timeType"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DirectionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/1/live/routeupdates": {
+      "post": {
+        "operationId": "liverouteupdates",
+        "summary": "Live departure and availability information for multiple Routes at once",
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "API Key": []
+          }
+        ],
+        "description": "This retrieves current and live departure information for multiple Routes previously\nobtained from the `/directions/` endpoints.\n\nOnly Routes that have at least one Leg with a Leg Updatable Detail can be updated using this API.\n\nNote it may not always be possible for Citymapper to provide current times or live\ndeparture and disruption information for a Leg.\n\nSuccessful responses (HTTP code `200`) will consume one \"Live Update\" credit\nfor each HTTP response. Unsuccessful calls will not consume any credits.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "signatures": {
+                    "description": "An array of `signature` properties from previously-obtained Routes",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "eJyNUl2P0zAQ/CuRX0mOtWMncR9B3IdAgFQQD6dTZOKlyjVnF9vhkKL+d+ykRaEPJyQ/2Lvj2ZnRTqRTjmwyxkSdZ0SPToXemlihpYBYQaPjYyJKa4fexzuhBctuVfjR46B9nn2wRluTbd/RTH6+ybOv70n811nr9AwX9EpALaq8gCsKdQ1l6hv1hP9HdozoR9f2RuPv+COJGnCXqO8nonsflOkSFZMXDhhLBezOIhiHkwjJkoQnq2cJz2rYp7dfITldkFVZJQHTmrem8m8whEsAWsqSb9eUwSnj+5BKzo4B237O4p4s/t6MvirJQ5oZlAtnHuCM1jOPD/bQdnY0qdcsAlZOK3nhlJb/OI1xy1Pc4mWn0LCTU84ackySDq7vsD3gMovOW+Bwt0wi474YZg9nb73ZtQ5/juhDdJkgDWje8AqK70qLgoOoCykoFoyXkgvAqqkbsvI+XSxLSr8+xy/peltKlr0d0O3RPOMwxLv1mGfXyrkoI4lKyxL6BcyAQQFNQdkXKjfxMPYK6Abg9cdP3+62t4n4Fzp/yvD4B94v0po="
+                    ]
+                  }
+                },
+                "required": [
+                  "signatures"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveRouteUpdateMultipleResponse"
+                },
+                "examples": {
+                  "NYC Chelsea Market to JFK": {
+                    "value": {
+                      "route_updates": [
+                        {
+                          "leg_updates": [
+                            {},
+                            {
+                              "departures": [
+                                {
+                                  "type": "live",
+                                  "service_id": "C",
+                                  "headsign": "168 St",
+                                  "live_time": "2020-08-19T08:10:42-04:00",
+                                  "scheduled_time": "2020-08-19T08:15:00-04:00"
+                                },
+                                {
+                                  "type": "live",
+                                  "service_id": "E",
+                                  "headsign": "Jamaica Center - Parsons/Archer",
+                                  "live_time": "2020-08-19T08:12:00-04:00",
+                                  "scheduled_time": "2020-08-19T08:13:30-04:00"
+                                },
+                                {
+                                  "type": "scheduled",
+                                  "service_id": "E",
+                                  "headsign": "Jamaica Center - Parsons/Archer",
+                                  "scheduled_time": "2020-08-19T08:16:30-04:00"
+                                }
+                              ]
+                            },
+                            {},
+                            {
+                              "departures": [
+                                {
+                                  "type": "live",
+                                  "service_id": "LIRRBabylon",
+                                  "headsign": "Babylon",
+                                  "short_name": "24",
+                                  "live_time": "2020-08-19T08:09:00-04:00",
+                                  "scheduled_time": "2020-08-19T08:09:00-04:00",
+                                  "time_status": "on_time",
+                                  "platform_short_name": "18"
+                                },
+                                {
+                                  "type": "live",
+                                  "service_id": "LIRRRonkonkoma",
+                                  "headsign": "Ronkonkoma",
+                                  "short_name": "2012",
+                                  "live_time": "2020-08-19T08:14:00-04:00",
+                                  "scheduled_time": "2020-08-19T08:14:00-04:00",
+                                  "time_status": "on_time"
+                                }
+                              ]
+                            },
+                            {},
+                            {
+                              "departures": [
+                                {
+                                  "type": "frequency",
+                                  "service_id": "AirTrainAirtrainjfk",
+                                  "headsign": "Jamaica",
+                                  "frequency_seconds_range": [
+                                    750,
+                                    750
+                                  ],
+                                  "frequency_start_time": "2020-08-19T08:00:00-04:00",
+                                  "frequency_end_time": "2020-08-19T10:42:30-04:00"
+                                }
+                              ]
+                            },
+                            {}
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "bikeProfiles": {
+        "name": "profiles",
+        "description": "Indicates which \"profiles\" to use when calculating bike directions. Each profile can\ngenerate a different Route option, so requesting more profiles will generally give more\noptions. Note that sometimes some of the resulting Routes will be identical (in the case\nof one route being optimal in more than one way), and a profile may not always\nyield a Route.\n\n| value | description |\n| ----- | ----------- |\n| quiet | Attempts to use roads with less traffic |\n| regular | The default profile, balances traffic with directness |\n| fast | Attempts to find the shortest sensible Route |\n\nIf no profiles are specified, `regular` will be used.\n",
+        "example": "quiet,regular,fast",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "directionsCurrentLocation": {
+        "name": "current_location",
+        "description": "The user's current location, in order to update the Route based on the user's\nlocation. Provided in WGS84 'latitude,longitude' format. Coordinates should be in\ndecimal, and only the first 6 digits of precision will be used.\n\nThis parameter is used to get an updated Route that reflects the user's actual\nlocation if they diverge from the path given in the Route.\n\nIf this is provided, the returned Route will contain this location. Which Leg\nof the Route will contain this location is decided by the value of the\n`ride_state` parameter.\n",
+        "example": "51.524247,-0.106410",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "directionsRideStartLocation": {
+        "name": "ride_start_location",
+        "description": "The location of the vehicle to be used, at the beginning of the vehicle ride part of the\nuser's trip along the Route. Provided in WGS84 'latitude,longitude' format. Coordinates\nshould be in decimal, and only the first 6 digits of precision will be used.\n\nThis must be provided when `ride_state` is `riding` or `walking_to_end`. If\nnot provided when `ride_state` is `walking_to_vehicle` (or not specified),\nCitymapper will attempt to find the most appropriate vehicle that belongs to the\nspecified `brand_id`.\n\nFor compatibility, `original_vehicle_location` is an alias for this parameter\n",
+        "example": "51.524247,-0.106410",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "directionsRideEndLocation": {
+        "name": "ride_end_location",
+        "description": "The location the vehicle was dropped off at the end of the vehicle ride part of the user's\ntrip along the Route. Provided in WGS84 'latitude,longitude' format. Coordinates should \nbe in decimal, and only the first 6 digits of precision will be used.\n\nThis must be provided when `ride_state` is `walking_to_end`. In all other states\nthis parameter is ignored.\n",
+        "example": "51.524247,-0.106410",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "directionsRideState": {
+        "name": "ride_state",
+        "description": "Indicates where along the Route the user is. If omitted, `walking_to_vehicle`\nis used. This property along with `current_location` allows the retrieval of\nan updated Route that reflects the user's current progress through it.\n\n| value | description |\n| ----- | ----------- |\n| walking_to_vehicle | Indicates that the user is walking to collect the vehicle |\n| riding | Indicates that the user is riding the vehicle |\n| walking_to_end | Indicates that the user has left the vehicle and is walking to their destination |\n",
+        "example": "walking_to_vehicle",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "walking_to_vehicle",
+            "riding",
+            "walking_to_end"
+          ]
+        },
+        "in": "query"
+      },
+      "language": {
+        "name": "language",
+        "description": "An [IETF BCP 47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag)\nthat indicates the end-user's language preference.\n  \nWhen provided, the response will contain a `language` property that indicates the language used for any\nlocalizable elements of the response (such as turning instructions). This language will be a best-effort\nattempt to fulfill the expressed preference, but it may contain a value that wasn't expressed in the\nrequest (this will generally be `en-US` as a fallback).\n\nNote that language preference will generally only affect Citymapper-generated content such as turning\ninstructions. External content such as Stop names and Status descriptions will generally be passed\nthrough in their original language.\n",
+        "schema": {
+          "type": "string",
+          "example": "zh-Hans"
+        },
+        "in": "query"
+      },
+      "rerouteSignature": {
+        "name": "reroute_signature",
+        "description": "When rerouting (requesting an update to a previous response that\naccounts for the user's updated location), this value should be set to the `signature`\nprovided in the original Route. This allows for more efficient determination\nof the updated Route.\n\nThis value must be URL-encoded.\n\nWhen providing this parameter, the `current_location` (when applicable) or `start`\nlocation should be set to the user's latest location.\n\nWhen this parameter is included, Citymapper may not return results in cases where\nthe request differs significantly from the original, for instance if the `end`\nlocation is different, or if more than 1 hour has passed since the original request.\n",
+        "example": "v1.eJxtkM1OwzAQhN9lrzjp%2Bi9O%2FARwgQNIH...",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "routeStartEndpointCoordinate": {
+        "name": "start",
+        "description": "The geographical start of the route, in WGS84 'latitude,longitude' format. Coordinates should be in decimal, and only the first 6 decimal places will be used.",
+        "example": "51.524247,-0.106410",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          },
+          "explode": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "in": "query",
+        "required": true
+      },
+      "routeEndEndpointCoordinate": {
+        "name": "end",
+        "description": "The geographical end of the route, in WGS84 'latitude,longitude' format. Coordinates should be in decimal, and only the first 6 decimal places will be used.",
+        "example": "51.507752,-0.110081",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          },
+          "explode": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "in": "query",
+        "required": true
+      },
+      "scenarioID": {
+        "name": "scenario_id",
+        "description": "Scenario ID for directions.",
+        "example": "transit",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "required": true
+      },
+      "time": {
+        "name": "time",
+        "description": "The time to be used as a departure or arrival time constraint when getting directions.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+        "example": "2020-08-19T08:10:42-04:00",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      },
+      "timeType": {
+        "name": "time_type",
+        "description": "When a `time` value is given, this determines how the time will be used to constrain the\ndirections that are returned. When this isn't specified, `depart_approximate` is used. \nIf no `time` is given, this has no effect.\n\n| value | description |\n| ----- | ----------- |\n| arrive | Directions are chosen that get the user to their destination on or before `time` |\n| depart | Directions are chosen assuming the user leaves their origin as soon after `time` as possible |\n| depart_approximate | Similar to `depart`, but allowing for later departures in order to return more preferable options even if they leave a bit later. This is Citymapper's default way of choosing directions when the time isn't specified |\n",
+        "example": "depart",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "arrive",
+            "depart",
+            "depart_approximate"
+          ]
+        },
+        "in": "query"
+      },
+      "walkProfiles": {
+        "name": "profiles",
+        "description": "Indicates which \"profiles\" to use when calculating walking directions. Each profile can\ngenerate a different Route option, so requesting more profiles will generally give more\noptions. Note that sometimes some of the resulting Routes will be identical (in the case\nof one route being optimal in more than one way), and a profile may not always\nyield a Route.\n\nNot all profiles will be available for all start and end routes. Unavailable profiles will\nbe omitted from the response.\n\n| value | description |\n| ----- | ----------- |\n| fast | The default profile, attempts to find the fastest sensible Route |\n| main_roads | Attempts to avoid backstreets and parks |\n\nIf no profiles are specified, `fast` will be used.\n",
+        "example": "fast,main_roads",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query"
+      }
+    },
+    "schemas": {
+      "Brand": {
+        "title": "Brand",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The identifier for this Brand",
+            "type": "string",
+            "example": "NewYorkSubway"
+          },
+          "name": {
+            "description": "The name of Brand",
+            "type": "string",
+            "example": "Subway"
+          },
+          "images": {
+            "description": "A list of `Image`s that can be used to represent this `Brand` in a user interface.\nAPI consumers should use the first `Image` in the list that meets their criteria.\n\nImages in this list may have any of the following values for `ui_role`:\n\n| value | description |\n| ----- | ----------- |\n| pin | A pushpin-styled icon to display a station or stop location on a map |\n| station | An icon for display beside a station or stop name |\n| vehicle | An icon that depicts the mode of travel for use in directions |\n| vehicle_compact | A compact icon to be displayed before the `name` of a `Service` to indicate the vehicle type |\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandImage"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "Coordinates": {
+        "title": "Coordinates",
+        "type": "object",
+        "properties": {
+          "lat": {
+            "description": "A latitude in WGS84 encoding, with 6 digits of decimal precision.",
+            "type": "number",
+            "format": "double",
+            "example": 51.524247
+          },
+          "lon": {
+            "description": "A longitude in WGS84 encoding, with 6 digits of decimal precision.",
+            "type": "number",
+            "format": "double",
+            "example": -0.10641
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ]
+      },
+      "Departure": {
+        "title": "Departure",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Indicates what type of departure this object represents:\n  \n| value | description |\n| ----- | ----------- |\n| scheduled | A scheduled departure at an exact time according to the published timetable, does not include real-time/live information |\n| frequency | An approximate departure frequency such as \"every 7 minutes\" or \"every 10-12 minutes\" |\n| live | Real-time information determined from vehicle tracking systems |\n",
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "frequency",
+              "live"
+            ]
+          },
+          "service_id": {
+            "description": "Indicates which Service in the Leg this Departure refers to, in order to indicate\nService and Brand naming and imagery. This is redundant in single-Service Legs,\nbut it's essential in Legs that have alternate equivalent services.\n",
+            "type": "string"
+          },
+          "suggested_departure": {
+            "description": "When Departures are given as part of a transit directions response in a Leg, the suggested_departure\nflag indicates whether Citymapper thinks this departure should be caught, following the estimated\n`route_departure_time` and subsequent `leg_departure_time` and `leg_arrival_time`s. Note that these\ntimes assume the user is at the start of the Route.\n\nA value of `suggested` indicates that this departure is the one used to calculate the\n`leg_{depart,arrive}_time`, while `alternative` indicates that taking this departure would still\nresult in arriving at the same final `route_arrival_time`.\n\nThis means that departures before the first one with this `suggested_departure` field are likely too\nearly for the user to be able to catch, while those after could be taken but would result in a later\narrival time than the estimated `route_arrival_time`.\n\nIf there are no estimated times (the Leg and Route don't have the `*_time` fields) then no\nDepartures will have a `suggested_departure` field. In this case it is likely that the user cannot\nsuccessfully complete this Route at this time.\n",
+            "type": "string",
+            "enum": [
+              "suggested",
+              "alternative"
+            ]
+          },
+          "headsign": {
+            "description": "Text identifying the destination or pattern of this departure. This generally\ncorresponds to text shown on the front of a transit vehicle. It will not include\nthe Service or Brand name.\n",
+            "type": "string"
+          },
+          "time_name": {
+            "description": "A user-facing identifier for the scheduled time of this departure, effectively \nthe original time of the departure in the local format. It will only be present \nwhere the scheduled time is commonly used as part of the name (typically along\nwith the headsign) when referring to this departure in e.g. station announcements. A\nconcrete example of this type of departure in an announcement might be the\n\"10:45 to Liverpool Street\", where \"10:45\" is the time_name, and \"Liverpool Street\"\nis the headsign\n\nMost often used in rail systems, but can appear in other contexts like some intercity\ncoach services\n",
+            "type": "string",
+            "example": "15:30"
+          },
+          "short_name": {
+            "description": "A user-facing identifier for this specific departure or class of departures.\nThis is generally used in commuter rail systems as a train number.\n",
+            "type": "string"
+          },
+          "live_time": {
+            "description": "(Only included when `type` is `live`.)\n\nThe current time when the service is\nexpected to depart, based on live vehicle tracking.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "scheduled_time": {
+            "description": "(Included when `type` is `scheduled` and sometimes `live`.)\n\nThe time when the service\nis expected to depart, according to the pre-published timetable. In departures with\n`type` of `live`, the `scheduled_time` is included when possible to indicate which\ntimetabled departure the Citymapper service has associated the live departure with.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "frequency_seconds_range": {
+            "description": "(Included when `type` is `frequency`.)\n\nThe approximate time between departures during the time of day specified by\n`frequency_start_time` and `frequency_end_time`. The frequency is expressed as\nan array of two integers, which encode a range of \n[headways](https://en.wikipedia.org/wiki/Headway).\n\nFor instance, a value of `[180, 300]` means that vehicles are expected to depart\nroughly every 3-5 minutes. Providing the same number twice indicates a simple\nheadway rather than a range. For instance, the value `[750, 750]` means that\nthe headway is every 12.5 minutes.\n\nMultiple Departures with `type` of `frequency` can be returned in the same array,\nindicating how the frequency changes during different parts of the day.\nIn this case, each Departure of `type` `frequency` will have a distinct\n`frequency_start_time` and `frequency_end_time` to indicate the time of day,\nalong with the `frequency_seconds_range` expressing the service frequencies\nduring that period.\n",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "frequency_start_time": {
+            "description": "(Included when `type` is `frequency`.)\n\nThe beginning of the period in the day in which this service has the frequency\nexpressed by `frequency_seconds_range`.\n",
+            "type": "string"
+          },
+          "frequency_end_time": {
+            "description": "(Included when `type` is `frequency`.)\n\nThe end of the period in the day in which this service has the frequency\nexpressed by `frequency_seconds_range`.\n",
+            "type": "string"
+          },
+          "time_status": {
+            "description": "Indicates whether or not the service is on time. This is generally only provided for\nservices where this information is commonly provided to the rider, for instance\ncommuter trains.\n\n| value | description |\n| ----- | ----------- |\n| unknown | The status of this departure is unknown (also signaled by the `time_status` property being omitted). |\n| on_time | This departure is on time. |\n| delay | This departure is running behind schedule. In this case, the amount of delay can be determined from the difference between `live_time` and `scheduled_time`. |\n| cancellation | This departure has been canceled and will no longer arrive. |\n",
+            "type": "string",
+            "enum": [
+              "unknown",
+              "on_time",
+              "delay",
+              "cancellation"
+            ]
+          },
+          "platform_short_name": {
+            "description": "A short string indicating the \"platform\" or \"track\", such as `18` or `A`,\nwhen available. This is only used for short identifiers that would appear\nnext to the word \"Platform\" or \"Track\"; longer platform names that can\nbe shown on their own will be passed in `direction_description` on TransitLeg instead.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "service_id"
+        ],
+        "example": {
+          "type": "live",
+          "service_id": "LondonBus63",
+          "suggested_departure": "suggested",
+          "headsign": "Honor Oak",
+          "time_name": "19:08",
+          "short_name": "63",
+          "live_time": "2020-08-13T19:06:55+01:00",
+          "scheduled_time": "2020-08-13T19:08:00+01:00",
+          "time_status": "on_time"
+        }
+      },
+      "DirectionsResponse": {
+        "title": "Directions Response",
+        "type": "object",
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Route"
+            }
+          },
+          "language": {
+            "description": "A [IETF BCP 47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag)\nthat indicates the language used to encode localizable content, such as\nturning instructions, in this response. This will reflect a best-effort attempt\nto fulfill any language preference expressed by the `language` request parameter,\nor `en-US` as default.\n",
+            "type": "string",
+            "example": "en-US"
+          }
+        },
+        "required": [
+          "routes"
+        ]
+      },
+      "DurationAccuracy": {
+        "title": "Duration Accuracy",
+        "description": "Citymapper's assessment of how the accuracy level of `duration_seconds`\nshould be displayed to the user. This is largely based on the `type` of the Departures\nused for times, but it involves additional heuristics developed over time for\nthe Citymapper app.\n\nWhen this field is not provided, the value `scheduled` should be used.\n\n| value | description |\n| ----- | ----------- |\n| estimated | A duration that should be considered approximate, as its calculation involved more uncertainty than usual. This is the lowest accuracy. |\n| scheduled | A normal duration, typically based on published timetable information. |\n| live | A duration largely based on real-time/live departure information. This is the highest accuracy. |\n",
+        "type": "string",
+        "enum": [
+          "estimated",
+          "scheduled",
+          "live"
+        ],
+        "default": "scheduled"
+      },
+      "ErrorResponse": {
+        "title": "Error Response",
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "A developer-readable message explaining the problem. Must not be displayed to the end user.",
+            "type": "string",
+            "example": "'start' parameter not present"
+          },
+          "error_code": {
+            "description": "A string code that can be used for triggering error handling code paths. Only present\nin responses with non-200 HTTP code. Note new values may be added at any time.\n\n| value | description |\n| ----- | ----------- |\n| no-results | The request was in Citymapper's coverage regions, but no results were found. |\n| coverage-region | The request is outside of Citymapper's coverage regions, or spans disconnected regions. |\n| coverage-start | The request's `start` location falls outside of Citymapper's coverage regions. |\n| coverage-end | The request's `end` location falls outside of Citymapper's coverage regions. |\n| signature | A signature included in the request is invalid for use with this API. |\n| unknown-brand | The request references an unknown Brand ID. |\n| unknown-scenario | The request references an unknown Scenario ID. |\n| request-format | The request was semantically malformed. The `message` field may contain additional details. |\n| deprecated | The request was made to a deprecated API. |\n",
+            "type": "string",
+            "example": "request-format"
+          }
+        }
+      },
+      "GatewayError": {
+        "title": "Authentication Error",
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "A developer-readable message explaining the problem. Must not be displayed to the end user.",
+            "type": "string",
+            "example": "Invalid authentication credentials"
+          }
+        }
+      },
+      "Image": {
+        "title": "Image",
+        "type": "object",
+        "properties": {
+          "url": {
+            "description": "The URL from which this `Image` can be retrieved. The image will be encoded in PNG format\nunless the `format` field indicates otherwise.\n",
+            "type": "string"
+          },
+          "ui_role": {
+            "description": "Indicates the role that this image plays in a user interface. New values may be added at any time. See\nthe parent object in the response for valid values in this context.\n",
+            "type": "string"
+          },
+          "width": {
+            "description": "The width of the image in screen units. This corresponds to\n`px` in CSS, \"points\" on iOS, and \"density-independent pixels\" on Android.\n",
+            "type": "number"
+          },
+          "height": {
+            "description": "The height of the image in screen units. This corresponds to\n`px` in CSS, \"points\" on iOS, and \"density-independent pixels\" on Android.\n",
+            "type": "number"
+          },
+          "pixel_ratio": {
+            "description": "Indicates the ratio of image pixels to screen units.\nWhen not provided, `2` should be assumed.\nFor instance, an `Image` with a `width` of `38`,\n`height` of `41`, and `pixel_ratio` of `2` has image pixel\ndimensions of 76 x 82.\n",
+            "type": "number",
+            "default": 2
+          },
+          "format": {
+            "description": "Indicates the file format of the image. The default value is `png`, indicating\nPortable Network Graphics bitmap format. At time of writing, all `Images` returned\nare in `png` format, and therefore this field will usually be omitted. However,\nin the future, additional `format` types may be provided in responses.\n",
+            "type": "string",
+            "enum": [
+              "png"
+            ],
+            "default": "png"
+          }
+        },
+        "required": [
+          "url",
+          "ui_role"
+        ]
+      },
+      "BrandImage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Image"
+          },
+          {
+            "title": "BrandImage",
+            "type": "object",
+            "properties": {
+              "ui_role": {
+                "type": "string",
+                "enum": [
+                  "pin",
+                  "station",
+                  "vehicle",
+                  "vehicle_compact"
+                ]
+              },
+              "is_generic": {
+                "description": "If `true`, this indicates that this is a generic image entirely based on the\nvehicle type, rather than being customized for the specific brand or service.\nWhen a specific branded image of the same `ui_role` is available, it will be provided\nearlier in the list of images.\n",
+                "type": "boolean",
+                "default": false
+              },
+              "has_space_for_text": {
+                "description": "If `true`, this image contains a designated area for overlaying extra textual elements such as \"stop indicator\" letters.\n(Some regions have 2-4 letter codes on bus stop poles to distinguish between nearby stops.)\nThe specific renderable area will depend on the `ui_role`.\n\nWhen this is `true`, there will generally also be a peer `Image` without space for text,\nfor the more common case where no text rendering is needed. This alternate `Image` will\nappear earlier in the list of `Image`s.\n",
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        ]
+      },
+      "ServiceImage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Image"
+          },
+          {
+            "title": "ServiceImage",
+            "type": "object",
+            "properties": {
+              "ui_role": {
+                "type": "string",
+                "enum": [
+                  "service"
+                ]
+              },
+              "replaces_name": {
+                "description": "Generally only applies to `Image`s with `ui_role` of `service`.\nWhen present and `true`, this indicates that this image can be displayed instead\nof the `Service`'s `name`, as the image contains enough information to identify the service unambiguously. This is\noften the case with metro services, where the image would depict the number or color of the metro line,\nand displaying both the image and the name could appear redundant.\n",
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        ]
+      },
+      "Instruction": {
+        "title": "Instruction",
+        "type": "object",
+        "properties": {
+          "path_index": {
+            "description": "0-based index into the list of coordinates provided by the `path` property of the\nLeg. This indicates the location at which the instruction is to be followed, so it\nwill be the location of the turn on the path, or the start or end of the Leg.\n",
+            "type": "integer"
+          },
+          "distance_meters": {
+            "description": "The distance in meters of the section of the `path` **prior to** this instruction.\nThis property will be omitted for initial instructions of type `depart`.\n",
+            "type": "integer"
+          },
+          "time_seconds": {
+            "description": "The time in seconds that the user is expected to take to traverse the section of\nthe `path` **prior to** this instruction.\nThis property will be omitted for initial instructions of type `depart`.\n",
+            "type": "integer"
+          },
+          "description_text": {
+            "description": "Plain-text description of the Instruction to the user.\n",
+            "type": "string"
+          },
+          "description_format": {
+            "description": "Text format for rendering the Instruction with emphasized elements, where `{key}`\nindicates a part of the string that must be replaced with content defined by the\nentry corresponding to `key` in `description_format_replacements`.\n\nThis allows the elements described by the replacements to be formatted differently\nby the client, if desired.\n\nKey strings will contain only the characters `[a-zA-Z0-9]`.\n\n`{ }` will not be nested, and the literal characters `{` and `}` are encoded by the\nescape sequences `\\{` and `\\}`, respectively.\n",
+            "type": "string"
+          },
+          "description_format_replacements": {
+            "description": "",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "description": "A key corresponding to a string enclosed in `{}` in `description_format`.\n",
+                  "type": "string"
+                },
+                "text": {
+                  "description": "The text to be used to replace the `{key}` substring in the `description_format`.\n",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "A value indicating what kind of real-world thing is being identified by\nthis format replacement. This allows API clients to apply application-specific\nformatting if desired.\n\n| value | description |\n| ----- | ----------- |\n| street_name | The name of a street, road, or other way |\n| exit_number | The number of an exit, generally from a roundabout |\n\n**NOTE: New values may be added to this list at any time.**\n",
+                  "type": "string",
+                  "enum": [
+                    "street_name",
+                    "exit_number"
+                  ]
+                },
+                "language": {
+                  "description": "An [IETF BCP 47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) that indicates\nwhat language the associated `text` is in. Note that this can be different from the language\nof the surrounding description - this is most common when the replacement is a place-name in\na local language whilst the description is in a different language.\n",
+                  "type": "string",
+                  "example": "es-ES"
+                }
+              },
+              "required": [
+                "key",
+                "text"
+              ]
+            }
+          },
+          "type": {
+            "description": "Indicates the type of Instruction.\n\n**NOTE: New values may be added to this list at any time.**\n",
+            "type": "string",
+            "enum": [
+              "depart",
+              "turn",
+              "enter_roundabout",
+              "exit_roundabout",
+              "arrive"
+            ]
+          },
+          "type_direction": {
+            "description": "Indicates a direction that modifies this Instruction.\n\n**NOTE: New values may be added to this list at any time.**\n",
+            "type": "string",
+            "enum": [
+              "straight",
+              "uturn",
+              "left",
+              "slight_left",
+              "sharp_left",
+              "right",
+              "slight_right",
+              "sharp_right"
+            ]
+          }
+        },
+        "required": [
+          "path_index"
+        ],
+        "example": {
+          "path_index": 0,
+          "distance_meters": 221,
+          "time_seconds": 64,
+          "description_text": "Turn left onto Hatfields",
+          "description_format": "Turn left onto {key_1}",
+          "description_format_replacements": [
+            {
+              "key": "key_1",
+              "type": "street_name",
+              "text": "Hatfields",
+              "language": "en-GB"
+            }
+          ],
+          "type": "turn",
+          "type_direction": "left"
+        }
+      },
+      "Leg": {
+        "title": "Leg",
+        "type": "object",
+        "discriminator": {
+          "propertyName": "travel_mode",
+          "mapping": {
+            "self_piloted": "#/components/schemas/LegVariantServices",
+            "walk": "#/components/schemas/LegVariantWalk",
+            "transit": "#/components/schemas/LegVariantTransit",
+            "on_demand": "#/components/schemas/LegVariantServices"
+          }
+        },
+        "properties": {
+          "travel_mode": {
+            "description": "Identifies the kind of travel described by this leg. New options are likely to be added over time. This value indicates which other fields are likely to be populated in the Leg.\n\n| value | description |\n| ----- | ----------- |\n| walk | Walking |\n| transit | Public transportation with fixed routes & stops such as bus, metro, train, ferry |\n| self_piloted | Vehicles such as e-scooters, bicycles, motor scooters, private automobiles that the user pilots themselves |\n| on_demand | Services such as rideshare, cab, demand-responsive transit services where the path, pickup and dropoff points are determined by the user rather than fully pre-determined |\n",
+            "type": "string",
+            "enum": [
+              "self_piloted",
+              "walk",
+              "transit",
+              "on_demand"
+            ],
+            "example": "self_piloted"
+          },
+          "duration_seconds": {
+            "description": "The time required to traverse this leg, excluding any waiting or boarding time at the beginning. May be omitted in rare circumstances when the duration cannot be computed.",
+            "type": "integer",
+            "example": 622
+          },
+          "path": {
+            "description": "The geographic path that the leg traverses, as a series of WGS84 coordinates encoded in [Google Polyline Format](https://developers.google.com/maps/documentation/utilities/polylinealgorithm), with a decimal precision of 5 digits.\n\nFor example, the value `_flyHbjPDZBTBNDJ` encodes the following series of (latitude, longitude) coordinates:\n```\n[(51.51344, -0.08882),\n (51.51341, -0.08896),\n (51.51339, -0.08907),\n (51.51337, -0.08915),\n (51.51334, -0.08921)]\n```\n",
+            "type": "string",
+            "example": "_flyHbjPDZBTBNDJ"
+          },
+          "instructions": {
+            "description": "(May be included when `travel_mode` is `walk` or `self_piloted`.)\n\nThis provides the list of turn instructions to guide the user through Legs where the\nuser needs to navigate, such as when walking or using a scooter or bike.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Instruction"
+            }
+          }
+        },
+        "required": [
+          "travel_mode",
+          "path"
+        ]
+      },
+      "LegVariantWalk": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Leg"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "station_walk_type": {
+                "description": "If provided, indicates which parts of a walk are inside of a station.\n\n| value | description |\n| ----- | ----------- |\n| outside_station | This walking leg has no relationship to a transit station, so no `walk_details_*` fields are provided. This is the default when this field is omitted. |\n| enter_station | This walking leg ends by entering a station and walking to the platform, `walk_details_enter_station` is provided |\n| change_platform | This walking leg takes place entirely between two platforms in one station, no `walk_details_*` fields are provided. |\n| exit_station | This walking leg starts by exiting a station, `walk_details_exit_station` is provided |\n| walk_between_stations | This walking leg involves exiting a station and entering another nearby station; both `walk_details_exit_station` and `walk_details_enter_station` are provided |\n\nThis field is only provided when `travel_mode` is `walk`.\n",
+                "type": "string",
+                "enum": [
+                  "outside_station",
+                  "enter_station",
+                  "change_platforms",
+                  "exit_station",
+                  "walk_between_stations"
+                ],
+                "default": "outside_station"
+              },
+              "walk_details_enter_station": {
+                "description": "When a walk Leg ends by entering a transit station, this can provide information on which entrance the\nrider should use, and how much of the Leg's walk duration takes place between the entrance and the platform.\n\nThis field is relevant for `station_walk_type` of `enter_station` and `walk_between_stations`.\n",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/StationWalkDetails"
+                  }
+                ]
+              },
+              "walk_details_exit_station": {
+                "description": "When a walk Leg begins by exiting a transit station, this can provide information on which exit the\nrider should use, and how much of the Leg's walk duration takes place between the platform and the exit.\n\nThis field is relevant for `station_walk_type` of `exit_station` and `walk_between_stations`.\n",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/StationWalkDetails"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "LegVariantServices": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Leg"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "vehicle_types": {
+                "description": "This is a priority list of vehicle types that can be used to describe the vehicle\nused in this leg. The list is ordered from more specific to less specific vehicle\ntype, to allow for refinements to the list of types to be added over time, and to\nallow consumers of the API to make more generic distinctions if desired. In the\ncase that this Leg has Services specified, this value will contain the intersection\nof values given in the individual Services' `vehicle_types` fields.\n\nThis property is omitted when no vehicle is involved, such as when `travel_mode` is `walk`.\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/VehicleType"
+                },
+                "example": [
+                  "escooter"
+                ]
+              },
+              "path_annotations": {
+                "description": "Array of Path Annotations providing extra metadata about sections of the `path`.\nFor instance, in Legs with `travel_mode` of `self_piloted`, these annotations\ncan indicate sections of the path where the user should dismount their vehicle and\nwalk alongside it due to terrain or restrictions.\n\nEach Path Annotation specifies a `start_index` and `end_index`, which are indices\ninto the series of coordinates encoded by `path`. (For example, an index of `1`\nrefers to the coordinate `(51.51341, -0.08896)` in the `path` example above.)\n\n`path_annotations` will contain annotations in order of increasing `start_index`, and\nwill not contain overlapped ranges\n(though multiple annotations can refer to the same coordinate).\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PathAnnotation"
+                }
+              },
+              "services": {
+                "description": "Indicates the services that can be used to complete this Leg. This field is omitted when the concept is not\nrelevant, for instance when `travel_mode` is `walk` or `self_piloted` (in non-branded results). When more\nthan one service is listed, that means that alternate equivalent services are available (for instance, two\nbuses or trains that travel between the same set of stops).\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "LegVariantTransit": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LegVariantServices"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "stops": {
+                "description": "(Included when `travel_mode` is transit.)\n\nThis provides the list of stops traversed in a transit Leg, each with a name and\ncoordinates. Note that the coordinates may not be exactly on the `path`.\n",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Stop"
+                },
+                "minItems": 2
+              },
+              "direction_description": {
+                "description": "Optional user-facing hint for guidance inside a station or when approaching a stop. In the case of a station, this will usually attempt to match in-station signage. This will not refer to short platform identifiers; when departures leave from platforms with short identifiers then `platform_short_name` in the departure object will instead/additionally be populated.",
+                "type": "string",
+                "example": "Eastbound"
+              },
+              "updatable_detail": {
+                "$ref": "#/components/schemas/LegUpdatableDetail"
+              },
+              "best_boarding_sections": {
+                "description": "When present, this part of the response indicates the best section(s) of a\ntrain to board in order to be closer to the exit(s) at the destination station.\nRegardless of the number of cars that a train has, this information is always\ngiven in terms of 3 sections: `front`, `middle`, and `back`.\n\nMultiple sections can be indicated at the same time, as some stations have\nmultiple exits from the platform that work equally well for that Route.\n",
+                "type": "object",
+                "properties": {
+                  "front": {
+                    "description": "When `true`, this indicates that the rider should board near the front of the train\nto be close to an exit at the destination platform.\n",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "middle": {
+                    "description": "When `true`, this indicates that the rider should board near the middle of the train\nto be close to an exit at the destination platform.\n",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "back": {
+                    "description": "When `true`, this indicates that the rider should board near the back of the train\nto be close to an exit at the destination platform.\n",
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "LegUpdatableDetail": {
+        "title": "Leg Updatable Detail",
+        "description": "This object contains elements that can be updated using `/api/1/live/routeupdates` calls,\nto provide the latest departure information. When receiving updates, the previous\nLeg Updatable Detail for each Leg can be replaced with the new one.\n",
+        "type": "object",
+        "properties": {
+          "departures": {
+            "description": "An array of Departure objects, giving alternate departures for the services\nin the Legs in which this property appears. The array can contain a mixture of\ndifferent Departure `type`s—for example, it's common to receive `live`\ninformation for the next few departures, followed by `scheduled` information.\nFor legs with multiple alternate Services, this array is likely to contain a\nmixture of departures corresponding to the different alternate services.\n\nThe number of Departures returned will depend on the availability of information.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Departure"
+            }
+          },
+          "live_departure_availability": {
+            "description": "This indicates the availability of live departure information for the Services\nused in this Leg. Live departure information is not available for all transit\nservices, and some transit services have live information that cannot be\ndetermined quickly enough to be included in all requests. The value of this\nproperty characterizes the contents of the `departures` array in this\nLeg Updatable Detail, and indicates whether an additional request is likely\nto yield additional live times for this Leg.\n\n| value | description |\n| ----- | ----------- |\n| unknown | The availability of live departure information can't be determined |\n| none_available | No live departure information is available for the services used in this leg. Typically the `departures` list will contain entries of type `scheduled` or `frequency` in this case |\n| included | Live departure information is available for the services in this Leg, and it is included in the `departures` list |\n| additional_request | Live information is available for the services in this Leg, but some of it will require an additional `/api/1/live/routeupdate` request to retrieve |\n",
+            "type": "string",
+            "enum": [
+              "unknown",
+              "none_available",
+              "included",
+              "additional_request"
+            ]
+          },
+          "statuses": {
+            "description": "An array of Status objects that relate to this Leg.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Status"
+            }
+          },
+          "leg_departure_time": {
+            "description": "The time at which Citymapper thinks the user will set out on this leg, given\navailable departure information. In the case of Legs of `travel_type` `transit`,\nthis excludes waiting time.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "leg_arrival_time": {
+            "description": "The time at which Citymapper thinks the user will arrive at the end of this leg, given\navailable departure information and expected travel speed.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          }
+        }
+      },
+      "LiveRouteUpdateMultipleResponse": {
+        "title": "Live Route Update Multiple Response",
+        "type": "object",
+        "properties": {
+          "route_updates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RouteUpdate"
+            }
+          }
+        },
+        "required": [
+          "route_updates"
+        ]
+      },
+      "LiveRouteUpdateResponse": {
+        "title": "Live Route Update Response",
+        "type": "object",
+        "properties": {
+          "route_update": {
+            "$ref": "#/components/schemas/RouteUpdate"
+          }
+        },
+        "required": [
+          "route_update"
+        ]
+      },
+      "PathAnnotation": {
+        "title": "Path Annotation",
+        "description": "Annotates a section of the `path` polyline to add more information, by specifying a\nrange of coordinates along with annotation properties that apply to that section of\nthe path.\n",
+        "type": "object",
+        "properties": {
+          "start_index": {
+            "description": "The start index of the coordinate range, as a 0-based index into the list of\ncoordinates encoded by the `path` of a Leg.\n",
+            "type": "integer",
+            "example": 1
+          },
+          "end_index": {
+            "description": "The end index of the coordinate range, as a 0-based index into the list of\ncoordinates encoded by the `path` of a Leg. `end_index` must be greater\nthan or equal to `start_index`. If `end_index` = `start_index`, this refers\nto a single coordinate in the path.\n",
+            "type": "integer",
+            "example": 3
+          },
+          "should_walk": {
+            "description": "If present and `true`, this Path Annotation refers to a section of the path\nwhere the user should dismount and walk alongside their vehicle. This only\nrelevant in the case of Legs where `travel_mode` is `self_piloted`.\n",
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "start_index",
+          "end_index"
+        ]
+      },
+      "Price": {
+        "title": "Price",
+        "description": "Represents a monetary amount",
+        "type": "object",
+        "properties": {
+          "formatted": {
+            "description": "The given price as a formatted string. By default, this is in the native currency format of the region where the route occurs.",
+            "type": "string",
+            "example": "£1.50"
+          },
+          "amount": {
+            "description": "The price as a decimal value, encoded as a string to avoid floating-point accuracy issues. It will not include currency symbols, and the separator between major and minor units will always be `.`, regardless of the region.",
+            "type": "string",
+            "example": "1.50"
+          },
+          "currency": {
+            "description": "The currency in which the price is given, in three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) form.",
+            "type": "string",
+            "example": "GBP"
+          }
+        },
+        "required": [
+          "formatted"
+        ]
+      },
+      "Route": {
+        "title": "Route",
+        "type": "object",
+        "properties": {
+          "start": {
+            "$ref": "#/components/schemas/Waypoint"
+          },
+          "end": {
+            "$ref": "#/components/schemas/Waypoint"
+          },
+          "duration_seconds": {
+            "description": "The overall estimated time to traverse the entire route, in seconds. May be omitted in rare circumstances when the duration cannot be computed.",
+            "type": "integer",
+            "example": 1139
+          },
+          "duration_accuracy": {
+            "$ref": "#/components/schemas/DurationAccuracy"
+          },
+          "price": {
+            "description": "The price to take the Route. Omitted when not available. Generally available only on transit Routes. The price is computed assuming no special passes, with the user paying with cash or the most common fare instrument.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Price"
+              }
+            ]
+          },
+          "legs": {
+            "description": "Array of Legs comprising the route, in the order in which they should be traversed. Every valid route will have at least one.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Leg"
+            },
+            "minItems": 1
+          },
+          "route_departure_time": {
+            "description": "The time at which Citymapper thinks the user will set out on this route, given\navailable departure information. This is computed assuming that user is at the\nstart of the route.\n\nUpdated values for `route_departure_time` and `route_arrival_time` are returned\nby `/api/1/live/routeupdates` to reflect any updated departure information.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "route_arrival_time": {
+            "description": "The time at which Citymapper thinks the user will arrive at the end of this route, given\navailable departure information and expected travel speed. This is computed assuming that user is at the\nstart of the route.\n\nUpdated values for `route_departure_time` and `route_arrival_time` are returned\nby `/api/1/live/routeupdates` to reflect any updated departure information.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "route_metadata": {
+            "title": "Route Metadata",
+            "description": "Any metadata associated with the Route.",
+            "type": "object",
+            "properties": {
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RouteGroup"
+                }
+              }
+            }
+          },
+          "profile": {
+            "description": "Indicates which routing \"profile\" was used to calculate this Route. For example, a\nresponse from a bike routing endpoint may return multiple routes, one with a `quiet`\nprofile and another with a `fast` profile.\n\nNote that new values can be added at any time, so any code parsing this field must\nbe able to handle unexpected values.\n\nThis value will match the `profiles` request parameter on endpoints that support\nselecting specific routing profiles.\n",
+            "type": "string"
+          },
+          "signature": {
+            "description": "A value to be passed back to the server in subsequent calls to refer to this Route (for instance, when requesting live departure information via `/api/1/live/routeupdates`). It must be treated as an opaque value.",
+            "type": "string",
+            "example": "v2.eJyNUl2P0zAQ/CuRX0mOtWMncR9B3IdAgFQQD6dTZOKlyjVnF9vhkKL+d+ykRaEPJyQ/2Lvj2ZnRTqRTjmwyxkSdZ0SPToXemlihpYBYQaPjYyJKa4fexzuhBctuVfjR46B9nn2wRluTbd/RTH6+ybOv70n811nr9AwX9EpALaq8gCsKdQ1l6hv1hP9HdozoR9f2RuPv+COJGnCXqO8nonsflOkSFZMXDhhLBezOIhiHkwjJkoQnq2cJz2rYp7dfITldkFVZJQHTmrem8m8whEsAWsqSb9eUwSnj+5BKzo4B237O4p4s/t6MvirJQ5oZlAtnHuCM1jOPD/bQdnY0qdcsAlZOK3nhlJb/OI1xy1Pc4mWn0LCTU84ackySDq7vsD3gMovOW+Bwt0wi474YZg9nb73ZtQ5/juhDdJkgDWje8AqK70qLgoOoCykoFoyXkgvAqqkbsvI+XSxLSr8+xy/peltKlr0d0O3RPOMwxLv1mGfXyrkoI4lKyxL6BcyAQQFNQdkXKjfxMPYK6Abg9cdP3+62t4n4Fzp/yvD4B94v0po="
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "legs",
+          "signature"
+        ]
+      },
+      "RouteGroup": {
+        "title": "Route Group",
+        "description": "Group associated with specific Routes of the same scenario.",
+        "type": "object",
+        "properties": {
+          "group_id": {
+            "description": "ID of a group a Route contains in.",
+            "type": "string",
+            "example": "transit"
+          },
+          "group_name": {
+            "description": "Localised name of a Route group, e.g. 'Transit' or 'Le métro'.",
+            "type": "string",
+            "example": "Transit"
+          },
+          "route_position": {
+            "description": "A zero-based position of a Route within specific group.",
+            "type": "integer",
+            "example": 0
+          }
+        },
+        "required": [
+          "group_id",
+          "route_position"
+        ]
+      },
+      "RouteUpdate": {
+        "title": "Route Update",
+        "description": "This object contains the latest live updates for a single Route.\n",
+        "type": "object",
+        "properties": {
+          "leg_updates": {
+            "description": "This is an parallel array of Leg Updatable Detail objects, one for every Leg in the\noriginal Route being updated. The ones corresponding to walking Legs will be empty,\nbut the details corresponding to transit legs will contain updated departure\ninformation.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegUpdatableDetail"
+            }
+          },
+          "route_departure_time": {
+            "description": "The time at which Citymapper thinks the user will set out on this route, given\navailable departure information. This is computed assuming that user is at the\nstart of the route at the time of the request.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "route_arrival_time": {
+            "description": "The time at which Citymapper thinks the user will arrive at the end of this route, given\navailable departure information and expected travel speed. This is computed assuming that user is at the\nstart of the route at the time of the request.\n\nThe time is expressed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format,\nincluding a date, time, and time zone in which the event occurs.\nFor example, `2020-08-19T08:10:42-04:00` expresses August 19, 2020 at 8:10am in\nEastern Daylight Time.\n",
+            "type": "string"
+          },
+          "route_duration_seconds": {
+            "description": "The overall estimated time to traverse the entire route, in seconds.\n\nThis value replaces the `duration_seconds` value from the original Route,\nas it will be recomputed to use the specific departure information contained in this\nRoute update response.\n\nMay be omitted in rare circumstances when the duration cannot be computed, for instance\nif the Route can't be completed at the given time because the Services involved are not running.\n",
+            "type": "integer"
+          },
+          "route_duration_accuracy": {
+            "$ref": "#/components/schemas/DurationAccuracy"
+          },
+          "request_signature": {
+            "description": "This is a Route `signature` from the update request, which should be used to associate\nthis update with the correct Route.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "leg_updates",
+          "request_signature"
+        ]
+      },
+      "Service": {
+        "title": "Service",
+        "description": "A service describes a transportation offering such as a specific numbered or named bus or train line.\n",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The identifier for the service",
+            "type": "string",
+            "example": "E"
+          },
+          "name": {
+            "description": "A string that can be displayed to the user to describe this service",
+            "type": "string",
+            "example": "E"
+          },
+          "vehicle_types": {
+            "description": "This is a priority list of vehicle types that can be used to describe the vehicle used by this Service. The list is ordered from more specific to less specific vehicle type, to allow for refinements to the list of types to be added over time, and to allow consumers of the API to  make more generic distinctions if desired.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleType"
+            },
+            "example": [
+              "escooter"
+            ]
+          },
+          "brand": {
+            "description": "Provides the branding attached to the service. The main purpose of Brand is to determine which specific\nimagery to show for the service, particularly in the case where the Service doesn't have distinct\n`images` of its own.\n",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Brand"
+              }
+            ]
+          },
+          "images": {
+            "description": "A list of `Image`s that can be used to represent this `Service` in a user interface.\nAPI consumers should use the first `Image` in the list that meets their criteria.\n\nImages given here will have a `ui_role` of `service`, as they are identifying\nthe specific `Service` rather than the general `Brand`. If no suitable `Image` is provided\nhere, one of the images in the adjacent `brand` should be used.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceImage"
+            }
+          },
+          "color": {
+            "description": "The basic color associated with this service, for graphical uses such as map lines.\n\nThe color is encoded as a capitalized hexadecimal RGB value starting with `#`.\nFor instance, `#2850AD` encodes the 24-bit RGB value of (40, 80, 173).\n",
+            "type": "string",
+            "example": "#2850AD"
+          },
+          "background_color": {
+            "description": "A background color for use with this service, in cases where text will be shown on\na colored background. Used in conjunction with `text_color`.\n\nThe color is encoded as a capitalized hexadecimal RGB value starting with `#`.\nFor instance, `#2850AD` encodes the 24-bit RGB value of (40, 80, 173).\n",
+            "type": "string",
+            "example": "#2850AD"
+          },
+          "text_color": {
+            "description": "A text color for use with this service, in cases where text will be shown on\na colored background. Used in conjunction with `background_color`. If omitted,\nit means that white (`#FFFFFF`) has sufficient contrast against the\ngiven `background_color` or `color` values.\n\nThe color is encoded as a capitalized hexadecimal RGB value starting with `#`.\nFor instance, `#2850AD` encodes the 24-bit RGB value of (40, 80, 173).\n",
+            "type": "string",
+            "example": "#FFFFFF"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "StationWalkDetails": {
+        "title": "Station Walk Details",
+        "type": "object",
+        "properties": {
+          "recommended_exit": {
+            "description": "Provides information about the station entrance/exit that the rider passes through as part of this walk.\n",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StationExit"
+              }
+            ]
+          },
+          "alternate_exits": {
+            "description": "Provides information about the other station entrances/exits for contextual display.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StationExit"
+            }
+          },
+          "duration_seconds": {
+            "description": "Indicates how much of the walking time in this Leg occurs inside of the station between the recommended\nentrance/exit and the platform.\n\nWhen omitted, this indicates that no information about the duration of the in-station portion of the\nwalk is available.\n\nTo determine the amount of walking time that occurs outside of the station, subtract this\nvalue from the Leg's overall `duration_seconds`. (The value is encoded this way so that API consumers that\ndon't want to display this level of detail can simply display the Leg's `duration_seconds`.)\n",
+            "type": "integer"
+          }
+        }
+      },
+      "StationExit": {
+        "title": "Station Exit",
+        "description": "Describes a station\n",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Identifies this station exit. This is an internal identifier and must not be shown to the rider.\n",
+            "type": "string"
+          },
+          "stop_id": {
+            "description": "Identifies the station that this exit gives access to. When used in a walk Leg,\nthis value will match a Stop `id` value in an\nadjoining transit Leg. This is an internal identifier and must not be shown to the rider.\n",
+            "type": "string"
+          },
+          "coordinates": {
+            "description": "The geographical location of this exit.\n",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Coordinates"
+              }
+            ]
+          },
+          "name": {
+            "description": "A rider-facing longer descriptive name for this exit. Depending on the station signage, an exit may have\nany combination of `name` and `short_name` (or neither).\n",
+            "type": "string",
+            "example": "Buses/Dalston Square"
+          },
+          "short_name": {
+            "description": "A rider-facing short code identifying this exit, usually a few numbers and/or letters.\nDepending on the station signage, an exit may have\nany combination of `name` and `short_name` (or neither).\n",
+            "type": "string",
+            "example": "2A"
+          }
+        },
+        "required": [
+          "id",
+          "stop_id",
+          "coordinates"
+        ]
+      },
+      "Status": {
+        "title": "Status",
+        "description": "This describes the status of one or more services or stops. In the context of a\nLeg, this will apply to services, stops, or ranges of stops used in the Leg.\n",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Indicates the type/level/severity expressed by this Status. This can be\nused to choose icons, and determine whether to show different Status entries.\n\n| value | description |\n| ----- | ----------- |\n| unknown | The type/severity of this status couldn't be determined. Should be rare. May still populate `title` and `description`. |\n| no_issues | No known issues that would affect travel over the specified services and/or stops. May still populate `title` and `description`. |\n| travel_affected | Travel over the specified services and/or stops may be delayed or otherwise affected. |\n| travel_prevented | Travel over the specified services and/or stops may not be possible. |\n",
+            "type": "string",
+            "enum": [
+              "unknown",
+              "no_issues",
+              "travel_affected",
+              "travel_prevented"
+            ]
+          },
+          "title": {
+            "description": "A relatively short title for the Status.",
+            "type": "string"
+          },
+          "description": {
+            "description": "An in-depth description of the Status. This will be provided as plain text.",
+            "type": "string"
+          },
+          "service_ids": {
+            "description": "If this Status relates to Services rather than Stops, this will contain the\n`id` of one or more Services. The ability to specify multiple services is\nintended to prevent needless duplication of Status reporting.\n",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "stop_ids": {
+            "description": "If this Status relates to specific stops (as opposed to Services, or sections\nof Services running between specific stops), this will contain the `id` of\none or more relevant Stops.\n\nExample: A Status might use this to identify specific metro Stops where\nriders can't board or alight because they're closed, even though trains\nare passing through them.\n",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "service_stop_ranges": {
+            "description": "If this Status relates to sections of Services between different Stops, this\nwill indicate which sections, in combination with `service_ids`. This field\nrelates to services traveling between Stops, rather than whether or not\nthe Stops are open or closed (which is represented by `stop_ids`).\n\nExample: A Status might use this to indicate that a particular train isn't running\nbetween a set of Stops, even if those Stops remain open for other services.\n",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start_stop_id": {
+                  "description": "The `id` of Stop which starts the affected section of the Service.\n",
+                  "type": "string"
+                },
+                "end_stop_id": {
+                  "description": "The `id` of Stop which ends the affected section of the Service.\n",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "start_stop_id",
+                "end_stop_id"
+              ]
+            }
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "example": {
+          "type": "travel_affected",
+          "title": "Service Alert",
+          "description": "About 90% of our regular weekday trains are running. While we're running on the Essential Schedule,\noff peak fares remain in effect on all LIRR trains, including trains operating in traditional peak/rush\nhour time periods. To minimize contact with crew members, use MTA eTix on smartphones and activate eTix\njust before boarding. Ticket machines are available at most stations for cash &amp; credit card purchases.\nRemember: If you're using MTA services, you must wear a face covering (mask/bandana/scarf) at the station\nand for the entire duration of your train ride.\n",
+          "service_ids": [
+            "LIRRBabylon",
+            "LIRRLongBeach",
+            "LIRRPortJefferson",
+            "LIRRRonkonkoma"
+          ]
+        }
+      },
+      "Stop": {
+        "title": "Stop",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "An internal identifier used to refer to this stop.",
+            "type": "string",
+            "example": "Subway8Av14St"
+          },
+          "name": {
+            "description": "The user-facing name of the stop.",
+            "type": "string",
+            "example": "8 Av - 14 St"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/Coordinates"
+          },
+          "indicator_text": {
+            "description": "Some transit systems (particularly in the UK) have 2-4 letter codes displayed prominently\non bus stop poles to distinguish between nearby stops. When relevant, such \"indicators\" are\nprovided in this field to allow them to be rendered into stop icons.\n",
+            "type": "string",
+            "example": "AF"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "coordinates"
+        ]
+      },
+      "VehicleType": {
+        "title": "Vehicle Type",
+        "description": "This is an enumeration of a possible vehicle types used in Legs. This is generally used in a list of\nmultiple Vehicle Type values, ordered from more specific to less specific vehicle type, to allow for\nrefinements to the list of types to be added over time. In this way, an API client can iterate through\nand use the first matching vehicle type to decide how to render things.\n\n| value | description |\n| ----- | ----------- |\n| `bike` | Generic bicycles |\n| `bus` | Generic buses that run on streets or bus lanes |\n| `bus_rapid_transit` | Buses with limited stops, sometimes has stations where the rider pays before boarding |\n| `ebike` | Bicycles with battery-powered assistance |\n| `escooter` | Battery powered e-scooters that the rider stands on |\n| `ferry` | Water-based vehicles |\n| `funicular` | Cable-driven counterbalanced rail vehicles that travel up steep slopes |\n| `gondola` | Vehicles that are suspended from cables |\n| `helicopter` | Helicopter transportation services |\n| `light_rail` | A regional variation of `tram`, less likely to run on streets |\n| `metro` | Urban rail vehicles that generally run underground at high service frequencies |\n| `monorail` | Vehicles that travel on a single rail |\n| `motorscooter` | Seated scooters |\n| `rail` | Generic rail-based vehicles (generally this is a fallback for more specific Vehicle Types) |\n| `subway` | A regional variation of `metro` |\n| `streetcar` | A regional variation of `tram` |\n| `tram` | Rail vehicles that generally run on streets above ground, and use overhead wires |\n| `trolley` | A regional variation of `tram` |\n| `trolleybus` | Electric buses powered by overhead wires |\n",
+        "type": "string",
+        "enum": [
+          "bike",
+          "bus",
+          "bus_rapid_transit",
+          "ebike",
+          "escooter",
+          "ferry",
+          "funicular",
+          "gondola",
+          "helicopter",
+          "light_rail",
+          "metro",
+          "monorail",
+          "motorscooter",
+          "rail",
+          "subway",
+          "streetcar",
+          "tram",
+          "trolley",
+          "trolleybus"
+        ]
+      },
+      "Waypoint": {
+        "title": "Waypoint",
+        "type": "object",
+        "properties": {
+          "coordinates": {
+            "$ref": "#/components/schemas/Coordinates"
+          }
+        },
+        "required": [
+          "coordinates"
+        ]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "Missing Required Parameter": {
+                "value": {
+                  "message": "'start' parameter not present",
+                  "error_code": "request-format"
+                }
+              },
+              "Bad Input Example": {
+                "value": {
+                  "message": "'end' parameter should have format '<latitude>,<longitude>'",
+                  "error_code": "request-format"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Rate Limited",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GatewayError"
+            },
+            "examples": {
+              "Rate Limit Exceeded Example": {
+                "value": {
+                  "message": "API rate limit exceeded"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GatewayError"
+            },
+            "examples": {
+              "Missing Key Example": {
+                "value": {
+                  "message": "No API key found in request"
+                }
+              },
+              "Invalid API Key Example": {
+                "value": {
+                  "message": "Invalid authentication credentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "API Key": {
+        "name": "Citymapper-Partner-Key",
+        "type": "apiKey",
+        "in": "header",
+        "description": "An API key can be obtained from the [Powered by Citymapper website.](https://citymapper.com/powers)\nThis key must be provided with all requests in the `Citymapper-Partner-Key` HTTP header.\n"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "endpoints",
+      "x-displayName": "API Calls"
+    },
+    {
+      "name": "objects",
+      "x-displayName": "Object Reference",
+      "description": "## Brand\n<SchemaDefinition schemaRef=\"#/components/schemas/Brand\" />\n\n## Coordinates\n<SchemaDefinition schemaRef=\"#/components/schemas/Coordinates\" />\n\n## Departure\n<SchemaDefinition schemaRef=\"#/components/schemas/Departure\" />\n\n## Error Response\n<SchemaDefinition schemaRef=\"#/components/schemas/ErrorResponse\" />\n\n## BrandImage\n<SchemaDefinition schemaRef=\"#/components/schemas/BrandImage\" />\n\n## ServiceImage\n<SchemaDefinition schemaRef=\"#/components/schemas/ServiceImage\" />\n\n## Instruction\n<SchemaDefinition schemaRef=\"#/components/schemas/Instruction\" />\n\n## Leg\n<SchemaDefinition schemaRef=\"#/components/schemas/Leg\" />\n\n## Leg Updatable Detail\n<SchemaDefinition schemaRef=\"#/components/schemas/LegUpdatableDetail\" />\n\n## Path Annotation\n<SchemaDefinition schemaRef=\"#/components/schemas/PathAnnotation\" />\n\n## Price\n<SchemaDefinition schemaRef=\"#/components/schemas/Price\" />\n\n## Route\n<SchemaDefinition schemaRef=\"#/components/schemas/Route\" />\n\n## Service\n<SchemaDefinition schemaRef=\"#/components/schemas/Service\" />\n\n## Station Exit\n<SchemaDefinition schemaRef=\"#/components/schemas/StationExit\" />\n\n## Station Walk Details\n<SchemaDefinition schemaRef=\"#/components/schemas/StationWalkDetails\" />\n\n## Status\n<SchemaDefinition schemaRef=\"#/components/schemas/Status\" />\n\n## Stop\n<SchemaDefinition schemaRef=\"#/components/schemas/Stop\" />\n\n## Vehicle Type\n<SchemaDefinition schemaRef=\"#/components/schemas/VehicleType\" />\n\n## Waypoint\n<SchemaDefinition schemaRef=\"#/components/schemas/Waypoint\" />\n"
+    }
+  ]
+}

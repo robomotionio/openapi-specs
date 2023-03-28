@@ -1,0 +1,1664 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Eurosign REST API",
+    "description": "The Eurosign API is the best way to customize and streamline the digital signature process for all your needs. With Eurosign, any PDF can become an electronic contract instantly through the proprietary engine that automatically recognizes and transforms text into input fields (supported tags can be found below.)  With libraries and SDKs available in PHP, Java, Javascript, Python, C#, and Ruby, Eurosign can be easily integrated into any project. Eurosign complies with all current eIDAS regulations so you can trust your important data is being stored and handled in a secure and safe manner. Through compliance with eIDAS, using Eurosign will also allow you to send and receive digital signatures worry-free throughout the EU market, US market and beyond. Here we will discuss how to use Eurosign’s powerful features and provide information about available endpoints and walkthroughs for some common use cases to allow you to quickly and easily integrate Eurosign into your workflow.",
+    "termsOfService": "https://www.eurosign.com/en/docs/terms-of-use/",
+    "contact": {
+      "email": "apiteam@eurosign.com"
+    },
+    "version": "2.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.eurosign.com/v2"
+    }
+  ],
+  "paths": {
+    "/current-user": {
+      "get": {
+        "tags": [
+          "Current user"
+        ],
+        "summary": "Get current user",
+        "description": "Retrieves the current user",
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "Current user details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Get list of invoices",
+        "description": "Retrieve the list of all the invoices<br />Operation: **getInvoices**<br />Available expands: `recipients`, `files`, `files.base64`",
+        "operationId": "getInvoices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/invoice-status"
+          },
+          {
+            "$ref": "#/components/parameters/pagination-per-page"
+          },
+          {
+            "$ref": "#/components/parameters/pagination-page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/invoice"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "invoice.read"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Create an invoice",
+        "description": "Create an invoice and, optionally, send it<br />Operation: **createInvoice**<br />Available expands: `recipients`, `files`, `files.base64`",
+        "operationId": "createInvoice",
+        "parameters": [
+          {
+            "name": "directSend",
+            "in": "query",
+            "description": "If this parameter is sent and set to `1`, the invoice will be sent directly after being created. Requires the additionnal scope <code>invoice.send</code>",
+            "schema": {
+              "type": "boolean",
+              "default": 0
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/create-invoice"
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invoice"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "(if the `directSend` parameter is set) Accepted - Eurosign has started the process of sending the invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invoice"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity - Some parameters are missing or have an invalid format"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "invoice.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/invoices/{uuid}": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Get an invoice",
+        "description": "Retrieve details about an invoice<br />Operation: **getInvoice**<br />Available expands: `recipients`, `files`, `files.base64`",
+        "operationId": "getInvoice",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Identifier of an invoice",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invoice"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "invoice.read"
+            ]
+          }
+        ]
+      }
+    },
+    "/invoices/{uuid}/file-content": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Download invoice file content",
+        "description": "Download the invoice file certified by Eurosign<br />Operation: **getInvoiceFileContent**",
+        "operationId": "getInvoiceFileContent",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Identifier of an invoice",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The PDF file content"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "invoice.read"
+            ]
+          }
+        ]
+      }
+    },
+    "/invoices/{uuid}/cancel": {
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Cancel an invoice",
+        "description": "Cancel a invoice<br>**Warning:** Cancelling an invoice after sending it to a recipient will not prevent him/her from seeing it. It will only prevent him/her to pay the invoice if online payment was required.<br />Operation: **cancelInvoice**<br />Available expands: `recipients`, `files`, `files.base64`",
+        "operationId": "cancelInvoice",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The invoice UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invoice-cancelled"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "invoice.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{signatureRequestUuid}/files": {
+      "get": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Get list of signature request files",
+        "description": "Retrieve the file list of a signature request<br />Operation: **getSignatureRequestFiles**<br />Available expands: `base64`",
+        "operationId": "getSignatureRequestFiles",
+        "parameters": [
+          {
+            "name": "signatureRequestUuid",
+            "in": "path",
+            "description": "Identifier of a signature request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pagination-per-page"
+          },
+          {
+            "$ref": "#/components/parameters/pagination-page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of signature request files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/signature-request-file"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.read"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{signatureRequestUuid}/files/{fileUuid}": {
+      "get": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Get a signature request file",
+        "description": "Retrieve a signature request file<br />Operation: **getSignatureRequestFile**<br />Available expands: `base64`",
+        "operationId": "getSignatureRequestFile",
+        "parameters": [
+          {
+            "name": "signatureRequestUuid",
+            "in": "path",
+            "description": "Identifier of a signature request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileUuid",
+            "in": "path",
+            "description": "Identifier of a signature request file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signature request file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request-file"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.read"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests": {
+      "get": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Get list of signature requests",
+        "description": "Retrieve the list of all the signature requests<br />Operation: **getSignatureRequests**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "getSignatureRequests",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/signature-request-category"
+          },
+          {
+            "$ref": "#/components/parameters/pagination-per-page"
+          },
+          {
+            "$ref": "#/components/parameters/pagination-page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of signature requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/signature-request"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.read"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Create a signature request",
+        "description": "Create a signature request and, optionally, send it<br />Operation: **createSignatureRequest**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "createSignatureRequest",
+        "parameters": [
+          {
+            "name": "directSend",
+            "in": "query",
+            "description": "If this parameter is sent and set to `1`, the signature request will be sent directly after being created. Requires the additionnal scope <code>signature_request.send</code>",
+            "schema": {
+              "type": "boolean",
+              "default": 0
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/create-signature-request"
+        },
+        "responses": {
+          "201": {
+            "description": "Draft signature request created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request-draft"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "(if the `directSend` parameter is set) Accepted - Eurosign has started the process of sending the signature request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity - Some parameters are missing or have an invalid format"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}": {
+      "get": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Get a signature request",
+        "description": "Retrieve details about a signature request<br />Operation: **getSignatureRequest**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "getSignatureRequest",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Identifier of a signature request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signature request details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.read"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Update a signature request",
+        "description": "Edit a draft signature request<br />Operation: **updateSignatureRequest**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "updateSignatureRequest",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The signature request UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/edit-signature-request"
+        },
+        "responses": {
+          "200": {
+            "description": "Signature request edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request-draft"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - The signature request has already been sent and can no longer be changed"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}/file-content": {
+      "get": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Download combined file content of a sent signature request",
+        "description": "Download the combined file content, generated once signature request is sent<br />Operation: **getSignatureRequestFileContent**",
+        "operationId": "getSignatureRequestFileContent",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Identifier of a sent signature request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The PDF file content"
+          },
+          "400": {
+            "description": "Bad request - The combined file is not generated until the signature request is sent."
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.read"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}/send": {
+      "post": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Send a signature request",
+        "description": "Send a previously created signature request<br />Operation: **sendSignatureRequest**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "sendSignatureRequest",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The signature request UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted - Eurosign has started the process of sending the signature request"
+          },
+          "400": {
+            "description": "The signature request cannot be sent because some parameters are missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.send"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}/cancel": {
+      "post": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Cancel a signature request",
+        "description": "Cancel a signature request that is not completed<br />Operation: **cancelSignatureRequest**<br />Available expands: `recipients`, `files`, `files.base64`, `variables`",
+        "operationId": "cancelSignatureRequest",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The signature request UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request-cancelled"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}/stop-all-reminders": {
+      "post": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Stop reminders for all pending recipients",
+        "operationId": "stopAllReminders",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The signature request UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signature-request-stop-all-reminders"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.write"
+            ]
+          }
+        ]
+      }
+    },
+    "/signature-requests/{uuid}/recipients/{recipientUuid}/stop-reminders": {
+      "post": {
+        "tags": [
+          "Signature requests"
+        ],
+        "summary": "Stop reminders for recipient",
+        "operationId": "stopRecipientReminders",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The signature request UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipientUuid",
+            "in": "path",
+            "description": "The recipient UUID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "signature_request.write"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignatureRequest": {
+        "$ref": "#/components/schemas/signature-request"
+      },
+      "User": {
+        "$ref": "#/components/schemas/user"
+      },
+      "invoice": {
+        "properties": {
+          "uuid": {
+            "description": "UUID of the invoice",
+            "type": "string",
+            "example": "790549818a0c46c5abb90f47cd33568a"
+          },
+          "name": {
+            "description": "Name of the invoice",
+            "type": "string",
+            "example": "My invoice"
+          },
+          "amount": {
+            "description": "Invoice amount",
+            "type": "string",
+            "example": "2510.27"
+          },
+          "currency": {
+            "description": "Invoice currency",
+            "type": "string",
+            "example": "USD"
+          },
+          "requirePayment": {
+            "description": "Whether payment of the invoice was required or not",
+            "type": "boolean",
+            "example": true
+          },
+          "senderFirstname": {
+            "description": "Invoice sender's firstname",
+            "type": "string",
+            "example": "John"
+          },
+          "senderLastname": {
+            "description": "Invoice sender's lastname",
+            "type": "string",
+            "example": "Doe"
+          },
+          "senderEmail": {
+            "description": "Invoice sender's email",
+            "type": "string",
+            "example": "john.doe@example.com"
+          },
+          "senderCompanyName": {
+            "description": "Invoice sender's company name",
+            "type": "string",
+            "example": "Sample Company"
+          },
+          "emailSubject": {
+            "description": "Custom email subject",
+            "type": "string",
+            "example": "Please pay this invoice"
+          },
+          "attachInvoiceFileToEmail": {
+            "description": "Whether the invoice file is attached to the recipient email",
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "description": "Custom message sent to recipients",
+            "type": "string",
+            "example": "Hello, here is your invoice. Please pay it as soon as possible."
+          },
+          "cancellerUserFirstName": {
+            "description": "Firstname of the canceller of the invoice",
+            "type": "string",
+            "example": null
+          },
+          "cancellerUserLastName": {
+            "description": "Lastname of the canceller of the invoice",
+            "type": "string",
+            "example": null
+          },
+          "cancellerUserEmail": {
+            "description": "Email of the canceller of the invoice",
+            "type": "string",
+            "example": null
+          },
+          "creationDate": {
+            "description": "Invoice creation date",
+            "type": "string",
+            "example": "2020-12-27 09:52:05"
+          },
+          "sendDate": {
+            "description": "Date the invoice was sent",
+            "type": "string",
+            "example": "2020-12-27 10:33:06"
+          },
+          "updatedDate": {
+            "description": "Date of last update of the invoice",
+            "type": "string",
+            "example": "2020-12-27 14:17:32"
+          },
+          "demoMode": {
+            "description": "Whether the invoice was created in demo mode",
+            "type": "boolean",
+            "example": false
+          },
+          "paymentExpirationDate": {
+            "description": "Date before which the recipient must pay the invoice",
+            "type": "string",
+            "example": "2021-06-28 00:00:00"
+          },
+          "status": {
+            "description": "Status of the invoice",
+            "type": "string",
+            "enum": [
+              "created",
+              "sent",
+              "paid",
+              "declined",
+              "expired",
+              "cancelled",
+              "error_occurred"
+            ],
+            "example": "sent"
+          }
+        },
+        "type": "object"
+      },
+      "invoice-cancelled": {
+        "title": "Invoice",
+        "description": "Invoice",
+        "allOf": [
+          {
+            "properties": {
+              "cancellerUserFirstName": {
+                "example": "Emily"
+              },
+              "cancellerUserLastName": {
+                "example": "Smith"
+              },
+              "cancellerUserEmail": {
+                "example": "emily.smith@example.com"
+              },
+              "status": {
+                "example": "cancelled"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/invoice"
+          }
+        ]
+      },
+      "invoice-recipients-example": {
+        "title": "Invoice Recipients",
+        "description": "Invoice Recipients",
+        "properties": {
+          "firstname": {
+            "description": "Recipient's firstname",
+            "type": "string",
+            "example": "John"
+          },
+          "lastname": {
+            "description": "Recipient's lastname",
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "description": "Recipient's email",
+            "type": "string",
+            "example": "john.doe@example.com"
+          }
+        },
+        "type": "object"
+      },
+      "invoice-files-example": {
+        "title": "Invoice Files",
+        "description": "Invoice Files",
+        "properties": {
+          "base64": {
+            "description": "File content base64 encoded",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "signature-request": {
+        "properties": {
+          "uuid": {
+            "description": "UUID of the signature request",
+            "type": "string",
+            "example": "790549818a0c46c5abb90f47cd33568a"
+          },
+          "name": {
+            "description": "Name of the signature request",
+            "type": "string",
+            "example": "My contract"
+          },
+          "level": {
+            "description": "Level of the signature request",
+            "type": "string",
+            "enum": [
+              "standard",
+              "standard_with_identity_check",
+              "advanced"
+            ],
+            "example": "standard"
+          },
+          "processType": {
+            "description": "Process type of the signature request",
+            "type": "string",
+            "enum": [
+              "completed_when_everyone_has_signed",
+              "ended_by_sender_at_any_time"
+            ],
+            "example": "completed_when_everyone_has_signed"
+          },
+          "senderFirstname": {
+            "description": "Signature request sender's firstname",
+            "type": "string",
+            "example": "John"
+          },
+          "senderLastname": {
+            "description": "Signature request sender's lastname",
+            "type": "string",
+            "example": "Doe"
+          },
+          "senderEmail": {
+            "description": "Signature request sender's email",
+            "type": "string",
+            "example": "john.doe@example.com"
+          },
+          "senderCompanyName": {
+            "description": "Signature request sender's company name",
+            "type": "string",
+            "example": "Sample Company"
+          },
+          "emailSubject": {
+            "description": "Custom email subject",
+            "type": "string",
+            "example": "Please sign this document"
+          },
+          "message": {
+            "description": "Custom message sent to recipients",
+            "type": "string",
+            "example": "Hello, here is our agreement. Please sign it as soon as possible."
+          },
+          "language": {
+            "description": "The provided language will be used for the emails delivered to the recipients.",
+            "type": "string",
+            "example": "en"
+          },
+          "cancellerUserFirstName": {
+            "description": "Firstname of the canceller of the signature request",
+            "type": "string",
+            "example": null
+          },
+          "cancellerUserLastName": {
+            "description": "Lastname of the canceller of the signature request",
+            "type": "string",
+            "example": null
+          },
+          "cancellerUserEmail": {
+            "description": "Email of the canceller of the signature request",
+            "type": "string",
+            "example": null
+          },
+          "smsOneTimePasswordRequired": {
+            "description": "If true, the recipients will have to validate a one-time password with their phone before signing",
+            "type": "boolean",
+            "example": true
+          },
+          "creationDate": {
+            "description": "Signature request creation date",
+            "type": "string",
+            "example": "2020-12-27 09:52:05"
+          },
+          "sendDate": {
+            "description": "Date the signature request was sent",
+            "type": "string",
+            "example": "2020-12-27 10:33:06"
+          },
+          "updatedDate": {
+            "description": "Date of last update of the signature request",
+            "type": "string",
+            "example": "2020-12-27 14:17:32"
+          },
+          "demoMode": {
+            "description": "Whether the signature request was created in demo mode",
+            "type": "boolean",
+            "example": false
+          },
+          "expirationDate": {
+            "description": "Expiry date of the signature request",
+            "type": "string",
+            "example": "2021-12-27 00:00:00"
+          },
+          "status": {
+            "description": "Status of the signature request",
+            "type": "string",
+            "enum": [
+              "created",
+              "sent",
+              "signed",
+              "declined",
+              "expired",
+              "cancelled",
+              "error_occurred"
+            ],
+            "example": "sent"
+          },
+          "recipientsSignInOrder": {
+            "description": "If true, the recipiens will sign one by one",
+            "type": "boolean",
+            "example": true
+          },
+          "currentRecipientIndex": {
+            "description": "If `recipientsSignInOrder` is true, it's the current recipient",
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "type": "object"
+      },
+      "signature-request-cancelled": {
+        "title": "Signature Request",
+        "description": "Signature Request",
+        "allOf": [
+          {
+            "properties": {
+              "cancellerUserFirstName": {
+                "example": "Emily"
+              },
+              "cancellerUserLastName": {
+                "example": "Smith"
+              },
+              "cancellerUserEmail": {
+                "example": "emily.smith@example.com"
+              },
+              "status": {
+                "example": "cancelled"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/signature-request"
+          }
+        ]
+      },
+      "signature-request-draft": {
+        "title": "Signature Request",
+        "description": "Signature Request",
+        "allOf": [
+          {
+            "properties": {
+              "senderFirstname": {
+                "example": null
+              },
+              "senderLastname": {
+                "example": null
+              },
+              "senderEmail": {
+                "example": null
+              },
+              "senderCompanyName": {
+                "example": null
+              },
+              "status": {
+                "example": "created"
+              },
+              "sendDate": {
+                "example": null
+              },
+              "currentRecipientIndex": {
+                "example": null
+              }
+            },
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/signature-request"
+          }
+        ]
+      },
+      "signature-request-recipients-example": {
+        "title": "Signature Request Recipients",
+        "description": "Signature Request Recipients",
+        "properties": {
+          "firstname": {
+            "description": "Recipient's firstname",
+            "type": "string",
+            "example": "John"
+          },
+          "lastname": {
+            "description": "Recipient's lastname",
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "description": "Recipient's email",
+            "type": "string",
+            "example": "john.doe@example.com"
+          }
+        },
+        "type": "object"
+      },
+      "signature-request-variables-example": {
+        "title": "Signature Request Variables",
+        "description": "Signature Request Variables",
+        "properties": {
+          "name": {
+            "description": "Variable name. Should contain only alphanumeric characters and underscores. For a signature request, each variable names must be unique.",
+            "type": "string",
+            "maxLength": 100,
+            "example": "myVariable"
+          },
+          "value": {
+            "description": "Variable value",
+            "type": "string",
+            "example": "Some text"
+          }
+        },
+        "type": "object"
+      },
+      "signature-request-files-example": {
+        "title": "Signature Request Files",
+        "description": "Signature Request Files",
+        "properties": {
+          "base64": {
+            "description": "File content base64 encoded",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "signature-request-status-property": {
+        "description": "Status of the signature request",
+        "type": "string",
+        "enum": [
+          "created",
+          "sent",
+          "signed",
+          "declined",
+          "expired",
+          "cancelled",
+          "error_occurred",
+          "pending_signature"
+        ],
+        "example": "sent"
+      },
+      "signature-request-cancelled-status-property": {
+        "description": "Status of the signature request",
+        "type": "string",
+        "enum": [
+          "created",
+          "sent",
+          "signed",
+          "declined",
+          "expired",
+          "cancelled",
+          "error_occurred",
+          "pending_signature"
+        ],
+        "example": "cancelled"
+      },
+      "signature-request-stop-all-reminders": {
+        "title": "Signature Request",
+        "description": "Signature Request",
+        "properties": {
+          "count": {
+            "description": "The number of recipients whose reminders have been stopped",
+            "type": "int",
+            "example": 2
+          }
+        },
+        "type": "object"
+      },
+      "signature-request-file": {
+        "properties": {
+          "uuid": {
+            "description": "UUID of the file",
+            "type": "string",
+            "example": "1b5fa6ec177d4c2f9d997ef28a1ea00e"
+          },
+          "name": {
+            "description": "Name of the file",
+            "type": "string",
+            "example": "My contract.pdf"
+          },
+          "pagesCount": {
+            "description": "Number of pages in the file",
+            "type": "integer",
+            "example": 7
+          }
+        },
+        "type": "object"
+      },
+      "user": {
+        "title": "User",
+        "description": "User",
+        "properties": {
+          "uuid": {
+            "description": "UUID of the user",
+            "type": "string",
+            "example": "26dd41f190a24c50aa1f5df482751dc6"
+          },
+          "email": {
+            "description": "User email",
+            "type": "string",
+            "example": "john.doe@example.com"
+          },
+          "emailIsValidated": {
+            "description": "If true, the user has validated his email",
+            "type": "boolean",
+            "example": true
+          },
+          "registerDate": {
+            "description": "The date on which the user has registered",
+            "type": "string",
+            "example": "2020-07-09 10:59:36"
+          },
+          "firstname": {
+            "description": "User firstname",
+            "type": "string",
+            "example": "John"
+          },
+          "lastname": {
+            "description": "User lastname",
+            "type": "string",
+            "example": "Doe"
+          },
+          "language": {
+            "description": "User language code",
+            "type": "string",
+            "example": "fr-FR"
+          },
+          "isActive": {
+            "description": "If the user is active or not",
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "type": "object"
+      }
+    },
+    "parameters": {
+      "status": {
+        "name": "status",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "level": {
+        "name": "level",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "processType": {
+        "name": "processType",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pagination-per-page": {
+        "name": "per-page",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "default": 20,
+          "maximum": 50,
+          "minimum": 1
+        }
+      },
+      "pagination-page": {
+        "name": "page",
+        "in": "query",
+        "description": "Index of the current page",
+        "schema": {
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        }
+      },
+      "invoice-status": {
+        "name": "status",
+        "in": "query",
+        "description": "Status of invoices. Available values:\n- `all` (default): All invoices\n- `created`: The invoices that have been created\n- `sent`: The invoices that have been sent to a recipient\n- `completed`: The invoices that have been completed. An invoice is considered as completed if:\n  - Invoice payment is required (<code>requirePayment=true</code>) and the amount due is fully paid\n  - Invoice payment is not required (<code>requirePayment=false</code>) and at least one recipient has viewed the invoice\n- `declined`: The invoices that have been declined\n- `expired`: The invoices that have expired\n- `cancelled`: The invoices that have been cancelled\n- `error_occurred`: The invoices where an unknown error has occurred\n  ",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "signature-request-category": {
+        "name": "category",
+        "in": "query",
+        "description": "Category of signature requests. Available values:\n- Signature requests created or received by the user:\n- `all` (default): All signature requests\n- `waiting-for-me`: The signature requests waiting for an action from the user\n- `waiting-for-others`: The signature requests waiting for an action from recipients\n- `completed`: The signature requests that are completed\n- `cancelled-declined`: The signature requests that have been cancelled or declined\n- `expired`: The signature requests that have expired\n- `drafts`: The signature requests that have not yet been sent\n- `error`: The signature requests where an unknown error has occurred\n  \n  \n- Signature requests created by any member of the user's organization\n- `organization-all`: All signature requests\n- `organization-in-progress`: The organization signature requests that are in progress\n- `organization-completed`: The organization signature requests that are completed\n- `organization-cancelled-declined`: The organization signature requests that have been cancelled or declined\n- `organization-expired`: The organization signature requests that have expired\n- `organization-error`: The organization signature requests where an unknown error has occurred",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "requestBodies": {
+      "create-invoice": {
+        "description": "Input data format",
+        "content": {
+          "application/json": {
+            "schema": {
+              "required": [
+                "name",
+                "amount",
+                "currency",
+                "files"
+              ],
+              "properties": {
+                "name": {
+                  "description": "The name of the invoice",
+                  "type": "string"
+                },
+                "amount": {
+                  "description": "The invoice amount. Must be at least <code>0.50</code> if <code>requirePayment</code> is true. If necessary, the value will be rounded to two decimal places (e.g. <code>124.257</code> will be rounded to <code>124.26</code>)",
+                  "type": "decimal"
+                },
+                "currency": {
+                  "description": "The invoice currency",
+                  "type": "boolean"
+                },
+                "files": {
+                  "description": "An array of base64 encoded files  \n*We currently support only one file per invoice*  \nExample:\n```json\n[\n    {\n        \"base64\": YOUR_BASE64_ENCODED_FILE\n    }\n]\n```",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "requirePayment": {
+                  "description": "**(required if `directSend=1`)** If true, the recipient will be invited to pay the invoice online. Otherwise, the recipient will just receive the electronic invoice and will not be able to pay it online.\n*Your organization must be linked to a fully configured Stripe account*",
+                  "type": "boolean"
+                },
+                "paymentExpirationDate": {
+                  "description": "(useful only if `requirePayment=true`) The date before which the recipient must pay the invoice (format `YYYY-MM-DD hh:ii:ss` or `YYYY-MM-DD`, UTC). Default if not set: 6 months after send date",
+                  "type": "string"
+                },
+                "emailSubject": {
+                  "description": "(useful only if `directSend=1`) A custom subject that will be defined in the email that the recipient will receive.",
+                  "type": "string"
+                },
+                "attachInvoiceFileToEmail": {
+                  "description": "(useful only if `directSend=1`) If true, the invoice certified file will be attached to the email received by the recipient.<br>\n<i><b>Warning:</b> By default, the file is not attached in order for Eurosign to track when the recipient opens the invoice. If you decide to attach the file directly in the email, the recipient could download the invoice without using the Eurosign interface, so Eurosign will not be notified of when the recipient opens the invoice.</i>",
+                  "type": "boolean",
+                  "default": false
+                },
+                "message": {
+                  "description": "(useful only if `directSend=1`) A custom message that will be displayed to the recipients when they receive the invoice",
+                  "type": "string"
+                },
+                "recipients": {
+                  "description": "**(required if `directSend=1`)** The array containing invoice recipients.  \n*We currently support only one recipient per invoice if `requirePayment=true`*  \nExample:  \n```json\n[\n    {\n        \"firstname\": \"John\",\n        \"lastname\": \"Doe\",\n        \"email\": \"john.doe@example.com\"\n    },\n    {\n        \"firstname\": \"Emily\",\n        \"lastname\": \"Smith\",\n        \"email\": \"emily.smith@example.com\"\n    }\n]\n```",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      },
+      "create-signature-request": {
+        "description": "Input data format",
+        "content": {
+          "application/json": {
+            "schema": {
+              "required": [
+                "name",
+                "level",
+                "recipientsSignInOrder",
+                "smsOneTimePasswordRequired"
+              ],
+              "properties": {
+                "name": {
+                  "description": "The name of the signature request",
+                  "type": "string"
+                },
+                "level": {
+                  "description": "The signature level. Available values:\n- `standard`: Standard signature\n- `standard_with_identity_check`: Standard signature with verification of the signers' identities performed by Eurosign\n- `advanced`: Advanced signature",
+                  "type": "string"
+                },
+                "recipientsSignInOrder": {
+                  "description": "If true, recipients will receive the signature request ordered by their index",
+                  "type": "boolean"
+                },
+                "smsOneTimePasswordRequired": {
+                  "description": "If true, recipients have to validate a one-time password with their mobile phone when they sign",
+                  "type": "boolean"
+                },
+                "processType": {
+                  "description": "The type of process of the signature request. Available values:\n- `completed_when_everyone_has_signed` (default): The envelope is completed once all recipients have signed\n- `ended_by_sender_at_any_time`: The envelope may be ended at any time by its sender. The signatures already made will be valid",
+                  "type": "string"
+                },
+                "expirationDate": {
+                  "description": "The signature request expiration date (format `YYYY-MM-DD hh:ii:ss` or `YYYY-MM-DD`, UTC). Default if not set: 1 month after send date",
+                  "type": "string"
+                },
+                "emailSubject": {
+                  "description": "A custom subject that will be defined in the email that the recipient will receive.",
+                  "type": "string"
+                },
+                "message": {
+                  "description": "A custom message that will be displayed to the recipients when they receive the signature request",
+                  "type": "string"
+                },
+                "language": {
+                  "description": "The provided language will be used for the emails delivered to the recipients. Available values:\n- `en` : English - US\n- `fr` : French\n\nIf not specified, the language of the creator is used.",
+                  "type": "string"
+                },
+                "files": {
+                  "description": "An array of base64 encoded files \nExample:\n```json\n[\n    {\n        \"name\": \"your file name.pdf\",\n        \"base64\": YOUR_BASE64_ENCODED_FILE\n    }\n]\n```\n*If you do not provide a name, it will be generated automatically.*",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "recipients": {
+                  "description": "The array containing signature request recipients. Example:  \n```json\n[\n    {\n        \"firstname\": \"John\",\n        \"lastname\": \"Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"role\": \"approver\"\n    },\n    {\n        \"firstname\": \"Emily\",\n        \"lastname\": \"Smith\",\n        \"email\": \"emily.smith@example.com\"\n    }\n]\n```\n*Available signature request recipient roles: `signer` (default), `approver`, `observer`*",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "variables": {
+                  "description": "The array containing document variables. Example :\n```json\n[\n    {\n        \"name\": \"myVariable1\",\n        \"value\": \"Some text\"\n    },\n    {\n        \"name\": \"another_variable\",\n        \"value\": \"Some text\"\n    }\n]\n```\nVariable name should contain only alphanumeric characters and underscores, and should contain at most 100 characters. For a signature request, each variable names must be unique.",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      },
+      "edit-signature-request": {
+        "description": "Input data format",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "name": {
+                  "description": "The name of the signature request",
+                  "type": "string"
+                },
+                "level": {
+                  "description": "The signature level. Available values:\n- `standard`: Standard signature\n- `standard_with_identity_check`: Standard signature with verification of the signers' identities performed by Eurosign\n- `advanced`: Advanced signature",
+                  "type": "string"
+                },
+                "expirationDate": {
+                  "description": "The signature request expiration date (format `YYYY-MM-DD hh:ii:ss` or `YYYY-MM-DD`, UTC). Default if not set: 1 month after send date",
+                  "type": "string"
+                },
+                "message": {
+                  "description": "A custom message that will be displayed to the recipients when they receive the signature request",
+                  "type": "string"
+                },
+                "language": {
+                  "description": "The provided language will be used for the emails delivered to the recipients. Available values:\n- `en` : English - US\n- `fr` : French",
+                  "type": "string"
+                },
+                "recipientsSignInOrder": {
+                  "description": "If true, recipients will receive the signature request ordered by their index",
+                  "type": "boolean"
+                },
+                "smsOneTimePasswordRequired": {
+                  "description": "If true, recipients have to validate a one-time password with their mobile phone when they sign",
+                  "type": "boolean"
+                },
+                "processType": {
+                  "description": "The type of process of the signature request. Available values:\n- `completed_when_everyone_has_signed` (default): The envelope is completed once all recipients have signed\n- `ended_by_sender_at_any_time`: The envelope may be ended at any time by its sender. The signatures already made will be valid",
+                  "type": "string"
+                },
+                "files": {
+                  "description": "An array of base64 encoded files \nExample:\n```json\n[\n    {\n        \"name\": \"your file name.pdf\",\n        \"base64\": YOUR_BASE64_ENCODED_FILE\n    }\n]\n```\n*If you do not provide a name, it will be generated automatically.*",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "recipients": {
+                  "description": "The array containing signature request recipients. Example:  \n```json\n[\n    {\n        \"firstname\": \"John\",\n        \"lastname\": \"Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"role\": \"approver\"\n    },\n    {\n        \"firstname\": \"Emily\",\n        \"lastname\": \"Smith\",\n        \"email\": \"emily.smith@example.com\"\n    }\n]\n```\n*Available signature request recipient roles: `signer` (default), `approver`, `observer`*",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "variables": {
+                  "description": "The array containing document variables. Example :\n```json\n[\n    {\n        \"name\": \"myVariable1\",\n        \"value\": \"Some text\"\n    },\n    {\n        \"name\": \"another_variable\",\n        \"value\": \"Some text\"\n    }\n]\n```\nVariable name should contain only alphanumeric characters and underscores, and should contain at most 100 characters. For a signature request, each variable names must be unique.",
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://app.eurosign.com/oauth/authorize",
+            "tokenUrl": "https://app.eurosign.com/oauth/token",
+            "scopes": {
+              "signature_request.read": "List and view details of signature requests",
+              "signature_request.write": "Create signature requests",
+              "signature_request.send": "Send signature requests",
+              "invoice.read": "List and view details of invoices",
+              "invoice.write": "Create invoices",
+              "invoice.send": "Send invoices",
+              "user.read": "List and view details of users"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Developer tools",
+      "description": "**Development mode**<br>\nEurosign provides developers with development and production environments in order to better streamline the application development process and to give developers a way to test their changes in their application without affecting the client's user experience.\nThe development environment is meant to be used as a sandbox to test any experimental changes made to the application before changing the application that clients interact with. The production environment is where the application that clients interact with lives, and any changes to the development environment do not affect the production environment.<br>\nSwitching between environments is very simple: each Eurosign application has a development section and a production section, and each section has its own credentials and configuration. You just have to use the development credentials for your tests, and switch to the production credentials when your application is ready.<br>\nAll documents sent with a demo application are not charged and have no legal value.<br>\n<br>\n**Requests logging**<br>\nTo help simplify the debugging of your applications, the Eurosign API has built in logging functionality available through the webapp. Every request made by your application is recorded, and this record includes all request details including: Endpoint URL, supplied parameters, request body, and the IP address the request was sent from. The API’s response is also recorded allowing you to see the status code, response headers, and response body returned, all so that you can better understand where an issue has occurred.<br>\n"
+    },
+    {
+      "name": "Getting started",
+      "description": "**Registering an Application and Creating your First Document**<br>\n<ol>\n<li>Under the <q>Developers</q> section on the Eurosign webapp click the button <q>+ New Application</q> and supply the required name, redirect URI for OAuth, and scopes that you would like to use in your application.</li>\n<li>Generate an access token to access the API (process described below in section Obtaining an Access Token).</li>\n<li>Test your connection to the Eurosign API by making a get request to the /current-user endpoint. If properly connected, this request will return information about your user account.</li>\n<li>Post to the endpoint /signature-requests to create your first document.</li>\n</ol>"
+    },
+    {
+      "name": "Configuring OAuth",
+      "description": "Authorization through the Eurosign API is done using the OAuth protocol.<br>\n<br>\n**How Does OAuth work?**<br>\nOAuth works by granting a client first an authorization code from the server in which the resources they want are located, after the user confirms on this server that they are authorizing this operation. The client then requests an access token to access resources on the server, which the server will then provide.<br>\n<br>\n**Why Use OAuth?**<br>\nThe benefit of using OAuth over more traditional authorization is that OAuth enables the authorization of clients to access resources on a server without the server knowing and exchanging sensitive details about the user such as their username or password, thus offering a very secure authorization process. Eurosign allows developers to take advantage of the added security in their applications.<br>\n<br>\n**Available OAuth2 scopes**\n- `invoice.read` : List and view details of invoices\n- `invoice.write` : Create invoices\n- `invoice.send` : Send and cancel invoices\n- `signature_request.read` : List and view details of signature requests\n- `signature_request.write` : Create signature requests\n- `signature_request.send` : Send and cancel signature requests\n- `user.read` : List and view details of organization users  \n\n\n<br>\n<strong>Configuring OAuth2</strong><br>\nIn order to properly configure OAuth2, you must provide through the registration of your application with Eurosign a redirect URI that corresponds to where you would like clients to be redirected after being authorized through Eurosign.<br>\nOnce they have been authorized through Eurosign and redirected to your redirect URI with the authorization code, your application has to get an access token with this authorization code. A refresh token is also provided to simplify the process of obtaining a new access token in case the access token expires, by skipping the initial log-in interaction for users.<br>\n<br>\n<strong>Obtaining an access token</strong><br>\n<ol>\n    <li>\n        To ask for an authorization token, you must perform a GET request to <code>https://app.eurosign.com/oauth/authorize</code> with the following parameters in the query string:\n        <ul>\n            <li><code>response_type=code</code></li>\n            <li><code>client_id</code>: the application client ID acquired after registering your application through the webapp</li>\n            <li><code>scope</code>: a list of the scopes the generated tokens can have, space separated (shown as <q>%20</q> in the URL)</li>\n            <li><code>state</code> (optional): this parameter is generally used to prevent CSRF (Cross Site Request Forgery) attacks and can be set with a non guessable value that is meant to be verified in the request response to ensure that an outside entity is not able to forge a response and create a security vulnerability. It can also be used to restore a previous state in your application after authorization (if set, returned as received)</li>\n        </ul>\n        <i>Note: for simplicity, a ready-to-use authorization link is generated at the bottom of the \"OAuth configuration\" section of your application</i>\n    </li>\n    <li>\n        Log-in if asked, then click <q>Authorize</q>\n    </li>\n    <li>\n        You will be redirected to &lt;application redirect URI&gt;?code=&lt;your_authorization_code&gt;&state=&lt;optional state&gt; :\n        <ul>\n            <li><code>application redirect URI</code>: the redirect URI supplied when registering your application through the webapp (as described above)</li>\n            <li><code>your_authorization_code</code>: the authorization code supplied by Eurosign (expires 30 seconds after generation)</li>\n            <li>Optional <code>state</code>: the optional state parameter unmodified if supplied with the request made in step 1</li>\n        </ul>\n    </li>\n    <li>\n        Perform a POST request to <code>https://app.eurosign.com/oauth/token</code> with the following parameters supplied in the form-data:\n        <ul>\n            <li><code>grant_type=authorization_code</code></li>\n            <li><code>client_id</code>: the application client ID acquired after registering your application through the webapp</li>\n            <li><code>client_secret</code>: the application client secret acquired after registering your application through the webapp</li>\n            <li><code>code</code>: <code>your_authorization_code</code> (supplied through the authorization redirect made in step 4)</li>\n            <li><code>scope</code> (optional): the scope of the generated token. The scopes specified must be within the list of scopes supplied in the authorization request. (see step 1)</li>\n        </ul>\n    </li>\n    <li>\n        The response will be a JSON object that looks like this:\n        <ul>\n            <li><code>access_token</code>: The access token</li>\n            <li><code>expires_in</code>: The access token lifetime</li>\n            <li><code>token_type</code>: \"Bearer\"</li>\n            <li><code>scope</code>: The space-separated token scopes</li>\n            <li><code>refresh_token</code>: a refresh token</li>\n        </ul>\n    </li>\n</ol>\n<br>\n<strong>Using the Refresh Token to obtain a new Access Token</strong>\n<ol>\n    <li>\n        Perform a POST request to https://app.eurosign.com/oauth/token with the following parameters in the form-data:\n        <ul>\n            <li><code>grant-type=refresh_token</code></li>\n            <li><code>client_id</code>: the application client ID acquired after registering your application through the webapp</li>\n            <li><code>client_secret</code>: the application client secret acquired after registering your application through the webapp</li>\n            <li><code>refresh_token</code>: your refresh token</li>\n            <li><code>scope</code> (optional): the scope of the generated token. The scopes specified must be within the list of scopes supplied in the authorization request. (see Obtaining an Access Token step 1)</li>\n        </ul>\n    </li>\n    <li>\n        The response will be a JSON object identical to the one described in Obtaining an Access Token step 5.\n    </li>\n</ol>"
+    },
+    {
+      "name": "Configuring webhooks",
+      "description": "In order to give developers full control of the signature request process through their applications, Eurosign supports webhooks that will automatically be called when an event occurs. This will allow your applications to be aware of changes happening in documents in real-time and update accordingly. The type of actions you are notified of can also be customized, which allows you to tailor Eurosign's webhook calls to suit your application's needs.<br>\nEurosign gives you the ability to create multiple webhook listeners in order to receive different types of notifications at different URLs if you need to.\n<br>\n<strong>Webhook types</strong><br>\nTwo types of webhooks exist and have different uses:\n<ul>\n<li>\n<b>Internal webhooks</b>, which are notified of events for all documents belonging to your organization, whether they were sent from your application, another application or the Eurosign webapp.\n</li>\n<li>\n<b>External webhooks</b>, which are notified of events that concern all documents that have been sent by the application, regardless of the organization that owns the document.\n</li>\n</ul>\n<br>\n<strong>Configuring a webhook listener</strong><br>\n<br>\nConfiguring webhooks is done through the webapp under the <q>Developers</q> tab by:\n<ol>\n<li>Clicking the name of the application that you wish to set up webhooks in.</li>\n<li>Going in <q>Internal webhooks</q> or <q>External webhooks</q> depending on the type of webhook you want to create.</li>\n<li>Clicking on <q>+ New webhook listener</q></li>\n<li>Entering in the <q>Webhooks URL</q> input the URL you wish to use as your webhook.</li>\n<li>Selecting the checkboxes that correspond to the events that you would like Eurosign to notify your application about.</li>\n<li>Clicking <q>Save Webhooks Configuration</q> to finalize the process.</li>\n</ol>\n<strong>Webhooks response format</strong><br>\nFor all webhook notifications sent, the following data is sent as JSON in the body of the request:<br>\n<br>\n<code>events</code>: the list of events contained in this notification<br>\n<br>\nFor each element of events:<br>\n<code>event</code>: the type of event (signature, cancellation ...)<br>\n<code>date</code>: the date and time when the notification was sent<br>\n<code>data</code>: a json object containing data related to the notification<br>\n<br>\nAn X-Eurosign-Client-Id header is also sent for each request, its value is the Client ID of the application<br>\n<br>\n<strong>Data sent to webhooks</strong><br>\n<br>\nEach webhook notification is a JSON containing an array of objects representing events. for example:\n\n```json\n{\n    \"events\": [\n        {\n            \"uuid\": \"37cbdf6569d8435cba437b4d73a0dddf\",\n            \"accountUuid\": \"8e6b9ea0fa9e4fdcca9242aa6349c2c1\",\n            \"date\": \"2021-04-13 07:55:01\",\n            \"event\": \"signature_request.created\",\n            \"data\": {\n                \"signatureRequestUuid\": \"33fc8504abdd4ba482d3f872ba79c2c4\"\n            }\n        },\n        {\n            \"uuid\": \"b7062cdb2d9047b1821cd409e93dbccb\",\n            \"accountUuid\": \"8e6b9ea0fa9e4fdcca9242aa6349c2c1\",\n            \"date\": \"2021-04-13 07:55:01\",\n            \"event\": \"signature_request.sent\",\n            \"data\": {\n                \"signatureRequestUuid\": \"33fc8504abdd4ba482d3f872ba79c2c4\",\n                \"senderUuid\": \"44b7fcc78d7845dc9f3b1ea35ad788a2\"\n            }\n        },\n    ]\n}\n```\n\nEach event object contains:<br>\n<ul>\n<li><code>uuid</code>: The event ID</li>\n<li><code>accountUuid</code>: The ID of the organization to which the event refers (useful for external webhooks)</li>\n<li><code>date</code>: The date and time the event occurred (format: <code>YYYY-MM-DD hh:mm:ss</code>)</li>\n<li><code>event</code>: The type of the event</li>\n<li><code>data</code>: Information about the event. Its content depends on the type of the event.</li>\n</ul>\n\nHere is, for each type of event, the content of the `data` object:<br>\n\n<ul>\n<li>\n<b>invoice.cancelled</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n</ul>\n</li>\n<li>\n<b>invoice.completed</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n</ul>\n</li>\n<li>\n<b>invoice.created</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n</ul>\n</li>\n<li>\n<b>invoice.expired</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.email_delivered</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.email_error</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.email_opened</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.email_sent</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.payment_added</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n<li><code>amount</code>: The amount paid</li>\n<li><code>currency</code>: The currency of the payment</li>\n</ul>\n</li>\n<li>\n<b>invoice.recipient.viewed</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>invoice.sent</b>:\n<ul>\n<li><code>invoiceUuid</code>: The ID of the invoice</li>\n<li><code>senderUuid</code>: The ID of the user who sent the invoice</li>\n</ul>\n</li>\n<li>\n<b>signature_request.cancelled</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>cancellerUuid</code>: The ID of the user who cancelled the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.created</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.declined</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.edited</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.expired</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.declined</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient who declined to sign</li>\n<li><code>recipientEmail</code>: The email address of the recipient who declined to sign</li>\n<li><code>reason</code>: The reason for denial provided by the recipient (may be <code>null</code>)</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.email_delivered</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.email_error</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.email_opened</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.email_sent</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.signed</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.recipient.viewed</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>recipientUuid</code>: The ID of the recipient</li>\n<li><code>recipientEmail</code>: The email address of the recipient</li>\n</ul>\n</li>\n<li>\n<b>signature_request.sent</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n<li><code>senderUuid</code>: The ID of the user who sent the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.signature_delayed</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n<li>\n<b>signature_request.signed</b>:\n<ul>\n<li><code>signatureRequestUuid</code>: The ID of the signature request</li>\n</ul>\n</li>\n</ul>\n\n<br>\n\n<strong>Webhooks failure</strong>\n\nIn case your server does not response a success code (<code>2xx</code>) when Eurosign sends a notification, Eurosign will retry to send the same request at increasing time intervals during 48 hours.\nYou can see the details of the requests sent by Eurosign to your webhook URLs in the 'Webhook logs' section of your Developers dashboard."
+    },
+    {
+      "name": "Information about requests",
+      "description": "The Eurosign API operates based on the standard REST architectural style, and all actions that the API supports fall within one of the following HTTP verbs:<br>\nGET: Retrieves resources<br>\nPOST: Creates resources<br>\nPATCH: Changes and/or replaces resources or collections<br>\nDELETE: Deletes resources<br>\nAll request timestamps are in UTC.<br>\n<strong>Request body format</strong><br>\nThe Eurosign API requires the request body to be written in <strong>JSON</strong> format.<br>\n<strong>Authorization</strong><br>\nThe Eurosign API uses <a href=\"/api#tag/Configuring-OAuth\">OAuth2</a> to authenticate requests. All requests you perform must contain an <code>Authorization</code> header whose value is <code>Bearer YOUR_ACCESS_TOKEN</code>. Example:<br>\n<code>Authorization: Bearer c1ca5f0ac621a7ddfb8de4b134bcdce028f57836</code><br>\nIf you don't know how to obtain an access token, please refer to the <a href=\"/api#tag/Configuring-OAuth\">Configuring OAuth2</a> section.<br>\nIf your request is performed with an invalid access token, or if your access token has expired, you will receive an HTTP 401 Unauthorized error.<br>\n<strong>Is there a request limit?</strong><br>\nThe standard request limit is 120 requests every 60 seconds for each user. If this is not sufficient for your needs, please contact us and we will try to arrange a higher limit that better meets your requirements. In order to help you make informed decisions about how to manage your request load, all responses from the API include three headers that provide information regarding these limits:<br>\n<code>X-Rate-Limit-Remaining</code> : Number of remaining requests in the current time interval<br>\n<code>X-Rate-Limit-Limit</code> : Maximum number of requests in a single time interval<br>\n<code>X-Rate-Limit-Reset</code> : Number of seconds before the next time interval<br>\n<br>\n<strong>Expand responses</strong><br>\nIn your request URL, you can use a parameter called `expand` in order to get more details about an attribute in your response. For example, if you wish to get information about a signature request and all of its recipients,\nyou should perform the request `GET /v2/signature-requests/{uuid}?expand=recipients`. The signature request object in your response will have an additional attribute called `recipients`, which is an array of recipients.<br>\n```json\n{\n    \"uuid\": \"122c060c4cf94d23b6034cccc83d2d2b\",\n    \"name\": \"My signature request\",\n    ...\n    \"recipients\": [\n        {\n            \"uuid\": \"67879a03043443bab550006a4c696b9a\",\n            \"index\": 0,\n            \"email\": \"john.doe@example.com\",\n            \"firstname\": \"John\",\n            \"lastname\": \"Doe\",\n            \"role\": \"signer\",\n            \"status\": \"action_requested\",\n            \"sendReminders\": true,\n            \"receiptDate\": \"2020-09-22 07:50:39\",\n            \"declinedReason\": null\n        },\n        {\n            \"uuid\": \"ddade969cc144039850169afc4f90157\",\n            \"index\": 1,\n            \"email\": \"emily.smith@example.com\",\n            \"firstname\": \"Emily\",\n            \"lastname\": \"Smith\",\n            \"role\": \"signer\",\n            \"status\": \"queued\",\n            \"sendReminders\": true,\n            \"receiptDate\": null,\n            \"declinedReason\": null\n        }\n    ]\n}\n```\nSee <q>Available expands</q> section in documentation of each request to know which attribute you can expand.\n"
+    },
+    {
+      "name": "Information about responses",
+      "description": "<strong>Response codes</strong><br>\nThe Eurosign API uses standard HTTP response codes. The response codes you may encounter while using the Eurosign API are as follows:<br>\n<ul>\n    <li>200: OK</li>\n    <li>201: Created</li>\n    <li>202: Accepted</li>\n    <li>400: Bad Request</li>\n    <li>401: Unauthorized</li>\n    <li>\n        403: Forbidden\n        <ul>\n            <li>- Application has insufficient scope</li>\n            <li>- User is not allowed to perform the requested operation</li>\n            <li>- Subscription has expired</li>\n        </ul>\n    </li>\n    <li>404: Not Found</li>\n    <li>405: Method Not Allowed</li>\n    <li>429: Too many requests (see <a href=\"/api#tag/Information-about-requests\">Information about requests</a> section about request limit)</li>\n</ul><br>\n<br>\n<strong>Response format</strong><br>\nAll responses are in <strong>JSON</strong>.<br>\n<br>\n<strong>Pagination</strong><br>\nIn order to make potentially large list responses easier to handle, the Eurosign API uses pagination. To help understand and navigate paginated responses, the following four headers are included in paginated responses:<br>\n<ul>\n    <li><code>X-Pagination-Total-Count</code>: Number of items in the list</li>\n    <li><code>X-Pagination-Page-Count</code>: Number of pages</li>\n    <li><code>X-Pagination-Current-Page</code>: Current page number (first page is 1)</li>\n    <li><code>X-Pagination-Per-Page</code>: Number of items per page</li>\n</ul><br>\n\nYou can add optional query parameters in queryString for managing and customizing pagination:<br>\n<ul>\n    <li><code>per-page</code>: Modify the number of items per page (default 20, min 1, max 50)</li>\n    <li><code>page</code>: Designate the desired page to be returned (default 1)</li>\n</ul><br>\n\n<strong>Error objects</strong><br>\nIf an error occurs processing your request, the Eurosign API will return an error object in order to help you better understand what has occured. The error object will include the name of the error encountered, a brief message describing the error, and a status corresponding with a standard HTTP status code. An example error object encountered when a user has made too many requests within the current time interval is as follows:<br>\n```json\n{\n    \"name\": \"Too Many Requests\",\n    \"message\": \"Please wait 14 seconds before performing a new request\",\n    \"status\": \"429\"\n}\n```"
+    }
+  ],
+  "x-tagGroups": {
+    "name": "General",
+    "tags": "- Users"
+  }
+}

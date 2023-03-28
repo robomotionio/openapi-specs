@@ -1,0 +1,878 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Botcrypto Plugin API",
+    "description": "\nPlugin for [**botcrypto.io**](https://botcrypto.io).\nReadme more [**on our blog**](https://blog.botcrypto.io/fr/2020/12/16/plugin-botcrypto/).\n\nThis documentation is available under [**Swagger**](swagger) or [**Redoc**]() format.\n\nSee [**changelog**](https://botcrypto.gitlab.io/plugin).\n\nJoin [**Discord**](https://discord.gg/8xDp3fa).\n\nLatest version : **1.0.4**\n\nVersions availabe:\n* [/v1](/v1)",
+    "version": "1.0.4",
+    "x-logo": {
+      "url": "https://blog.botcrypto.io/wp-content/uploads/2020/07/logo_color_side.png"
+    }
+  },
+  "paths": {
+    "/token": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Returns the jwt for authentication.",
+        "description": "Returns the jwt for authentication. ",
+        "operationId": "method_token_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_method_token_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Jwt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brokers": {
+      "get": {
+        "summary": "Get broker list.",
+        "description": "Get brokers list. ",
+        "operationId": "method_brokers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Brokers Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Broker"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brokers/{broker_id}/pairs": {
+      "get": {
+        "summary": "Get pairs list.",
+        "description": "Get broker's pairs list. ",
+        "operationId": "method_brokers__broker_id__pairs_get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Broker Id",
+              "type": "integer"
+            },
+            "name": "broker_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Brokers  Broker Id  Pairs Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pair"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/automates": {
+      "get": {
+        "summary": "Get automates list.",
+        "description": "Get automates list. ",
+        "operationId": "method_automates_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Automates Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Automate"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallets": {
+      "get": {
+        "summary": "Get wallets (portfolios) list.",
+        "description": "Get wallets (portfolios) list. ",
+        "operationId": "method_wallets_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Wallets Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Wallet"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new portfolio. Returns it's id.",
+        "description": "Create new portfolio. Returns it's id. ",
+        "operationId": "method_wallets_post",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_method_wallets_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Wallets Post",
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallets/{wallet_id}/balance": {
+      "get": {
+        "summary": "Get wallet balance.",
+        "description": "Get wallet balance. ",
+        "operationId": "method_wallets__wallet_id__balance_get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Wallet Id",
+              "type": "integer"
+            },
+            "name": "wallet_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Wallets  Wallet Id  Balance Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Wallet"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallets/{wallet_id}": {
+      "delete": {
+        "summary": "Delete a wallet and all bots associated.",
+        "description": "Delete a wallet and all bots associated. ",
+        "operationId": "method_wallets__wallet_id__delete",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Wallet Id",
+              "type": "integer"
+            },
+            "name": "wallet_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bots": {
+      "get": {
+        "summary": "Returns real bots.",
+        "description": "Returns real bots. ",
+        "operationId": "method_bots_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Bots Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bot"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a bot and return the bot id.",
+        "description": "Create a bot and return the bot id. ",
+        "operationId": "method_bots_post",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_method_bots_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Method Bots Post",
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/start": {
+      "post": {
+        "summary": "Run a real bot.",
+        "description": "Run a real bot. ",
+        "operationId": "method_bots__bot_id__start_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Bot Id",
+              "type": "integer"
+            },
+            "name": "bot_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/stop": {
+      "post": {
+        "summary": "Stop a real bot.",
+        "description": "Stop a real bot. ",
+        "operationId": "method_bots__bot_id__stop_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Bot Id",
+              "type": "integer"
+            },
+            "name": "bot_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}": {
+      "delete": {
+        "summary": "Remove a bot.",
+        "description": "Remove a bot. ",
+        "operationId": "method_bots__bot_id__delete",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Bot Id",
+              "type": "integer"
+            },
+            "name": "bot_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Jwt",
+              "type": "string",
+              "default": ""
+            },
+            "name": "jwt",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Automate": {
+        "title": "Automate",
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        }
+      },
+      "BalanceEntry": {
+        "title": "BalanceEntry",
+        "required": [
+          "asset",
+          "volume"
+        ],
+        "type": "object",
+        "properties": {
+          "asset": {
+            "title": "Asset",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          }
+        }
+      },
+      "Body_method_bots_post": {
+        "title": "Body_method_bots_post",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "default": ""
+          },
+          "wallet_id": {
+            "title": "Wallet Id",
+            "type": "integer",
+            "default": 0
+          },
+          "automate_id": {
+            "title": "Automate Id",
+            "type": "integer",
+            "default": 0
+          },
+          "pair_id": {
+            "title": "Pair Id",
+            "type": "integer",
+            "default": 0
+          },
+          "volume_base": {
+            "title": "Volume Base",
+            "type": "string",
+            "default": ""
+          },
+          "volume_quote": {
+            "title": "Volume Quote",
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "Body_method_token_post": {
+        "title": "Body_method_token_post",
+        "type": "object",
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string",
+            "default": ""
+          },
+          "password": {
+            "title": "Password",
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "Body_method_wallets_post": {
+        "title": "Body_method_wallets_post",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "default": ""
+          },
+          "broker_id": {
+            "title": "Broker Id",
+            "type": "integer",
+            "default": 0
+          },
+          "private_key": {
+            "title": "Private Key",
+            "type": "string",
+            "default": ""
+          },
+          "public_key": {
+            "title": "Public Key",
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "Bot": {
+        "title": "Bot",
+        "required": [
+          "id",
+          "name",
+          "pair_id",
+          "status",
+          "wallet_id",
+          "automate_id",
+          "initial_balance",
+          "current_balance"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "pair_id": {
+            "title": "Pair Id",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BotStatus"
+          },
+          "wallet_id": {
+            "title": "Wallet Id",
+            "type": "integer"
+          },
+          "automate_id": {
+            "title": "Automate Id",
+            "type": "integer"
+          },
+          "initial_balance": {
+            "title": "Initial Balance",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BalanceEntry"
+            }
+          },
+          "current_balance": {
+            "title": "Current Balance",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BalanceEntry"
+            }
+          }
+        }
+      },
+      "BotStatus": {
+        "title": "BotStatus",
+        "enum": [
+          "new",
+          "active",
+          "stop",
+          "stopped"
+        ],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "Broker": {
+        "title": "Broker",
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "Jwt": {
+        "title": "Jwt",
+        "required": [
+          "jwt"
+        ],
+        "type": "object",
+        "properties": {
+          "jwt": {
+            "title": "Jwt",
+            "type": "string"
+          }
+        }
+      },
+      "Pair": {
+        "title": "Pair",
+        "required": [
+          "id",
+          "broker_id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "broker_id": {
+            "title": "Broker Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      },
+      "Wallet": {
+        "title": "Wallet",
+        "required": [
+          "id",
+          "broker_id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "broker_id": {
+            "title": "Broker Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

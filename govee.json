@@ -1,0 +1,389 @@
+{
+  "openapi": "3.0.0",
+  "x-origin": "meta-api.io",
+  "info": {
+    "title": "Govee",
+    "version": "1.0",
+    "description": "Govee is devoted to making your life smarter and brighter. This includes RGBIC led light, RGB Led light, table lamp, outdoor led light, thermo hygrometer ...",
+    "contact": {
+      "name": "Govee",
+      "url": "",
+      "email": ""
+    },
+    "termsOfService": "",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/govee.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://developer-api.govee.com/v1"
+    }
+  ],
+  "paths": {
+    "/devices": {
+      "get": {
+        "summary": "List of devices",
+        "description": "List all your devices connected to the web network.",
+        "operationId": "get-devices",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "devices": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "device": {
+                                "type": "string",
+                                "example": "99:E5:A4:C1:38:29:DA:7B"
+                              },
+                              "model": {
+                                "type": "string",
+                                "example": "H6159"
+                              },
+                              "deviceName": {
+                                "type": "string",
+                                "example": "test light"
+                              },
+                              "controllable": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "retrievable": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "supportCmds": {
+                                "type": "array"
+                              },
+                              "properties": {
+                                "type": "object",
+                                "properties": {
+                                  "colorTem": {
+                                    "type": "object",
+                                    "properties": {
+                                      "range": {
+                                        "type": "object",
+                                        "properties": {
+                                          "min": {
+                                            "type": "integer",
+                                            "example": 2000
+                                          },
+                                          "max": {
+                                            "type": "integer",
+                                            "example": 9000
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "data": {
+                        "devices": [
+                          {
+                            "device": "99:E5:A4:C1:38:29:DA:7B",
+                            "model": "H6159",
+                            "deviceName": "test light",
+                            "controllable": true,
+                            "retrievable": true,
+                            "supportCmds": [
+                              "turn",
+                              "brightness",
+                              "color",
+                              "colorTem"
+                            ],
+                            "properties": {
+                              "colorTem": {
+                                "range": {
+                                  "min": 2000,
+                                  "max": 9000
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "device": "34:20:03:2e:30:2b",
+                            "model": "H5081",
+                            "deviceName": "Smart Plug",
+                            "controllable": true,
+                            "retrievable": true,
+                            "supportCmds": [
+                              "turn"
+                            ]
+                          }
+                        ]
+                      },
+                      "message": "Success",
+                      "code": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/control": {
+      "put": {
+        "summary": "Device control",
+        "description": "Control a specific device and set different status of this device.",
+        "operationId": "put-devices-control",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "code": 200,
+                      "message": "Success",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "example": "34:20:03:15:82:ae"
+                  },
+                  "model": {
+                    "type": "string",
+                    "example": "H6089"
+                  },
+                  "cmd": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "turn"
+                      },
+                      "value": {
+                        "type": "string",
+                        "example": "on"
+                      }
+                    }
+                  }
+                },
+                "required": []
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "device": "34:20:03:15:82:ae",
+                    "model": "H6089",
+                    "cmd": {
+                      "name": "turn",
+                      "value": "on"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/state": {
+      "get": {
+        "summary": "Device state",
+        "description": "Get the current state of a specified device.",
+        "operationId": "get-devices-state",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "device": {
+                          "type": "string",
+                          "example": "C6:EA:B8:56:C8:C6:89:BE",
+                          "format": "ipv6"
+                        },
+                        "model": {
+                          "type": "string",
+                          "example": "H6188"
+                        },
+                        "properties": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "online": {
+                                "type": "string",
+                                "example": "false"
+                              },
+                              "powerState": {
+                                "type": "string",
+                                "example": "off"
+                              },
+                              "brightness": {
+                                "type": "integer",
+                                "example": 82
+                              },
+                              "color": {
+                                "type": "object",
+                                "properties": {
+                                  "r": {
+                                    "type": "integer",
+                                    "example": 0
+                                  },
+                                  "b": {
+                                    "type": "integer",
+                                    "example": 0
+                                  },
+                                  "g": {
+                                    "type": "integer",
+                                    "example": 0
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "data": {
+                        "device": "C6:EA:B8:56:C8:C6:89:BE",
+                        "model": "H6188",
+                        "properties": [
+                          {
+                            "online": "false"
+                          },
+                          {
+                            "powerState": "off"
+                          },
+                          {
+                            "brightness": 82
+                          },
+                          {
+                            "color": {
+                              "r": 0,
+                              "b": 0,
+                              "g": 0
+                            }
+                          }
+                        ]
+                      },
+                      "message": "Success",
+                      "code": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "device",
+            "description": "The Mac address of the device you want to control.",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "description": "The Model of the device you want to control",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Govee-API-Key"
+      }
+    }
+  },
+  "security": [
+    {
+      "key": []
+    }
+  ]
+}

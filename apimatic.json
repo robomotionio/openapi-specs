@@ -1,0 +1,3001 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Apimatic API",
+    "description": "This API gives you programmatic access to APIMatic's Code Generation, Docs Generation and Transformers Engine.",
+    "x-logo": {
+      "url": "https://i.imgur.com/6ZyDpvF.png"
+    },
+    "contact": {
+      "name": "Team APIMatic",
+      "email": "contactus@apimatic.io"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://www.apimatic.io/api"
+    },
+    {
+      "url": "https://staging.apimatic.io/api",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/code-generations/{codeGenId}/input-file": {
+      "get": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "Get API Specification",
+        "description": "Query API Specification used as input for a specific generation using CodeGenId.",
+        "operationId": "GetAPISpecification",
+        "parameters": [
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Id associated with each generation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/code-generations": {
+      "get": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "User Code Generation List",
+        "description": "Query logs for all code generations performed by a user.",
+        "operationId": "UserCodeGenerationList",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCodeGeneration"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "Generate SDK via File",
+        "description": "Execute Code Generation by specifying path address of an API specification file. \n\nThis endpoint does not import an API or store specification files.",
+        "operationId": "GenerateSDKviaFile",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "inputtedFile",
+                  "template"
+                ],
+                "type": "object",
+                "properties": {
+                  "inputtedFile": {
+                    "type": "string",
+                    "description": "API Spec in any of the supported formats",
+                    "format": "binary"
+                  },
+                  "template": {
+                    "$ref": "#/components/schemas/Platforms"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCodeGeneration"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/code-generations/{codeGenId}": {
+      "get": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "Code Generation Log",
+        "description": "Query details for a specific generation by specifying CodeGen Id",
+        "operationId": "CodeGenerationLog",
+        "parameters": [
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Id associated with each generation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCodeGeneration"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "Delete Code Generation",
+        "description": "Delete an entire generation by specifying generation Id.",
+        "operationId": "DeleteCodeGeneration",
+        "parameters": [
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Id associated with each generation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/code-generations/{codeGenId}/generated-sdk": {
+      "get": {
+        "tags": [
+          "Code Generation - External Files"
+        ],
+        "summary": "Download SDK",
+        "description": "Download a generated SDK by specifying CodeGen Id as input.",
+        "operationId": "DownloadSDK",
+        "parameters": [
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Id associated with each generation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/transformations/{transformationId}/converted-file": {
+      "get": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "Download Transformed File",
+        "description": "Download a transformed specification by specifying Transformation Id.",
+        "operationId": "DownloadTransformedFile",
+        "parameters": [
+          {
+            "name": "transformationId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/transformations": {
+      "post": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "Transform via File",
+        "description": "Perform a transformation by specifying file address from local storage",
+        "operationId": "TransformviaFile",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "multipart/form-data"
+              ],
+              "type": "string",
+              "example": "multipart/form-data"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "inputtedFile",
+                  "exportFormat"
+                ],
+                "type": "object",
+                "properties": {
+                  "inputtedFile": {
+                    "type": "string",
+                    "description": "The file must be in a supported format",
+                    "format": "binary"
+                  },
+                  "exportFormat": {
+                    "$ref": "#/components/schemas/ExportFormats"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transformation"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "List All Transformations",
+        "description": "Returns logs for all transformations performed by the user.",
+        "operationId": "ListAllTransformations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transformation"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/transformations/{transformationId}": {
+      "get": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "Get a Transformation",
+        "description": "Pull logs for a certain transformation by specifying Transformation Id.",
+        "operationId": "GetaTransformation",
+        "parameters": [
+          {
+            "name": "transformationId",
+            "in": "path",
+            "description": "Unique Id generated against each Transformation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transformation"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "Delete Transformation",
+        "description": "Deletes records for a specific  transformation using Transformation Id.",
+        "operationId": "DeleteTransformation",
+        "parameters": [
+          {
+            "name": "transformationId",
+            "in": "path",
+            "description": "Unique Transformation identifier.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/transformations/{transformationId}/input-file": {
+      "get": {
+        "tags": [
+          "Transformation"
+        ],
+        "summary": "Download Input File",
+        "description": "Returns the input file of a specific Transformation using Transformation Id.",
+        "operationId": "DownloadInputFile",
+        "parameters": [
+          {
+            "name": "transformationId",
+            "in": "path",
+            "description": "Unique Transformation identifier.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{apiEntityId}": {
+      "get": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Fetch Complete API Entity",
+        "description": "Returns detailed logs on an API Entity using an API Entity ID including: Endpoints, Endpoint Groups , Custom Types, CodeGen Settings, TestGen Settings, Additional Headers, Authentication Details, Server Configuration and External Documentation.",
+        "operationId": "FetchCompleteAPIEntity",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/vnd.apimatic.apiEntity.full.v1+json"
+              ],
+              "type": "string",
+              "example": "application/vnd.apimatic.apiEntity.full.v1+json"
+            }
+          },
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity Identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntityDetailed"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Inplace API Import via File",
+        "description": "Import an API Version by specifying file path address of an API Spec to replace an existing version.",
+        "operationId": "InplaceAPIImportviaFile",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity Identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/vnd.apimatic.apiEntity.full.v1+json"
+              ],
+              "type": "string",
+              "example": "application/vnd.apimatic.apiEntity.full.v1+json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "API Spec file to be inmported",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities": {
+      "post": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Import API via URL",
+        "description": "Import an API by specifying URL address of an API Spec",
+        "operationId": "ImportAPIviaURL",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/vnd.apimatic.apiEntityUrlImportDto.v1+json"
+              ],
+              "type": "string",
+              "example": "application/vnd.apimatic.apiEntityUrlImportDto.v1+json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "url"
+                ],
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "Web address of the API Spec",
+                    "example": "https://petstore.swagger.io/v2/swagger.json"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntity"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/": {
+      "post": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Import API via File",
+        "description": "Import an API by specifying  path address of an API Spec file",
+        "operationId": "ImportAPIviaFile",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "API Spec file in supported format",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntity"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{{apiEntityId}}/api-description?format=swagger20": {
+      "get": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Download API Specification",
+        "description": "Returns the API Specification for a particular API Version.",
+        "operationId": "DownloadAPISpecification",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity Identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-groups/{apiGroupId}/api-entities": {
+      "post": {
+        "tags": [
+          "Dashboard Management_"
+        ],
+        "summary": "Import new API Version Via URL",
+        "description": "Import a new API Version by specifying URL address of an API Spec.",
+        "operationId": "ImportnewAPIVersionViaURL",
+        "parameters": [
+          {
+            "name": "apiGroupId",
+            "in": "path",
+            "description": "Unique Group Identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "5c9de181dc6209221416f250"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/vnd.apimatic.apiGroupApiEntityUrlImportDto.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportNewVersion"
+              }
+            }
+          },
+          "required": true,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntity"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-groups/{apiGroupId}/docs/guide-section-settings": {
+      "put": {
+        "tags": [
+          "Documentation Generation"
+        ],
+        "summary": "API Group -  Update Guide Section Settings",
+        "description": "Update Guides section settings for an entire API Group.",
+        "operationId": "APIGroup-UpdateGuideSectionSettings",
+        "parameters": [
+          {
+            "name": "apiGroupId",
+            "in": "path",
+            "description": "Group ID for the API to be updated",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Encapsulates all details of a new Guide. Details include ID, Section Name, Section Id, Heading and Body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuideSection"
+              },
+              "example": {
+                "id": "5dc3d09ed16fca0c74d83d47",
+                "sectionName": "New Fancy Name",
+                "sectionItems": [
+                  {
+                    "id": "5dca8248d16fca4678b24468",
+                    "heading": "Top Level heading 1",
+                    "body": "Content for first heading"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://www.apimatic.io/api"
+          },
+          {
+            "url": "https://staging.apimatic.io/api"
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Documentation Generation"
+        ],
+        "summary": "API Group - Guide Section Settings",
+        "description": "Query Guides Section settings for an API Group.",
+        "operationId": "APIGroup-GuideSectionSettings",
+        "parameters": [
+          {
+            "name": "apiGroupId",
+            "in": "path",
+            "description": "Group ID for the API to be updated",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuideSection"
+                },
+                "example": {
+                  "id": "5dc3d09ed16fca0c74d83d47",
+                  "sectionName": "New Fancy Name",
+                  "sectionItems": [
+                    {
+                      "id": "5dca8248d16fca4678b24468",
+                      "heading": "Top Level heading 1",
+                      "body": "Content for first heading"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://www.apimatic.io/api"
+          },
+          {
+            "url": "https://staging.apimatic.io/api"
+          }
+        ]
+      }
+    },
+    "/api-entities/{apiEntityId}/hosted-api-docs": {
+      "put": {
+        "tags": [
+          "Documentation Generation"
+        ],
+        "summary": "API Entity - Update Hosted Docs",
+        "description": "Update Hosted Documentation for an API Entity",
+        "operationId": "APIEntity-UpdateHostedDocs",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Entity ID for the API to be updated",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/docsgen": {
+      "get": {
+        "tags": [
+          "Documentation Generation"
+        ],
+        "summary": "JSON Docs",
+        "description": "Generate Docs in JSON format against an API using API Key.",
+        "operationId": "JSONDocs",
+        "parameters": [
+          {
+            "name": "apiKey",
+            "in": "query",
+            "description": "API Integration Key",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "template",
+            "in": "query",
+            "description": "Desired Platform",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/Platforms"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/vnd.apimatic.dxDom.v2+json"
+              ],
+              "type": "string",
+              "example": "application/vnd.apimatic.dxDom.v2+json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/api-entities/{apiEntityId}/on-prem-portal": {
+      "get": {
+        "tags": [
+          "Documentation Generation"
+        ],
+        "summary": "Generate On-Prem Portal",
+        "description": "Generate a complete API Documentation Portal as a zip file, containing all the static assets required to host it entirely on premises.\n\nNote: The response might take up to 4-5 minutes.",
+        "operationId": "GenerateOn-PremPortal",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/zip"
+              ],
+              "type": "string",
+              "example": "application/zip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{apiEntityId}/code-generations/{{codeGenId}}": {
+      "delete": {
+        "tags": [
+          "Code Generation - Imported APIs_"
+        ],
+        "summary": "Delete Code Generation",
+        "description": "Delete a specific generation against an API using API Entity Id and CodeGen Id.",
+        "operationId": "DeleteCodeGeneration1",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API version identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Unique Code Generation identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Code Generation - Imported APIs_"
+        ],
+        "summary": "Code Generation Log",
+        "description": "Query logs for a specific generation against an API using API Entity ID and CodeGen ID.",
+        "operationId": "GetCodeGenerationLog",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API version identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Unique Code Generation identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntityCodeGeneration"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{apiEntityId}/code-generations": {
+      "get": {
+        "tags": [
+          "Code Generation - Imported APIs_"
+        ],
+        "summary": "Code Generation List",
+        "description": "Query details for all generations made against an API using the API Entity Id.",
+        "operationId": "CodeGenerationList",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/APIEntityCodeGeneration"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Code Generation - Imported APIs_"
+        ],
+        "summary": "Generate SDK",
+        "description": "Generate SDK against a specific API using the API Entity Identifier and specifying the platform template.",
+        "operationId": "GenerateSDK",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API version identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "Template"
+                ],
+                "type": "object",
+                "properties": {
+                  "Template": {
+                    "$ref": "#/components/schemas/Platforms"
+                  }
+                }
+              }
+            }
+          },
+          "required": false,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEntityCodeGeneration"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{apiEntityId}/code-generations/{{codeGenId}}/generated-sdk": {
+      "get": {
+        "tags": [
+          "Code Generation - Imported APIs_"
+        ],
+        "summary": "Download SDK",
+        "description": "Download SDK generated against a specific API using API Entity Id and the CodeGen Id.",
+        "operationId": "GetDownloadSDK",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity  identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codeGenId",
+            "in": "path",
+            "description": "Unique Code Generation identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api-entities/{apiEntityId}/docs/package-deployment-information": {
+      "put": {
+        "tags": [
+          "Package Deployment"
+        ],
+        "summary": "Update Package Deployment Information",
+        "description": "Update  Package Deployment Information for an API Entity. To find out more on how to publish a package visit: To find out more about adding packages to portal visit: [Adding Packages to Portal](https://docs.apimatic.io/developer-experience-portal/adding%20packages%20to%20portal/)\n\nTo find out more about publishing packages visit: [Publish Packages](https://docs.apimatic.io/developer-experience-portal/adding%20packages%20to%20portal/)",
+        "operationId": "UpdatePackageDeploymentInformation",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity Identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Package Deployment Information to be updated. This comprises of the Platform Template, the Repository Name and Version.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePackageDeploymentInformation"
+              }
+            }
+          },
+          "required": true,
+          "x-send-file-in-body": false
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "tags": [
+          "Package Deployment"
+        ],
+        "summary": "Package Deployment Information",
+        "description": "Query Package deployment details added for an API Entity.\nTo find out more about adding packages to portal: [Adding Packages to Portal](https://docs.apimatic.io/developer-experience-portal/adding%20packages%20to%20portal/)",
+        "operationId": "PackageDeploymentInformation",
+        "parameters": [
+          {
+            "name": "apiEntityId",
+            "in": "path",
+            "description": "Unique API Entity identifier",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageDeploymentInformation"
+                },
+                "example": {
+                  "id": "5dcc0560dfe543169893ca01",
+                  "templatesPackageDeploymentInformation": {
+                    "CS_NET_STANDARD_LIB": {
+                      "id": "5dcd2b5893c3e31a206f30c4",
+                      "packageRepository": "NuGet",
+                      "packageName": "myPackage",
+                      "version": "1.1.1",
+                      "link": "https://www.nuget.org/packages/myPackage/1.1.1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://www.apimatic.io/api"
+          },
+          {
+            "url": "https://staging.apimatic.io/api"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserCodeGeneration": {
+        "title": "UserCodeGeneration",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CodeGeneration"
+          },
+          {
+            "required": [
+              "userId",
+              "inputFile"
+            ],
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string",
+                "description": "Unique User Identifier",
+                "example": "5afc60380b9949253c6b7776"
+              },
+              "inputFile": {
+                "type": "string",
+                "description": "API Specification file in a supported format",
+                "example": "https://apimatic.io/api/code-generations/5be08d7b83b41d0d8cdb3958/input-file"
+              }
+            }
+          }
+        ],
+        "description": "The Code Generation structure encapsulates all the  the details of an SDK generation performed by a user."
+      },
+      "APIEntityCodeGeneration": {
+        "title": "APIEntityCodeGeneration",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CodeGeneration"
+          },
+          {
+            "required": [
+              "apiEntityId"
+            ],
+            "type": "object",
+            "properties": {
+              "apiEntityId": {
+                "type": "string",
+                "description": "Unique API Entity Identifier",
+                "example": "5be012963270e339f88005d0"
+              }
+            }
+          }
+        ],
+        "description": "The Code Generation structure encapsulates all the  the details of an SDK generation performed against an API Entity"
+      },
+      "Response": {
+        "title": "Response",
+        "required": [
+          "optional",
+          "type",
+          "constant",
+          "isArray",
+          "isStream",
+          "isAttribute",
+          "isMap",
+          "attributes",
+          "nullable",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "optional": {
+            "type": "boolean",
+            "description": "Specify if response is optional or not",
+            "example": false
+          },
+          "type": {
+            "type": "string",
+            "description": "Specify response type",
+            "example": "ServerResponse"
+          },
+          "constant": {
+            "type": "boolean",
+            "description": "Specify if response is constant",
+            "example": false
+          },
+          "isArray": {
+            "type": "boolean",
+            "description": "Specify if response is array",
+            "example": false
+          },
+          "isStream": {
+            "type": "boolean",
+            "description": "Specify if response is stream",
+            "example": false
+          },
+          "isAttribute": {
+            "type": "boolean",
+            "description": "Specify  if response has attributes",
+            "example": false
+          },
+          "isMap": {
+            "type": "boolean",
+            "description": "Specify if response is collected as map",
+            "example": false
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/Attributes"
+          },
+          "nullable": {
+            "type": "boolean",
+            "description": "Specify is response is nullable",
+            "example": false
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique response identifier",
+            "example": "5a4e8675b724bb198c289f79"
+          },
+          "name": {
+            "type": "string",
+            "description": "Response name",
+            "example": "response"
+          }
+        },
+        "description": "The structure encapsulates all details of a request response",
+        "example": {
+          "optional": false,
+          "type": "ServerResponse",
+          "constant": false,
+          "isArray": false,
+          "isStream": false,
+          "isAttribute": false,
+          "isMap": false,
+          "attributes": {
+            "id": "5be1603083b41d0b50110551"
+          },
+          "nullable": false,
+          "id": "5a4e8675b724bb198c289f79",
+          "name": "response"
+        }
+      },
+      "ImplementationType": {
+        "title": "ImplementationType",
+        "enum": [
+          "Structure",
+          "Enumeration",
+          "Exception"
+        ],
+        "type": "string",
+        "description": "The structure helps describes the nature of implementation of a  custom model. A model can be of 3 types."
+      },
+      "TestGenSettings": {
+        "title": "TestGenSettings",
+        "required": [
+          "precisionDelta",
+          "testTimeout",
+          "configuration"
+        ],
+        "type": "object",
+        "properties": {
+          "precisionDelta": {
+            "type": "number",
+            "description": "Error margin for comparing values in decimal places",
+            "example": 0.01
+          },
+          "testTimeout": {
+            "type": "integer",
+            "description": "Number of seconds after which if the endpoint is not returning any response, the test is forced to fail e.g. a timeout of 60",
+            "format": "int32",
+            "example": 30
+          },
+          "configuration": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The parameters allows to provide values for configuration file for use in the test environment"
+          }
+        },
+        "description": "This structure helps specify additional test configurations which affects how test cases are generated.",
+        "example": {
+          "precisionDelta": 0.01,
+          "testTimeout": 30,
+          "configuration": []
+        }
+      },
+      "Attributes": {
+        "title": "Attributes",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Attribute Identifier",
+            "example": "5be1603083b41d0b50110551"
+          }
+        },
+        "description": "The structure contain attribute details of a parameter type.",
+        "example": {
+          "id": "5be1603083b41d0b50110551"
+        }
+      },
+      "Endpoint": {
+        "title": "Endpoint",
+        "required": [
+          "id",
+          "apiId",
+          "name",
+          "httpMethod",
+          "group",
+          "skipAuthentication",
+          "route",
+          "response",
+          "hasOptionalQueryParams",
+          "hasOptionalFieldParams",
+          "collectParameters",
+          "wrapBodyInObject",
+          "requiredScopes",
+          "parameters",
+          "errors",
+          "testCases"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Endpoint Identifier",
+            "example": "5a4e8675b724bb198c28a06a"
+          },
+          "apiId": {
+            "type": "string",
+            "description": "Unique API Identifier",
+            "example": "5a4e8675b724bb198c289fe9"
+          },
+          "name": {
+            "type": "string",
+            "description": "Endpoint Name",
+            "example": "Send String in body with \\r\\n"
+          },
+          "httpMethod": {
+            "type": "string",
+            "description": "Endpoint Method",
+            "example": "POST"
+          },
+          "group": {
+            "type": "string",
+            "description": "The Group Endpoint belongs to",
+            "example": "BodyParams"
+          },
+          "skipAuthentication": {
+            "type": "boolean",
+            "description": "If Endpoint warrants authentication or not",
+            "example": false
+          },
+          "route": {
+            "type": "string",
+            "description": "The Endpoint route",
+            "example": "/body/stringEncoding"
+          },
+          "response": {
+            "$ref": "#/components/schemas/Response"
+          },
+          "hasOptionalQueryParams": {
+            "type": "boolean",
+            "description": "Enabling this option allows optional query parameters",
+            "example": false
+          },
+          "hasOptionalFieldParams": {
+            "type": "boolean",
+            "description": "Enabling this option allows optional field parameters",
+            "example": false
+          },
+          "collectParameters": {
+            "type": "boolean",
+            "description": "Enabling this option collects API endpoint parameters as collections",
+            "example": false
+          },
+          "wrapBodyInObject": {
+            "type": "boolean",
+            "description": "Enabling this option allows wrapping of body in objects",
+            "example": false
+          },
+          "requiredScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "What scopes apply to an Endpoint"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Endpoint Paramaters"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Errors that Endpoint may output"
+          },
+          "testCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestCase"
+            },
+            "description": "Test Cases associated with Endpoint"
+          }
+        },
+        "description": "This structure encapsulates all the attributes of an API Endpoint."
+      },
+      "CustomType": {
+        "title": "CustomType",
+        "required": [
+          "id",
+          "apiId",
+          "name",
+          "baseType",
+          "implementationType",
+          "fields"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Type Identifier",
+            "example": "5a4e8675b724bb198c289ff6"
+          },
+          "apiId": {
+            "type": "string",
+            "description": "Unique  API Entity identifier",
+            "example": "5a4e8675b724bb198c289fe9"
+          },
+          "name": {
+            "type": "string",
+            "description": "Custom Type Name",
+            "example": "Job"
+          },
+          "baseType": {
+            "type": "string",
+            "description": "Data Format"
+          },
+          "implementationType": {
+            "$ref": "#/components/schemas/ImplementationType"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Field"
+            },
+            "description": "Type Fields"
+          }
+        },
+        "description": "This structure helps creates a new complex model type."
+      },
+      "GuideSection": {
+        "title": "GuideSection",
+        "required": [
+          "sectionName",
+          "sectionItems"
+        ],
+        "type": "object",
+        "properties": {
+          "sectionName": {
+            "type": "string",
+            "description": "Guide Section Name",
+            "example": "New Fancy Name"
+          },
+          "sectionItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SectionItem"
+            },
+            "description": "Guide Section Content"
+          }
+        },
+        "description": "This structure encapsulates all the details of a Guide Section"
+      },
+      "Transformation": {
+        "title": "Transformation",
+        "required": [
+          "id",
+          "transformedOn",
+          "userId",
+          "inputtedFile",
+          "generatedFile",
+          "exportFormat",
+          "transformationSource",
+          "transformationInput",
+          "codeGenVersion",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Transformation Identifier",
+            "example": "5be0999183b41d0d8cdb9f26"
+          },
+          "transformedOn": {
+            "type": "string",
+            "description": "Transformation Date and Time",
+            "example": "11/5/2018 7:27:13 PM"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Unique User Identifier",
+            "example": "5afc60380b9949253c6b7776"
+          },
+          "inputtedFile": {
+            "type": "string",
+            "description": "API Specification file to be transformed",
+            "example": "https://apimatic.io/api/transformations/5be0999183b41d0d8cdb9f26/input-file"
+          },
+          "generatedFile": {
+            "type": "string",
+            "description": "API Specification file transformed to desired format",
+            "example": "https://apimatic.io/api/transformations/5be0999183b41d0d8cdb9f26/converted-file"
+          },
+          "exportFormat": {
+            "type": "string",
+            "description": "Desired Specification format",
+            "example": "APIMATIC"
+          },
+          "transformationSource": {
+            "type": "string",
+            "description": "Source of Transformation",
+            "example": "Api"
+          },
+          "transformationInput": {
+            "type": "string",
+            "description": "Via File or URL",
+            "example": "File"
+          },
+          "codeGenVersion": {
+            "type": "string",
+            "description": "CodeGen Engine Version",
+            "example": 1
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Successful Transformation Flag",
+            "example": true
+          }
+        },
+        "description": "Transformation structure encapsulates all the details of a Transformation.",
+        "example": {
+          "id": "5be0999183b41d0d8cdb9f26",
+          "transformedOn": "2018-11-05T19:27:13.206Z",
+          "userId": "5afc60380b9949253c6b7776",
+          "inputtedFile": "https://apimatic.io/api/transformations/5be0999183b41d0d8cdb9f26/input-file",
+          "generatedFile": "https://apimatic.io/api/transformations/5be0999183b41d0d8cdb9f26/converted-file",
+          "exportFormat": "APIMATIC",
+          "transformationSource": "ViaApi",
+          "transformationInput": "File",
+          "codeGenVersion": 1,
+          "success": true
+        }
+      },
+      "CSNETSTANDARDLIB": {
+        "title": "CSNETSTANDARDLIB",
+        "required": [
+          "packageRepository",
+          "packageName",
+          "version",
+          "additionalDeploymentInformation"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique package identifier",
+            "example": "5dcd2b5893c3e31a206f30c4"
+          },
+          "packageRepository": {
+            "type": "string",
+            "description": "Package Repository as per platform",
+            "example": "NuGet"
+          },
+          "packageName": {
+            "type": "string",
+            "description": "Package Name",
+            "example": "myPackage"
+          },
+          "version": {
+            "type": "string",
+            "example": "1.1.1"
+          },
+          "additionalDeploymentInformation": {
+            "type": "object",
+            "description": "Any additional platform specific deployment detail"
+          },
+          "link": {
+            "type": "string",
+            "description": "Link of deployed package",
+            "example": "https://www.nuget.org/packages/myPackage/1.1.1"
+          }
+        },
+        "description": "This structure contains all details that goes into package deployment."
+      },
+      "Authentication": {
+        "title": "Authentication",
+        "required": [
+          "id",
+          "authType",
+          "scopes",
+          "parameters",
+          "authScopes",
+          "authGrantTypes",
+          "paramFormats"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Auth Id",
+            "example": "5be0a21a83b41d0d8cdcd80f"
+          },
+          "authType": {
+            "type": "string",
+            "description": "Auth Type",
+            "example": "None"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scope"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Auth Params"
+          },
+          "authScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Auth Scopes"
+          },
+          "authGrantTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Auth Grant Types"
+          },
+          "paramFormats": {
+            "type": "object",
+            "description": "Paramater Formats"
+          }
+        },
+        "description": "This Structure encapsulates all details of API authentication.",
+        "example": {
+          "id": "5be0a21a83b41d0d8cdcd80f",
+          "authType": "None",
+          "scopes": [],
+          "parameters": [],
+          "authScopes": [],
+          "authGrantTypes": []
+        }
+      },
+      "TestCase": {
+        "title": "TestCase",
+        "required": [
+          "id",
+          "endpointId",
+          "apiId",
+          "name",
+          "enabled",
+          "shouldPass",
+          "inputParameters",
+          "expectedStatus",
+          "expectedHeaders",
+          "expectedHeadersAllowExtra",
+          "expectedBody",
+          "expectedBodyMatchMode",
+          "expectedArrayOrderedMatching",
+          "expectedArrayCheckCount",
+          "responseMatchSchema"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Test Case identifier",
+            "example": "5a4e8675b724bb198c289f7b"
+          },
+          "endpointId": {
+            "type": "string",
+            "description": "The Endpoint, test case is associated with",
+            "example": "5a4e8675b724bb198c28a06a"
+          },
+          "apiId": {
+            "type": "string",
+            "description": "The API Entity, test case is associated with",
+            "example": "5a4e8675b724bb198c289fe9"
+          },
+          "name": {
+            "type": "string",
+            "description": "The Test Case name",
+            "example": "send string in body with \\r\\n1"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable/Disable a Test Case",
+            "example": true
+          },
+          "shouldPass": {
+            "type": "boolean",
+            "example": true
+          },
+          "inputParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputParameter"
+            },
+            "description": "Test case parameters"
+          },
+          "expectedStatus": {
+            "type": "string",
+            "description": "Expected response status. We expect the status code to be 200 if the operation is successful, hence we input the value 200.",
+            "example": 200
+          },
+          "expectedHeaders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Expected Headers"
+          },
+          "expectedHeadersAllowExtra": {
+            "type": "boolean",
+            "description": "If this flag is disabled, it will cause the test case to fail if the response contains other headers than those listed in the expected headers list.",
+            "example": true
+          },
+          "expectedBody": {
+            "type": "string",
+            "description": "Expected response goes in the expected body",
+            "example": "{\"passed\":true}"
+          },
+          "expectedBodyMatchMode": {
+            "type": "string",
+            "description": "Specifies what to match",
+            "example": "KEYSANDVALUES"
+          },
+          "expectedArrayOrderedMatching": {
+            "type": "boolean",
+            "description": "If enabled, this will involve ensuring that the response body contains the array elements in the same order as the expected body.",
+            "example": false
+          },
+          "expectedArrayCheckCount": {
+            "type": "boolean",
+            "description": "If enabled, this will ensure that the response body contains the same number of elements in the array as does the expected body.",
+            "example": false
+          },
+          "responseMatchSchema": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "description": "APIMatic lets you define test cases for endpoints using the API Editor. The test cases are automatically generated for each language. This structure encapsulates all details of a Test Case.  To find out more about defining Test Cases visit: https://docs.apimatic.io/testing/defining-your-first-test-case/"
+      },
+      "Environment": {
+        "title": "Environment",
+        "required": [
+          "id",
+          "name",
+          "servers"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Environment Identifier",
+            "example": "5be0a21a83b41d0d8cdcd832"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment Name",
+            "example": "production"
+          },
+          "servers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Server"
+            },
+            "description": "The user can specify multiple servers within an environment. A server comprises of a name and a url."
+          }
+        },
+        "description": "An environment consists of a set of servers with base URL values. The environment can be changed programatically allowing rapid switching between different environments. For example the user can specify a Production and Testing Environment and switch between them in the generated SDK."
+      },
+      "UpdateTemplatesPackageDeploymentInformation": {
+        "title": "UpdateTemplatesPackageDeploymentInformation",
+        "required": [
+          "CS_NET_STANDARD_LIB"
+        ],
+        "type": "object",
+        "properties": {
+          "CS_NET_STANDARD_LIB": {
+            "$ref": "#/components/schemas/CSNETSTANDARDLIB"
+          }
+        },
+        "description": "This structure helps update package deployment details."
+      },
+      "CodeGenSettings": {
+        "title": "CodeGenSettings",
+        "required": [
+          "isAsync",
+          "useHttpMethodPrefix",
+          "useModelPrefix",
+          "useEnumPrefix",
+          "useConstructorsForConfig",
+          "useCommonSdkLibrary",
+          "generateInterfaces",
+          "generateAppveyorConfig",
+          "generateCircleConfig",
+          "generateJenkinsConfig",
+          "generateTravisConfig",
+          "androidUseAppManifest",
+          "iosUseAppInfoPlist",
+          "iosGenerateCoreData",
+          "runscopeEnabled",
+          "collapseParamsToArray",
+          "preserveParameterOrder",
+          "appendContentHeaders",
+          "modelSerializationIsJSON",
+          "nullify404",
+          "validateRequiredParameters",
+          "enableAdditionalModelProperties",
+          "javaUsePropertiesConfig",
+          "useControllerPrefix",
+          "useExceptionPrefix",
+          "parameterArrayFormat",
+          "objCHttpClient",
+          "cSharpHttpClient",
+          "androidHttpClient",
+          "nodeHttpClient",
+          "phpHttpClient",
+          "bodySerialization",
+          "arraySerialization",
+          "timeout",
+          "enableLogging",
+          "enableHttpCache",
+          "retries",
+          "retryInterval",
+          "generateAdvancedDocs",
+          "storeTimezoneInformation",
+          "enablePhpComposerVersionString",
+          "securityProtocols",
+          "underscoreNumbers",
+          "useSingletonPattern",
+          "disableLinting",
+          "allowSkippingSSLCertVerification",
+          "applyCustomizations",
+          "doNotSplitWords",
+          "sortResources",
+          "enableGlobalUserAgent"
+        ],
+        "type": "object",
+        "properties": {
+          "isAsync": {
+            "type": "boolean",
+            "description": "Generate asynchronous code for API Calls and deserialization",
+            "example": true
+          },
+          "useHttpMethodPrefix": {
+            "type": "boolean",
+            "description": "Use HTTP Method prefixes for endpoint wrappers",
+            "example": true
+          },
+          "useModelPrefix": {
+            "type": "boolean",
+            "description": "Use \"Model\" postfixes for generated class names",
+            "example": false
+          },
+          "useEnumPrefix": {
+            "type": "boolean",
+            "description": "Use \"Enum\" postfixes for enumerated types",
+            "example": true
+          },
+          "useConstructorsForConfig": {
+            "type": "boolean",
+            "example": false
+          },
+          "useCommonSdkLibrary": {
+            "type": "boolean",
+            "description": "Use common SDK library to reduce code duplication",
+            "example": false
+          },
+          "generateInterfaces": {
+            "type": "boolean",
+            "description": "Generates interfaces for controller classes in the generated SDKs",
+            "example": false
+          },
+          "generateAppveyorConfig": {
+            "type": "boolean",
+            "description": "Generate Appveyor configuration file",
+            "example": false
+          },
+          "generateCircleConfig": {
+            "type": "boolean",
+            "description": "Generate CircleCI configuration file",
+            "example": false
+          },
+          "generateJenkinsConfig": {
+            "type": "boolean",
+            "description": "Generate Jenkins configuration file",
+            "example": false
+          },
+          "generateTravisConfig": {
+            "type": "boolean",
+            "description": "Generate Travis CI configuration file",
+            "example": false
+          },
+          "androidUseAppManifest": {
+            "type": "boolean",
+            "description": "Use \"AndroidManifest.xml\" for config variables in Android",
+            "example": false
+          },
+          "iosUseAppInfoPlist": {
+            "type": "boolean",
+            "description": "Use \"App-Info.plist\" file for config variables in iOS",
+            "example": false
+          },
+          "iosGenerateCoreData": {
+            "type": "boolean",
+            "description": "Generate \"CoreData\" schema and entity classes in iOS?",
+            "example": false
+          },
+          "runscopeEnabled": {
+            "type": "boolean",
+            "description": "Enable runscope",
+            "example": false
+          },
+          "collapseParamsToArray": {
+            "type": "boolean",
+            "description": "Collect Parameters as arrays",
+            "example": false
+          },
+          "preserveParameterOrder": {
+            "type": "boolean",
+            "description": "Attempts to preserve parameter order for endpoints",
+            "example": true
+          },
+          "appendContentHeaders": {
+            "type": "boolean",
+            "description": "Append JSON/XML accept and content-type headers",
+            "example": true
+          },
+          "modelSerializationIsJSON": {
+            "type": "boolean",
+            "example": true
+          },
+          "nullify404": {
+            "type": "boolean",
+            "description": "Return a null value on HTTP 404",
+            "example": false
+          },
+          "validateRequiredParameters": {
+            "type": "boolean",
+            "description": "Validate required parameters to be Not Null",
+            "example": false
+          },
+          "enableAdditionalModelProperties": {
+            "type": "boolean",
+            "description": "Allow models to have additional runtime properties",
+            "example": false
+          },
+          "javaUsePropertiesConfig": {
+            "type": "boolean",
+            "example": false
+          },
+          "useControllerPrefix": {
+            "type": "boolean",
+            "description": "Use \"Controller\" postfixes for generated controller classes",
+            "example": true
+          },
+          "useExceptionPrefix": {
+            "type": "boolean",
+            "description": "Use Exception Prefixes",
+            "example": true
+          },
+          "parameterArrayFormat": {
+            "type": "string",
+            "description": "Parameter Array format with index or without",
+            "example": "ParamArrayWithIndex"
+          },
+          "objCHttpClient": {
+            "type": "string",
+            "description": "Configure the HTTP client for Objective C",
+            "example": "UNIREST"
+          },
+          "cSharpHttpClient": {
+            "type": "string",
+            "description": "Configure the HTTP client for C#",
+            "example": "UNIREST"
+          },
+          "androidHttpClient": {
+            "type": "string",
+            "description": "Configure the HTTP client for  Android",
+            "example": "ANDROID_OK"
+          },
+          "nodeHttpClient": {
+            "type": "string",
+            "description": "Configure the HTTP client for node",
+            "example": "NODE_REQUEST"
+          },
+          "phpHttpClient": {
+            "type": "string",
+            "description": "Configure the HTTP client for PHP",
+            "example": "UNIREST"
+          },
+          "bodySerialization": {
+            "type": "integer",
+            "format": "int32",
+            "example": 0
+          },
+          "arraySerialization": {
+            "type": "string",
+            "description": "Specify type of array serialisation",
+            "example": "Indexed"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "This option specifies the duration (in seconds) after which requests would timeout",
+            "format": "int32",
+            "example": 0
+          },
+          "enableLogging": {
+            "type": "boolean",
+            "description": "Enabling this generates code in the SDKs for logging events in the API cycle using a library.",
+            "example": false
+          },
+          "enableHttpCache": {
+            "type": "boolean",
+            "description": "Enabling caching of responses (not available in all languages)",
+            "example": false
+          },
+          "retries": {
+            "type": "integer",
+            "description": "Specify number of retries",
+            "format": "int32",
+            "example": 0
+          },
+          "retryInterval": {
+            "type": "integer",
+            "description": "Specify retry interval in case of failures",
+            "format": "int32",
+            "example": 1
+          },
+          "generateAdvancedDocs": {
+            "type": "boolean",
+            "description": "Generate advanced read me files",
+            "example": true
+          },
+          "storeTimezoneInformation": {
+            "type": "boolean",
+            "description": "Store Timezone information for the generation",
+            "example": false
+          },
+          "enablePhpComposerVersionString": {
+            "type": "boolean",
+            "description": "Use \"Controller\" postfixes for generated controller classes",
+            "example": false
+          },
+          "securityProtocols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Specify Security Protocols"
+          },
+          "underscoreNumbers": {
+            "type": "boolean",
+            "description": "Use underscores before and after numbers for underscore case",
+            "example": true
+          },
+          "useSingletonPattern": {
+            "type": "boolean",
+            "description": "Allow usage of a Singleton Pattern",
+            "example": true
+          },
+          "disableLinting": {
+            "type": "boolean",
+            "description": "Files/dependencies used for linting are not generated if this option is enabled",
+            "example": false
+          },
+          "allowSkippingSSLCertVerification": {
+            "type": "boolean",
+            "description": "Create a configuration option in SDKs to optionally skip certificate verification when establishing HTTPS connections.",
+            "example": false
+          },
+          "applyCustomizations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Apply Customisations"
+          },
+          "doNotSplitWords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Enabling this will stop splitting of words when converting identifiers from API specification to language-specific identifiers."
+          },
+          "sortResources": {
+            "type": "boolean",
+            "description": "Sorts resources such as endpoints, endpoint groups and models in generated documentation",
+            "example": false
+          },
+          "enableGlobalUserAgent": {
+            "type": "boolean",
+            "description": "Enable a global user agent",
+            "example": true
+          }
+        },
+        "description": "APIMatic’s code generation engine has various code generation configurations to customise the behaviour and outlook across the generated SDKS. This structure encapsulates all settings for CodeGeneration.",
+        "example": {
+          "isAsync": true,
+          "useHttpMethodPrefix": true,
+          "useModelPrefix": false,
+          "useEnumPrefix": true,
+          "useConstructorsForConfig": false,
+          "useCommonSdkLibrary": false,
+          "generateInterfaces": false,
+          "generateAppveyorConfig": false,
+          "generateCircleConfig": false,
+          "generateJenkinsConfig": false,
+          "generateTravisConfig": false,
+          "androidUseAppManifest": false,
+          "iosUseAppInfoPlist": false,
+          "iosGenerateCoreData": false,
+          "runscopeEnabled": false,
+          "collapseParamsToArray": false,
+          "preserveParameterOrder": true,
+          "appendContentHeaders": true,
+          "modelSerializationIsJSON": true,
+          "nullify404": false,
+          "validateRequiredParameters": false,
+          "enableAdditionalModelProperties": false,
+          "javaUsePropertiesConfig": false,
+          "useControllerPrefix": true,
+          "useExceptionPrefix": true,
+          "parameterArrayFormat": "ParamArrayWithIndex",
+          "objCHttpClient": "UNIREST",
+          "cSharpHttpClient": "UNIREST",
+          "androidHttpClient": "ANDROID_OK",
+          "nodeHttpClient": "NODE_REQUEST",
+          "phpHttpClient": "UNIREST",
+          "bodySerialization": 0,
+          "arraySerialization": "Indexed",
+          "timeout": 0,
+          "enableLogging": false,
+          "enableHttpCache": false,
+          "retries": 0,
+          "retryInterval": 1,
+          "generateAdvancedDocs": true,
+          "storeTimezoneInformation": false,
+          "enablePhpComposerVersionString": false,
+          "securityProtocols": [
+            "Ssl3",
+            "Tls"
+          ],
+          "underscoreNumbers": true,
+          "useSingletonPattern": true,
+          "disableLinting": false,
+          "allowSkippingSSLCertVerification": false,
+          "applyCustomizations": [],
+          "doNotSplitWords": [],
+          "sortResources": false,
+          "enableGlobalUserAgent": true
+        }
+      },
+      "ExportFormats": {
+        "title": "ExportFormats",
+        "enum": [
+          "APIMATIC",
+          "WADL2009",
+          "WADL2006",
+          "WSDL",
+          "Swagger10",
+          "Swagger20",
+          "SwaggerYaml",
+          "OpenApi3Json",
+          "OpenApi3Yaml",
+          "IODocs",
+          "IODocsV0314",
+          "APIBluePrint",
+          "RAML",
+          "RAML10",
+          "GoogleDiscovery",
+          "Mashape",
+          "Postman10",
+          "Postman20"
+        ],
+        "type": "string",
+        "description": "The structure contains API specification formats that Transformer can convert to."
+      },
+      "APIEntityDetailed": {
+        "title": "APIEntityDetailed",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/APIEntity"
+          },
+          {
+            "required": [
+              "endpoints",
+              "customTypes"
+            ],
+            "type": "object",
+            "properties": {
+              "endpoints": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Endpoint"
+                },
+                "description": "API Endpoints"
+              },
+              "customTypes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CustomType"
+                },
+                "description": "Complex Custom Model Types"
+              }
+            }
+          }
+        ],
+        "description": "The structure collects API Endpoints and Custom Types to display detailed information on API Entity."
+      },
+      "TemplatesPackageDeploymentInformation": {
+        "title": "TemplatesPackageDeploymentInformation",
+        "required": [
+          "CS_NET_STANDARD_LIB"
+        ],
+        "type": "object",
+        "properties": {
+          "CS_NET_STANDARD_LIB": {
+            "$ref": "#/components/schemas/CSNETSTANDARDLIB"
+          }
+        },
+        "description": "This structure encapsulates all package deployment details."
+      },
+      "InputParameter": {
+        "title": "InputParameter",
+        "required": [
+          "isNull",
+          "endpointInputPrameterId",
+          "id",
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "isNull": {
+            "type": "boolean",
+            "description": "If parameter is null",
+            "example": false
+          },
+          "endpointInputPrameterId": {
+            "type": "string",
+            "description": "Unique parameter identifier for each endpoint",
+            "example": "5a4e8675b724bb198c289f7a"
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique parameter identifier",
+            "example": "5a4e8675b724bb198c289f7c"
+          },
+          "name": {
+            "type": "string",
+            "description": "Parameter Name",
+            "example": "body"
+          },
+          "value": {
+            "type": "string",
+            "description": "Parameter Value",
+            "example": "{\"name\":\"Country\",\"field\":\"NZ\"}"
+          }
+        },
+        "description": "This structure helps specify details of an input parameter."
+      },
+      "ServerConfiguration": {
+        "title": "ServerConfiguration",
+        "required": [
+          "id",
+          "defaultEnvironment",
+          "defaultServer",
+          "environments",
+          "parameters"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Server Config Identifier",
+            "example": "5be0a21a83b41d0d8cdcd835"
+          },
+          "defaultEnvironment": {
+            "type": "string",
+            "description": "Default Environment",
+            "example": "production"
+          },
+          "defaultServer": {
+            "type": "string",
+            "description": "Default Server",
+            "example": "default"
+          },
+          "environments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Environment"
+            },
+            "description": "Environment Identifier and Name"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Parameter Attributes"
+          }
+        },
+        "description": "Server configurations can be used to create multiple environments, multiple servers that can be used with specific endpoints and server URLs with template paramters."
+      },
+      "UpdatePackageDeploymentInformation": {
+        "title": "UpdatePackageDeploymentInformation",
+        "required": [
+          "templatesPackageDeploymentInformation"
+        ],
+        "type": "object",
+        "properties": {
+          "templatesPackageDeploymentInformation": {
+            "$ref": "#/components/schemas/UpdateTemplatesPackageDeploymentInformation"
+          }
+        },
+        "description": "This structure is used to update package deployment details."
+      },
+      "CodeGeneration": {
+        "title": "CodeGeneration",
+        "required": [
+          "id",
+          "template",
+          "generatedFile",
+          "generatedOn",
+          "hashCode",
+          "codeGenerationSource",
+          "codeGenVersion",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Code Generation Identifier",
+            "example": "5be08b2d83b41d0d8cdb3289"
+          },
+          "template": {
+            "$ref": "#/components/schemas/Platforms"
+          },
+          "generatedFile": {
+            "type": "string",
+            "description": "The generated SDK",
+            "example": "https://apimatic.io/api/code-generations/5be08b2d83b41d0d8cdb3289/generated-sdk"
+          },
+          "generatedOn": {
+            "type": "string",
+            "description": "Generation Date and Time",
+            "format": "date-time",
+            "example": "11/5/2018 6:25:46 PM"
+          },
+          "hashCode": {
+            "type": "string",
+            "description": "The md5 hash of the API Description",
+            "example": "77BDA4F625EF512B336D0A77CE2BB2B6"
+          },
+          "codeGenerationSource": {
+            "type": "string",
+            "description": "Generation Source",
+            "example": "Api"
+          },
+          "codeGenVersion": {
+            "type": "string",
+            "description": "Generation Version",
+            "example": 1
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Generation Status",
+            "example": true
+          }
+        },
+        "description": "The Code Generation structure encapsulates all the  the details of an SDK generation performed against an API Entity"
+      },
+      "APIEntity": {
+        "title": "APIEntity",
+        "required": [
+          "id",
+          "encryptedId",
+          "apiKey",
+          "apiGroupId",
+          "imageUri",
+          "creationDate",
+          "public",
+          "name",
+          "baseUri",
+          "version",
+          "additionalHeaders",
+          "authentication",
+          "codeGenSettings",
+          "testGenSettings",
+          "errors",
+          "serverConfiguration"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique API Entity identifier",
+            "example": "5be0a21a83b41d0d8cdcd81d"
+          },
+          "encryptedId": {
+            "type": "string",
+            "description": "Enrcypted API Entity Id",
+            "example": "YXBpbWF0aWNfNWJlMGEyMWE4M2I0MWQwZDhjZGNkODFk"
+          },
+          "apiKey": {
+            "type": "string",
+            "description": "API Integration Key. Obtain from API Card on Dashboard.",
+            "example": "FmxKZBYAfT3JPEmCqoM_5NeP_CQaP4O3rYFa58X4k9gwTLZXeV5dNFWROXQ2IdVd"
+          },
+          "apiGroupId": {
+            "type": "string",
+            "description": "Unique API Group Identifier",
+            "example": "5be0a21a83b41d0d8cdcd81c"
+          },
+          "imageUri": {
+            "type": "string",
+            "description": "Cover Image",
+            "example": "/img/no-image.jpg"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Entity creation date",
+            "example": "11/5/2018 8:03:38 PM"
+          },
+          "public": {
+            "type": "boolean",
+            "description": "API Status (Deprecated)",
+            "example": false
+          },
+          "name": {
+            "type": "string",
+            "description": "API Entity  Name",
+            "example": "Hello world"
+          },
+          "baseUri": {
+            "type": "string",
+            "description": "Base URI for the Entity",
+            "example": "http://www.example.com"
+          },
+          "version": {
+            "type": "string",
+            "description": "Entity Version Number",
+            "example": 1
+          },
+          "additionalHeaders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Header Content"
+          },
+          "authentication": {
+            "$ref": "#/components/schemas/Authentication"
+          },
+          "codeGenSettings": {
+            "$ref": "#/components/schemas/CodeGenSettings"
+          },
+          "testGenSettings": {
+            "$ref": "#/components/schemas/TestGenSettings"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "API Errors"
+          },
+          "serverConfiguration": {
+            "$ref": "#/components/schemas/ServerConfiguration"
+          }
+        },
+        "description": "The API Entity Structure encapsulates all the details of an API Entity. An API entity is a unique API Version."
+      },
+      "Field": {
+        "title": "Field",
+        "required": [
+          "optional",
+          "type",
+          "constant",
+          "isArray",
+          "isStream",
+          "isAttribute",
+          "isMap",
+          "attributes",
+          "nullable",
+          "id",
+          "name",
+          "description",
+          "defaultValue"
+        ],
+        "type": "object",
+        "properties": {
+          "optional": {
+            "type": "boolean",
+            "description": "If parameter is optional",
+            "example": false
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of Parameter",
+            "example": "test\\r\\nstringEncoding"
+          },
+          "constant": {
+            "type": "boolean",
+            "description": "IF Parameter is constant",
+            "example": false
+          },
+          "isArray": {
+            "type": "boolean",
+            "description": "If Param is collected as array",
+            "example": false
+          },
+          "isStream": {
+            "type": "boolean",
+            "example": false
+          },
+          "isAttribute": {
+            "type": "boolean",
+            "example": false
+          },
+          "isMap": {
+            "type": "boolean",
+            "example": false
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/Attributes"
+          },
+          "nullable": {
+            "type": "boolean",
+            "description": "If Parameter is nullable",
+            "example": false
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique Parameter identifier",
+            "example": "5a4e8675b724bb198c289f7a"
+          },
+          "name": {
+            "type": "string",
+            "description": "Parameter Name",
+            "example": "body"
+          },
+          "description": {
+            "type": "string",
+            "description": "Parameter Description"
+          },
+          "defaultValue": {
+            "type": "string",
+            "description": "Default Values of a Parameter"
+          }
+        },
+        "description": "This structure encapsulates all details of a parameter."
+      },
+      "UrlTransformationInput": {
+        "title": "UrlTransformationInput",
+        "required": [
+          "fileUrl",
+          "exportFormat"
+        ],
+        "type": "object",
+        "properties": {
+          "fileUrl": {
+            "type": "string",
+            "description": "API Specification URL address",
+            "example": "https://petstore.swagger.io/v2/swagger.json"
+          },
+          "exportFormat": {
+            "$ref": "#/components/schemas/ExportFormats"
+          },
+          "codeGenVersion": {
+            "type": "integer",
+            "description": "CodeGen Engine Version",
+            "format": "int64",
+            "example": 1
+          }
+        },
+        "description": "This structure puts together the URL of the file to be transformed, along with the desired export format."
+      },
+      "Server": {
+        "title": "Server",
+        "required": [
+          "id",
+          "name",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Server identifier",
+            "example": "5be0a21a83b41d0d8cdcd831"
+          },
+          "name": {
+            "type": "string",
+            "description": "Server Name",
+            "example": "default"
+          },
+          "url": {
+            "type": "string",
+            "description": "Server URL",
+            "example": "{defaultServerUrl}"
+          }
+        },
+        "description": "The user can specify multiple servers within an environment. A server comprises of a name and a URL. The names of the hosts remain consistent over different environments but their values may vary. The URL values can contain any number of parameters defined."
+      },
+      "Platforms": {
+        "title": "Platforms",
+        "enum": [
+          "CS_NET_STANDARD_LIB",
+          "CS_PORTABLE_NET_LIB",
+          "CS_UNIVERSAL_WINDOWS_PLATFORM_LIB",
+          "JAVA_GRADLE_ANDROID_LIB",
+          "OBJC_COCOA_TOUCH_IOS_LIB",
+          "JAVA_ECLIPSE_JRE_LIB",
+          "PHP_GENERIC_LIB",
+          "PYTHON_GENERIC_LIB",
+          "RUBY_GENERIC_LIB",
+          "ANGULAR_JAVASCRIPT_LIB",
+          "NODE_JAVASCRIPT_LIB",
+          "GO_GENERIC_LIB",
+          "HTTP_CURL_V1"
+        ],
+        "type": "string",
+        "description": "The structure contains platforms that APIMatic CodeGen can generate SDKs and Docs in."
+      },
+      "PackageDeploymentInformation": {
+        "title": "PackageDeploymentInformation",
+        "required": [
+          "id",
+          "templatesPackageDeploymentInformation"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Package Deployment Identifier",
+            "example": "5dcc0560dfe543169893ca01"
+          },
+          "templatesPackageDeploymentInformation": {
+            "$ref": "#/components/schemas/TemplatesPackageDeploymentInformation"
+          }
+        },
+        "description": "The structure contains Package Deployment Information along with Id."
+      },
+      "ImportNewVersion": {
+        "title": "ImportNewVersion",
+        "required": [
+          "VersionOverride",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "VersionOverride": {
+            "type": "string",
+            "description": "Version to be overridden",
+            "example": "1.2.3"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of new API Spec",
+            "example": "https://petstore.swagger.io/v2/swagger.json"
+          }
+        },
+        "description": "This structure contains details of importing a new API Version"
+      },
+      "SectionItem": {
+        "title": "SectionItem",
+        "required": [
+          "heading",
+          "body"
+        ],
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string",
+            "description": "Guide Heading",
+            "example": "Top Level heading 1"
+          },
+          "body": {
+            "type": "string",
+            "description": "Guide Body Content",
+            "example": "Content for first heading"
+          }
+        },
+        "description": "This structure encapsulates content that goes into a Guides Section."
+      },
+      "Parameter": {
+        "title": "Parameter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Field"
+          },
+          {
+            "required": [
+              "ParamFormat"
+            ],
+            "type": "object",
+            "properties": {
+              "ParamFormat": {
+                "type": "string",
+                "description": "Specify Parameter Format",
+                "example": "Body"
+              }
+            }
+          }
+        ],
+        "description": "Parameters are options passed with the endpoint"
+      }
+    },
+    "securitySchemes": {
+      "httpBasic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "httpBasic": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Code Generation - External Files",
+      "description": ""
+    },
+    {
+      "name": "Transformation",
+      "description": ""
+    },
+    {
+      "name": "Dashboard Management_",
+      "description": ""
+    },
+    {
+      "name": "Documentation Generation",
+      "description": ""
+    },
+    {
+      "name": "Code Generation - Imported APIs_",
+      "description": ""
+    },
+    {
+      "name": "Package Deployment",
+      "description": ""
+    }
+  ]
+}

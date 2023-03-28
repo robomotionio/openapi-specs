@@ -1,0 +1,1616 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Sage People API",
+    "description": "The Sage People API provides a means to extract data from the Sage People application.\n\n# Authorization\n\nYou need a bearer token to authenticate with Sage People API, see the Get Started section for more information.\n\n# Headers\n\nRequests to Sage People API need the following header: `Accept: application/json`\n\n<!-- ReDoc-Inject: <security-definitions> -->\n\n&nbsp;\n",
+    "version": "4.8",
+    "contact": {
+      "name": "Sage",
+      "url": "https://developer.sage.com/people"
+    }
+  },
+  "externalDocs": {
+    "description": "Sage People API Documentation",
+    "url": "https://developer.sage.com/people/"
+  },
+  "servers": [
+    {
+      "url": "https://{domain}/services/apexrest/spapi/v4",
+      "description": "The production API server",
+      "variables": {
+        "domain": {
+          "default": "xyz.salesforce.com",
+          "description": ""
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Absence",
+      "description": "Access to Absences"
+    },
+    {
+      "name": "Absence Balance",
+      "description": "Access to Absence Balances"
+    },
+    {
+      "name": "Bonus",
+      "description": "Access to Bonuses"
+    },
+    {
+      "name": "Employee",
+      "description": "Access to Employees"
+    },
+    {
+      "name": "Salary",
+      "description": "Access to Salaries"
+    },
+    {
+      "name": "Timesheet",
+      "description": "Access to Timesheets"
+    }
+  ],
+  "paths": {
+    "/salaries": {
+      "get": {
+        "tags": [
+          "Salary"
+        ],
+        "summary": "Get Salaries",
+        "operationId": "salaries",
+        "description": "Retrieve a paginated list of salaries",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/salaryMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalariesResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Get Employees",
+        "operationId": "employees",
+        "description": "Retrieve a paginated list of employees",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/employeeMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeesResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/employees/{employeeId}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Get Employee by Id",
+        "operationId": "employeeById",
+        "description": "Retrieve a single employee",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/employeeId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/employees/{employeeId}/payDetails": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Add Pay Details",
+        "operationId": "employeepaydetails",
+        "description": "Add new pay details for a single employee",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/employeeId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Pay details for a single employee",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeePayDetailsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeePayDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
+        }
+      }
+    },
+    "/absences": {
+      "get": {
+        "tags": [
+          "Absence"
+        ],
+        "summary": "Get Absences",
+        "operationId": "absences",
+        "description": "Retrieve a paginated list of absences",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/absenceMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbsencesResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/bonuses": {
+      "get": {
+        "tags": [
+          "Bonus"
+        ],
+        "summary": "Get Bonuses",
+        "operationId": "bonuses",
+        "description": "Retrieve a paginated list of bonuses",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/bonusMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BonusesResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/absenceBalances": {
+      "get": {
+        "tags": [
+          "Absence Balance"
+        ],
+        "summary": "Get Absence Balances",
+        "operationId": "absenceBalances",
+        "description": "Retrieve a paginated list of absence balances",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/absenceBalanceMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbsenceBalanceResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/timesheets": {
+      "get": {
+        "tags": [
+          "Timesheet"
+        ],
+        "summary": "Get Timesheets",
+        "operationId": "timesheets",
+        "description": "Retrieve a paginated list of timesheets",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/timesheetMarker"
+          },
+          {
+            "$ref": "#/components/parameters/queryFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimesheetResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "employeeMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided employee id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of an Employee",
+            "value": "a2K2500000147JcEAI"
+          }
+        }
+      },
+      "absenceMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided absence id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of an Absence",
+            "value": "a082500000HMRxTAAX"
+          }
+        }
+      },
+      "salaryMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided salary id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of a Salary",
+            "value": "a1q25000001ABeAAAW"
+          }
+        }
+      },
+      "bonusMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided bonus id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of a Bonus",
+            "value": "a0J2500000CT91nEAD"
+          }
+        }
+      },
+      "employeeId": {
+        "name": "employeeId",
+        "in": "path",
+        "description": "Required parameter to identify an employee",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "employeeId": {
+            "summary": "Id of an employee",
+            "value": "a2K2500000147JcEAI"
+          }
+        }
+      },
+      "absenceBalanceMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided absence balance id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of an Absence Balance",
+            "value": "a2e8E000000jJrBQAU"
+          }
+        }
+      },
+      "timesheetMarker": {
+        "name": "marker",
+        "in": "query",
+        "description": "Optional parameter used to retrieve the next page of data. Gets page of data after provided timesheet id.",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "marker": {
+            "summary": "Id field of a Timesheet",
+            "value": "a2R7E000000aCU9UAM"
+          }
+        }
+      },
+      "queryFilter": {
+        "name": "$filter",
+        "in": "query",
+        "description": "Optional parameter used to filter the data returned by the Api.",
+        "style": "form",
+        "explode": false,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "$filter": {
+            "summary": "{api field} {operator} {field value}",
+            "value": "reason eq 'Performance'"
+          }
+        }
+      }
+    },
+    "schemas": {
+      "EmployeesResponse": {
+        "description": "Response data for Employees",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Employee"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "EmployeeResponse": {
+        "description": "Response data for Employee",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Employee"
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "Employment": {
+        "type": "object",
+        "nullable": true,
+        "required": [
+          "startDate",
+          "name",
+          "jobTitle",
+          "endDate"
+        ],
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "nullable": true,
+            "example": "2018-01-02"
+          },
+          "name": {
+            "type": "string",
+            "example": "2019.02 #35"
+          },
+          "jobTitle": {
+            "type": "string",
+            "nullable": true,
+            "example": "Finance Assistant"
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true,
+            "example": "2018-01-01"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "nullable": true,
+        "required": [
+          "name",
+          "line1",
+          "line2",
+          "line3",
+          "city",
+          "region",
+          "postalCode",
+          "country"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Work location 44"
+          },
+          "line1": {
+            "type": "string",
+            "nullable": true,
+            "example": "Hoover Bldg"
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true,
+            "example": "12 MainSt"
+          },
+          "line3": {
+            "type": "string",
+            "nullable": true,
+            "example": "Hampstead Heath"
+          },
+          "city": {
+            "type": "string",
+            "nullable": true,
+            "example": "Reading"
+          },
+          "region": {
+            "type": "string",
+            "nullable": true,
+            "example": "Berkshire"
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "R11 2YY"
+          },
+          "country": {
+            "type": "string",
+            "nullable": true,
+            "example": "United Kingdom"
+          }
+        }
+      },
+      "AdditionalField": {
+        "type": "object",
+        "nullable": true,
+        "required": [
+          "name",
+          "value",
+          "source"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Custom Field"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "nullable": true
+              },
+              {
+                "type": "integer",
+                "nullable": true
+              },
+              {
+                "type": "boolean",
+                "nullable": true
+              },
+              {
+                "type": "number",
+                "nullable": true
+              },
+              {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "example": 24
+          },
+          "source": {
+            "type": "string",
+            "example": "SomeCustomField__c"
+          }
+        }
+      },
+      "InboundAdditionalField": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "example": "Document_Type__c"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "nullable": true
+              },
+              {
+                "type": "integer",
+                "nullable": true
+              },
+              {
+                "type": "boolean",
+                "nullable": true
+              },
+              {
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "example": "Payslip"
+          }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "required": [
+          "id",
+          "hrDepartment",
+          "fullName",
+          "firstName",
+          "lastName",
+          "currentEmployment",
+          "workAddress",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "hrDepartment": {
+            "type": "string",
+            "nullable": true,
+            "example": "Finance"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Chuck Hamilton",
+            "description": "A combination of preferred name, middle name, and surname"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Charles"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Hamilton"
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true,
+            "example": "Charles.Hamilton@DemoCompany.com"
+          },
+          "currentEmployment": {
+            "$ref": "#/components/schemas/Employment"
+          },
+          "workAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "Salary": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId",
+          "amount",
+          "multiplier",
+          "currencyName",
+          "startDate",
+          "payCode",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2J8E000001UjUuUAK"
+          },
+          "employeeId": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "example": 35000
+          },
+          "multiplier": {
+            "type": "number",
+            "format": "float",
+            "example": 12
+          },
+          "currencyName": {
+            "type": "string",
+            "example": "GBP"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2018-01-02",
+            "nullable": true
+          },
+          "payCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "X1"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "SalariesResponse": {
+        "description": "Response data for Salaries",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Salary"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "Bonus": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId",
+          "amount",
+          "currencyName",
+          "paidDate",
+          "payCode",
+          "reason",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2J8E000001UjUuUAK"
+          },
+          "employeeId": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "example": 35000
+          },
+          "currencyName": {
+            "type": "string",
+            "example": "GBP"
+          },
+          "paidDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2018-01-02",
+            "nullable": true
+          },
+          "payCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "X1"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "example": "Performance"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "BonusesResponse": {
+        "description": "Response data for Bonuses",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Bonus"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "Absence": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId",
+          "reason",
+          "startDate",
+          "endDate",
+          "duration",
+          "durationUnits",
+          "approved",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "employeeId": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA5"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "example": "Planned Vacation"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2020-03-02"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2020-03-04"
+          },
+          "duration": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "example": 3
+          },
+          "durationUnits": {
+            "type": "string",
+            "nullable": true,
+            "example": "Day"
+          },
+          "approved": {
+            "type": "boolean",
+            "example": true
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "AbsencesResponse": {
+        "description": "Response data for Absences",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Absence"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "AbsenceBalance": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId",
+          "reason",
+          "units",
+          "calculatedDate",
+          "periodName",
+          "periodEndBalance",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "employeeId": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA5"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Planned Vacation"
+          },
+          "units": {
+            "type": "string",
+            "example": "days"
+          },
+          "calculatedDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-21T17:32:28Z"
+          },
+          "periodName": {
+            "type": "string",
+            "example": "2020"
+          },
+          "periodEndBalance": {
+            "type": "object",
+            "required": [
+              "accrued",
+              "timeOffInLieu",
+              "carryOver"
+            ],
+            "properties": {
+              "accrued": {
+                "type": "number",
+                "nullable": true,
+                "format": "float",
+                "example": 15
+              },
+              "timeOffInLieu": {
+                "type": "number",
+                "nullable": true,
+                "format": "float",
+                "example": 1.5
+              },
+              "carryOver": {
+                "type": "number",
+                "nullable": true,
+                "format": "float",
+                "example": 0
+              }
+            }
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "AbsenceBalanceResponse": {
+        "description": "Response data for Absence Balances",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AbsenceBalance"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "Timesheet": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId",
+          "hoursWorked",
+          "hoursEarned",
+          "startDate",
+          "endDate",
+          "status",
+          "additionalFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA0"
+          },
+          "employeeId": {
+            "type": "string",
+            "example": "a2G7E000000LlIDUA5"
+          },
+          "hoursWorked": {
+            "type": "number",
+            "format": "float",
+            "example": 3
+          },
+          "hoursEarned": {
+            "type": "number",
+            "format": "float",
+            "example": 3
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date",
+            "example": "2020-03-02"
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date",
+            "example": "2020-08-02"
+          },
+          "status": {
+            "type": "string",
+            "example": "approved"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          }
+        }
+      },
+      "TimesheetResponse": {
+        "description": "Response data for Timesheets",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Timesheet"
+            }
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      },
+      "Error": {
+        "description": "Container for error messages",
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCategory"
+          },
+          "message": {
+            "description": "A human-readable representation of the error",
+            "type": "string",
+            "example": "There was a problem selecting the fields from the object"
+          },
+          "target": {
+            "description": "The target of the error",
+            "type": "string",
+            "example": "object"
+          },
+          "innererror": {
+            "$ref": "#/components/schemas/InnerError"
+          },
+          "details": {
+            "description": "An object containing more specific information than the current object about the error",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InnerError": {
+        "description": "Container for hierarchical error codes",
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "innererror": {
+            "$ref": "#/components/schemas/InnerError"
+          }
+        }
+      },
+      "ErrorCode": {
+        "description": "One of a server-defined set of error codes",
+        "type": "string",
+        "enum": [
+          "MISSING_API_PERMISSION",
+          "FIELD_ERROR",
+          "INACCESSIBLE_FIELD",
+          "INVALID_RELATIONSHIP",
+          "INVALID_HEADER",
+          "INVALID_ACCEPT_HEADER",
+          "INVALID_QUERY_STRING",
+          "INVALID_MARKER",
+          "INVALID_FILTER",
+          "SYNTAX_ERROR",
+          "UNEXPECTED_TOKEN",
+          "UNTERMINATED_LITERAL",
+          "GROUPING_TOO_DEEP",
+          "DATA_TYPE_MISMATCH",
+          "UNKNOWN_IDENTIFIER",
+          "INVALID_OPERATION",
+          "INVALID_PARAMETER",
+          "MISSING_NAMED_CREDENTIAL",
+          "ABSENCE_BALANCE_CALCULATION_NOT_ENABLED",
+          "OBJECT_NOT_ACCESSIBLE",
+          "CANNOT_DETERMINE_OPERATOR_PRECEDENCE",
+          "UNKNOWN_EXCEPTION",
+          "INVALID_REQUEST_BODY",
+          "DEPENDENCY_NOT_INSTALLED",
+          "CONTENT_TOO_LARGE",
+          "UNSUPPORTED_MEDIA_TYPE",
+          "INVALID_PAYDETAILS_DOCUMENT"
+        ]
+      },
+      "ErrorCategory": {
+        "description": "One of a server-defined set of error categories",
+        "type": "string",
+        "example": "REQUEST_ERROR",
+        "enum": [
+          "UNKNOWN_ERROR",
+          "REQUEST_ERROR",
+          "INTERNAL_API_ERROR",
+          "SAGE_PEOPLE_CONFIGURATION",
+          "SALESFORCE_ERROR"
+        ]
+      },
+      "ErrorResponse": {
+        "description": "Container for error response",
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
+      },
+      "SalesforceErrorResponse": {
+        "description": "Container for Salesforce errors",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Session expired or invalid"
+            },
+            "errorCode": {
+              "type": "string",
+              "example": "INVALID_SESSION_ID"
+            }
+          }
+        }
+      },
+      "EmployeePayDetailsInbound": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId"
+        ],
+        "minProperties": 1,
+        "properties": {
+          "id": {
+            "readOnly": true,
+            "type": "string",
+            "example": "a2K9E000000LlIDUA0"
+          },
+          "employeeId": {
+            "readOnly": true,
+            "type": "string",
+            "example": "a2G7E000000LlIDUA5"
+          },
+          "period": {
+            "type": "string",
+            "nullable": true,
+            "example": "7"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboundAdditionalField"
+            }
+          },
+          "document": {
+            "$ref": "#/components/schemas/EmployeePayDetailsDocument"
+          }
+        }
+      },
+      "EmployeePayDetailsOutbound": {
+        "type": "object",
+        "required": [
+          "id",
+          "employeeId"
+        ],
+        "minProperties": 1,
+        "properties": {
+          "id": {
+            "readOnly": true,
+            "type": "string",
+            "example": "a2K9E000000LlIDUA0"
+          },
+          "employeeId": {
+            "readOnly": true,
+            "type": "string",
+            "example": "a2G7E000000LlIDUA5"
+          },
+          "period": {
+            "type": "string",
+            "nullable": true,
+            "example": "7"
+          },
+          "additionalFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalField"
+            }
+          },
+          "document": {
+            "$ref": "#/components/schemas/EmployeePayDetailsDocument"
+          }
+        }
+      },
+      "EmployeePayDetailsDocument": {
+        "type": "object",
+        "nullable": true,
+        "required": [
+          "name",
+          "content"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sample.txt"
+          },
+          "content": {
+            "writeOnly": true,
+            "type": "string",
+            "format": "byte",
+            "description": "Base64 encoded file content",
+            "example": "U2FtcGxlIFRleHQ="
+          }
+        }
+      },
+      "EmployeePayDetailsRequest": {
+        "description": "Request data for pay details of an employee",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EmployeePayDetailsInbound"
+          }
+        }
+      },
+      "EmployeePayDetailsResponse": {
+        "description": "Response data for pay details of an employee",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EmployeePayDetailsOutbound"
+          },
+          "version": {
+            "type": "string",
+            "example": "4.8"
+          }
+        }
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SalesforceErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                {
+                  "$ref": "#/components/schemas/SalesforceErrorResponse"
+                }
+              ],
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                {
+                  "$ref": "#/components/schemas/SalesforceErrorResponse"
+                }
+              ],
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                {
+                  "$ref": "#/components/schemas/SalesforceErrorResponse"
+                }
+              ],
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "NotAcceptable": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "Payload Too Large",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotImplemented": {
+        "description": "Not Implemented",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Salesforce Access Token"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

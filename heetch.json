@@ -1,0 +1,220 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Passenger Public API - Price (BETA)",
+    "description": "In this section you can find the endpoint that for each available\nproduct, returns the estimated price range for the requested start/end locations.\n\n### Tracking impressions\nIn order to have some statistics whenever is possible you can add the **advertising identifier** related to the device to support [retargeting campaigns](https://docs.adjust.com/en/retargeting/#setting-up-retargeting-campaigns) in the paramenters of the query as you can see below in the documentation. For **iOS**, `idfa=<idfa>` and for **Android**, `gps_adid=<gps_adid>`.\n\n# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->",
+    "termsOfService": "https://www.heetch.com/terms/fr-heetch-pro-terms.pdf",
+    "contact": {
+      "email": "contact@heetch.com"
+    },
+    "license": {
+      "name": "Copyright © 2018-2021 Heetch",
+      "url": "file://./LICENSE"
+    },
+    "version": "0.1.0",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/heetch.com"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Heetch",
+    "url": "https://help.heetch.com/hc/en-us"
+  },
+  "servers": [
+    {
+      "url": "https://api.heetch.com/v0.1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "price",
+      "description": "Estimated price for a given location",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://pricing.heetch.com"
+      }
+    }
+  ],
+  "paths": {
+    "/price": {
+      "get": {
+        "tags": [
+          "price"
+        ],
+        "summary": "Finds Price by location",
+        "description": "Finds the price estimation for a given location",
+        "parameters": [
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Request language",
+            "example": "en",
+            "required": true
+          },
+          {
+            "name": "start_latitude",
+            "in": "query",
+            "description": "Latitude geolocation of start point",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
+            },
+            "example": 48.81778
+          },
+          {
+            "name": "start_longitude",
+            "in": "query",
+            "description": "Longitude geolocation of start point",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
+            },
+            "example": 2.373452
+          },
+          {
+            "name": "end_latitude",
+            "in": "query",
+            "description": "Latitude geolocation of end point",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
+            },
+            "example": 48.869196
+          },
+          {
+            "name": "end_longitude",
+            "in": "query",
+            "description": "Longitude geolocation of end point",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
+            },
+            "example": 2.354201
+          },
+          {
+            "name": "idfa",
+            "in": "query",
+            "description": "Advertising identifier for IOS",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gps_adid",
+            "in": "query",
+            "description": "Advertising identifier for Android",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "Request-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "The request identifier",
+                "example": "20af5b05-4a98-467a-951c-b1aea02ea6c9"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Price"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          },
+          "401": {
+            "description": "Authorization failed"
+          },
+          "422": {
+            "description": "Distance between start and end location exceeds limit."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Price": {
+        "type": "object",
+        "properties": {
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "high_estimate": {
+                  "type": "number",
+                  "format": "int64",
+                  "example": 15,
+                  "description": "Upper bound of the estimated price."
+                },
+                "low_estimate": {
+                  "type": "number",
+                  "format": "int64",
+                  "example": 13,
+                  "description": "Lower bound of the estimated price."
+                },
+                "localized_display_name": {
+                  "type": "string",
+                  "example": "Heetch",
+                  "description": "Localized display name of product."
+                },
+                "display_name": {
+                  "type": "string",
+                  "example": "Heetch",
+                  "description": "Display name of product."
+                },
+                "currency_code": {
+                  "type": "string",
+                  "example": "EUR",
+                  "description": "ISO 4217 currency code."
+                },
+                "product_id": {
+                  "type": "string",
+                  "example": "fr-paris-pro",
+                  "description": "Unique identifier representing a specific product for a given latitude and longitude."
+                },
+                "duration": {
+                  "type": "number",
+                  "format": "int64",
+                  "example": 22,
+                  "description": "Estimated ride duration in minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": [
+        "Token:FoSPPlFA8r7mE2LDoNB3EabGkzfHfu"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1050 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.1",
+    "title": "CrÃ©dit Mutuel Implementation of OAuth2 endpoints for PSD2 TPPs.",
+    "description": "This specification describes how various OAuth2-related endpoints are\nimplemented by the CrÃ©dit Mutuel service provider, in the case of TPPs\ncovered by the PSD2.\n\nThe endpoints in this specification are derived from a number of RFCs and\nexternal documents:\n\n  * The OAuth2 framework - [RFC 6749][rfc6749]\n  * Proof of Key Code Exchange extension for OAuth2 - [RFC 7636][rfc7636]\n  * OAuth 2 Dynamic Client Registration Protocol - [RFC 7591][rfc7591]\n  * OAuth 2 Dynamic Client Management Protocol - [RFC 7592][rfc7592]\n  * OAuth 2 Token Revocation - [RFC 7009][rfc7009]\n  * OAuth 2.0 Mutual-TLS Client Authentication - [IETF Draft][draft-ietf-oauth-mtls]\n\nThe sandbox APIs, for use when qualifying the workflows and APIs,\ncan be found at `https://oauth2-apisi.e-i.com/sandbox/cm/oauth2`.\n\nThe production APIs can be found at `https://oauth2-apisi.e-i.com/cm/oauth2`.\n\nFor the OAuth 2 Authorization Code workflow, the following Authorization\nURLs are available:\n  * `https://www.creditmutuel.fr/oauth2/{lang}/sandbox/signin.html` is the URL with which\n    TPPs can test the authorization code and SCA workflows for `aisp` and\n    `cbpii` scopes in the Sandbox environment;\n  * `https://www.creditmutuel.fr/oauth2/{lang}/banque/oauth2_authorization.aspx` is the URL\n    with which PSUs of CrÃ©dit Mutuel can authorize an AISP or CBPII TPP\n    for access to their payment banking accounts;\n  * The `{lang}` tag can be replaced by one of the following values:\n    [\"de\",\"en\",\"es\",\"fr\"]\n\n [rfc6749]: https://tools.ietf.org/html/rfc6749\n [rfc7009]: https://tools.ietf.org/html/rfc7009\n [rfc7591]: https://tools.ietf.org/html/rfc7591\n [rfc7592]: https://tools.ietf.org/html/rfc7592\n [rfc7636]: https://tools.ietf.org/html/rfc7636\n [draft-ietf-oauth-mtls]: https://datatracker.ietf.org/doc/draft-ietf-oauth-mtls/\n",
+    "contact": {
+      "name": "CrÃ©dit Mutuel",
+      "url": "https://www.creditmutuel.fr"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://oauth2-apisi.e-i.com/sandbox/cm/oauth2"
+    },
+    {
+      "url": "https://oauth2-apisi.e-i.com/cm/oauth2"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Token Management",
+      "description": "Get or revoke access and refresh tokens."
+    },
+    {
+      "name": "Client Management",
+      "description": "Register and manage OAuth Clients."
+    }
+  ],
+  "paths": {
+    "x-absolute-url-https://www.creditmutuel.fr/oauth2/{lang}/{page}": {
+      "get": {
+        "operationId": "oauth2Authorize",
+        "summary": "The authorization endpoint for the 'authorization_code' workflow.",
+        "description": "## Specification\nThis is the [Authorization Endpoint][RFC 6749 Â§3.1], used as part of\nthe [Authorization Code Grant][RFC 6749 Â§4.1], with the [PKCE\nextension][RFC 7636 Â§4.3].\n\n## PSD2 Implementation notes\nFor PSD2 TPPs, all clients must use the PKCE extension with the\nSHA-256 code challenge method.\n\n## Documentation notes\nThis endpoint is documented here mostly in order to document its\nparameters.\n\nThe actual URLs of the authorization endpoints are documented on the\n[OAuth 2 Endpoints] page on the developer portal.\n\nAs a reminder, the following Authorization URLs are available:\n  * `https://www.creditmutuel.fr/oauth2/{lang}/sandbox/signin.html` is the URL with which\n    TPPs can test the authorization code and SCA workflows for `aisp`\n    and `CBPII` scopes in the Sandbox environment;\n  * `https://www.creditmutuel.fr/oauth2/{lang}/banque/oauth2_authorization.aspx` is the\n    URL with which PSUs of CrÃ©dit Mutuel can authorize an AISP or CBPII\n    TPP for access to their payment banking accounts;\n  * The `{lang}` tag can be replaced by one of the following values:\n    [\"de\",\"en\",\"es\",\"fr\"]\n\n [RFC 6749 Â§3.1]: https://tools.ietf.org/html/rfc6749#section-3.1\n [RFC 6749 Â§4.1]: https://tools.ietf.org/html/rfc6749#section-4.1\n [RFC 7636 Â§4.3]: https://tools.ietf.org/html/rfc7636#section-4.3\n [OAuth 2 Endpoints]: https://www.creditmutuel.fr/oauth2/en/devportal/oauth2-endpoints.html\n",
+        "tags": [
+          "Token Management"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lang",
+            "description": "The ISO 639-2 code of the language in which the authorization page will be shown to the PSU.\nOnly the values listed here are supported by CrÃ©dit Mutuel.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "de",
+                "en",
+                "es",
+                "fr"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "description": "The URL suffix of the authorization page. `sandbox/signin.html` is used for the sandbox environment, and `banque/oauth2_authorization.aspx` for the non-sandbox environment.",
+            "required": true,
+            "allowReserved": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sandbox/signin.html",
+                "banque/oauth2_authorization.aspx"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "response_type",
+            "description": "The OAuth2 `response_type`. Only the authorization code workflow is supported.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "code"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "client_id",
+            "description": "The OAuth2 `client_id` assigned to the client when it was registered.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ClientIdentification"
+            }
+          },
+          {
+            "in": "query",
+            "name": "redirect_uri",
+            "description": "The OAuth2 `redirect_uri`, which must be one of the registered URIs for the client. It is required if the client has registered more than one redirection URI.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "https://redirect.example.com/cb"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "description": "The OAuth2 `scope` on which the client requires access. It is required because no default scope is positioned.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The different scopes supported for PSD2-related TPPs.\n\nFor an authorization_code request, the following values are available:\n  * aisp: Account Information\n  * aisp extended_transaction_history: Account Information with Extended Transaction History;\n  * cbpii: Issuing of card-based payment instruments\n",
+              "enum": [
+                "aisp",
+                "aisp extended_transaction_history",
+                "cbpii"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "description": "The OAuth2 `state`, to be retransmitted in the query string when redirecting to the TPP redirection endpoint. We have made this parameter mandatory because its absence implies the presence of a CSRF vulnerability for the TPP.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "xyz"
+            }
+          },
+          {
+            "in": "query",
+            "name": "code_challenge",
+            "description": "The OAuth2 PKCE `code_challenge`. Its use is mandatory for PSD2-related clients.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9._~-]{43}",
+              "example": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+            }
+          },
+          {
+            "in": "query",
+            "name": "code_challenge_method",
+            "description": "The OAuth2 PKCE `code_challenge_method`. Only the S256 method (hashing the `code_verifier` with SHA-256) is supported.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "S256"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "A HTML content shown to a user agent to begin the OAuth 2 authorization\nprocess. This endpoint will eventually redirect to the redirection\nendpoint specified by the TPP, which will receive the `code` and\n`state` parameters as specified by [RFC 6749 Â§4.1.2].\n\nIn case parameters are missing or wrong, an error page will be\nshown. In case the `client_id` and the `redirect_uri` match, the\nuser will also be redirected to the redirection endpoint specified\nby the TPP, with parameters `error` and `error_description` filled\nas specified by [RFC 6749 Â§4.1.2.1].\n\n [RFC 6749 Â§4.1.2]: https://tools.ietf.org/html/rfc6749#section-4.1.2\n [RFC 6749 Â§4.1.2.1]: https://tools.ietf.org/html/rfc6749#section-4.1.2.1\n",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/token": {
+      "post": {
+        "operationId": "oauth2Token",
+        "summary": "Request a new access token.",
+        "description": "## Specification\n\nThe token endpoint, as described in [RFC 6749 Â§3.2], used in three\ncases:\n * [Authorization Code Grant][RFC 6749 Â§4.1], with the [PKCE\n   extension][RFC 7636 Â§4.5];\n * [Client Credentials Grant][RFC 6749 Â§4.4];\n * [Token Refresh][RFC 6749 Â§6];\n\n## PSD2 Implementation notes\n\nFor PSD2 TPPs, all clients are confidential clients, and, in the case\nof the \"Authorization Code\" workflow, must use the PKCE extension with\nthe SHA-256 code challenge method.\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n### Scopes and token types\n\nThis API can deliver two different kinds of tokens:\n  1. Tokens that are bound to a bank user PSU. These tokens are\n     obtained via the \"Authorization Code\" workflow, and can be\n     refreshed via the use of refresh tokens. These tokens are used\n     by AISPs, CBPIIs, and PISPs for accounts and operations on that\n     user.\n  2. Tokens that are bound only to the TPP, obtained via the \"Client\n     Credentials\" workflow. These tokens are usable only by PISPs for\n     access to payment initiation endpoints, and cannot have a scope\n     for account or coverage information access.\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [RFC 6749 Â§3.2]: https://tools.ietf.org/html/rfc6749#section-3.2\n [RFC 6749 Â§4.1]: https://tools.ietf.org/html/rfc6749#section-4.1\n [RFC 6749 Â§4.4]: https://tools.ietf.org/html/rfc6749#section-4.4\n [RFC 6749 Â§6]: https://tools.ietf.org/html/rfc6749#section-6\n [RFC 7636 Â§4.5]: https://tools.ietf.org/html/rfc7636#section-4.3\n",
+        "tags": [
+          "Token Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              },
+              "examples": {
+                "authorizationCode": {
+                  "summary": "An authorization_code token request",
+                  "value": "client_id=a771a1923bd403603831a2425df818a4& grant_type=authorization_code& code=2addb9e34dcc427f05fefcb045327e8a& redirect_uri=https%3A%2F%2Fredirect.example.com%2Fcb& code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+                },
+                "clientCredentials": {
+                  "summary": "A client_credentials token request",
+                  "value": "client_id=a771a1923bd403603831a2425df818a4& grant_type=client_credentials"
+                },
+                "refreshToken": {
+                  "summary": "A refresh_token token request",
+                  "value": "client_id=a771a1923bd403603831a2425df818a4& grant_type=refresh_token& refresh_token=97d4fbb35dab9bf5b9f90ac10b8b30c4ef6ad4026678c3a22ec9a6c89ac73624"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New access token generated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters were invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revocation": {
+      "post": {
+        "operationId": "oauth2Revocation",
+        "summary": "Revoke a refresh token or an access token.",
+        "description": "## Specification\n\nThe revocation endpoint, as described in [RFC 7009 Â§2][1].\n\n [1]: https://tools.ietf.org/html/rfc7009#section-2\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n\n## Implementation notes\n\nBoth access tokens and refresh tokens can be revoked.\n\n * When an access token is revoked, only that access token becomes invalid; no other tokens are affected.\n * When a refresh token is revoked, all associated access tokens are also revoked.\n",
+        "tags": [
+          "Token Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RevocationRequest"
+              },
+              "example": "client_id=a771a1923bd403603831a2425df818a4& token=97d4fbb35dab9bf5b9f90ac10b8b30c4ef6ad4026678c3a22ec9a6c89ac73624& token_type_hint=refresh_token"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token revoked (or already invalid)."
+          },
+          "400": {
+            "description": "Some parameters were invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevocationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/registrations": {
+      "post": {
+        "operationId": "oauth2RegistrationPost",
+        "summary": "Register an OAuth2 client.",
+        "description": "## Specification\nThis endpoint follows the specification for OAuth 2 Dynamic Client\nRegistration, as documented in [RFC 7591 Â§3] and modified by\n[RFC 7592 Â§3].\n\n## PSD2 Implementation notes\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n### No registration token\n\nAs PSD2 TPPs are authenticated by their client certificate, we have\nconcluded that implementing the registration access token part of\n[Dynamic Client Management (RFC 7592)][RFC 7592] did not bring tangible\nsecurity benefits. Therefore, the registration management APIs are\naltered in the following way with regard to [RFC 7592]:\n\n  * No registration token is returned when registering a client;\n  * No registration token is required to manage a registered client;\n  * The management endpoints return a 404 (Not Found) instead of 401\n    when the client registration URL does not exist;\n\n### Qualified Sealing Certificates Management\nFor privacy and security reasons, we have added the requirement that\nall Qualified Sealing Certificates that will be used by the PSP must\nbe registered in the `jwk` metadata value. The API URLs that point to\nthese keys can then be used in the `keyId` field of the corresponding\nHTTP Signature headers.\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [RFC 7591 Â§3]: https://tools.ietf.org/html/rfc7591#section-3\n [RFC 7592]: https://tools.ietf.org/html/rfc7592\n [RFC 7592 Â§3]: https://tools.ietf.org/html/rfc7592#section-3\n",
+        "tags": [
+          "Client Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientMetadata"
+              },
+              "example": {
+                "redirect_uris": [
+                  "https://redirect.example.com/cb1"
+                ],
+                "token_endpoint_auth_method": "tls_client_auth",
+                "grant_types": [
+                  "authorization_code",
+                  "refresh_token"
+                ],
+                "response_types": [
+                  "code"
+                ],
+                "client_name": "Example Account Manager",
+                "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB+ElEQVQ4T6WTy2sTURjFz50ZaAvTSVwEqW3ty1pXgotWqIpoaWwbqg2+sBFEceGfoV1ZFEQXgqGYmhrqs0VUWhXF10Jw4cL/wppx8mxucmc+yU2c9nbjIrO757v3d7nnnGFo8GMNngdzjh0irbML1txDBbbvZIp+PI8pWvZyjKy5lKKxzOQIUaWM4OoXZdBxJE5De9uwdHvS1zOnJoj17IJ1446vMSc6SswlQNcRWH7jD3aPJ8jJcfz6esXXsrEoeenfymXMmQpTdQeVy2ju7kLz3QfyQP/4PGVyJWwPmfi5fF5quViUXNuGFgrBSj6Tmg+QiwqH9fqTHHSPzZPgFaxzgcjoAJLXjrLC9HES+SKozGEMDcOcmWUKgDwPrU0a9KdvWefEAlGphCqt6OlIf7zEvAtTlLPzgMZAnovgyw9bAK4L02qBkXrF2seSxDiXKXPNwNr7izXAnzzAarYEXrxTAeAlBFY+154QTpAQAsX1inzCwswIK0yfIJEvoJqasX8Y5tXrGwDiHC17BtB0K143MUFOlqNv5zZ8Wzy7ycQ0tLYdsO4/qpv4L0bDQGBp1Y+svx7j2tYYbRvBlZrR0nhZJCEUsTroOBynA4PteHwzslGk0xHSe/tgzm4uUvgg6T29aL2XVJo4eGaRvj859/8qN/wzNQr4C7wx6xESFhOXAAAAAElFTkSuQmCC",
+                "scope": "aisp extended_transaction_history",
+                "contacts": [
+                  "contact.psd2@tpp.tld"
+                ],
+                "jwks": {
+                  "keys": [
+                    {
+                      "kty": "RSA",
+                      "x5c": [
+                        "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",
+                        "MIIDqTCCApGgAwIBAgIQLp7F2Ag+F6lGJfcBxZgLdzANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJGUjEZMBcGA1UEChMQRXVyby1JbmZvcm1hdGlvbjEeMBwGA1UEAxMVQ00tQ0lDLVNYQi1DTElFTlQgU1NMMB4XDTE2MDYyNzA5MjA0NVoXDTI2MDYyODA5MjYyMVowSDELMAkGA1UEBhMCRlIxGTAXBgNVBAoTEEV1cm8tSW5mb3JtYXRpb24xHjAcBgNVBAMTFUNNLUNJQy1TWEItQ0xJRU5UIFNTTDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM1LM6R45vpz2Ks4rvkqR/Ll1Bsty4pUGf10zGBjHBJpbHLYJvsR+/iUKGXjyicBcrXDcd5CW+3BJRTy/23ixmHHgnCakE8XEJk/MEVqYjZNZ1hgfG0EpzIjzFlQmHMfu6dTClm7dZoUmsQ2dZKtb/PVRJcYSXp4elvlfyykJS3x9X+8IlRzu60gfh7wfaH+ao8iA37WIsM4fL76tBZ6m+P6bwexXQihcytsQBYR2zbW2RIqMycBlAnT6RNE6+xK118XZoBGuejJQnyQExtrqYWVIMr/UftO455Zq2Eydl0Sg0O5D2UIwpkX/8OZ3IqrPHhSg3EP3pyw1oVXvuhVJCcCAwEAAaOBjjCBizATBgkrBgEEAYI3FAIEBh4EAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU0Fq2y+rvMENeTZA9Nezi6TiUy8IwEgYJKwYBBAGCNxUBBAUCAwEAATAjBgkrBgEEAYI3FQIEFgQUl8vpX9p7+rzuoLs0bKspa1o8tMcwDQYJKoZIhvcNAQELBQADggEBAECAftrVBJ2Eg2rMMMRdam9Cjrqhd1I5YtFs2my0RjNEKIJCPc0wkaGEwBOo7xo6SZHls9vgOGYR1oTEvwlxlBBhJRS9kG5fPjBeiw6iBzGSSAOwyvsD6h2U89f8vR39XohXd3o543f3Pv5AHYwy4Dy9BZPj3lkJhFQzwF0njNqF2XViMHCZkvCLSG5c+jbwvst7VJT5ROqQoiDdPiDHRb9pByTyfmTXMpLCsuhf2j5BBJsnmq+rbTvAXo+6NuyKu394Mc6Ayq2Y8heOWLWc27RbyZzWvELf4w5M7WEn8v6/p3C+5aMnz2myiGFoEYVdibVS+IwENXgO264G5gn+SIE="
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Everything OK, registration created.",
+            "headers": {
+              "Location": {
+                "description": "The URL of the created registration.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientRegistration"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/registrations/{clientRegistrationId}": {
+      "get": {
+        "operationId": "oauth2RegistrationGet",
+        "summary": "Read OAuth2 client registration information.",
+        "description": "## Specification\nThis endpoint follows the specification for OAuth 2 Dynamic Client\nManagement, as documented in [RFC 7592 Â§2.1].\n\n## PSD2 Implementation notes\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n### No registration token\n\nAs PSD2 TPPs are authenticated by their client certificate, we have\nconcluded that implementing the registration access token part of\n[Dynamic Client Management (RFC 7592)][RFC 7592] did not bring tangible\nsecurity benefits. Therefore, the registration management APIs are\naltered in the following way with regard to [RFC 7592]:\n\n  * No registration token is returned when registering a client;\n  * No registration token is required to manage a registered client;\n  * The management endpoints return a 404 (Not Found) instead of 401\n    when the client registration URL does not exist;\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [RFC 7592]: https://tools.ietf.org/html/rfc7592\n [RFC 7592 Â§2.1]: https://tools.ietf.org/html/rfc7592#section-2.1\n",
+        "tags": [
+          "Client Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ClientRegistrationId"
+          },
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientRegistration"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ClientRegistrationNotFound"
+          }
+        }
+      },
+      "put": {
+        "operationId": "oauth2RegistrationPut",
+        "summary": "Update OAuth2 client registration information.",
+        "description": "## Specification\nThis endpoint follows the specification for OAuth 2 Dynamic Client\nManagement, as documented in [RFC 7592 Â§2.2].\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n### No registration token\n\nAs PSD2 TPPs are authenticated by their client certificate, we have\nconcluded that implementing the registration access token part of\n[Dynamic Client Management (RFC 7592)][RFC 7592] did not bring tangible\nsecurity benefits. Therefore, the registration management APIs are\naltered in the following way with regard to [RFC 7592]:\n\n  * No registration token is returned when registering a client;\n  * No registration token is required to manage a registered client;\n  * The management endpoints return a 404 (Not Found) instead of 401\n    when the client registration URL does not exist;\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [RFC 7592]: https://tools.ietf.org/html/rfc7592\n [RFC 7592 Â§2.2]: https://tools.ietf.org/html/rfc7592#section-2.2\n",
+        "tags": [
+          "Client Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ClientRegistrationId"
+          },
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The updated client registration.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientRegistration"
+              },
+              "example": {
+                "client_id": "a771a1923bd403603831a2425df818a4",
+                "redirect_uris": [
+                  "https://redirect.example.com/cb1"
+                ],
+                "token_endpoint_auth_method": "tls_client_auth",
+                "grant_types": [
+                  "authorization_code",
+                  "refresh_token"
+                ],
+                "response_types": [
+                  "code"
+                ],
+                "client_name": "Example Account Manager",
+                "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB+ElEQVQ4T6WTy2sTURjFz50ZaAvTSVwEqW3ty1pXgotWqIpoaWwbqg2+sBFEceGfoV1ZFEQXgqGYmhrqs0VUWhXF10Jw4cL/wppx8mxucmc+yU2c9nbjIrO757v3d7nnnGFo8GMNngdzjh0irbML1txDBbbvZIp+PI8pWvZyjKy5lKKxzOQIUaWM4OoXZdBxJE5De9uwdHvS1zOnJoj17IJ1446vMSc6SswlQNcRWH7jD3aPJ8jJcfz6esXXsrEoeenfymXMmQpTdQeVy2ju7kLz3QfyQP/4PGVyJWwPmfi5fF5quViUXNuGFgrBSj6Tmg+QiwqH9fqTHHSPzZPgFaxzgcjoAJLXjrLC9HES+SKozGEMDcOcmWUKgDwPrU0a9KdvWefEAlGphCqt6OlIf7zEvAtTlLPzgMZAnovgyw9bAK4L02qBkXrF2seSxDiXKXPNwNr7izXAnzzAarYEXrxTAeAlBFY+154QTpAQAsX1inzCwswIK0yfIJEvoJqasX8Y5tXrGwDiHC17BtB0K143MUFOlqNv5zZ8Wzy7ycQ0tLYdsO4/qpv4L0bDQGBp1Y+svx7j2tYYbRvBlZrR0nhZJCEUsTroOBynA4PteHwzslGk0xHSe/tgzm4uUvgg6T29aL2XVJo4eGaRvj859/8qN/wzNQr4C7wx6xESFhOXAAAAAElFTkSuQmCC",
+                "scope": "aisp extended_transaction_history",
+                "contacts": [
+                  "contact.psd2@tpp.tld"
+                ],
+                "jwks": {
+                  "keys": [
+                    {
+                      "kty": "RSA",
+                      "x5c": [
+                        "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",
+                        "MIIDqTCCApGgAwIBAgIQLp7F2Ag+F6lGJfcBxZgLdzANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJGUjEZMBcGA1UEChMQRXVyby1JbmZvcm1hdGlvbjEeMBwGA1UEAxMVQ00tQ0lDLVNYQi1DTElFTlQgU1NMMB4XDTE2MDYyNzA5MjA0NVoXDTI2MDYyODA5MjYyMVowSDELMAkGA1UEBhMCRlIxGTAXBgNVBAoTEEV1cm8tSW5mb3JtYXRpb24xHjAcBgNVBAMTFUNNLUNJQy1TWEItQ0xJRU5UIFNTTDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM1LM6R45vpz2Ks4rvkqR/Ll1Bsty4pUGf10zGBjHBJpbHLYJvsR+/iUKGXjyicBcrXDcd5CW+3BJRTy/23ixmHHgnCakE8XEJk/MEVqYjZNZ1hgfG0EpzIjzFlQmHMfu6dTClm7dZoUmsQ2dZKtb/PVRJcYSXp4elvlfyykJS3x9X+8IlRzu60gfh7wfaH+ao8iA37WIsM4fL76tBZ6m+P6bwexXQihcytsQBYR2zbW2RIqMycBlAnT6RNE6+xK118XZoBGuejJQnyQExtrqYWVIMr/UftO455Zq2Eydl0Sg0O5D2UIwpkX/8OZ3IqrPHhSg3EP3pyw1oVXvuhVJCcCAwEAAaOBjjCBizATBgkrBgEEAYI3FAIEBh4EAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU0Fq2y+rvMENeTZA9Nezi6TiUy8IwEgYJKwYBBAGCNxUBBAUCAwEAATAjBgkrBgEEAYI3FQIEFgQUl8vpX9p7+rzuoLs0bKspa1o8tMcwDQYJKoZIhvcNAQELBQADggEBAECAftrVBJ2Eg2rMMMRdam9Cjrqhd1I5YtFs2my0RjNEKIJCPc0wkaGEwBOo7xo6SZHls9vgOGYR1oTEvwlxlBBhJRS9kG5fPjBeiw6iBzGSSAOwyvsD6h2U89f8vR39XohXd3o543f3Pv5AHYwy4Dy9BZPj3lkJhFQzwF0njNqF2XViMHCZkvCLSG5c+jbwvst7VJT5ROqQoiDdPiDHRb9pByTyfmTXMpLCsuhf2j5BBJsnmq+rbTvAXo+6NuyKu394Mc6Ayq2Y8heOWLWc27RbyZzWvELf4w5M7WEn8v6/p3C+5aMnz2myiGFoEYVdibVS+IwENXgO264G5gn+SIE="
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK, registration updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientRegistration"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ClientRegistrationNotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "oauth2RegistrationDelete",
+        "summary": "Delete OAuth2 client registration.",
+        "description": "## Specification\nThis endpoint follows the specification for OAuth 2 Dynamic Client\nManagement, as documented in [RFC 7592 Â§2.3].\n\n## PSD2 Implementation notes\n\n### TPP Authentication\n\nThe only supported authentication method for PSD2 clients is the use\nof client certificates.\n\nTwo kinds of certificates may be used, depending on the circumstances:\n  * A Qualified Website Authentication Certificate, as described by\n    [ETSI TS 119495]. That kind of certificate can be used\n    to access either sandbox or production APIs.\n  * A test client certificate provided by CrÃ©dit Mutuel. That kind\n    of certificate can be used to access sandbox APIs.\n\n### No registration token\n\nAs PSD2 TPPs are authenticated by their client certificate, we have\nconcluded that implementing the registration access token part of\n[Dynamic Client Management (RFC 7592)][RFC 7592] did not bring tangible\nsecurity benefits. Therefore, the registration management APIs are\naltered in the following way with regard to [RFC 7592]:\n\n  * No registration token is returned when registering a client;\n  * No registration token is required to manage a registered client;\n  * The management endpoints return a 404 (Not Found) instead of 401\n    when the client registration URL does not exist;\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [RFC 7592]: https://tools.ietf.org/html/rfc7592\n [RFC 7592 Â§2.3]: https://tools.ietf.org/html/rfc7592#section-2.3\n",
+        "tags": [
+          "Client Management"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ClientRegistrationId"
+          },
+          {
+            "$ref": "#/components/parameters/AcceptHeader"
+          },
+          {
+            "$ref": "#/components/parameters/UserAgentHeader"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK, registration deleted."
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/ClientRegistrationNotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/NotSupported"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ClientRegistrationId": {
+        "name": "clientRegistrationId",
+        "in": "path",
+        "required": true,
+        "description": "The ID of the client registration.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "AcceptHeader": {
+        "name": "Accept",
+        "in": "header",
+        "description": "A description of a list of content-types that the client would like to receive.\nDefined by [RFC 7231, Â§5.3.2](https://tools.ietf.org/html/rfc7231#section-5.3.2)\nDepending on the endpoint, the value of this header may be taken in account for content negotiation, or may be ignored.\n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "example": "*/*"
+      },
+      "UserAgentHeader": {
+        "name": "User-Agent",
+        "in": "header",
+        "description": "Information about the user agent originating the request.\nDocumented in [RFC 7231, Â§5.5.3](https://tools.ietf.org/html/rfc7231#section-5.5.3)\n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "example": "Mozilla/5.0"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Error in request parameters.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationError"
+            }
+          }
+        }
+      },
+      "ClientRegistrationNotFound": {
+        "description": "Client Registration not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ClientRegistrationNotFoundError"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden. The token is valid, but the operation is not permitted."
+      },
+      "NotSupported": {
+        "description": "Operation not supported."
+      }
+    },
+    "schemas": {
+      "ClientIdentification": {
+        "type": "string",
+        "description": "The client ID assigned on registration. Cannot be changed by the client - if the value sent by the client when updating a registration does not match the current value, the request will be rejected.",
+        "example": "a771a1923bd403603831a2425df818a4"
+      },
+      "TokenRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/AuthorizationCodeTokenRequest"
+          },
+          {
+            "$ref": "#/components/schemas/ClientCredentialsTokenRequest"
+          },
+          {
+            "$ref": "#/components/schemas/RefreshTokenTokenRequest"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "grant_type",
+          "mapping": {
+            "authorization_code": "#/components/schemas/AuthorizationCodeTokenRequest",
+            "client_credentials": "#/components/schemas/ClientCredentialsTokenRequest",
+            "refresh_token": "#/components/schemas/RefreshTokenTokenRequest"
+          }
+        }
+      },
+      "AuthorizationCodeTokenRequest": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "grant_type",
+          "code",
+          "code_verifier"
+        ],
+        "properties": {
+          "client_id": {
+            "$ref": "#/components/schemas/ClientIdentification"
+          },
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "authorization_code"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "description": "The authorization code obtained by the redirection endpoint in the `code` query string parameter.",
+            "example": "2addb9e34dcc427f05fefcb045327e8a"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "The `redirect_uri` that was given as a parameter on the authorization endpoint.",
+            "example": "https://redirect.example.com/cb"
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "The `code_verifier` to check the PKCE challenge.",
+            "example": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClientCredentialsTokenRequest": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "grant_type"
+        ],
+        "properties": {
+          "client_id": {
+            "$ref": "#/components/schemas/ClientIdentification"
+          },
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "client_credentials"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "description": "The scope of the requested access token. Can be used to restrict the\nnew access token to a subset of the scope allowed to the client and\ntoken type.\n\nFor a Client Credentials grant, the following scopes are available:\n  * pisp: Payment Initiation\n",
+            "enum": [
+              "pisp"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshTokenTokenRequest": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "grant_type",
+          "refresh_token"
+        ],
+        "properties": {
+          "client_id": {
+            "$ref": "#/components/schemas/ClientIdentification"
+          },
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "refresh_token"
+            ]
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "The `refresh_token` previously provided to the client.",
+            "example": "97d4fbb35dab9bf5b9f90ac10b8b30c4ef6ad4026678c3a22ec9a6c89ac73624"
+          },
+          "scope": {
+            "type": "string",
+            "description": "The scope of the requested access token. Can be used to restrict the\nnew access token to a subset of the scope allowed to the client and\ntoken type.\n\nFor a Refresh Token grant, the following scopes are available:\n  * aisp: Account Information\n  * cbpii: Issuing of card-based payment instruments\n",
+            "enum": [
+              "aisp",
+              "cbpii"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenResponse": {
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The newly-obtained access token."
+          },
+          "token_type": {
+            "type": "string",
+            "description": "The type of the token. Currently only bearer tokens are emitted.",
+            "enum": [
+              "bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "number",
+            "description": "The lifetime of the access token, in seconds."
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "The refresh token to use, for an 'authorization_code' token request."
+          },
+          "scope": {
+            "type": "string",
+            "description": "The effective scope of the newly-obtained token."
+          }
+        }
+      },
+      "TokenErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "A machine-readable category for the error, as in [RFC 6749, Â§4.1.2.1](https://tools.ietf.org/html/rfc6749#section-4.1.2.1).",
+            "enum": [
+              "invalid_request",
+              "invalid_client",
+              "invalid_grant",
+              "unauthorized_client",
+              "unsupported_grant_type",
+              "invalid_scope"
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable error message that gives details about the error."
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "A URL that gives more information about the error."
+          }
+        }
+      },
+      "RevocationRequest": {
+        "type": "object",
+        "required": [
+          "client_id",
+          "token"
+        ],
+        "properties": {
+          "client_id": {
+            "$ref": "#/components/schemas/ClientIdentification"
+          },
+          "token": {
+            "type": "string",
+            "description": "The token to revoke."
+          },
+          "token_type_hint": {
+            "type": "string",
+            "description": "A hint for the type of token to revoke. If the given token is not found with the given type hint, the search will be extended to other token types.",
+            "enum": [
+              "access_token",
+              "refresh_token"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevocationErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "A machine-readable category for the error, as in [RFC 6749, Â§4.1.2.1](https://tools.ietf.org/html/rfc6749#section-4.1.2.1).",
+            "enum": [
+              "invalid_request",
+              "invalid_client",
+              "unsupported_token_type"
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable error message that gives details about the error."
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "A URL that gives more information about the error."
+          }
+        }
+      },
+      "ClientMetadata": {
+        "type": "object",
+        "description": "Client-provided metadata.\n\nThe metadata values documented here are a subset from the values\ndescribed in [RFC 7591 Â§2].\n\nAdditional metadata values will be ignored.\n\n### Internationalization\nThe internationalization mechanism is the one described by [RFC 7591\nÂ§2.2].\n\nIn short, it says that internationalizable keys can be provided in\nalternate languages by providing, in the JSON content, a key of the\nsame name but suffixed with a '#' and an IETF language tag [BCP 47].\n\nHere are our recommendations for providing internationalizable values:\n  * A neutral value must be provided if any internationalized version\n    is provided;\n  * For a given website with a language, script and region, a version\n    matching all three will be searched for. Failing that, a version\n    matching both language and script will be matched. Failing that,\n    the neutral value will be chosen.\n\n [RFC 7591 Â§2]: https://tools.ietf.org/html/rfc7591#section-2\n [RFC 7591 Â§2.2]: https://tools.ietf.org/html/rfc7591#section-2.2\n [BCP 47]: https://tools.ietf.org/html/bcp47\n",
+        "required": [
+          "token_endpoint_auth_method",
+          "grant_types",
+          "client_name",
+          "scope",
+          "contacts",
+          "jwks"
+        ],
+        "properties": {
+          "redirect_uris": {
+            "type": "array",
+            "description": "A list of URLs that describes the redirection endpoints for the client. These URLs must be HTTPS URLs. Required if `grant_types` includes the `authorization_code` value.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "token_endpoint_auth_method": {
+            "type": "string",
+            "description": "The method with which to authenticate the token endpoint. For\nPSD2-related applications, only one authentication method is defined,\nwhich is the use of mutual-TLS, denoted by value `tls_client_auth`,\nas documented in [OAuth 2 Mutual-TLS IETF Draft].\n\nAbsolute URI values `urn:fdc:e-i.com:2019:5:oauth:token-endpoint-auth-method:sandbox:psd`\nand `urn:fdc:e-i.com:2019:5:oauth:token-endpoint-auth-method:eidas-qwac:psd`,\ndefined by previous versions of this specification, are deprecated,\nand should be replaced by `tls_client_auth`.\n\nDepending on the circumstances, one of two types of certificates will be accepted\nfor mutual-TLS:\n\n * On the production environment, only a Qualified Website Authentication\n   Certificate (QWAC), with the PSD profile documented in [ETSI TS 119495],\n   by a legal entity with the authorization of a NCA to operate as a\n   Payment Service Provider, with the roles denoted in the certificate.\n   In that case, the metadata value `provider_legal_id` must be set\n   to the legal entity ID assigned by the National Competent Authority,\n   and, in the case of an agent distinct from the TPP, `client_legal_id`\n   must also be set;\n * On the sandbox environment, mutual-TLS can be used with:\n   * either a certificate provided by [CrÃ©dit Mutuel][Developer\n     Portal];\n   * or a Qualified Website Authentication Certificate (QWAC) with\n     the PSD profile documented in [ETSI TS 119495];\n   In both cases, the certificate must still be valid (neither\n   expired nor revoked);\n\n [ETSI TS 119495]: https://www.etsi.org/standards-search#page=1&search=TS119495\n [Developer Portal]: https://www.creditmutuel.fr/oauth2/en/devportal\n [OAuth 2 Mutual-TLS IETF Draft]: https://datatracker.ietf.org/doc/draft-ietf-oauth-mtls/\n",
+            "enum": [
+              "tls_client_auth"
+            ]
+          },
+          "grant_types": {
+            "type": "array",
+            "description": "The grant types that can be used on the token endpoint. For PSD2-related use, it is a function of the scopes granted to the client (`authorization_code` and `refresh_token` for AISPs and CBPIIs, `client_credentials` for PISPs).\nOther grant types are not supported in a PSD2 context.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "authorization_code",
+                "client_credentials",
+                "refresh_token"
+              ]
+            }
+          },
+          "response_types": {
+            "type": "array",
+            "description": "The response types for the redirection endpoint after the `authorization_code` workflow. In a PSD2 context, the implicit workflow is not supported.\nThis value is required if the `redirect_uris` key is present.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "code"
+              ]
+            }
+          },
+          "client_name": {
+            "type": "string",
+            "x-i18n": true,
+            "description": "A human-readable name for the client, that will be shown to the user during the authorization process.\nThis property is internationalizable."
+          },
+          "logo_uri": {
+            "type": "string",
+            "x-i18n": true,
+            "description": "URI string that specifies a logo for the client, as a data scheme URI. If available, the data will be used to show the user a logo during the authorization process.\nThe URI must use the data URI scheme, and declare an `image/` MIME type.\nThis property is internationalizable."
+          },
+          "scope": {
+            "type": "string",
+            "description": "A space-separated list of scope values that the client\nhas (or requests) access to.\n\nIn a PSD2 context, the following values are available:\n  * aisp: Account Information\n  * extended_transaction_history: Extended Transaction History for AISPs;\n  * pisp: Payment Initiation\n  * cbpii: Issuing of card-based payment instruments\n\nOn the production environment, the requested scope must match the\n`rolesOfPSP` field in the PSD2 Qualified Certificate Statement in\nthe Qualified Certificates in use.\n"
+          },
+          "contacts": {
+            "type": "array",
+            "description": "An array of strings representing ways to contact people responsible for the\nclient registration.\n\nIn this implementation, the strings must be email addresses, and there must\nbe at least one.\n",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "uniqueItems": true
+          },
+          "jwks": {
+            "$ref": "#/components/schemas/JsonWebKeySet"
+          }
+        },
+        "example": {
+          "redirect_uris": [
+            "https://redirect.example.com/cb1"
+          ],
+          "token_endpoint_auth_method": "tls_client_auth",
+          "grant_types": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "response_types": [
+            "code"
+          ],
+          "client_name": "Example Account Manager",
+          "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB+ElEQVQ4T6WTy2sTURjFz50ZaAvTSVwEqW3ty1pXgotWqIpoaWwbqg2+sBFEceGfoV1ZFEQXgqGYmhrqs0VUWhXF10Jw4cL/wppx8mxucmc+yU2c9nbjIrO757v3d7nnnGFo8GMNngdzjh0irbML1txDBbbvZIp+PI8pWvZyjKy5lKKxzOQIUaWM4OoXZdBxJE5De9uwdHvS1zOnJoj17IJ1446vMSc6SswlQNcRWH7jD3aPJ8jJcfz6esXXsrEoeenfymXMmQpTdQeVy2ju7kLz3QfyQP/4PGVyJWwPmfi5fF5quViUXNuGFgrBSj6Tmg+QiwqH9fqTHHSPzZPgFaxzgcjoAJLXjrLC9HES+SKozGEMDcOcmWUKgDwPrU0a9KdvWefEAlGphCqt6OlIf7zEvAtTlLPzgMZAnovgyw9bAK4L02qBkXrF2seSxDiXKXPNwNr7izXAnzzAarYEXrxTAeAlBFY+154QTpAQAsX1inzCwswIK0yfIJEvoJqasX8Y5tXrGwDiHC17BtB0K143MUFOlqNv5zZ8Wzy7ycQ0tLYdsO4/qpv4L0bDQGBp1Y+svx7j2tYYbRvBlZrR0nhZJCEUsTroOBynA4PteHwzslGk0xHSe/tgzm4uUvgg6T29aL2XVJo4eGaRvj859/8qN/wzNQr4C7wx6xESFhOXAAAAAElFTkSuQmCC",
+          "scope": "aisp extended_transaction_history",
+          "contacts": [
+            "contact.psd2@tpp.tld"
+          ],
+          "jwks": {
+            "keys": [
+              {
+                "kty": "RSA",
+                "kid": "4824821a73bcdc59e0ffede950ef046e1cb68aa8",
+                "x5c": [
+                  "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",
+                  "MIIDqTCCApGgAwIBAgIQLp7F2Ag+F6lGJfcBxZgLdzANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJGUjEZMBcGA1UEChMQRXVyby1JbmZvcm1hdGlvbjEeMBwGA1UEAxMVQ00tQ0lDLVNYQi1DTElFTlQgU1NMMB4XDTE2MDYyNzA5MjA0NVoXDTI2MDYyODA5MjYyMVowSDELMAkGA1UEBhMCRlIxGTAXBgNVBAoTEEV1cm8tSW5mb3JtYXRpb24xHjAcBgNVBAMTFUNNLUNJQy1TWEItQ0xJRU5UIFNTTDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM1LM6R45vpz2Ks4rvkqR/Ll1Bsty4pUGf10zGBjHBJpbHLYJvsR+/iUKGXjyicBcrXDcd5CW+3BJRTy/23ixmHHgnCakE8XEJk/MEVqYjZNZ1hgfG0EpzIjzFlQmHMfu6dTClm7dZoUmsQ2dZKtb/PVRJcYSXp4elvlfyykJS3x9X+8IlRzu60gfh7wfaH+ao8iA37WIsM4fL76tBZ6m+P6bwexXQihcytsQBYR2zbW2RIqMycBlAnT6RNE6+xK118XZoBGuejJQnyQExtrqYWVIMr/UftO455Zq2Eydl0Sg0O5D2UIwpkX/8OZ3IqrPHhSg3EP3pyw1oVXvuhVJCcCAwEAAaOBjjCBizATBgkrBgEEAYI3FAIEBh4EAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU0Fq2y+rvMENeTZA9Nezi6TiUy8IwEgYJKwYBBAGCNxUBBAUCAwEAATAjBgkrBgEEAYI3FQIEFgQUl8vpX9p7+rzuoLs0bKspa1o8tMcwDQYJKoZIhvcNAQELBQADggEBAECAftrVBJ2Eg2rMMMRdam9Cjrqhd1I5YtFs2my0RjNEKIJCPc0wkaGEwBOo7xo6SZHls9vgOGYR1oTEvwlxlBBhJRS9kG5fPjBeiw6iBzGSSAOwyvsD6h2U89f8vR39XohXd3o543f3Pv5AHYwy4Dy9BZPj3lkJhFQzwF0njNqF2XViMHCZkvCLSG5c+jbwvst7VJT5ROqQoiDdPiDHRb9pByTyfmTXMpLCsuhf2j5BBJsnmq+rbTvAXo+6NuyKu394Mc6Ayq2Y8heOWLWc27RbyZzWvELf4w5M7WEn8v6/p3C+5aMnz2myiGFoEYVdibVS+IwENXgO264G5gn+SIE="
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "JsonWebKeySet": {
+        "type": "object",
+        "description": "A JSON Web Key Set object, that describes the public keys and certificates related to the given client.\nIn the scope of PSD2, the JWK Set must be the set of Qualified Sealing Certificates (QSealC) that can be used by the client to sign requests.",
+        "required": [
+          "keys"
+        ],
+        "properties": {
+          "keys": {
+            "type": "array",
+            "description": "The list of keys.",
+            "items": {
+              "$ref": "#/components/schemas/CertificateJsonWebKey"
+            }
+          }
+        }
+      },
+      "CertificateJsonWebKey": {
+        "type": "object",
+        "description": "A JSON Web Key object that represents a public key certificate. The certificates sent here must be Qualified Sealing Certificates, whose registration matches the Qualified Website Authentication Certificate given for authentication.",
+        "required": [
+          "kty",
+          "kid",
+          "x5c"
+        ],
+        "properties": {
+          "kty": {
+            "type": "string",
+            "description": "The key type. As this will necessarily represent a signing public key, only values `RSA` and `EC` are supported.\nIt must match the type of the public key of the target certificate (first item in the `x5c` field).",
+            "enum": [
+              "RSA",
+              "EC"
+            ]
+          },
+          "use": {
+            "type": "string",
+            "description": "The intended usage of the key. If filled, as we intend to register public keys used for signing requests emitted by the client, it must be set to value `sig`.\nIf not provided, this value will be deduced from the certificate data passed in the `x5c` key.\nIf provided, it must be coherent with the value in the certificate data.",
+            "enum": [
+              "sig"
+            ]
+          },
+          "key_ops": {
+            "type": "array",
+            "description": "The list of operations for which the key is intended to be used. As the JWKs registered via this API will be used by the ASPSP to verify signatures, the value `verify` must be present in the array.\nIf not provided, this value will be deduced from the certificate data passed in the `x5c` key.\nIf provided, it must be coherent with the value in the certificate data.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sign",
+                "verify"
+              ]
+            }
+          },
+          "kid": {
+            "type": "string",
+            "readOnly": true,
+            "description": "An ID for the JWK. This ID is automatically generated by the server, and will be stable as long as the client registration is unchanged. It should not be assumed that this ID will be the same if the JWK data is the same.\nThe `kid` can be used as the value of the `keyId` field of HTTP signatures of requests signed by the certificate referenced by this JWK."
+          },
+          "x5c": {
+            "type": "array",
+            "description": "An array representing the certificate chain that contains the public key.\nThe first element in the array must be the target certificate, and every following element must be its parent in the chain, up to the root certificate.",
+            "items": {
+              "type": "string",
+              "description": "A certificate DER data, encoded as standard base64.",
+              "pattern": "^([A-Za-z0-9+/]{4})+([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+            }
+          },
+          "x5u": {
+            "type": "string",
+            "description": "The URL for the certificate. If set, it can be used in the `keyId` field of HTTP Signatures of requests signed with this key.\nAs described in the STET API Documentation Framework, this URL must end with an underscore and a fingerprint of the certificate, and it must be a HTTPS URL.\nThe fingerprint from the URL *must* match the first item sent in the `x5c` field."
+          }
+        }
+      },
+      "ClientRegistration": {
+        "description": "Client Registration information, as defined by [RFC 7592 Â§3]\n\nThis includes both client-provided metadata (potentially altered by the\nserver) and information set by the server (client ID, registration\naccess token).\n\n [RFC 7592 Â§3]: https://tools.ietf.org/html/rfc7592#section-3\n",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "client_id"
+            ],
+            "properties": {
+              "client_id": {
+                "$ref": "#/components/schemas/ClientIdentification"
+              },
+              "registration_client_uri": {
+                "type": "string",
+                "readOnly": true,
+                "description": "The URL on which the client can manage its registration."
+              }
+            },
+            "example": {
+              "client_id": "a771a1923bd403603831a2425df818a4",
+              "registration_client_uri": "https://oauth2-apisi.e-i.com/sandbox/cm/oauth2/registrations/a771a1923bd403603831a2425df818a4"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/ClientMetadata"
+          }
+        ]
+      },
+      "RegistrationError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "A machine-readable code to categorize the error, as in [RFC 7591, Â§3.2.2](https://tools.ietf.org/html/rfc7591#section-3.2.2).",
+            "enum": [
+              "invalid_redirect_uri",
+              "invalid_client_metadata"
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable error message that gives details about the error."
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "A URL that gives more information about the error."
+          }
+        }
+      },
+      "ClientRegistrationNotFoundError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "A machine-readable code to categorize the error, as in [RFC 6750, Â§3.1](https://tools.ietf.org/html/rfc6750#section-3.1).",
+            "enum": [
+              "invalid_request"
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable error message that gives details about the error."
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "A URL that gives more information about the error."
+          }
+        }
+      }
+    }
+  }
+}

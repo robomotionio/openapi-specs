@@ -1,0 +1,1558 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "apaleo Operations API",
+    "description": "Operational tasks like posting revenues, setting housekeeping status and processing no shows, etc.",
+    "contact": {
+      "url": "https://apaleo.dev/",
+      "name": "Apaleo"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.apaleo.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/operations/v1/maintenances": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesGet",
+        "description": "Get a list of maintenances matching your filter.<br>You must have at least one of these scopes: 'maintenances.read, maintenances.manage'.",
+        "operationId": "OperationsMaintenancesGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Filter result by property id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitId",
+            "in": "query",
+            "description": "Filter result by unit id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Filter all maintenance windows that end after the specified date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Filter all maintenance windows that start before the specified date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Filter result by maintenance types",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/type3"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: unit. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all maintenances.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No maintenances for this unit could be found.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.read",
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesPost",
+        "description": "Use this call to create a new maintenance window for the given unit. You can only create maintenances for today and days in the future.<br>You must have at least one of these scopes: 'maintenances.create, maintenances.manage'.",
+        "operationId": "OperationsMaintenancesPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the maintenance.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaintenanceModel"
+              },
+              "example": {
+                "unitId": "MUC-JQI",
+                "from": "2022-04-28T13:46:29+02:00",
+                "to": "2022-04-30T13:46:29+02:00",
+                "type": "OutOfService",
+                "description": "The remote control for the TV needs to be replaced."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Creation of the new maintenance was successful.",
+            "headers": {
+              "Location": {
+                "description": "The location of the created resource.",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string",
+                      "description": "The location of the created resource."
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.create",
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/operations/v1/maintenances/$count": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenances$countGet",
+        "description": "Returns the number of maintenances matching your filter.<br>You must have at least one of these scopes: 'maintenances.read, maintenances.manage'.",
+        "operationId": "OperationsMaintenances$countGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "Filter result by property id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitId",
+            "in": "query",
+            "description": "Filter result by unit id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Filter all maintenance windows that end after the specified date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Filter all maintenance windows that start before the specified date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Filter result by maintenance types",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/type3"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Count of maintenances",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.read",
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/operations/v1/maintenances/bulk": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesBulkPost",
+        "description": "Use this call to create multiple maintenances.<br>You must have at least one of these scopes: 'maintenances.create, setup.manage'.",
+        "operationId": "OperationsMaintenancesBulkPost",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for safely retrying requests without accidentally performing the same operation twice. \nWe'll always send back the same response for requests made with the same key, \nand keys can't be reused with different request parameters. Keys expire after 24 hours.",
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The definition of the maintenances.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateMaintenancesModel"
+              },
+              "example": {
+                "maintenances": [
+                  {
+                    "unitId": "MUC-JQI",
+                    "from": "2022-04-28T13:46:29+02:00",
+                    "to": "2022-04-30T13:46:29+02:00",
+                    "type": "OutOfService",
+                    "description": "The remote control for the TV needs to be replaced."
+                  },
+                  {
+                    "unitId": "MUC-MTA",
+                    "from": "2022-04-28T13:46:29+02:00",
+                    "to": "2022-04-30T13:46:29+02:00",
+                    "type": "OutOfService",
+                    "description": "The remote control for the TV needs to be replaced."
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkMaintenancesCreatedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.create",
+              "setup.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/operations/v1/maintenances/{id}": {
+      "patch": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesByIdPatch",
+        "description": "You can only change maintenances which are in the future or still ongoing today.\r\nHere is the list of operations that are currently allowed:\r\n- Add, replace and remove Description\r\n- Replace From and To. 'From' cannot be changed, if the maintenance started yesterday or before.<br>You must have this scope: 'maintenances.manage'.",
+        "operationId": "OperationsMaintenancesByIdPatch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the maintenance.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "204": {
+            "description": "The maintenance was successfully modified.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesByIdDelete",
+        "description": "Use this call to delete a maintenance. It is not possible to delete maintenances that started yesterday or earlier.<br>You must have at least one of these scopes: 'maintenances.delete, maintenances.manage'.",
+        "operationId": "OperationsMaintenancesByIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the maintenance.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion of the maintenance was successful.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.delete",
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "OperationsMaintenancesByIdGet",
+        "description": "Get a specific maintenance by ID.<br>You must have at least one of these scopes: 'maintenances.read, maintenances.manage'.",
+        "operationId": "OperationsMaintenancesByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the maintenance.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "List of all embedded resources that should be expanded in the response. Possible values are: unit. All other values will be silently ignored.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/expand"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all the data for the maintenance.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "maintenances.read",
+              "maintenances.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/operations/v1/night-audit": {
+      "put": {
+        "tags": [
+          "Operations"
+        ],
+        "summary": "OperationsNight-auditPut",
+        "description": "The night audit will post all charges for services that were delivered on the past business day in the folio and set all occupied rooms to 'Dirty'<br>You must have at least one of these scopes: 'operations.manage, operations.trigger-night-audit'.",
+        "operationId": "OperationsNight-auditPut",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "The property the night audit should be performed for",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "setReservationsToNoShow",
+            "in": "query",
+            "description": "Flag if reservations in the state confirmed, which should have been checked in by now, should be marked as no show.\r\n            \r\nThe default value is true and we strongly advise against setting it to false,\r\nbecause different reports rely on setting reservations which were not checked in correctly to no show.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "operations.manage",
+              "operations.trigger-night-audit",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/operations/v1/units-condition": {
+      "put": {
+        "tags": [
+          "Operations"
+        ],
+        "summary": "OperationsUnits-conditionPut",
+        "description": "<br>You must have this scope: 'operations.change-room-state'.",
+        "operationId": "OperationsUnits-conditionPut",
+        "parameters": [],
+        "requestBody": {
+          "description": "Array of unit Ids with their respective new condition",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceUnitConditionListModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The unit condition has been updated",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "operations.change-room-state",
+              "admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BulkCreateMaintenancesModel": {
+        "title": "BulkCreateMaintenancesModel",
+        "required": [
+          "maintenances"
+        ],
+        "type": "object",
+        "properties": {
+          "maintenances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateMaintenanceModel"
+            },
+            "description": "The list of maintenances"
+          }
+        },
+        "example": {
+          "maintenances": [
+            {
+              "unitId": "MUC-JQI",
+              "from": "2022-04-28T13:46:29+02:00",
+              "to": "2022-04-30T13:46:29+02:00",
+              "type": "OutOfService",
+              "description": "The remote control for the TV needs to be replaced."
+            },
+            {
+              "unitId": "MUC-MTA",
+              "from": "2022-04-28T13:46:29+02:00",
+              "to": "2022-04-30T13:46:29+02:00",
+              "type": "OutOfService",
+              "description": "The remote control for the TV needs to be replaced."
+            }
+          ]
+        }
+      },
+      "BulkMaintenancesCreatedModel": {
+        "title": "BulkMaintenancesCreatedModel",
+        "required": [
+          "ids"
+        ],
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The maintenance ids"
+          }
+        },
+        "example": {
+          "ids": [
+            "MUC-JQI-SGHZD",
+            "MUC-JQI-GSZGK"
+          ]
+        }
+      },
+      "CountModel": {
+        "title": "CountModel",
+        "required": [
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "count": 50
+        }
+      },
+      "CreateMaintenanceModel": {
+        "title": "CreateMaintenanceModel",
+        "required": [
+          "unitId",
+          "from",
+          "to",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "unitId": {
+            "type": "string",
+            "description": "The id of the unit"
+          },
+          "from": {
+            "type": "string",
+            "description": "Date and time the maintenance begins. Has to be today or on a day in the future<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the maintenance ends. Has to be later than from<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the maintenance"
+          }
+        },
+        "description": "With this request you can create a maintenance window for a unit",
+        "example": {
+          "unitId": "MUC-JQI",
+          "from": "2022-04-28T13:46:29+02:00",
+          "to": "2022-04-30T13:46:29+02:00",
+          "type": "OutOfService",
+          "description": "The remote control for the TV needs to be replaced."
+        }
+      },
+      "EmbeddedUnitModel": {
+        "title": "EmbeddedUnitModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit"
+          },
+          "unitGroupId": {
+            "type": "string",
+            "description": "The unit group id"
+          }
+        }
+      },
+      "MaintenanceCreatedModel": {
+        "title": "MaintenanceCreatedModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the scheduled maintenance"
+          }
+        },
+        "example": {
+          "id": "MUC-JQI-SGHZD"
+        }
+      },
+      "MaintenanceItemModel": {
+        "title": "MaintenanceItemModel",
+        "required": [
+          "id",
+          "unit",
+          "from",
+          "to",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the scheduled maintenance"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/EmbeddedUnitModel"
+          },
+          "from": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window starts<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window ends<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type1"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description text for the maintenance"
+          }
+        }
+      },
+      "MaintenanceListModel": {
+        "title": "MaintenanceListModel",
+        "required": [
+          "maintenances",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "maintenances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaintenanceItemModel"
+            },
+            "description": "List of maintenances"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "maintenances": [
+            {
+              "id": "MUC-JQI-SGHZD",
+              "unit": {
+                "id": "MUC-JQI",
+                "name": "A.201",
+                "description": "Standard room."
+              },
+              "from": "2022-04-28T13:46:29.9786162+02:00",
+              "to": "2022-04-30T13:46:29.9786162+02:00",
+              "type": "OutOfService",
+              "description": "The remote control for the TV needs to be replaced."
+            },
+            {
+              "id": "MUC-MTA-GSZGK",
+              "unit": {
+                "id": "MUC-MTA",
+                "name": "A.101",
+                "description": "Standard room."
+              },
+              "from": "2022-05-02T15:46:29.9786162+02:00",
+              "to": "2022-05-04T13:46:29.9786162+02:00",
+              "type": "OutOfOrder",
+              "description": "Wall tiles came down in the bathroom, needs some refurbishment."
+            }
+          ],
+          "count": 0
+        }
+      },
+      "MaintenanceModel": {
+        "title": "MaintenanceModel",
+        "required": [
+          "id",
+          "unit",
+          "from",
+          "to",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the scheduled maintenance"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/EmbeddedUnitModel"
+          },
+          "from": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window starts<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the scheduled maintenance window ends<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type1"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description text for the maintenance"
+          }
+        },
+        "example": {
+          "id": "APALEO.API.MODULES.COMMON.MODELS.REFERENCES.EMBEDDEDUNITMODEL-SGHZD",
+          "unit": {
+            "id": "MUC-JQI",
+            "name": "A.201",
+            "description": "Standard room."
+          },
+          "from": "2022-04-28T13:46:29+02:00",
+          "to": "2022-04-30T13:46:29+02:00",
+          "type": "OutOfService",
+          "description": "The remote control for the TV needs to be replaced."
+        }
+      },
+      "MessageItemCollection": {
+        "title": "MessageItemCollection",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        }
+      },
+      "Operation": {
+        "title": "Operation",
+        "type": "object",
+        "properties": {
+          "value": {},
+          "path": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplaceUnitConditionListModel": {
+        "title": "ReplaceUnitConditionListModel",
+        "required": [
+          "unitsConditions"
+        ],
+        "type": "object",
+        "properties": {
+          "unitsConditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplaceUnitConditionModel"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ReplaceUnitConditionModel": {
+        "title": "ReplaceUnitConditionModel",
+        "required": [
+          "id",
+          "condition"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition"
+          }
+        },
+        "example": {
+          "id": "UNI-EXA",
+          "condition": "Clean"
+        }
+      },
+      "Condition": {
+        "title": "Condition",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "example": "Clean"
+      },
+      "expand": {
+        "title": "expand",
+        "enum": [
+          "unit"
+        ],
+        "type": "string",
+        "example": "unit"
+      },
+      "Type": {
+        "title": "Type",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "description": "The type of maintenance that is planned for the unit. A small repair (OutOfService),\r\na bigger disfunction that does not allow to sell the unit (OutOfOrder) or is it\r\nunder construction (OutOfInventory)",
+        "example": "OutOfService"
+      },
+      "Type1": {
+        "title": "Type1",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "description": "The type of maintenance that is planned for the unit. A small repair (OutOfService),\r\na bigger disfunction that does not allow to sell the unit (OutOfOrder) or is it\r\neven under construction and should reduce the house count (OutOfInventory)",
+        "example": "OutOfService"
+      },
+      "type3": {
+        "title": "type3",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "example": "OutOfService"
+      }
+    },
+    "securitySchemes": {
+      "Client credentials grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "",
+            "scopes": {
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      },
+      "Authorization code grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://identity.apaleo.com/connect/authorize",
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "https://identity.apaleo.com/connect/token",
+            "scopes": {
+              "offline_access": "This scope is active by default for connect clients.",
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Client credentials grant flow": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Maintenance",
+      "description": ""
+    },
+    {
+      "name": "Operations",
+      "description": ""
+    }
+  ]
+}

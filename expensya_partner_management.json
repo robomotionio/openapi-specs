@@ -1,0 +1,4158 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Expensya Partner Management",
+    "description": "Expensya Partner Account Management",
+    "version": "1.0",
+    "x-logo": {
+      "url": "https://logo.clearbit.com/expensya.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-front.expensya.com/Manage/partner"
+    }
+  ],
+  "paths": {
+    "/api/partner/company/": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Add Company",
+        "description": "Add a new company to your Expensya Expert account",
+        "operationId": "AddCompany",
+        "parameters": [
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Input of the company to add.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCompanyInput"
+              },
+              "example": {
+                "Name": "New SARL",
+                "Description": "New SARL description",
+                "CompanyType": 1,
+                "Address": "France",
+                "City": "Paris",
+                "ZipCode": "75001",
+                "AccountingYearClosure": null,
+                "Mail": "new.sarl@yopmail.com",
+                "PhoneNumber": "750225474",
+                "FaxNumber": null,
+                "CountryCode": "FR",
+                "VatCode": null,
+                "RcsCode": null,
+                "ClientCode": "25021Rdfdsv",
+                "AccountsSettingsStr": "{\"CompteNonRemboursables\":\"652000\",\"CompteRemboursables\":\"425000\"}",
+                "AdminPayId": "payId1",
+                "AdminPayId2": null,
+                "AdminPayId3": null,
+                "AdminLastName": "Philippe",
+                "AdminFirstName": "Rossi",
+                "AdminAddress": null,
+                "AdminMail": "new.sarl@yopmail.com",
+                "AdminMailAlias": null,
+                "AdminPhoneNumber": "750225474",
+                "AdminFaxNumber": "750225474",
+                "AdminCountryCode": "FR",
+                "Language": "FR",
+                "Currency": "EUR",
+                "AdminCurrency": "EUR",
+                "AdminZipCode": "75001",
+                "AccountingModelId": null,
+                "Siren": "SirenCode",
+                "TagsToAssign": [
+                  "Paris",
+                  "Lyon"
+                ],
+                "CompanyOffer": {
+                  "IsTakenInChargeByPartner": true,
+                  "PrepaidUsers": 10,
+                  "OfferType": 11
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Add Company Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResult"
+                },
+                "example": {
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/partner/company/{companyId}/": {
+      "put": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Update company",
+        "description": "Update an already attached company to your Expensya Expert account",
+        "operationId": "UpdateCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Format - guid. Unique identifier of the company to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Input of the company to upadte.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanyInput"
+              },
+              "example": {
+                "Name": "New SARL",
+                "Address": "France",
+                "City": "Paris",
+                "ZipCode": "75001",
+                "AccountingYearClosure": null,
+                "PhoneNumber": "750225474",
+                "FaxNumber": null,
+                "VatCode": null,
+                "RcsCode": null,
+                "ClientCode": "25021Rdf",
+                "AccountsSettingsStr": "{\"CompteNonRemboursables\":\"652000\",\"CompteRemboursables\":\"425000\"}",
+                "AccountingModel_Id": null,
+                "TagsToAssign": [
+                  "Paris",
+                  "Lyon"
+                ],
+                "TagsToUnassign": [
+                  "Toulouse"
+                ],
+                "CompanyOffer": {
+                  "IsTakenInChargeByPartner": true,
+                  "PrepaidUsers": 15,
+                  "OfferType": 0
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Company Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResult"
+                },
+                "example": {
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Get Company Details",
+        "description": "Get all details of an attached company",
+        "operationId": "GetCompanyDetails",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Format - guid.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Details Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResultCompanyResponse"
+                },
+                "example": {
+                  "ResultItem": {
+                    "Company": {
+                      "Id": "string",
+                      "Name": "string",
+                      "Description": "string",
+                      "CompanyType": 0,
+                      "Address": "string",
+                      "Mail": "string",
+                      "PhoneNumber": "string",
+                      "FaxNumber": "string",
+                      "DateCreation": "string",
+                      "CountryCode": "string",
+                      "City": "string",
+                      "ZipCode": "string",
+                      "AccountingYearClosure": "string",
+                      "Currency": "string",
+                      "VatCode": "string",
+                      "RcsCode": "string",
+                      "ClientCode": "string",
+                      "CreatedBy": "string",
+                      "SignupSource": 0,
+                      "PrepaidUsers": 0,
+                      "LastAutoExportDate": "string",
+                      "LastAutoImportDate": "string",
+                      "AccountsSettingsStr": "string",
+                      "VatCodesStr": "string",
+                      "CompanySize": 0,
+                      "Siren": "string",
+                      "IsTakenInChargeByPartner": true,
+                      "SocieteInfoId": "string",
+                      "CompanyIndustry": "string"
+                    },
+                    "Tags": [
+                      {
+                        "Id": "string",
+                        "Name": "string",
+                        "Description": "string",
+                        "CreationDate": "string",
+                        "IsActive": true,
+                        "TagType": 1,
+                        "DefinitionStr": "string",
+                        "UseType": 2
+                      }
+                    ],
+                    "CurrentOffer": {
+                      "Id": "string",
+                      "StartDate": "string",
+                      "EndDate": "string",
+                      "OfferType": 0,
+                      "FutureOfferType": 0
+                    },
+                    "ActiveUsers": 0,
+                    "AccountingModel": {
+                      "Id": "string",
+                      "CreationDate": "string",
+                      "Name": "string",
+                      "Description": "string"
+                    },
+                    "OfferActivatedBy": "string"
+                  },
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/partner/company/authToken/": {
+      "get": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Get Company Token",
+        "description": "Get your valid company userToken for 180 days",
+        "operationId": "GetCompanyAuthToken",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Format - guid. Unique identifier of the company.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Token Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                },
+                "example": {
+                  "ResultItem": "string",
+                  "ResultCode": 0,
+                  "UserMessage": "string",
+                  "Details": "string",
+                  "IsSuccess": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/refreshPartnerUserToken/": {
+      "get": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Refresh Token",
+        "description": "Refresh your partner user token.",
+        "operationId": "RefreshPartnerUserToken",
+        "parameters": [
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Refresh Token Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResultString"
+                },
+                "example": {
+                  "ResultItem": "string",
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/revokePartnerUserToken/": {
+      "get": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Revoke Token",
+        "description": "Revoke your partner user token.",
+        "operationId": "RevokePartnerUserToken",
+        "parameters": [
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revoke Token Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResult"
+                },
+                "example": {
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/v2/partner/companies/": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Get Companies",
+        "description": "Get a list of all your attached companies with paging",
+        "operationId": "GetPartnerCompaniesV2",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Unique identifier of the company.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyName",
+            "in": "query",
+            "description": "Name of the company.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyMail",
+            "in": "query",
+            "description": "Mail of the company.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyCode",
+            "in": "query",
+            "description": "Code of the company.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currentOfferTypes",
+            "in": "query",
+            "description": "List of current offer types seperated by ',' : SilverDefault = 0 Free = 1 AlwaysFree = 2 SilverYearly = 3 CustomExport = 4 TestPeriod = 5 OrangeStandard = 6 OrangePremium = 7 GoldDefault = 11 GoldYearly = 12 AppDirectSilverDefault = 13 AppDirectGoldDefault = 14 CegidSilverDefault = 15 OrangePlatiniumOffer = 16 OrangeGoldOffer = 17 OrangeSilverOffer = 18.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "futureOfferTypes",
+            "in": "query",
+            "description": "List of futur offer types seperated by ',' : SilverDefault = 0 Free = 1 AlwaysFree = 2 SilverYearly = 3 CustomExport = 4 TestPeriod = 5 OrangeStandard = 6 OrangePremium = 7 GoldDefault = 11 GoldYearly = 12 AppDirectSilverDefault = 13 AppDirectGoldDefault = 14 CegidSilverDefault = 15 OrangePlatiniumOffer = 16 OrangeGoldOffer = 17 OrangeSilverOffer = 18.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offerStartDate",
+            "in": "query",
+            "description": "Start date of the offer.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offerEndDate",
+            "in": "query",
+            "description": "End date of the offer.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagsNames",
+            "in": "query",
+            "description": "List of tags' names seperated by ','.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Format - int32. The page number (default value = 0).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Format - int32. The number of elements per page (default value = 100 and maximum value = 100).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Format - enum. List can be sorted by : Name = 10, DateCreation = 11 Mail = 20 CountryCode = 22  Currency = 25 ClientCode = 28 PhoneNumber = 30 PrepaidUsers = 34 OfferStartDate = 36  OfferEndDate = 38 OfferType = 40 (default value = DateCreation).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "isDesc",
+            "in": "query",
+            "description": "Order the list by desc or asc (default value = true).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Companies Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAndPagesCountResultCompanyWithOfferResponse"
+                },
+                "example": {
+                  "List": [
+                    {
+                      "Company": {
+                        "Id": "string",
+                        "Name": "string",
+                        "Description": "string",
+                        "CompanyType": 0,
+                        "Address": "string",
+                        "Mail": "string",
+                        "PhoneNumber": "string",
+                        "FaxNumber": "string",
+                        "DateCreation": "string",
+                        "CountryCode": "string",
+                        "City": "string",
+                        "ZipCode": "string",
+                        "AccountingYearClosure": "string",
+                        "Currency": "string",
+                        "VatCode": "string",
+                        "RcsCode": "string",
+                        "ClientCode": "string",
+                        "CreatedBy": "string",
+                        "SignupSource": 0,
+                        "PrepaidUsers": 0,
+                        "LastAutoExportDate": "string",
+                        "LastAutoImportDate": "string",
+                        "AccountsSettingsStr": "string",
+                        "VatCodesStr": "string",
+                        "CompanySize": 0,
+                        "Siren": "string",
+                        "IsTakenInChargeByPartner": true,
+                        "SocieteInfoId": "string",
+                        "CompanyIndustry": "string"
+                      },
+                      "CurrentOffer": {
+                        "Id": "string",
+                        "StartDate": "string",
+                        "EndDate": "string",
+                        "OfferType": 0,
+                        "FutureOfferType": 0
+                      },
+                      "CompanyTags": [
+                        {
+                          "Id": "string",
+                          "Name": "string",
+                          "Description": "string",
+                          "CreationDate": "string",
+                          "IsActive": true,
+                          "TagType": 1,
+                          "DefinitionStr": "string",
+                          "UseType": 2
+                        }
+                      ]
+                    }
+                  ],
+                  "PagesCount": 0,
+                  "TotalListCount": 0,
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/v2/partner/company/{companyId}/expenses/": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Get Company Expenses",
+        "description": "Get a list of all expenses with paging",
+        "operationId": "GetCompanyExpensesV2",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Format - guid. Unique company identifier of the expense.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportId",
+            "in": "query",
+            "description": "Format - guid. Unique report identifier related to the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "description": "Format - guid. Unique category identifier related to the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseName",
+            "in": "query",
+            "description": "Name of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Format - date-time (as date-time in RFC3339). The start date with which we do the research based on dateFilterType.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Format - date-time (as date-time in RFC3339). The end date with which we do the research base on dateFilterType.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportState",
+            "in": "query",
+            "description": "Format - enum. State of the expense's report.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "expenseStates",
+            "in": "query",
+            "description": "List Of expense states seperated by ',' : Uploading = 0 Uploaded = 1 Ready = 2 Validated = 3 ValidatedByAccountant = 4 Rejected = 99.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isReimbusable",
+            "in": "query",
+            "description": "Specifies if the expense is to reimburse.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "valueInCurrency",
+            "in": "query",
+            "description": "Format - decimal. Value in currency of the owner of the expense.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "ownerId",
+            "in": "query",
+            "description": "Format - guid. Unique owner identifier of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerMail",
+            "in": "query",
+            "description": "Owner mail of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId",
+            "in": "query",
+            "description": "Serial of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId2",
+            "in": "query",
+            "description": "First analytical axis of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId3",
+            "in": "query",
+            "description": "Second analytical axis of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId4",
+            "in": "query",
+            "description": "Third analytical axis of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId5",
+            "in": "query",
+            "description": "Fourth analytical axis of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerPayId6",
+            "in": "query",
+            "description": "Fifth analytical axis of the owner of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Format - guid. Unique project identifier related to the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isBillable",
+            "in": "query",
+            "description": "Specifies if the expense is billable to client.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dateFilterType",
+            "in": "query",
+            "description": "Format - enum. Indicates the target of date filters: InvoiceDate = 1 ValidationDate = 2 AccountingValidationDate = 3 SubmissionDate = 4 CreationDate = 6.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "merchantCountries",
+            "in": "query",
+            "description": "List of merchant countries related to the expense seperated by ',' ex: 'FR,ES'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currencies",
+            "in": "query",
+            "description": "List of currencies related to the expense seperated by ',' ex: 'EUR,USD'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileType",
+            "in": "query",
+            "description": "File type of the expense : pdf, jpg ...",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportIdShort",
+            "in": "query",
+            "description": "Short id of the expense's report.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseUseTypes",
+            "in": "query",
+            "description": "List Of expense use types seperated by ',' : Invoice = 1 Advance = 2 Purchase = 4 Subscription = 8 MissionOrder = 16.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "supplierId",
+            "in": "query",
+            "description": "Format - guid. Unique supplier identifier of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseIds",
+            "in": "query",
+            "description": "List of Unique identifiers of the expense seperated by ','.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantName",
+            "in": "query",
+            "description": "Merchant name of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vatCode",
+            "in": "query",
+            "description": "Merchant VAT number of the expense.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "valueHTInExpenseCurrency",
+            "in": "query",
+            "description": "Format - decimal. Excluding tax amount of the expense.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "vatRate",
+            "in": "query",
+            "description": "Format - decimal. VAT rate of the expense.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "vatValue",
+            "in": "query",
+            "description": "Format - decimal. VAT value of the expense.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "reportsIds",
+            "in": "query",
+            "description": "List of unique reports' identifiers related to the expense seperated by ','.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTimeOffset",
+            "in": "query",
+            "description": "Format - int32. The UTC offset of the expense.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "tagsNames",
+            "in": "query",
+            "description": "List of tags' names seperated by ','.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseObjectsToReturn",
+            "in": "query",
+            "description": "Format - enum. Enum flag attribute which define objects to return : None = 1 VAT = 2 BrokenRule = 4 PaymentInstrument = 8 Vehicle = 16 Guest = 32 Category = 64 Project = 128 Report = 256 Tag = 512 AccountingData = 1024",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Format - int32. The page number (default value = 0).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Format - int32. The number of elements per page (default value = 100 and maximum value = 100).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Format - enum. List can be sorted by : DateCreation = 11 DateInvoice = 12 Name = 20 Value = 30 ValueInCurrency = 31 HasPhoto = 40 State = 60 Category = 70 (default value = DateCreation).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "isDesc",
+            "in": "query",
+            "description": "Order the list by desc or asc (default value = true).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Expenses Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAndPagesCountResultExpenseResponse"
+                },
+                "example": {
+                  "List": [
+                    {
+                      "Id": "string",
+                      "Name": "string",
+                      "Value": 0,
+                      "ValueToReimburse": 0,
+                      "ReimbursementRate": 0,
+                      "Description": "string",
+                      "UseType": 1,
+                      "DateCreation": "string",
+                      "DateInvoice": "string",
+                      "DateUtcOffset": 0,
+                      "HasPhoto": true,
+                      "Currency": "string",
+                      "ValueInCurrency": 0,
+                      "ValueInLocalCurrency": 0,
+                      "MerchantInvoiceId": "string",
+                      "MerchantCountry": "string",
+                      "MerchantCity": "string",
+                      "MerchantZipCode": "string",
+                      "MerchantAddress": "string",
+                      "MerchantName": "string",
+                      "MerchantVatNumber": "string",
+                      "Units": 0,
+                      "State": 0,
+                      "VAT": {
+                        "Rates": [
+                          0
+                        ],
+                        "Values": [
+                          0
+                        ],
+                        "VatFreeAmount": 0,
+                        "Tips": 0
+                      },
+                      "VATAvgRate": 0,
+                      "AttachedFilesCount": 0,
+                      "ToReimburse": true,
+                      "IsBillable": true,
+                      "CustomFields": [
+                        {
+                          "Key": "string",
+                          "Value": "string"
+                        }
+                      ],
+                      "FileType": "string",
+                      "DefaultRate": 0,
+                      "CreditSource_Id": "string",
+                      "User_Id": "string",
+                      "Project": {
+                        "Id": "string",
+                        "HasBillable": true,
+                        "StartDate": "string",
+                        "EndDate": "string",
+                        "IsActive": true,
+                        "MileageConfigurationsStr": "string",
+                        "Address": "string",
+                        "ZipCode": "string",
+                        "City": "string",
+                        "ExternalId": "string",
+                        "Name": "string",
+                        "ProjectRef": "string",
+                        "Validator_Id": "string",
+                        "Reviewer_Id": "string",
+                        "ClientName": "string",
+                        "ForAllCompany": true,
+                        "IsBillableDefaultValue": true,
+                        "PayId2": "string",
+                        "Currency": "string",
+                        "ExtraData": "string",
+                        "ProjectUseType": 1,
+                        "CustomField_Id": "string",
+                        "CustomFieldParent_Id": "string",
+                        "CategoriesIdsStr": "string",
+                        "ValidatorFullName": "string",
+                        "ValidatorMail": "string",
+                        "ReviewerFullName": "string",
+                        "ReviewerMail": "string",
+                        "IsReadOnly": true,
+                        "ProjectTags": [
+                          {
+                            "Id": "string",
+                            "Name": "string",
+                            "Description": "string",
+                            "CreationDate": "string",
+                            "IsActive": true,
+                            "TagType": 1,
+                            "DefinitionStr": "string",
+                            "UseType": 2
+                          }
+                        ],
+                        "ProjectValidators": [
+                          {
+                            "Mail": "string",
+                            "MinimumAmount": 0
+                          }
+                        ]
+                      },
+                      "Report": {
+                        "Id": "string",
+                        "Name": "string",
+                        "DateCreation": "string",
+                        "Budget": 0,
+                        "State": 0,
+                        "User_Id": "string",
+                        "UserLastName": "string",
+                        "UserFirstName": "string",
+                        "UserMail": "string",
+                        "Manager_Id": "string",
+                        "Accountant_Id": "string",
+                        "Reviewer_Id": "string",
+                        "InvoicesCount": 0,
+                        "Value": 0,
+                        "ValueToReimburse": 0,
+                        "ValueInLocalCurrency": 0,
+                        "ValueToReimburseInLocalCurrency": 0,
+                        "StartDate": "string",
+                        "EndDate": "string",
+                        "UserCurrency": "string",
+                        "UserLocalCurrency": "string",
+                        "IdShort": "string",
+                        "CurrentValidator_Id": "string",
+                        "InvoiceAttachedFilesCount": 0,
+                        "ReportTags": [
+                          {
+                            "Id": "string",
+                            "Name": "string",
+                            "Description": "string",
+                            "CreationDate": "string",
+                            "IsActive": true,
+                            "TagType": 1,
+                            "DefinitionStr": "string",
+                            "UseType": 2
+                          }
+                        ]
+                      },
+                      "PaymentInstrument": {
+                        "Name": "string",
+                        "Description": "string",
+                        "IsActive": true,
+                        "InstrumentType": 0,
+                        "AccountType": 0,
+                        "LastDigits": "string",
+                        "CardKey": "string",
+                        "JournalCode": "string",
+                        "Auxiliary": "string",
+                        "AccountNumber": "string"
+                      },
+                      "Vehicle": {
+                        "Name": "string",
+                        "DateCreation": "string",
+                        "CreationYearKm": 0,
+                        "CreationYearMiles": 0,
+                        "LastYearDistanceKm": 0,
+                        "LastUpdatedYear": 0,
+                        "VehicleType": 1,
+                        "InternalVehicleType": 0,
+                        "CurrentValidator_Id": "string",
+                        "LastValidatorReminderDate": "string",
+                        "Comments": "string",
+                        "State": 0,
+                        "ExternalId": "string",
+                        "AdministrativePower": 0,
+                        "IsActive": true,
+                        "AttachedFilesCount": 0,
+                        "CreationType": 0,
+                        "StartDate": "string",
+                        "EndDate": "string"
+                      },
+                      "TransactionsSumValue": 0,
+                      "TransactionsSumInCurrency": 0,
+                      "TransactionsSumInLocalCurrency": 0,
+                      "PerdiemCountry": "string",
+                      "PerdiemCalculationPeriodType": 0,
+                      "PerDiemType": 0,
+                      "Category": {
+                        "Id": "string",
+                        "Name": "string",
+                        "EntityName": "string",
+                        "Parent": "string",
+                        "Description": "string",
+                        "PrimitiveCategories": "string",
+                        "ParentCategory_Id": "string",
+                        "IsActive": true,
+                        "IsActiveAsDefault": true,
+                        "CostAccount": "string",
+                        "VatAccount": "string",
+                        "ExtraData": "string",
+                        "CreationDate": "string",
+                        "VatClaimRate": 0,
+                        "VatClaimRates": "string",
+                        "CategoryUseType": 1,
+                        "ExternalId": "string",
+                        "IsReadOnly": true,
+                        "CategoryTags": [
+                          {
+                            "Id": "string",
+                            "Name": "string",
+                            "Description": "string",
+                            "CreationDate": "string",
+                            "IsActive": true,
+                            "TagType": 1,
+                            "DefinitionStr": "string",
+                            "UseType": 2
+                          }
+                        ]
+                      },
+                      "AccountingData": {
+                        "CostAccount": "string",
+                        "VatAccount": "string",
+                        "TTCAccount": "string",
+                        "VATClaimRate": "string",
+                        "ValueTTC": "string",
+                        "ValueTTCInCurrency": "string",
+                        "ValueTTCInLocalCurrency": "string",
+                        "ValueToReimburse": "string",
+                        "ValueToReimburseInCurrency": "string",
+                        "ValueToReimburseInLocalCurrency": "string",
+                        "ValueHT": "string",
+                        "ValueHTInCurrency": "string",
+                        "ValueHTInLocalCurrency": "string",
+                        "ValueHTToReimburse": "string",
+                        "ValueHTToReimburseInCurrency": "string",
+                        "ValueHTToReimburseInLocalCurrency": "string",
+                        "TotalVATClaimValue": "string",
+                        "TotalVATClaimValueInCurrency": "string",
+                        "TotalVATClaimValueInLocalCurrency": "string",
+                        "TotalVATValue": "string",
+                        "TotalVATValueInCurrency": "string",
+                        "TotalVATValueInLocalCurrency": "string",
+                        "VAT1Rate": "string",
+                        "VAT1Value": "string",
+                        "VAT1Base": "string",
+                        "VAT1Code": "string",
+                        "ValueToReimburseForVAT1": "string",
+                        "ValueToReimburseInCurrencyForVAT1": "string",
+                        "ValueToReimburseInLocalCurrencyForVAT1": "string",
+                        "VAT2Rate": "string",
+                        "VAT2Value": "string",
+                        "VAT2Base": "string",
+                        "VAT2Code": "string",
+                        "ValueToReimburseForVAT2": "string",
+                        "ValueToReimburseInCurrencyForVAT2": "string",
+                        "ValueToReimburseInLocalCurrencyForVAT2": "string",
+                        "VAT3Rate": "string",
+                        "VAT3Value": "string",
+                        "VAT3Base": "string",
+                        "VAT3Code": "string",
+                        "ValueToReimburseForVAT3": "string",
+                        "ValueToReimburseInCurrencyForVAT3": "string",
+                        "ValueToReimburseInLocalCurrencyForVAT3": "string",
+                        "VAT4Rate": "string",
+                        "VAT4Value": "string",
+                        "VAT4Base": "string",
+                        "VAT4Code": "string",
+                        "ValueToReimburseForVAT4": "string",
+                        "ValueToReimburseInCurrencyForVAT4": "string",
+                        "ValueToReimburseInLocalCurrencyForVAT4": "string"
+                      },
+                      "BrokenRules": [
+                        {
+                          "Id": "string",
+                          "Name": "string",
+                          "Description": "string",
+                          "DescriptionForCredit": "string",
+                          "Budget": 0,
+                          "RuleType": 0,
+                          "Currency": "string",
+                          "AllowExceptions": true,
+                          "RuleElementType": 0,
+                          "IntervalType": 0,
+                          "Language": "string",
+                          "RuleCurrenciesWithBudget": {
+                            "Item1": "string",
+                            "Item2": 0
+                          },
+                          "ForAllCompany": true
+                        }
+                      ],
+                      "IsMileage": true,
+                      "CategoryExtraDataStr": "string",
+                      "Guests": [
+                        {
+                          "Mail": "string",
+                          "FullName": "string",
+                          "Id": "string",
+                          "IsCoworker": true
+                        }
+                      ],
+                      "SubStatus": 0,
+                      "OwnerPayId": "string",
+                      "OwnerPayId2": "string",
+                      "OwnerPayId3": "string",
+                      "OwnerPayId4": "string",
+                      "OwnerPayId5": "string",
+                      "OwnerPayId6": "string",
+                      "ExpenseTags": [
+                        {
+                          "Id": "string",
+                          "Name": "string",
+                          "Description": "string",
+                          "CreationDate": "string",
+                          "IsActive": true,
+                          "TagType": 1,
+                          "DefinitionStr": "string",
+                          "UseType": 2
+                        }
+                      ]
+                    }
+                  ],
+                  "PagesCount": 0,
+                  "TotalListCount": 0,
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/partner/sso/": {
+      "get": {
+        "tags": [
+          "SSO"
+        ],
+        "summary": "External Login",
+        "description": "Login to Expensya Expert Portal",
+        "operationId": "InitPartnerSSO",
+        "parameters": [
+          {
+            "name": "mail",
+            "in": "query",
+            "description": "Mail of the partner user.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExpensyaPartner-Token",
+            "in": "header",
+            "description": "Valid partner user token.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Init Partner SSO Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitSSOResponse"
+                },
+                "example": {
+                  "RedirectionUri": "string",
+                  "ResultCode": 0,
+                  "Message": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseResult": {
+        "type": "object",
+        "properties": {
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008
+            ],
+            "type": "integer",
+            "description": "Expensya response internal codes: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1, \r\n    InvalidData = 7, \r\n    NotAdmin = 20, \r\n    NotAllowed = 30, \r\n    Failed = 70, \r\n    NothingToDo = 91, \r\n    AlreadyExists = 1006...",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "BaseResult"
+      },
+      "BaseResponseString": {
+        "type": "object",
+        "properties": {
+          "ResultItem": {
+            "uniqueItems": false,
+            "type": "string"
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "\r\n\r\n    Success = 0 \r\n    PartialSuccess = 1 \r\n    NotPaid = 2 \r\n    OldAppVersion = 3 \r\n    InvalidCredentials = 4 \r\n    AdditionalInformationNeeded = 5 \r\n    InvalidPinCode = 6 \r\n    InvalidData = 7 \r\n    UserEmailExists = 10 \r\n    CompanyEmailExists = 11 \r\n    UserEmailAliasExists = 12 \r\n    NotAdmin = 20 \r\n    NotAllowed = 30 \r\n    NotManager = 50 \r\n    ExceedLimits = 60 \r\n    Failed = 70 \r\n    LockedOut = 71 \r\n    UserDisabled = 80 \r\n    UserNotValidated = 90 \r\n    NothingToDo = 91 \r\n    NotVerifiedInvoice = 92 \r\n    ClientError = 96 \r\n    NetworkError = 97 \r\n    ServiceError = 98 \r\n    UnknownError = 99 \r\n    NotValidZipCode = 100 \r\n    InvalidCoupon = 101 \r\n    Redirect = 303 \r\n    BadRequest = 400 \r\n    InvalidToken = 401 \r\n    NotFound = 404 \r\n    WalletNotFound = 901 \r\n    WalletDisabled = 902 \r\n    PaymentInstrumentExpired = 903 \r\n    AccountantExists = 910 \r\n    AccountantNotExists = 913 \r\n    PartnerExists = 1001 \r\n    PartnerNotExists = 1004 \r\n    NotEnoughLicences = 1005 \r\n    AlreadyExists = 1006 \r\n    BnppLimitActiveCardsError = 2000 \r\n    BnppLimitAmountAccountError = 2001 \r\n    BnppEndUsageError = 2002 \r\n    BnppWrongAccountIdError = 2003 \r\n    BnppWrongCurrencyCodeError = 2004 \r\n    BnppWrongCertificateOrEndpointError = 2005 \r\n    MissionShortIdNull = 2007 \r\n    AlreadyDeleted = 2008 \r\n",
+            "format": "enum"
+          },
+          "UserMessage": {
+            "uniqueItems": false,
+            "type": "string"
+          },
+          "Details": {
+            "uniqueItems": false,
+            "type": "string"
+          },
+          "IsSuccess": {
+            "uniqueItems": false,
+            "type": "boolean"
+          }
+        },
+        "format": "BaseResponseString"
+      },
+      "BaseResultString": {
+        "type": "object",
+        "properties": {
+          "ResultItem": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Item sent by the server."
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008
+            ],
+            "type": "integer",
+            "description": "Expensya response internal codes: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1, \r\n    InvalidData = 7, \r\n    NotAdmin = 20, \r\n    NotAllowed = 30, \r\n    Failed = 70, \r\n    NothingToDo = 91, \r\n    AlreadyExists = 1006...",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "BaseResultString"
+      },
+      "ListAndPagesCountResultCompanyWithOfferResponse": {
+        "type": "object",
+        "properties": {
+          "List": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyWithOfferResponse"
+            },
+            "description": "List of elements to return."
+          },
+          "PagesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Total number of pages.",
+            "format": "int32"
+          },
+          "TotalListCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Total number of elements per page.",
+            "format": "int32"
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008,
+              2009
+            ],
+            "type": "integer",
+            "description": "Code response sent by the server: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1 \r\n    NotPaid = 2 \r\n    OldAppVersion = 3 \r\n    InvalidCredentials = 4 \r\n    AdditionalInformationNeeded = 5 \r\n    InvalidPinCode = 6 \r\n    InvalidData = 7 \r\n    UserEmailExists = 10 \r\n    CompanyEmailExists = 11 \r\n    UserEmailAliasExists = 12 \r\n    NotAdmin = 20 \r\n    NotAllowed = 30 \r\n    NotManager = 50 \r\n    ExceedLimits = 60 \r\n    Failed = 70 \r\n    LockedOut = 71 \r\n    UserDisabled = 80 \r\n    UserNotValidated = 90 \r\n    NothingToDo = 91 \r\n    NotVerifiedInvoice = 92 \r\n    ClientError = 96 \r\n    NetworkError = 97 \r\n    ServiceError = 98 \r\n    UnknownError = 99 \r\n    NotValidZipCode = 100 \r\n    InvalidCoupon = 101 \r\n    Redirect = 303 \r\n    BadRequest = 400 \r\n    InvalidToken = 401 \r\n    NotFound = 404 \r\n    WalletNotFound = 901 \r\n    WalletDisabled = 902 \r\n    PaymentInstrumentExpired = 903 \r\n    AccountantExists = 910 \r\n    AccountantNotExists = 913 \r\n    PartnerExists = 1001 \r\n    PartnerNotExists = 1004 \r\n    NotEnoughLicences = 1005 \r\n    AlreadyExists = 1006 \r\n    BnppLimitActiveCardsError = 2000 \r\n    BnppLimitAmountAccountError = 2001 \r\n    BnppEndUsageError = 2002 \r\n    BnppWrongAccountIdError = 2003 \r\n    BnppWrongCurrencyCodeError = 2004 \r\n    BnppWrongCertificateOrEndpointError = 2005 \r\n    MissionShortIdNull = 2007 \r\n    AlreadyDeleted = 2008 \r\n    CantUpdateLastAdmin = 2009 \r\n",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "ListAndPagesCountResultCompanyWithOfferResponse"
+      },
+      "ListAndPagesCountResultExpenseResponse": {
+        "type": "object",
+        "properties": {
+          "List": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseResponse"
+            },
+            "description": "List of elements to return."
+          },
+          "PagesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Total number of pages.",
+            "format": "int32"
+          },
+          "TotalListCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Total number of elements per page.",
+            "format": "int32"
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008
+            ],
+            "type": "integer",
+            "description": "Expensya response internal codes: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1, \r\n    InvalidData = 7, \r\n    NotAdmin = 20, \r\n    NotAllowed = 30, \r\n    Failed = 70, \r\n    NothingToDo = 91, \r\n    AlreadyExists = 1006...",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "ListAndPagesCountResultExpenseResponse"
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the company.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the company."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the company."
+          },
+          "CompanyType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              9
+            ],
+            "type": "integer",
+            "description": "Enum attribute which is the type of the company : \r\n\r\n    OneManCompany = 0 \r\n    Entreprise = 1 \r\n    Corporate = 2 \r\n    Individual = 9 \r\n",
+            "format": "enum"
+          },
+          "Address": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Address of the company."
+          },
+          "Mail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of the company."
+          },
+          "PhoneNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Phone number of the company."
+          },
+          "FaxNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fax number of the company."
+          },
+          "DateCreation": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "CountryCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Country code of the company."
+          },
+          "City": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "City of the company."
+          },
+          "ZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Zip code of the company."
+          },
+          "AccountingYearClosure": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Accounting year closure of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "Currency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency of the company."
+          },
+          "VatCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT code of the company."
+          },
+          "RcsCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Rcs code of the company"
+          },
+          "ClientCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Client code of the company."
+          },
+          "CreatedBy": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the user who create the company.",
+            "format": "guid"
+          },
+          "SignupSource": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15
+            ],
+            "type": "integer",
+            "description": "Signup source of the company: \r\n\r\n    Web = 0 \r\n    Mobile = 1 \r\n    Partner = 2 \r\n    Lead = 3 \r\n    Orange = 4 \r\n    Backend = 5 \r\n    AppDirect = 8 \r\n    Cegid = 9 \r\n    WP = 11 \r\n    Android = 12 \r\n    IPhone = 13 \r\n    AndroidHuawei = 14 \r\n    PartnerViaPublicApi = 15 \r\n",
+            "format": "enum"
+          },
+          "PrepaidUsers": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Number of prepaid users.",
+            "format": "int32"
+          },
+          "LastAutoExportDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last auto export date of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "LastAutoImportDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last auto import date of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "AccountsSettingsStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Account settings of the company."
+          },
+          "VatCodesStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT codes of the company."
+          },
+          "CompanySize": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Size of the company.",
+            "format": "int32"
+          },
+          "Siren": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Siren code of the company."
+          },
+          "IsTakenInChargeByPartner": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the company is taken in charge by partner or not."
+          },
+          "SocieteInfoId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Identifier of the societeInfo."
+          },
+          "CompanyIndustry": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Industry of the company."
+          }
+        },
+        "format": "Company"
+      },
+      "CompanyResponse": {
+        "type": "object",
+        "properties": {
+          "Company": {
+            "$ref": "#/components/schemas/Company"
+          },
+          "Tags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of assigned tags to the company."
+          },
+          "CurrentOffer": {
+            "$ref": "#/components/schemas/OfferResponse"
+          },
+          "ActiveUsers": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Active users of the company.",
+            "format": "int32"
+          },
+          "AccountingModel": {
+            "$ref": "#/components/schemas/AccountingModelResponse"
+          },
+          "OfferActivatedBy": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Who activated the offer of the company."
+          }
+        },
+        "format": "CompanyResponse"
+      },
+      "OfferResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the offer.",
+            "format": "guid"
+          },
+          "StartDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Start date of the offer. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "End date of the offer. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "OfferType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "type": "integer",
+            "description": "Type of the offer : \r\n\r\n    SilverDefault = 0 \r\n    Free = 1 \r\n    AlwaysFree = 2 \r\n    SilverYearly = 3 \r\n    CustomExport = 4 \r\n    TestPeriod = 5 \r\n    OrangeStandard = 6 \r\n    OrangePremium = 7 \r\n    GoldDefault = 11 \r\n    GoldYearly = 12 \r\n    AppDirectSilverDefault = 13 \r\n    AppDirectGoldDefault = 14 \r\n    CegidSilverDefault = 15 \r\n    OrangePlatiniumOffer = 16 \r\n    OrangeGoldOffer = 17 \r\n    OrangeSilverOffer = 18 \r\n    ImplementationOffer = 19 \r\n",
+            "format": "enum"
+          },
+          "FutureOfferType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "type": "integer",
+            "description": "Type of the futur offer : \r\n\r\n    SilverDefault = 0 \r\n    Free = 1 \r\n    AlwaysFree = 2 \r\n    SilverYearly = 3 \r\n    CustomExport = 4 \r\n    TestPeriod = 5 \r\n    OrangeStandard = 6 \r\n    OrangePremium = 7 \r\n    GoldDefault = 11 \r\n    GoldYearly = 12 \r\n    AppDirectSilverDefault = 13 \r\n    AppDirectGoldDefault = 14 \r\n    CegidSilverDefault = 15 \r\n    OrangePlatiniumOffer = 16 \r\n    OrangeGoldOffer = 17 \r\n    OrangeSilverOffer = 18 \r\n    ImplementationOffer = 19 \r\n",
+            "format": "enum"
+          }
+        },
+        "format": "OfferResponse"
+      },
+      "CompanyWithOfferResponse": {
+        "type": "object",
+        "properties": {
+          "Company": {
+            "$ref": "#/components/schemas/Company"
+          },
+          "CurrentOffer": {
+            "$ref": "#/components/schemas/OfferResponse"
+          },
+          "CompanyTags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of tags of the company."
+          }
+        },
+        "format": "CompanyWithOfferResponse"
+      },
+      "CompanyOfferInput": {
+        "required": [
+          "PrepaidUsers",
+          "IsTakenInChargeByPartner"
+        ],
+        "type": "object",
+        "properties": {
+          "OfferType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "type": "integer",
+            "description": "Company's offer type : \r\n\r\n    SilverDefault = 0 (Silver Monthly)\r\n    GoldDefault = 11 (Gold Monthly)\r\n",
+            "format": "enum"
+          },
+          "PrepaidUsers": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Company's users to pay for. Should get a value bigger than 0 if IsTakenInChargeByPartner is true.",
+            "format": "int32"
+          },
+          "IsTakenInChargeByPartner": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specify if the offer is taken in charge by partner. If false, Company will automatically take a free offer with 0 prepaid users."
+          },
+          "ShouldTakeInChargeAfterTrial": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specify if the offer will be taken in charge after free trial period ends. Can be used only when current offer type is free."
+          }
+        },
+        "format": "CompanyOfferInput"
+      },
+      "AccountingDataResponse": {
+        "type": "object",
+        "properties": {
+          "CostAccount": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The cost account."
+          },
+          "VatAccount": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The VAT acount."
+          },
+          "TTCAccount": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The TTC account."
+          },
+          "VATClaimRate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The VAT claim rate."
+          },
+          "ValueTTC": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The TTC value in the currency of the expense."
+          },
+          "ValueTTCInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The TTC value in the currency of the company."
+          },
+          "ValueTTCInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The TTC value in the currency of the user."
+          },
+          "ValueToReimburse": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the expense."
+          },
+          "ValueToReimburseInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the company."
+          },
+          "ValueToReimburseInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the user."
+          },
+          "ValueHT": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value in the currency of the expense."
+          },
+          "ValueHTInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value in the currency of the company."
+          },
+          "ValueHTInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value in the currency of the user."
+          },
+          "ValueHTToReimburse": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value to be reimbursed in the currency of the expense."
+          },
+          "ValueHTToReimburseInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value to be reimbursed in the currency of the company."
+          },
+          "ValueHTToReimburseInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The HT value to be reimbursed in the currency of the user."
+          },
+          "TotalVATClaimValue": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total recoverable VAT in the currency of the expense."
+          },
+          "TotalVATClaimValueInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total recoverable VAT in the currency of the company."
+          },
+          "TotalVATClaimValueInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total recoverable VAT in the currency of the user."
+          },
+          "TotalVATValue": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total recoverable VAT in the currency of the expense."
+          },
+          "TotalVATValueInCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total recoverable VAT in the currency of the company."
+          },
+          "TotalVATValueInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The total VAT in the currency of the user."
+          },
+          "VAT1Rate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The rate of VAT1."
+          },
+          "VAT1Value": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value of VAT1."
+          },
+          "VAT1Base": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The base of VAT1."
+          },
+          "VAT1Code": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The code of VAT1."
+          },
+          "ValueToReimburseForVAT1": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the expense for VAT1."
+          },
+          "ValueToReimburseInCurrencyForVAT1": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the company for VAT1."
+          },
+          "ValueToReimburseInLocalCurrencyForVAT1": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the user for VAT1."
+          },
+          "VAT2Rate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The rate of VAT2."
+          },
+          "VAT2Value": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value of VAT2."
+          },
+          "VAT2Base": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The base of VAT2."
+          },
+          "VAT2Code": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The code of VAT2."
+          },
+          "ValueToReimburseForVAT2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the expense for VAT2."
+          },
+          "ValueToReimburseInCurrencyForVAT2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the company for VAT2."
+          },
+          "ValueToReimburseInLocalCurrencyForVAT2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the user for VAT2."
+          },
+          "VAT3Rate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The rate of VAT3."
+          },
+          "VAT3Value": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value of VAT3."
+          },
+          "VAT3Base": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The base of VAT3."
+          },
+          "VAT3Code": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The code of VAT3."
+          },
+          "ValueToReimburseForVAT3": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the expense for VAT3."
+          },
+          "ValueToReimburseInCurrencyForVAT3": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the company for VAT3."
+          },
+          "ValueToReimburseInLocalCurrencyForVAT3": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the user for VAT3."
+          },
+          "VAT4Rate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The rate of VAT4."
+          },
+          "VAT4Value": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value of VAT4."
+          },
+          "VAT4Base": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The base of VAT4."
+          },
+          "VAT4Code": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The code of VAT4."
+          },
+          "ValueToReimburseForVAT4": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the expense for VAT4."
+          },
+          "ValueToReimburseInCurrencyForVAT4": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the company for VAT4."
+          },
+          "ValueToReimburseInLocalCurrencyForVAT4": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The value to be reimbursed in the currency of the user for VAT4."
+          }
+        },
+        "format": "AccountingDataResponse"
+      },
+      "ExpenseResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the expense.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the expense."
+          },
+          "Value": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value of the expense.",
+            "format": "decimal"
+          },
+          "ValueToReimburse": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value to reimbures of the expense.",
+            "format": "decimal"
+          },
+          "ReimbursementRate": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Reimbursement rate of the expense.",
+            "format": "decimal"
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the expense."
+          },
+          "UseType": {
+            "uniqueItems": false,
+            "enum": [
+              1,
+              2,
+              4,
+              8,
+              16
+            ],
+            "type": "integer",
+            "description": "Type of the expense : \r\n\r\n    Invoice = 1 \r\n    Advance = 2 \r\n    Purchase = 4 \r\n    Subscription = 8 \r\n    MissionOrder = 16 \r\n",
+            "format": "enum"
+          },
+          "DateCreation": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the expense. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "DateInvoice": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Date of the expense. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "DateUtcOffset": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Date offset of the expense.",
+            "format": "double"
+          },
+          "HasPhoto": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the expense has photo."
+          },
+          "Currency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency of the expense."
+          },
+          "ValueInCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value in currency of the owner of the expense.",
+            "format": "decimal"
+          },
+          "ValueInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value in local currency of the owner of the expense.",
+            "format": "decimal"
+          },
+          "MerchantInvoiceId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant Invoice external identifier"
+          },
+          "MerchantCountry": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant country of the expense."
+          },
+          "MerchantCity": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant city of the expense."
+          },
+          "MerchantZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant zip code of the expense."
+          },
+          "MerchantAddress": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant address of the expense."
+          },
+          "MerchantName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant name of the expense"
+          },
+          "MerchantVatNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Merchant VAT number of the expense."
+          },
+          "Units": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Number of units of the expense.",
+            "format": "decimal"
+          },
+          "State": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              99
+            ],
+            "type": "integer",
+            "description": "State of the expense : \r\n\r\n    Uploading = 0 \r\n    Uploaded = 1 \r\n    Ready = 2 \r\n    Validated = 3 \r\n    ValidatedByAccountant = 4 \r\n    Rejected = 99 \r\n",
+            "format": "enum"
+          },
+          "VAT": {
+            "$ref": "#/components/schemas/VATResponse"
+          },
+          "VATAvgRate": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "VAT rate of the expense.",
+            "format": "decimal"
+          },
+          "AttachedFilesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Number of attached files to the expense.",
+            "format": "int32"
+          },
+          "ToReimburse": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the expense is to reimburse."
+          },
+          "IsBillable": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the expense is billable to client."
+          },
+          "CustomFields": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairGuidString"
+            },
+            "description": "Custom fields of the expense."
+          },
+          "FileType": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "File type of the expense."
+          },
+          "DefaultRate": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Default rate of the expense.",
+            "format": "decimal"
+          },
+          "CreditSource_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique credit source identifier of the expense.",
+            "format": "guid"
+          },
+          "User_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique user identifier of the expense.",
+            "format": "guid"
+          },
+          "Project": {
+            "$ref": "#/components/schemas/ProjectResponse"
+          },
+          "Report": {
+            "$ref": "#/components/schemas/ReportResponse"
+          },
+          "PaymentInstrument": {
+            "$ref": "#/components/schemas/PaymentInstrumentResponse"
+          },
+          "Vehicle": {
+            "$ref": "#/components/schemas/VehicleResponse"
+          },
+          "TransactionsSumValue": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Transactions sum value of the expense.",
+            "format": "decimal"
+          },
+          "TransactionsSumInCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Transactions sum value in currency of the expense.",
+            "format": "decimal"
+          },
+          "TransactionsSumInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Transactions sum value in Local currency of the expense.",
+            "format": "decimal"
+          },
+          "PerdiemCountry": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Country of the perdiem."
+          },
+          "PerdiemCalculationPeriodType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1
+            ],
+            "type": "integer",
+            "description": "Type of the perdiem calculation period : \r\n\r\n    CalendarDay = 0 \r\n    TwentyFourHours = 1 \r\n",
+            "format": "enum"
+          },
+          "PerDiemType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "type": "integer",
+            "description": "Type of the perdiem : \r\n\r\n    Time = 0 \r\n    Distance = 1 \r\n    IEG = 2 \r\n",
+            "format": "enum"
+          },
+          "Category": {
+            "$ref": "#/components/schemas/CategoryResponse"
+          },
+          "AccountingData": {
+            "$ref": "#/components/schemas/AccountingDataResponse"
+          },
+          "BrokenRules": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrokenRuleResponse"
+            },
+            "description": "List of broken rules of the expense."
+          },
+          "IsMileage": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the expense is Mileage."
+          },
+          "CategoryExtraDataStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra date for the category of the expense."
+          },
+          "Guests": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestResponse"
+            },
+            "description": "List of guests of the expense."
+          },
+          "SubStatus": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              2,
+              4,
+              8,
+              16,
+              32,
+              64,
+              128,
+              256,
+              512,
+              1024
+            ],
+            "type": "integer",
+            "description": "Enum flag attribute which is the substatus of the expense : \r\n\r\n    All = 0 \r\n    Exported = 2 \r\n    Payed = 4 \r\n    ExportedToIbiza = 8 \r\n    RecordedByInexweb = 16 \r\n    ExportedToQBO = 32 \r\n    ExportedToInexweb = 64 \r\n    RejectedByInexweb = 128 \r\n    ExportedToVSA = 256 \r\n    ExportedBalance = 512 \r\n    ExportedToSiebel = 1024 \r\n",
+            "format": "enum"
+          },
+          "OwnerPayId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Serial of the owner of the expense."
+          },
+          "OwnerPayId2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "First analytical axis of the owner of the expense."
+          },
+          "OwnerPayId3": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Second analytical axis of the owner of the expense."
+          },
+          "OwnerPayId4": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Third analytical axis of the owner of the expense."
+          },
+          "OwnerPayId5": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fourth analytical axis of the owner of the expense."
+          },
+          "OwnerPayId6": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fifth analytical axis of the owner of the expense."
+          },
+          "ExpenseTags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of tag of the expense."
+          }
+        },
+        "format": "ExpenseResponse"
+      },
+      "BaseResultCompanyResponse": {
+        "type": "object",
+        "properties": {
+          "ResultItem": {
+            "$ref": "#/components/schemas/CompanyResponse"
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008
+            ],
+            "type": "integer",
+            "description": "Expensya response internal codes: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1, \r\n    InvalidData = 7, \r\n    NotAdmin = 20, \r\n    NotAllowed = 30, \r\n    Failed = 70, \r\n    NothingToDo = 91, \r\n    AlreadyExists = 1006...",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "BaseResultCompanyResponse"
+      },
+      "VATResponse": {
+        "type": "object",
+        "properties": {
+          "Rates": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "description": "VAT rates  of the expense."
+          },
+          "Values": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "description": "AT values  of the expense."
+          },
+          "VatFreeAmount": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Free amount of the VAT.",
+            "format": "decimal"
+          },
+          "Tips": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Tips of the expense ",
+            "format": "decimal"
+          }
+        },
+        "format": "VATResponse"
+      },
+      "VehicleResponse": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the vehicle."
+          },
+          "DateCreation": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the vehicle. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "CreationYearKm": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Distance already filed outside Expensya in the creation year in Km.",
+            "format": "decimal"
+          },
+          "CreationYearMiles": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Distance already filed outside Expensya in the creation year in mile.",
+            "format": "decimal"
+          },
+          "LastYearDistanceKm": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Distance already filed outside Expensya in the last year in Km.",
+            "format": "decimal"
+          },
+          "LastUpdatedYear": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Last updated year of the vehicle.",
+            "format": "int32"
+          },
+          "VehicleType": {
+            "uniqueItems": false,
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "description": "Type of the vehicle : \r\n\r\n    Car = 1 \r\n    Moped = 2 \r\n    Scooter = 3 \r\n    Motocyle = 4 \r\n    Bicycle = 5 \r\n",
+            "format": "enum"
+          },
+          "InternalVehicleType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "type": "integer",
+            "description": "Internal type of the vehicle : \r\n\r\n    None = 0 \r\n    Personal = 1 \r\n    Professional = 2 \r\n",
+            "format": "enum"
+          },
+          "CurrentValidator_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the current validator of the vehicle.",
+            "format": "guid"
+          },
+          "LastValidatorReminderDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last validator reminder date of the vehicle. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "Comments": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Comments of the vehicle."
+          },
+          "State": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              -1
+            ],
+            "type": "integer",
+            "description": "State of the vehicle : \r\n\r\n    Disabled = 0 \r\n    Active = 1 \r\n    Submitted = 2 \r\n    Approved = 3 \r\n    Rejected = 4 \r\n    All = -1 \r\n",
+            "format": "enum"
+          },
+          "ExternalId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "External identifier of the vehicle."
+          },
+          "AdministrativePower": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Administrative power of the vehicle.",
+            "format": "int32"
+          },
+          "IsActive": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Shows if the vehicle is active or not."
+          },
+          "AttachedFilesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Count of the attached files to the vehicle.",
+            "format": "int32"
+          },
+          "CreationType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1
+            ],
+            "type": "integer",
+            "description": "Type of the creation of the vehicle : \r\n\r\n    UserCreated = 0 \r\n    DefaultVehicle = 1 \r\n",
+            "format": "enum"
+          },
+          "StartDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Start date of the vehicle. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "CEnd date of the vehicle. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          }
+        },
+        "format": "VehicleResponse"
+      },
+      "KeyValuePairGuidString": {
+        "type": "object",
+        "properties": {
+          "Key": {
+            "uniqueItems": false,
+            "type": "string",
+            "format": "guid"
+          },
+          "Value": {
+            "uniqueItems": false,
+            "type": "string"
+          }
+        },
+        "format": "KeyValuePairGuidString"
+      },
+      "PaymentInstrumentResponse": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the payment instrument."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the payment instrument."
+          },
+          "IsActive": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the payment instrument is active or not."
+          },
+          "InstrumentType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              99
+            ],
+            "type": "integer",
+            "description": "Type of the payment instrument : \r\n\r\n    Cash = 0 \r\n    Card = 1 \r\n    Check = 2 \r\n    EWallet = 3 \r\n    Coupon = 4 \r\n    Wire = 5 \r\n    Bank = 6 \r\n    Other = 99 \r\n",
+            "format": "enum"
+          },
+          "AccountType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "type": "integer",
+            "description": "Type of the payment instrument account : \r\n\r\n    None = 0 \r\n    Professional = 1 \r\n    Personal = 2 \r\n",
+            "format": "enum"
+          },
+          "LastDigits": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last digits of the payment instrument."
+          },
+          "CardKey": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Card key of the payment instrument."
+          },
+          "JournalCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Journal code of the payment instrument."
+          },
+          "Auxiliary": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Auxiliary account of the payment instrument."
+          },
+          "AccountNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Account number of the payment instrument."
+          }
+        },
+        "format": "PaymentInstrumentResponse"
+      },
+      "ProjectResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the project.",
+            "format": "guid"
+          },
+          "HasBillable": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if expenses assigned to this project can be billable to client or not."
+          },
+          "StartDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Start date of the project. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "End date of the project. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "IsActive": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the project is Active."
+          },
+          "MileageConfigurationsStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mileage configuration of the project."
+          },
+          "Address": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Address of the project."
+          },
+          "ZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Zip code of the project."
+          },
+          "City": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "City of the project."
+          },
+          "ExternalId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "External identifier of the project."
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the Project."
+          },
+          "ProjectRef": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Reference of the project"
+          },
+          "Validator_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique validator identifier of the project.",
+            "format": "guid"
+          },
+          "Reviewer_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique  reviwer identifier of the project.",
+            "format": "guid"
+          },
+          "ClientName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Client name of the project."
+          },
+          "ForAllCompany": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Project is shared with all users."
+          },
+          "IsBillableDefaultValue": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the expenses assigned to the project are billable by default."
+          },
+          "PayId2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "First analytical axis relevant to the project."
+          },
+          "Currency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency code of the project. Respects the standard ISO 4217."
+          },
+          "ExtraData": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Additional informations about the project."
+          },
+          "ProjectUseType": {
+            "uniqueItems": false,
+            "enum": [
+              1,
+              2,
+              4,
+              8,
+              16,
+              32,
+              64,
+              128
+            ],
+            "type": "integer",
+            "description": "Enum flag attribute that shows to which entity the project will be applied to : \r\n\r\n    Invoice = 1 \r\n    Purchase = 2 \r\n    Subscription = 4 \r\n    Advance = 8 \r\n    MissionOrder = 16 \r\n    MileageOnly = 32 \r\n    InvoiceOnly = 64 \r\n    VirtualCard = 128 \r\n",
+            "format": "enum"
+          },
+          "CustomField_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique custom field identifier related to the project.",
+            "format": "guid"
+          },
+          "CustomFieldParent_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique parent custom Field identifier related to the project.",
+            "format": "guid"
+          },
+          "CategoriesIdsStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Restrict expenses related to the project to certain categories. The identifiers of the specified categories must be seperated by ','."
+          },
+          "ValidatorFullName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Validator full name of the project."
+          },
+          "ValidatorMail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Validator mail of the project."
+          },
+          "ReviewerFullName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Reviwer full name of the project."
+          },
+          "ReviewerMail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Reviewer mail of the project."
+          },
+          "IsReadOnly": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Shows if the project is just read only."
+          },
+          "ProjectTags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of tags of the project."
+          },
+          "ProjectValidators": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidatorInput"
+            },
+            "description": "List of project's validators."
+          }
+        },
+        "format": "ProjectResponse"
+      },
+      "ValidatorInput": {
+        "required": [
+          "Mail"
+        ],
+        "type": "object",
+        "properties": {
+          "Mail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of the validator"
+          },
+          "MinimumAmount": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "If the ammount exceed the ammount the expense should be sent to the validator",
+            "format": "decimal"
+          }
+        },
+        "format": "ValidatorInput"
+      },
+      "ReportResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique report identifier.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the report."
+          },
+          "DateCreation": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the report. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "Budget": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Budget of the report.",
+            "format": "decimal"
+          },
+          "State": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              50
+            ],
+            "type": "integer",
+            "description": "State of the report : Active, rejected, valideted...\r\n\r\n    Active = 0 \r\n    Submitted = 2 \r\n    Rejected = 3 \r\n    Validated = 4 \r\n    Closed = 5 \r\n    ValidatedAndExported = 6 \r\n    Reimbursed = 7 \r\n    PreSubmitted = 8 \r\n    Canceled = 10 \r\n    InValidation = 50 \r\n",
+            "format": "enum"
+          },
+          "User_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of report's owner.",
+            "format": "guid"
+          },
+          "UserLastName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last name of report's owner."
+          },
+          "UserFirstName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "First name of report's owner."
+          },
+          "UserMail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of report's owner."
+          },
+          "Manager_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique manager identifier of the report's user.",
+            "format": "guid"
+          },
+          "Accountant_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique accountant identifier of the report's user.",
+            "format": "guid"
+          },
+          "Reviewer_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique reviwer identifier of the report's user",
+            "format": "guid"
+          },
+          "InvoicesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Invoices count related to the report.",
+            "format": "int32"
+          },
+          "Value": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value of the report.",
+            "format": "decimal"
+          },
+          "ValueToReimburse": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value to reimburse of the report.",
+            "format": "decimal"
+          },
+          "ValueInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value in user local currency of the report.",
+            "format": "decimal"
+          },
+          "ValueToReimburseInLocalCurrency": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Value to reimburse in user local currency of the report.",
+            "format": "decimal"
+          },
+          "StartDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Start date of the report. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "End date of the report. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "UserCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "User currency of the report."
+          },
+          "UserLocalCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "User local currency of the report."
+          },
+          "IdShort": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Auto-generated identifier of the report."
+          },
+          "CurrentValidator_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique current validator identifier of the report.",
+            "format": "guid"
+          },
+          "InvoiceAttachedFilesCount": {
+            "uniqueItems": false,
+            "type": "integer",
+            "description": "Expense attached file count relevant to the report.",
+            "format": "int32"
+          },
+          "ReportTags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of report's tags."
+          }
+        },
+        "format": "ReportResponse"
+      },
+      "TagResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the tag.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the tag."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the tag."
+          },
+          "CreationDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the tag. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "IsActive": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Shows if the tag is active or not."
+          },
+          "TagType": {
+            "uniqueItems": false,
+            "enum": [
+              1,
+              2
+            ],
+            "type": "integer",
+            "description": "Enum attribute which is the type of the tag : \r\n\r\n    Tag = 1 \r\n    SimpleTag = 2 \r\n",
+            "format": "enum"
+          },
+          "DefinitionStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Definition of the tag."
+          },
+          "UseType": {
+            "uniqueItems": false,
+            "enum": [
+              2,
+              4,
+              8,
+              16,
+              32,
+              64,
+              128
+            ],
+            "type": "integer",
+            "description": "Enum attribute which is the use type of the tag : \r\n\r\n    Invoice = 2 \r\n    Mileage = 4 \r\n    Purchase = 8 \r\n    Subscription = 16 \r\n    Mission = 32 \r\n    User = 64 \r\n    Balance = 128 \r\n",
+            "format": "enum"
+          }
+        },
+        "format": "TagResponse"
+      },
+      "BrokenRuleResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the broken rule.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the broken rule."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the broken rule."
+          },
+          "DescriptionForCredit": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description for credit of the broken rule."
+          },
+          "Budget": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "Budget of the broken rule.",
+            "format": "decimal"
+          },
+          "RuleType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "type": "integer",
+            "description": "Type of the broken rule : \r\n\r\n    Mandatory = 0 \r\n    Warning = 1 \r\n    ReimbursableByCeiling = 2 \r\n    ReimbursableByFlatRate = 3 \r\n",
+            "format": "enum"
+          },
+          "Currency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency of the broken rule."
+          },
+          "AllowExceptions": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if exceptions are allowed in broken rule."
+          },
+          "RuleElementType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1
+            ],
+            "type": "integer",
+            "description": "Type of the rule element : \r\n\r\n    Invoices = 0 \r\n    VirtualCards = 1 \r\n",
+            "format": "enum"
+          },
+          "IntervalType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "type": "integer",
+            "description": "Type of the interval of the broken rule : \r\n\r\n    Day = 0 \r\n    WeekDays = 1 \r\n    Month = 2 \r\n    Year = 3 \r\n    Invoice = 4 \r\n",
+            "format": "enum"
+          },
+          "Language": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Language of the broken rule."
+          },
+          "RuleCurrenciesWithBudget": {
+            "$ref": "#/components/schemas/TupleStringDecimal"
+          },
+          "ForAllCompany": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the broken rule is for all company or not."
+          }
+        },
+        "format": "BrokenRuleResponse"
+      },
+      "CategoryResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the category.",
+            "format": "guid"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the category."
+          },
+          "EntityName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Entity Name of the category."
+          },
+          "Parent": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Parent of the category (category can be linked to another category)."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the category."
+          },
+          "PrimitiveCategories": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Sub categories."
+          },
+          "ParentCategory_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique parent identifier of the category (category can be linked to another category).",
+            "format": "guid"
+          },
+          "IsActive": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the category is active or not."
+          },
+          "IsActiveAsDefault": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Default category when user add new expense."
+          },
+          "CostAccount": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Cost account of the category."
+          },
+          "VatAccount": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT account of the category."
+          },
+          "ExtraData": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Additional informations about the category."
+          },
+          "CreationDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the category. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "VatClaimRate": {
+            "uniqueItems": false,
+            "type": "number",
+            "description": "VAT claim rate of the category.",
+            "format": "decimal"
+          },
+          "VatClaimRates": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT claim rate of the category by year. the format of this string is as follow :  {\"2018\":vatclaimrate1,\"2019\":vatclaimrate1,\"2020\":vatclaimrate1} , with this format we can specify the VAT claim rate of the last 3 years, VatClaimRate is a value between 0 and 100"
+          },
+          "CategoryUseType": {
+            "uniqueItems": false,
+            "enum": [
+              1,
+              2,
+              4
+            ],
+            "type": "integer",
+            "description": "Enum flag attribute which is the type of the category : \r\n\r\n    Invoices = 1 \r\n    Purchases = 2 \r\n    Subscriptions = 4 \r\n",
+            "format": "enum"
+          },
+          "ExternalId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "External identifier of the category."
+          },
+          "IsReadOnly": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the category is just read only."
+          },
+          "CategoryTags": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponse"
+            },
+            "description": "List of tags of the category."
+          }
+        },
+        "format": "CategoryResponse"
+      },
+      "GuestResponse": {
+        "type": "object",
+        "properties": {
+          "Mail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of the guest."
+          },
+          "FullName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Full name of the guest."
+          },
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the guest.",
+            "format": "guid"
+          },
+          "IsCoworker": {
+            "uniqueItems": false,
+            "type": "boolean",
+            "description": "Specifies if the guest is coworker or not."
+          }
+        },
+        "format": "GuestResponse"
+      },
+      "AccountingModelResponse": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the accounting model.",
+            "format": "guid"
+          },
+          "CreationDate": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Creation date of the accounting model. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the accounting model."
+          },
+          "Description": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Description of the accounting model."
+          }
+        },
+        "format": "AccountingModelResponse"
+      },
+      "TupleStringDecimal": {
+        "type": "object",
+        "properties": {
+          "Item1": {
+            "uniqueItems": false,
+            "type": "string"
+          },
+          "Item2": {
+            "uniqueItems": false,
+            "type": "number",
+            "format": "decimal"
+          }
+        },
+        "format": "TupleStringDecimal"
+      },
+      "AddCompanyInput": {
+        "required": [
+          "Name",
+          "CompanyType",
+          "Mail",
+          "CountryCode",
+          "ClientCode",
+          "Language",
+          "Currency",
+          "AdminMail",
+          "AdminCountryCode",
+          "AdminCurrency",
+          "CompanyOffer"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the company."
+          },
+          "CompanyType": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              9
+            ],
+            "type": "integer",
+            "description": "Enum attribute which is the type of the company : \r\n\r\n    OneManCompany = 0 \r\n    Entreprise = 1 \r\n    Corporate = 2 \r\n    Individual = 9 \r\n",
+            "format": "enum"
+          },
+          "Address": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Address of the company."
+          },
+          "City": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "City of the company."
+          },
+          "ZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Zip code of the company."
+          },
+          "AccountingYearClosure": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Accounting year closure of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "Mail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of the company."
+          },
+          "PhoneNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Phone number of the company."
+          },
+          "FaxNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fax number of the company."
+          },
+          "CountryCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Country code of the company."
+          },
+          "VatCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT code of the company."
+          },
+          "RcsCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Rcs code of the company."
+          },
+          "ClientCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Client code of the company."
+          },
+          "AccountsSettingsStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Accounting settings of the company whish are : Refundable Expenses Account, Non-refundable Expenses Account, Accounting Journal Codes for Refundable Expenses and Accounting Journal Codes for Non-refundable Expenses and this is an example of accounting settings : {'CompteRemboursables':'40100','CodeJournalNDF':'NDF','CompteNonRemboursables':'512000','CodeJournalAC':'AC'}."
+          },
+          "Language": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Language of the company."
+          },
+          "Currency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency of the company."
+          },
+          "AccountingModelId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the accounting model.",
+            "format": "guid"
+          },
+          "Siren": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Siren code of the company."
+          },
+          "AdminPayId": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Serail of the company administration."
+          },
+          "AdminPayId2": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "First analytical axis of the company administrator."
+          },
+          "AdminPayId3": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Second analytical axis of the company administrator."
+          },
+          "AdminLastName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Last name of the company administrator."
+          },
+          "AdminFirstName": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "First name of the company administrator."
+          },
+          "AdminAddress": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Address of the company administrator."
+          },
+          "AdminMail": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail of the company administrator that should be equal to the company mail."
+          },
+          "AdminMailAlias": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Mail alias of the company administrator."
+          },
+          "AdminPhoneNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Phone number of the company administrator."
+          },
+          "AdminFaxNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fax number of the company administrator."
+          },
+          "AdminCountryCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Country code of the company that should be equal to the company country code."
+          },
+          "AdminCurrency": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Currency of the company administrator that should be equal to the company currency."
+          },
+          "AdminZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Zip code of the company administrator."
+          },
+          "TagsToAssign": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of tags'names that will be assigned to the company."
+          },
+          "CompanyOffer": {
+            "$ref": "#/components/schemas/CompanyOfferInput"
+          }
+        },
+        "format": "AddCompanyInput",
+        "example": "{\r\n  \"Name\": \"New SARL\",\r\n  \"Description\": \"New SARL description\",\r\n  \"CompanyType\": 1,\r\n  \"Address\": \"France\",\r\n  \"City\": \"Paris\",\r\n  \"ZipCode\": \"75001\",\r\n  \"AccountingYearClosure\": null,\r\n  \"Mail\": \"new.sarl@yopmail.com\",\r\n  \"PhoneNumber\": \"750225474\",\r\n  \"FaxNumber\": null,\r\n  \"CountryCode\": \"FR\",\r\n  \"VatCode\": null,\r\n  \"RcsCode\": null,\r\n  \"ClientCode\": \"25021Rdfdsv\",\r\n  \"AccountsSettingsStr\": \"{\\\"CompteNonRemboursables\\\":\\\"652000\\\",\\\"CompteRemboursables\\\":\\\"425000\\\"}\",\r\n  \"AdminPayId\": \"payId1\",\r\n  \"AdminPayId2\": null,\r\n  \"AdminPayId3\": null,\r\n  \"AdminLastName\": \"Philippe\",\r\n  \"AdminFirstName\": \"Rossi\",\r\n  \"AdminAddress\": null,\r\n  \"AdminMail\": \"new.sarl@yopmail.com\",\r\n  \"AdminMailAlias\": null,\r\n  \"AdminPhoneNumber\": \"750225474\",\r\n  \"AdminFaxNumber\": \"750225474\",\r\n  \"AdminCountryCode\": \"FR\",\r\n  \"Language\": \"FR\",\r\n  \"Currency\": \"EUR\",\r\n  \"AdminCurrency\": \"EUR\",\r\n  \"AdminZipCode\": \"75001\",\r\n  \"AccountingModelId\": null,\r\n  \"Siren\": \"SirenCode\",\r\n  \"TagsToAssign\": [\r\n    \"Paris\",\r\n    \"Lyon\"\r\n  ],\r\n  \"CompanyOffer\": {\r\n    \"IsTakenInChargeByPartner\": true,\r\n    \"PrepaidUsers\": 10,\r\n    \"OfferType\": 11\r\n  }\r\n}"
+      },
+      "UpdateCompanyInput": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Name of the company."
+          },
+          "Address": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Address of the company."
+          },
+          "City": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "City of the company."
+          },
+          "ZipCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Zip code of the company."
+          },
+          "AccountingYearClosure": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Accounting year closure of the company. Respects the standard ISO 8601 date format. e.g: 2018-06-04T08:30:15.023Z",
+            "format": "date-time"
+          },
+          "PhoneNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Phone number of the company."
+          },
+          "FaxNumber": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Fax number of the company."
+          },
+          "VatCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "VAT code of the company."
+          },
+          "RcsCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Rcs code of the company."
+          },
+          "ClientCode": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Client code of the company."
+          },
+          "AccountingModel_Id": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Unique identifier of the accounting model.",
+            "format": "guid"
+          },
+          "AccountsSettingsStr": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Accounting settings of the company whish are : Refundable Expenses Account, Non-refundable Expenses Account, Accounting Journal Codes for Refundable Expenses and Accounting Journal Codes for Non-refundable Expenses and this is an example of accounting settings : {'CompteRemboursables':'40100','CodeJournalNDF':'NDF','CompteNonRemboursables':'512000','CodeJournalAC':'AC'}."
+          },
+          "TagsToAssign": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of tags'names that will be assigned to the company."
+          },
+          "TagsToUnassign": {
+            "uniqueItems": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of tags'names that will be unassigned from the company."
+          },
+          "CompanyOffer": {
+            "$ref": "#/components/schemas/CompanyOfferInput"
+          }
+        },
+        "format": "UpdateCompanyInput",
+        "example": "{\r\n  \"Name\": \"New SARL\",\r\n  \"Address\": \"France\",\r\n  \"City\": \"Paris\",\r\n  \"ZipCode\": \"75001\",\r\n  \"AccountingYearClosure\": null,\r\n  \"PhoneNumber\": \"750225474\",\r\n  \"FaxNumber\": null,\r\n  \"VatCode\": null,\r\n  \"RcsCode\": null,\r\n  \"ClientCode\": \"25021Rdf\",\r\n  \"AccountsSettingsStr\": \"{\\\"CompteNonRemboursables\\\":\\\"652000\\\",\\\"CompteRemboursables\\\":\\\"425000\\\"}\",\r\n  \"AccountingModel_Id\": null,\r\n  \"TagsToAssign\": [\r\n    \"Paris\",\r\n    \"Lyon\"\r\n  ],\r\n  \"TagsToUnassign\": [\r\n    \"Toulouse\"\r\n  ],\r\n  \"CompanyOffer\": {\r\n    \"IsTakenInChargeByPartner\": true,\r\n    \"PrepaidUsers\": 15,\r\n    \"OfferType\": 0\r\n  }\r\n}"
+      },
+      "InitSSOResponse": {
+        "type": "object",
+        "properties": {
+          "RedirectionUri": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "The redirection URI that will call an API that will redirect the user to his account."
+          },
+          "ResultCode": {
+            "uniqueItems": false,
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              20,
+              30,
+              50,
+              60,
+              70,
+              71,
+              80,
+              90,
+              91,
+              92,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              303,
+              400,
+              401,
+              404,
+              901,
+              902,
+              903,
+              910,
+              913,
+              1001,
+              1004,
+              1005,
+              1006,
+              2000,
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2007,
+              2008
+            ],
+            "type": "integer",
+            "description": "Expensya response internal codes: \r\n\r\n    Success = 0 \r\n    PartialSuccess = 1, \r\n    InvalidData = 7, \r\n    NotAdmin = 20, \r\n    NotAllowed = 30, \r\n    Failed = 70, \r\n    NothingToDo = 91, \r\n    AlreadyExists = 1006...",
+            "format": "enum"
+          },
+          "Message": {
+            "uniqueItems": false,
+            "type": "string",
+            "description": "Extra details sent by the server."
+          }
+        },
+        "format": "InitSSOResponse"
+      }
+    },
+    "securitySchemes": {
+      "apiKeyHeader": {
+        "type": "apiKey",
+        "name": "Ocp-Apim-Subscription-Key",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyHeader": []
+    }
+  ]
+}

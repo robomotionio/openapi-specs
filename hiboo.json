@@ -1,0 +1,2818 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hiboo API",
+    "description": "The all-in-one API for your equipment data, operations, and maintenance\n\n# Introduction\nThe Hiboo API is built on HTTPS.\nOur API is RESTful. It has predictable resource URLs.\nIt returns HTTP response codes to indicate errors.\nIt also accepts and returns JSON in the HTTP body.\nYou can use your favorite HTTP/REST library for your programming language to use Hiboo's REST API.\n\n# Authentication\nTo use the Hiboo REST API you must first have an existing account on Hiboo.\nOnce you have an account, you can request for API access to our Hiboo team.\nAfter getting the API permission you are free to use the Hiboo REST API for your needs.\n\nOur authentication system use `x-access-token` for validating the request. You can get the token after the sucessful login.\n\nNever share your secret keys. Keep them guarded and secure.\n\n# Usage of token\nFor token usage use `x-access-token` header parameter with the token as a value field.\n",
+    "contact": {
+      "name": "Hiboo Support",
+      "email": "support@hiboo.io",
+      "url": "https://www.hiboo.io/"
+    },
+    "version": "2.0.0",
+    "x-logo": {
+      "url": "https://app.hiboo.io/images/logo.png",
+      "backgroundColor": "#FAFAFA",
+      "altText": "Hiboo logo"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.hiboo.io",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Login",
+      "description": "Login to Hiboo API"
+    },
+    {
+      "name": "Fleet",
+      "description": "Hiboo Fleet Operations"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "General",
+      "tags": [
+        "Login"
+      ]
+    },
+    {
+      "name": "Fleet",
+      "tags": [
+        "Fleet"
+      ]
+    }
+  ],
+  "components": {
+    "schemas": {
+      "asset": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Obtained with a successful login"
+          },
+          "assetId": {
+            "type": "number"
+          },
+          "serialNumber": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "description": "The category must exist beforehand and will not be created if it does not exist"
+          },
+          "model": {
+            "type": "string"
+          },
+          "entreprise": {
+            "type": "string"
+          },
+          "year": {
+            "oneOf": [
+              {
+                "type": "number"
+              }
+            ]
+          }
+        }
+      },
+      "bodyAssetWorkspaceNames": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Obtained with a successful login"
+          },
+          "assetId": {
+            "type": "number"
+          },
+          "serialNumber": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          },
+          "workspaceNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "bodyAssetCustomFields": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Obtained with a successful login"
+          },
+          "assetId": {
+            "type": "number"
+          },
+          "serialNumber": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label",
+                "value"
+              ]
+            }
+          }
+        }
+      },
+      "SnapshotOfSpecificEquipment": {
+        "description": "Snapshot of the specified device for all kinds",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "CAT - 5"
+              },
+              "make": {
+                "type": "string",
+                "example": "Caterpillar"
+              },
+              "model": {
+                "type": "string",
+                "example": "816K"
+              },
+              "serialNumber": {
+                "type": "string",
+                "example": "XICWITIDLXSX"
+              },
+              "lastPosition": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date of the last position",
+                    "example": "2019-11-06T00:00:00Z"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 48.858269
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 2.29447
+                  }
+                }
+              },
+              "cumulativeOperatingHours": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date of the last position",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "usageHours": {
+                    "nullable": true,
+                    "type": "number",
+                    "format": "float",
+                    "example": 54.5
+                  },
+                  "hour": {
+                    "nullable": true,
+                    "type": "number",
+                    "format": "float",
+                    "example": 1.5
+                  }
+                }
+              },
+              "cumulativeUsageHours": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "usageHours": {
+                    "nullable": true,
+                    "type": "number",
+                    "format": "float",
+                    "example": 12.5
+                  },
+                  "hour": {
+                    "nullable": true,
+                    "type": "number",
+                    "format": "float",
+                    "example": 1.5
+                  }
+                }
+              },
+              "cumulativeDistance": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "odometer": {
+                    "nullable": true,
+                    "type": "number",
+                    "format": "float",
+                    "example": 54.2
+                  },
+                  "unit": {
+                    "type": "string",
+                    "example": "km"
+                  }
+                }
+              },
+              "cumulativeFuelUsed": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "fuelUsed": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 9520.5
+                  },
+                  "unit": {
+                    "type": "string",
+                    "example": "L"
+                  }
+                }
+              },
+              "cumulativeLoadCount": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "count": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z"
+                  }
+                }
+              },
+              "cumulativePayloadTotal": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z"
+                  },
+                  "payload": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  }
+                }
+              },
+              "cumulativeActiveRegenerationHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "hours": {
+                    "example": 15,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "cumulativePowerTakeOffHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "hours": {
+                    "example": 12,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "peakDailySpeed": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "speed": {
+                    "example": 100.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  }
+                }
+              },
+              "averageDailyEngineLoadFactor": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 88.24
+                  }
+                }
+              },
+              "DEFRemainingRatio": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 58.24
+                  }
+                }
+              },
+              "cumulativeIdleHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "hours": {
+                    "example": 12,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "fuelRemaining": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 65.5
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SnapshotOfTheEquipmentForSpecificDate": {
+        "description": "Snapshot of the equipment on specific date",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "D8000-1"
+              },
+              "make": {
+                "type": "string",
+                "example": "Caterpillar"
+              },
+              "model": {
+                "type": "string",
+                "example": "8000"
+              },
+              "serialNumber": {
+                "type": "string",
+                "example": "YVR001988"
+              },
+              "cumulativeUsageHours": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "usageHours": {
+                    "example": 1.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "hour": {
+                    "example": 1.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  }
+                }
+              },
+              "cumulativeOperatingHours": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "usageHours": {
+                    "example": 1.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "hour": {
+                    "example": 1.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  }
+                }
+              },
+              "cumulativeDistance": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "odometer": {
+                    "example": 54.2,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "unit": {
+                    "example": "km",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                }
+              },
+              "cumulativeFuelUsed": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "fuelUsed": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 9520.5
+                  },
+                  "unit": {
+                    "example": "L",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                }
+              },
+              "lastPosition": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date of the last position",
+                    "example": "2019-11-06T00:00:00Z"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 48.858269
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 2.29447
+                  }
+                }
+              },
+              "dailyUsages": {
+                "type": "object",
+                "properties": {
+                  "assetId": {
+                    "example": 1226,
+                    "type": "number",
+                    "nullable": true
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date of the daily usage fetched",
+                    "nullable": true,
+                    "example": "2019-11-06T00:00:00Z"
+                  },
+                  "usageHours": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true,
+                    "example": 1.87147262169246
+                  },
+                  "idleHours": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true,
+                    "example": 0.00777944898197162
+                  },
+                  "operatingHours": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true,
+                    "example": 1.86369317271048
+                  },
+                  "fuelUsed": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true,
+                    "example": 25.48
+                  },
+                  "odometer": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true,
+                    "example": 0.914405444876726
+                  }
+                }
+              },
+              "cumulativeLoadCount": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "count": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z"
+                  }
+                }
+              },
+              "cumulativePayloadTotal": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z"
+                  },
+                  "payload": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  }
+                }
+              },
+              "cumulativeActiveRegenerationHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "hours": {
+                    "example": 15,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "cumulativePowerTakeOffHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "hours": {
+                    "example": 12,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "peakDailySpeed": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "example": "2019-11-06T00:00:00Z",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "speed": {
+                    "example": 100.5,
+                    "format": "float",
+                    "nullable": true,
+                    "type": "number"
+                  }
+                }
+              },
+              "averageDailyEngineLoadFactor": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 88.24
+                  }
+                }
+              },
+              "DEFRemainingRatio": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 58.24
+                  }
+                }
+              },
+              "cumulativeIdleHours": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "hours": {
+                    "example": 12,
+                    "format": "int64",
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                }
+              },
+              "fuelRemaining": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2019-11-06T00:00:00Z",
+                    "nullable": true
+                  },
+                  "percent": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 65.5
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Login": {
+        "description": "Token to use in the other API calls",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 42
+                },
+                "email": {
+                  "type": "string",
+                  "example": "api@hiboo.io"
+                },
+                "admin": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "token": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIfkdFVHUREIsInR5cCI6IkpXVCJ9.xxXxXXX6OXXxXxxxx3XxXXXXXx6XxXxXxxxxXX6XXX3Xxx2XxX5OXwiXXxxXxxxXXx0XxX2Xxx4xX.Ylm61gfwIgGx2bQLjtq4UkqF1MOak9y8REsVfn1GtoQ"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Equipments": {
+        "description": "List of equipment",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "D8000-1"
+                          },
+                          "make": {
+                            "type": "string",
+                            "example": "Caterpillar"
+                          },
+                          "model": {
+                            "type": "string",
+                            "example": "8000"
+                          },
+                          "serialNumber": {
+                            "type": "string",
+                            "example": "YVR001988"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401Error": {
+        "description": "Unable to authenticate the token"
+      },
+      "EquipmentsHistory": {
+        "description": "List of equipment with their history",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "since": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The since value actually used",
+                      "example": "2019-11-06T00:00:00Z"
+                    },
+                    "until": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The until value actually used",
+                      "example": "2019-11-20T23:59:59Z"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "D8000-1"
+                          },
+                          "make": {
+                            "type": "string",
+                            "example": "Caterpillar"
+                          },
+                          "model": {
+                            "type": "string",
+                            "example": "8000"
+                          },
+                          "serialNumber": {
+                            "type": "string",
+                            "example": "YVR001988"
+                          },
+                          "positions": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "number",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "rows": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number",
+                                      "format": "float",
+                                      "example": 48.858269
+                                    },
+                                    "longitude": {
+                                      "type": "number",
+                                      "format": "float",
+                                      "example": 2.29447
+                                    },
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "faultCodes": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "number",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "rows": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "severity": {
+                                      "type": "number",
+                                      "format": "int64",
+                                      "nullable": true,
+                                      "enum": [
+                                        -1,
+                                        0,
+                                        1,
+                                        2,
+                                        null
+                                      ],
+                                      "description": "Severity of the error * -1 - Unknown * 0 - Information * 1 - Warning * 2 - Error\n"
+                                    },
+                                    "identifier": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "fuelRemainings": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "number",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "rows": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "percent": {
+                                      "type": "number",
+                                      "format": "float",
+                                      "description": "Perentage of fuel remaining in the asset's tank.\n",
+                                      "example": 88.24
+                                    },
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "engineConditions": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "number",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "rows": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "running": {
+                                      "type": "boolean",
+                                      "description": "True if engine went from running to stopped. False if engine went from stopped to running.\n"
+                                    },
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "dailyUsages": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "number",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "rows": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "date": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "operatingHours": {
+                                      "type": "object",
+                                      "description": "The total number of engine hours on this date",
+                                      "properties": {
+                                        "hour": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 8.3
+                                        }
+                                      }
+                                    },
+                                    "idleHours": {
+                                      "type": "object",
+                                      "description": "The total number of idle engine hours on this date",
+                                      "properties": {
+                                        "hour": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 1.5
+                                        }
+                                      }
+                                    },
+                                    "workingHours": {
+                                      "type": "object",
+                                      "description": "The total number of \"useful\" e.g. non-idle engine hours on this date",
+                                      "properties": {
+                                        "hour": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 6.8
+                                        }
+                                      }
+                                    },
+                                    "fuelUsed": {
+                                      "type": "object",
+                                      "description": "The total of liter of fuel used on this date",
+                                      "properties": {
+                                        "fuelUsed": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 99.7
+                                        },
+                                        "unit": {
+                                          "type": "string",
+                                          "example": "L"
+                                        }
+                                      }
+                                    },
+                                    "dailyDistance": {
+                                      "type": "object",
+                                      "description": "Number of kilometers traveled on this date",
+                                      "properties": {
+                                        "odometer": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 54.2
+                                        },
+                                        "unit": {
+                                          "type": "string",
+                                          "example": "km"
+                                        }
+                                      }
+                                    },
+                                    "cumulativeIdleHours": {
+                                      "description": "The last available cumulativeIdleHours of the day or null if none available",
+                                      "type": "object",
+                                      "properties": {
+                                        "hour": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 1064.6,
+                                          "nullable": true
+                                        }
+                                      }
+                                    },
+                                    "cumulativeOperatingHours": {
+                                      "description": "The last available cumulativeOperatingHours of the day or null if none available",
+                                      "type": "object",
+                                      "properties": {
+                                        "hour": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 1064.6,
+                                          "nullable": true
+                                        }
+                                      }
+                                    },
+                                    "cumulativeFuelUsed": {
+                                      "description": "The last available cumulativeFuelUsed of the day or null if none available",
+                                      "type": "object",
+                                      "properties": {
+                                        "fuelUsed": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 9520.5
+                                        },
+                                        "unit": {
+                                          "type": "string",
+                                          "example": "L"
+                                        }
+                                      }
+                                    },
+                                    "cumulativeDistance": {
+                                      "description": "The last available cumulativeDistance of the day or null if none available",
+                                      "type": "object",
+                                      "properties": {
+                                        "odometer": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 5423.9
+                                        },
+                                        "unit": {
+                                          "type": "string",
+                                          "example": "km"
+                                        }
+                                      }
+                                    },
+                                    "cumulativeLoadCount": {
+                                      "description": "The number of cycles performed by the machine.",
+                                      "type": "object",
+                                      "properties": {
+                                        "count": {
+                                          "nullable": true,
+                                          "type": "integer",
+                                          "format": "int64",
+                                          "example": 13569
+                                        }
+                                      }
+                                    },
+                                    "cumulativePayloadTotal": {
+                                      "description": "Total payload lifted, hauled or processed by the machine.",
+                                      "type": "object",
+                                      "properties": {
+                                        "payload": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 447839.9
+                                        },
+                                        "payloadUnit": {
+                                          "type": "string",
+                                          "example": "tonnes"
+                                        }
+                                      }
+                                    },
+                                    "cumulativeActiveRegenerationHours": {
+                                      "description": "The time when the machine is placed in a non-productive state to complete the regeneration process.",
+                                      "type": "object",
+                                      "properties": {
+                                        "hour": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 10.92
+                                        }
+                                      }
+                                    },
+                                    "cumulativePowerTakeOffHours": {
+                                      "type": "object",
+                                      "description": "The time the power take off was driving an implement such as a mower or sprayer.",
+                                      "properties": {
+                                        "hour": {
+                                          "nullable": true,
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 31.21
+                                        }
+                                      }
+                                    },
+                                    "peakDailySpeed": {
+                                      "description": "Used to monitor excessive machine speed to identify machine misuse or underuse.",
+                                      "type": "object",
+                                      "properties": {
+                                        "speed": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 14.91
+                                        },
+                                        "speedUnit": {
+                                          "type": "string",
+                                          "example": "km/h"
+                                        }
+                                      }
+                                    },
+                                    "averageDailyEngineLoadFactor": {
+                                      "description": "The percentage calculated as the actual fuel consumed over the previous 24 h period divided by the fuel that would have been consumed during that period if the machine had been continually operated at the engine’s rated output.",
+                                      "type": "object",
+                                      "properties": {
+                                        "percent": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "example": 35.9
+                                        }
+                                      }
+                                    },
+                                    "DEFRemainingRatio": {
+                                      "type": "object",
+                                      "properties": {
+                                        "percent": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "description": "The percent of DEF — Diesel exhaust fluid — remaining is used to schedule DEF delivery to the vehicle",
+                                          "example": 62
+                                        },
+                                        "tankCapacity": {
+                                          "type": "number",
+                                          "format": "float",
+                                          "description": "The maximum capacity of the DEF tank.",
+                                          "example": 41
+                                        },
+                                        "tankCapacityUnit": {
+                                          "type": "string",
+                                          "example": "L"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "EquipmentHistory": {
+        "description": "Specific equipment details with its history",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "D8000-1"
+                    },
+                    "make": {
+                      "type": "string",
+                      "example": "Caterpillar"
+                    },
+                    "model": {
+                      "type": "string",
+                      "example": "8000"
+                    },
+                    "serialNumber": {
+                      "type": "string",
+                      "example": "YVR001988"
+                    },
+                    "positions": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "format": "int64",
+                          "example": 1
+                        },
+                        "rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "latitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 48.858269
+                              },
+                              "longitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 2.29447
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "faultCodes": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "format": "int64",
+                          "example": 1
+                        },
+                        "rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "severity": {
+                                "type": "number",
+                                "format": "int64",
+                                "nullable": true,
+                                "enum": [
+                                  -1,
+                                  0,
+                                  1,
+                                  2,
+                                  null
+                                ],
+                                "description": "Severity of the error * -1 - Unknown * 0 - Information * 1 - Warning * 2 - Error\n"
+                              },
+                              "identifier": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "fuelRemainings": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "format": "int64",
+                          "example": 1
+                        },
+                        "rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "percent": {
+                                "type": "number",
+                                "format": "float",
+                                "description": "Perentage of fuel remaining in the asset's tank.\n",
+                                "example": 88.24
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "engineConditions": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "format": "int64",
+                          "example": 1
+                        },
+                        "rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "running": {
+                                "type": "boolean",
+                                "description": "True if engine went from running to stopped. False if engine went from stopped to running.\n"
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "dailyUsages": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "format": "int64",
+                          "example": 1
+                        },
+                        "rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "operatingHours": {
+                                "type": "object",
+                                "description": "The total number of engine hours on this date",
+                                "properties": {
+                                  "hour": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 8.3
+                                  }
+                                }
+                              },
+                              "idleHours": {
+                                "type": "object",
+                                "description": "The total number of idle engine hours on this date",
+                                "properties": {
+                                  "hour": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 1.5
+                                  }
+                                }
+                              },
+                              "workingHours": {
+                                "type": "object",
+                                "description": "The total number of \"useful\" e.g. non-idle engine hours on this date",
+                                "properties": {
+                                  "hour": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 6.8
+                                  }
+                                }
+                              },
+                              "fuelUsed": {
+                                "type": "object",
+                                "description": "The total of liter of fuel used on this date",
+                                "properties": {
+                                  "fuelUsed": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 99.7
+                                  },
+                                  "unit": {
+                                    "type": "string",
+                                    "example": "L"
+                                  }
+                                }
+                              },
+                              "dailyDistance": {
+                                "type": "object",
+                                "description": "Number of kilometers traveled on this date",
+                                "properties": {
+                                  "odometer": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 54.2
+                                  },
+                                  "unit": {
+                                    "type": "string",
+                                    "example": "km"
+                                  }
+                                }
+                              },
+                              "cumulativeIdleHours": {
+                                "description": "The last available cumulativeIdleHours of the day or null if none available",
+                                "type": "object",
+                                "properties": {
+                                  "hour": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 1064.6,
+                                    "nullable": true
+                                  }
+                                }
+                              },
+                              "cumulativeOperatingHours": {
+                                "description": "The last available cumulativeOperatingHours of the day or null if none available",
+                                "type": "object",
+                                "properties": {
+                                  "hour": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 1064.6,
+                                    "nullable": true
+                                  }
+                                }
+                              },
+                              "cumulativeFuelUsed": {
+                                "description": "The last available cumulativeFuelUsed of the day or null if none available",
+                                "type": "object",
+                                "properties": {
+                                  "fuelUsed": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 9520.5
+                                  },
+                                  "unit": {
+                                    "type": "string",
+                                    "example": "L"
+                                  }
+                                }
+                              },
+                              "cumulativeDistance": {
+                                "description": "The last available cumulativeDistance of the day or null if none available",
+                                "type": "object",
+                                "properties": {
+                                  "odometer": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 5423.9
+                                  },
+                                  "unit": {
+                                    "type": "string",
+                                    "example": "km"
+                                  }
+                                }
+                              },
+                              "cumulativeLoadCount": {
+                                "description": "The number of cycles performed by the machine.",
+                                "type": "object",
+                                "properties": {
+                                  "count": {
+                                    "nullable": true,
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "example": 13569
+                                  }
+                                }
+                              },
+                              "cumulativePayloadTotal": {
+                                "description": "Total payload lifted, hauled or processed by the machine.",
+                                "type": "object",
+                                "properties": {
+                                  "payload": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 447839.9
+                                  },
+                                  "payloadUnit": {
+                                    "type": "string",
+                                    "example": "tonnes"
+                                  }
+                                }
+                              },
+                              "cumulativeActiveRegenerationHours": {
+                                "description": "The time when the machine is placed in a non-productive state to complete the regeneration process.",
+                                "type": "object",
+                                "properties": {
+                                  "hour": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 10.92
+                                  }
+                                }
+                              },
+                              "cumulativePowerTakeOffHours": {
+                                "type": "object",
+                                "description": "The time the power take off was driving an implement such as a mower or sprayer.",
+                                "properties": {
+                                  "hour": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 31.21
+                                  }
+                                }
+                              },
+                              "peakDailySpeed": {
+                                "description": "Used to monitor excessive machine speed to identify machine misuse or underuse.",
+                                "type": "object",
+                                "properties": {
+                                  "speed": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 14.91
+                                  },
+                                  "speedUnit": {
+                                    "type": "string",
+                                    "example": "km/h"
+                                  }
+                                }
+                              },
+                              "averageDailyEngineLoadFactor": {
+                                "description": "The percentage calculated as the actual fuel consumed over the previous 24 h period divided by the fuel that would have been consumed during that period if the machine had been continually operated at the engine’s rated output.",
+                                "type": "object",
+                                "properties": {
+                                  "percent": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 35.9
+                                  }
+                                }
+                              },
+                              "DEFRemainingRatio": {
+                                "type": "object",
+                                "properties": {
+                                  "percent": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "description": "The percent of DEF — Diesel exhaust fluid — remaining is used to schedule DEF delivery to the vehicle",
+                                    "example": 62
+                                  },
+                                  "tankCapacity": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "description": "The maximum capacity of the DEF tank.",
+                                    "example": 41
+                                  },
+                                  "tankCapacityUnit": {
+                                    "type": "string",
+                                    "example": "L"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SnapshotOfAllEquipments": {
+        "description": "Snapshot of all devices",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "D8000-1"
+                          },
+                          "make": {
+                            "type": "string",
+                            "example": "Caterpillar"
+                          },
+                          "model": {
+                            "type": "string",
+                            "example": "8000"
+                          },
+                          "serialNumber": {
+                            "type": "string",
+                            "example": "YVR001988"
+                          },
+                          "cumulativeUsageHours": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "hours": {
+                                "example": 1.5,
+                                "format": "float",
+                                "nullable": true,
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "cumulativeDistance": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "odometer": {
+                                "example": 54.2,
+                                "format": "float",
+                                "nullable": true,
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "cumulativeFuelUsed": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2019-11-06T00:00:00Z",
+                                "nullable": true
+                              },
+                              "fuelUsed": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 9520.5
+                              }
+                            }
+                          },
+                          "fuelRemaining": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2019-11-06T00:00:00Z",
+                                "nullable": true
+                              },
+                              "percent": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 65.5
+                              }
+                            }
+                          },
+                          "cumulativeOperatingHours": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "hours": {
+                                "example": 1.5,
+                                "format": "float",
+                                "nullable": true,
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "lastPosition": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Date of the last position",
+                                "example": "2019-11-06T00:00:00Z"
+                              },
+                              "latitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 48.858269
+                              },
+                              "longitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 2.29447
+                              }
+                            }
+                          },
+                          "cumulativeLoadCount": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "count": {
+                                "type": "integer",
+                                "format": "int64",
+                                "example": 1
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2019-11-06T00:00:00Z"
+                              }
+                            }
+                          },
+                          "cumulativePayloadTotal": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2019-11-06T00:00:00Z"
+                              },
+                              "payload": {
+                                "type": "integer",
+                                "format": "int64",
+                                "example": 1
+                              }
+                            }
+                          },
+                          "cumulativeActiveRegenerationHours": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "hours": {
+                                "example": 15,
+                                "format": "int64",
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            }
+                          },
+                          "cumulativePowerTakeOffHours": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "hours": {
+                                "example": 12,
+                                "format": "int64",
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            }
+                          },
+                          "peakDailySpeed": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "example": "2019-11-06T00:00:00Z",
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "speed": {
+                                "example": 100.5,
+                                "format": "float",
+                                "nullable": true,
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "averageDailyEngineLoadFactor": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "percent": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 88.24
+                              }
+                            }
+                          },
+                          "DEFRemainingRatio": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "percent": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 58.24
+                              }
+                            }
+                          },
+                          "cumulativeIdleHours": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "hours": {
+                                "example": 12,
+                                "format": "int64",
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SnapshotOfEquipmentDataKind": {
+        "description": "Snapshot of all devices",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "percent": {
+                            "type": "number",
+                            "format": "float",
+                            "description": "Perentage of fuel remaining in the asset's tank.\n",
+                            "example": 88.24
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "serialNumber": {
+                      "type": "string",
+                      "example": "YVR001988"
+                    },
+                    "since": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The since value actually used",
+                      "example": "2019-11-06T00:00:00Z"
+                    },
+                    "until": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The until value actually used",
+                      "example": "2019-11-20T23:59:59Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Authenticate on the API",
+        "tags": [
+          "Login"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "api@company.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "Wh@tAStr0ngPassw0rd$!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Login"
+          },
+          "401": {
+            "description": "Unable to authenticate the provided credentials"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments": {
+      "get": {
+        "operationId": "getFleetEquipments",
+        "summary": "Fleet",
+        "description": "Returns the list of all equipments and their identity",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The numbers of items to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of items to skip before starting to collect the result set",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Equipments"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments/history": {
+      "get": {
+        "deprecated": true,
+        "operationId": "getFleetEuipmentsHistory",
+        "summary": "[Time Series] Fleet",
+        "description": "⚠️ This endpoint will be deprecated in a future version. Returns the list of all equipments and their history (positions, daily usages, fault codes)",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data since this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "Beginning of yesterday UTC"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data until this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "End of today UTC"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The numbers of items to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of items to skip before starting to collect the result set",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/EquipmentsHistory"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments/{id}/history": {
+      "get": {
+        "operationId": "getFleetEquipmentHistoryByEquipmentId",
+        "summary": "[Time Series] of specific Fleet",
+        "description": "Returns the details of single equipment and its history (positions, daily usages, fault codes)",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the equipment",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data since this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "Beginning of yesterday UTC"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data until this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "End of today UTC"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/EquipmentHistory"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments/snapshot": {
+      "get": {
+        "operationId": "getFleetEquipmentsSnapshot",
+        "summary": "Snapshot of all equipments",
+        "description": "Returs the list of all equipments snapshot",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The numbers of items to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of items to skip before starting to collect the result set",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Optional - if provided it will return the equipment with a fleet number or serialNumber matching the parameter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SnapshotOfAllEquipments"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments/{id}/snapshot": {
+      "get": {
+        "operationId": "getFleetEquipmentSnapshotByEquipmentId",
+        "summary": "Snapshot of specific equipment",
+        "description": "Returns the last information available for all data kinds for specific equipment",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the equipment",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date of the snapshot",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON object containig the snapshot of the equipment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SnapshotOfSpecificEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SnapshotOfTheEquipmentForSpecificDate"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipments/{id}/{dataKind}": {
+      "get": {
+        "operationId": "getFleetEquipmentDataKindByEquipmentId",
+        "summary": "Equipment data for data kind",
+        "description": "Returns all data available for one dataKind for specific equipment. It's the timeseries mindset of the ISO/AEMP standard.",
+        "tags": [
+          "Fleet"
+        ],
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Obtained with a successful login"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the equipment",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "dataKind",
+            "in": "path",
+            "description": "Any of data kinds (positions, cumulativeOperatingHours, dailyUsages, cumulativeIdleHours,cumulativeUsageHours, cumulativeLoadCount, cumulativePayloadTotal, averageDailyEngineLoadFactor, cumulativePowerTakeOffHours,     cumulativeActiveRegenerationHours, engineCondition, peakDailySpeed, cumulativeFuel, defRemainingRatio, fuelRemaining)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data since this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "Beginning of yesterday UTC"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "description": "Fetch the data until this date. Expected format is 'YYYY-MM-DDTHH:mm:ssZ'",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "End of today UTC"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SnapshotOfEquipmentDataKind"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipment": {
+      "patch": {
+        "operationId": "updateFleetEquipment",
+        "summary": "Update equipment data with assetId OR serialNumber and make",
+        "description": "",
+        "tags": [
+          "Fleet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/asset"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Equipment has been modified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          },
+          "500": {
+            "description": "An error occured while processing the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipment/assetWorkspaces/linkAssetToWorkspaces": {
+      "post": {
+        "operationId": "linkAssetToWorkspaces",
+        "summary": "Add asset workspaces data with assetId OR serialNumber and make of Asset and worspace names",
+        "description": "",
+        "tags": [
+          "Fleet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bodyAssetWorkspaceNames"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Equipment has been added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          },
+          "500": {
+            "description": "An error occured while processing the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteLinkAssetToWorkspaces",
+        "summary": "delete link asset and  workspaces data with assetId OR serialNumber and make of Asset and worspace names",
+        "description": "",
+        "tags": [
+          "Fleet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bodyAssetWorkspaceNames"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Equipment has been unlink between asset and workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          },
+          "500": {
+            "description": "An error occured while processing the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/fleet/equipment/assetCustomFields": {
+      "post": {
+        "operationId": "addFleetEquipmentAssetCustomFields",
+        "summary": "add assetCustomFields data with assetId OR serialNumber and make",
+        "description": "",
+        "tags": [
+          "Fleet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bodyAssetCustomFields"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AssetCustomFields has been added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          },
+          "500": {
+            "description": "An error occured while processing the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteFleetEquipmentAssetCustomFields",
+        "summary": "delete assetCustomFields data with assetId OR serialNumber and make and customfields",
+        "description": "",
+        "tags": [
+          "Fleet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bodyAssetCustomFields"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AssetCustomFields has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Error"
+          },
+          "500": {
+            "description": "An error occured while processing the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "KO"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

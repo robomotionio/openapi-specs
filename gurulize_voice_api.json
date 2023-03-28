@@ -1,0 +1,115 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Gurulize Voice API",
+    "version": "1.0",
+    "summary": "Gurulize Voice API is a service to trigger new phone call",
+    "description": "You can start marketing your audio consultancy to your clients from your existing site, the phone, or mobile/web application via the Gurulize Voice API.",
+    "contact": {
+      "name": "Gurulize",
+      "url": "https://gurulize.com/"
+    },
+    "x-logo": {
+      "url": "https://gurulize.com/wp-content/uploads/2019/10/logo-1024x291.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://voice.gurulize.com/api"
+    }
+  ],
+  "paths": {
+    "/register/{userId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "number"
+          },
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Enter your user id given by Gurulize team"
+        }
+      ],
+      "post": {
+        "summary": "Register a new phone call",
+        "operationId": "post-register-userId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "success": false,
+                      "message": "Missing Parameter (username)"
+                    }
+                  },
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "Start a new phone call\n\nStatus changes regarding the request are notified to an address to be notified by the company.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer": {
+                    "type": "number",
+                    "description": "Calling the phone number. Should be numerical such as 5xxyyyzztt"
+                  },
+                  "agent": {
+                    "description": "Phone number dialed. Should be numerical such as 5xxyyyzztt",
+                    "type": "number"
+                  },
+                  "duration": {
+                    "type": "number",
+                    "description": "he maximum amount of time in seconds desired for a conversation.            The call is cut when it reaches that duration. Must be numerical."
+                  }
+                },
+                "required": [
+                  "customer",
+                  "agent",
+                  "duration"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "password": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "password": []
+    }
+  ]
+}

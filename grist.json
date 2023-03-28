@@ -1,0 +1,2225 @@
+{
+  "info": {
+    "description": "An API for manipulating Grist sites, workspaces, and documents.",
+    "version": "1.0.1",
+    "title": "Grist API"
+  },
+  "openapi": "3.0.0",
+  "security": [
+    {
+      "API Key": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://docs.getgrist.com/api"
+    },
+    {
+      "url": "https://{team}.getgrist.com/api",
+      "variables": {
+        "team": {
+          "default": "team"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/orgs": {
+      "get": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "List the orgs you have access to",
+        "description": "This enumerates all the team sites or personal areas available.",
+        "responses": {
+          "200": {
+            "description": "An array of organizations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Orgs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orgs/{orgId}": {
+      "get": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "Describe an org",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An organization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Org"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "Modify an org",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrgParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/orgs/{orgId}/access": {
+      "get": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "List users with access to org",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users with access to org",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgAccessRead"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "Change who has access to org",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "delta"
+                ],
+                "properties": {
+                  "delta": {
+                    "$ref": "#/components/schemas/OrgAccessWrite"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/orgs/{orgId}/workspaces": {
+      "get": {
+        "tags": [
+          "/orgs"
+        ],
+        "summary": "List workspaces and documents within an org",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An org's workspaces and documents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgWithWorkspaces"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "Create an empty workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orgId",
+            "schema": {
+              "$ref": "#/components/schemas/OrgKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "settings for the workspace",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkspaceParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The workspace id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "description": "an identifier for the workspace",
+                  "example": 155
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces/{workspaceId}": {
+      "get": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "Describe a workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceWithOrg"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "Modify a workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkspaceParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "Delete a workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/workspaces/{workspaceId}/docs": {
+      "post": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Create an empty document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "settings for the document",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The document id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "a unique identifier for the document",
+                  "example": "8b97c8db-b4df-4b34-b72c-17459e70140a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces/{workspaceId}/access": {
+      "get": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "List users with access to workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users with access to workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccessRead"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/workspaces"
+        ],
+        "summary": "Change who has access to workspace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "workspaceId",
+            "schema": {
+              "$ref": "#/components/schemas/WorkspaceKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "delta"
+                ],
+                "properties": {
+                  "delta": {
+                    "$ref": "#/components/schemas/WorkspaceAccessWrite"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/docs/{docId}": {
+      "get": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Describe a document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A document's metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocWithWorkspace"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Modify document metadata (but not its contents)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocParameters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Delete a document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/docs/{docId}/move": {
+      "patch": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Move document to another workspace in the same org.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the target workspace",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "workspace"
+                ],
+                "properties": {
+                  "workspace": {
+                    "type": "integer",
+                    "example": 597
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/docs/{docId}/access": {
+      "get": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "List users with access to document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users with access to document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccessRead"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Change who has access to document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the changes to make",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "delta"
+                ],
+                "properties": {
+                  "delta": {
+                    "$ref": "#/components/schemas/WorkspaceAccessWrite"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/docs/{docId}/download": {
+      "get": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Content of document, as an Sqlite file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A document's content in Sqlite form",
+            "content": {
+              "application/x-sqlite3": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/download/xlsx": {
+      "get": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Content of document, as an Excel file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A documents's content in Excel form",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/download/csv": {
+      "get": {
+        "tags": [
+          "/docs"
+        ],
+        "summary": "Content of table, as a CSV file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "tableId",
+            "schema": {
+              "type": "string",
+              "description": "Name of a table (normalized)."
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A table's content in CSV form",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/data": {
+      "get": {
+        "tags": [
+          "/data"
+        ],
+        "summary": "Fetch data from a table",
+        "deprecated": true,
+        "description": "Deprecated in favor of `records` endpoints. We have no immediate plans to remove these endpoints, but consider `records` a better starting point for new projects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/filterQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortHeaderParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitHeaderParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cells from the table",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Data"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "/data"
+        ],
+        "summary": "Add rows to a table",
+        "deprecated": true,
+        "description": "Deprecated in favor of `records` endpoints. We have no immediate plans to remove these endpoints, but consider `records` a better starting point for new projects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/noparseQueryParam"
+          }
+        ],
+        "requestBody": {
+          "description": "the data to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "IDs of rows added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RowIds"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/data"
+        ],
+        "summary": "Modify rows of a table",
+        "deprecated": true,
+        "description": "Deprecated in favor of `records` endpoints. We have no immediate plans to remove these endpoints, but consider `records` a better starting point for new projects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/noparseQueryParam"
+          }
+        ],
+        "requestBody": {
+          "description": "the data to change, with ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Data"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "IDs of rows modified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RowIds"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/data/delete": {
+      "post": {
+        "tags": [
+          "/data"
+        ],
+        "summary": "Delete rows of a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          }
+        ],
+        "requestBody": {
+          "description": "the IDs of rows to remove",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RowIds"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Nothing returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/attachments": {
+      "post": {
+        "tags": [
+          "/attachments"
+        ],
+        "summary": "Upload attachments to a doc",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "the files to add to the doc",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AttachmentUpload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "IDs of attachments added, one per file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RowIds"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/attachments/{attachmentId}": {
+      "get": {
+        "tags": [
+          "/attachments"
+        ],
+        "summary": "Get the metadata for an attachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "schema": {
+              "$ref": "#/components/schemas/AttachmentId"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentMetadata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/attachments/{attachmentId}/download": {
+      "get": {
+        "tags": [
+          "/attachments"
+        ],
+        "summary": "Download the contents of an attachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "docId",
+            "schema": {
+              "$ref": "#/components/schemas/DocKey"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "schema": {
+              "$ref": "#/components/schemas/AttachmentId"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment contents, with suitable Content-Type."
+          }
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/records": {
+      "get": {
+        "tags": [
+          "/records"
+        ],
+        "summary": "Fetch records from a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/filterQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitQueryParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortHeaderParam"
+          },
+          {
+            "$ref": "#/components/parameters/limitHeaderParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Records from the table",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Records"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "/records"
+        ],
+        "summary": "Add records to a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/noparseQueryParam"
+          }
+        ],
+        "requestBody": {
+          "description": "the records to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordsWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "IDs of records added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordsWithoutFields"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "/records"
+        ],
+        "summary": "Modify records of a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/noparseQueryParam"
+          }
+        ],
+        "requestBody": {
+          "description": "the records to change, with ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Records"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "/records"
+        ],
+        "summary": "Add or update records of a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/noparseQueryParam"
+          },
+          {
+            "in": "query",
+            "name": "onmany",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "first",
+                "none",
+                "all"
+              ],
+              "description": "Which records to update if multiple records are found to match `require`.\n  * `first` - the first matching record (default)\n  * `none` - do not update anything\n  * `all` - update all matches\n"
+            }
+          },
+          {
+            "in": "query",
+            "name": "noadd",
+            "schema": {
+              "type": "boolean",
+              "description": "Set to true to prohibit adding records."
+            }
+          },
+          {
+            "in": "query",
+            "name": "noupdate",
+            "schema": {
+              "type": "boolean",
+              "description": "Set to true to prohibit updating records."
+            }
+          },
+          {
+            "in": "query",
+            "name": "allow_empty_require",
+            "schema": {
+              "type": "boolean",
+              "description": "Set to true to allow `require` in the body to be empty, which will match and update all records in the table."
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The records to add or update. Instead of an id, a `require` object is provided, with the same structure as `fields`. If no query parameter options are set, then the operation is as follows. First, we check if a record exists matching the values specified for columns in `require`. If so, we update it by setting the values specified for columns in `fields`. If not, we create a new record with a combination of the values in `require` and `fields`, with `fields` taking priority if the same column is specified in both. The query parameters allow for variations on this behavior.\n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordsWithRequire"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/columns": {
+      "get": {
+        "tags": [
+          "/columns"
+        ],
+        "summary": "List columns in a table",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/docIdPathParam"
+          },
+          {
+            "$ref": "#/components/parameters/tableIdPathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The columns in a table",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Columns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/_subscribe": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "docId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tableId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Subscribe to a webhook",
+        "operationId": "post-docs-docId-tables-tableId-_subscribe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unsubscribeKey": {
+                      "type": "string"
+                    },
+                    "triggerId": {
+                      "type": "integer"
+                    },
+                    "webhookId": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "unsubscribeKey": "60fe7777-d7f8-4521-8e77-b6a9f93b0588",
+                      "triggerId": 1,
+                      "webhookId": "f717d5ce-5c26-4d3b-ac4e-49b5dbd93761"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "unsubscribeKey": "60fe7777-d7f8-4521-8e77-b6a9f93b0588",
+                      "triggerId": 1,
+                      "webhookId": "f717d5ce-5c26-4d3b-ac4e-49b5dbd93761"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "eventTypes": [
+                      "add",
+                      "update"
+                    ],
+                    "url": "https://webhook.site/f02fdeea-6b67-4a03-932a-1a13f8d9e020",
+                    "isReadyColumn": "Ready"
+                  }
+                },
+                "properties": {
+                  "eventTypes": {
+                    "type": "array",
+                    "description": "Can be \"add\", \"update\" or both",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "isReadyColumn": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "eventTypes",
+                  "url"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "eventTypes": [
+                      "add",
+                      "update"
+                    ],
+                    "url": "https://webhook.site/f02fdeea-6b67-4a03-932a-1a13f8d9e020",
+                    "isReadyColumn": "Ready"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Subscribe to a webhook to send events when a row is added, updated or both.\nPlease note somewhere the response of this endpoint: you'll need it to remove a webhook"
+        }
+      }
+    },
+    "/docs/{docId}/tables/{tableId}/_unsubscribe": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "docId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tableId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Unsubscribe a webhook",
+        "operationId": "post-docs-docId-tables-tableId-_unsubscribe",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "unsubscribeKey": "60fe7777-d7f8-4521-8e77-b6a9f93b0588",
+                    "triggerId": 1,
+                    "webhookId": "f717d5ce-5c26-4d3b-ac4e-49b5dbd93761"
+                  }
+                },
+                "properties": {
+                  "unsubscribeKey": {
+                    "type": "string"
+                  },
+                  "triggerId": {
+                    "type": "integer"
+                  },
+                  "webhookId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unsubscribeKey",
+                  "triggerId",
+                  "webhookId"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "unsubscribeKey": "60fe7777-d7f8-4521-8e77-b6a9f93b0588",
+                    "triggerId": 1,
+                    "webhookId": "f717d5ce-5c26-4d3b-ac4e-49b5dbd93761"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Unsubscribe a webhook"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "/orgs",
+      "description": "Team sites and personal spaces are called 'orgs' in the API."
+    },
+    {
+      "name": "/workspaces",
+      "description": "Sites can be organized into groups of documents called workspaces."
+    },
+    {
+      "name": "/docs",
+      "description": "Workspaces contain collections of Grist documents."
+    },
+    {
+      "name": "/records",
+      "description": "Tables contain collections of records (also called rows)."
+    },
+    {
+      "name": "/columns",
+      "description": "Tables are structured as a collection of columns."
+    },
+    {
+      "name": "/data",
+      "description": "Work with table data, using a (now deprecated) columnar format. We now recommend the `records` endpoints."
+    },
+    {
+      "name": "/attachments",
+      "description": "Documents may include attached files. Data records can refer to these using a column of type `Attachments`."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "API Key": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer",
+        "description": "Access to the Grist API is controlled by an Authorization header, which should contain the word 'Bearer', followed by a space, followed by your API key."
+      }
+    },
+    "schemas": {
+      "OrgKey": {
+        "oneof": [
+          "integer",
+          "string"
+        ],
+        "description": "This can be an integer id, or a string subdomain (e.g. `gristlabs`), or `current` if the org is implied by the domain in the url"
+      },
+      "WorkspaceKey": {
+        "type": "integer",
+        "description": "An integer id"
+      },
+      "DocKey": {
+        "type": "string",
+        "description": "A string id (UUID)"
+      },
+      "Org": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "owner",
+          "createdAt",
+          "updatedAt",
+          "access"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 42
+          },
+          "name": {
+            "type": "string",
+            "example": "Grist Labs"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "gristlabs"
+          },
+          "owner": {
+            "type": "object",
+            "$ref": "#/components/schemas/User",
+            "nullable": true
+          },
+          "access": {
+            "type": "string",
+            "$ref": "#/components/schemas/Access"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2019-09-13T15:42:35.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2019-09-13T15:42:35.000Z"
+          }
+        }
+      },
+      "Orgs": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Org"
+        }
+      },
+      "Workspace": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "access"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 97
+          },
+          "name": {
+            "type": "string",
+            "example": "Secret Plans"
+          },
+          "access": {
+            "type": "string",
+            "$ref": "#/components/schemas/Access"
+          }
+        }
+      },
+      "Doc": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "isPinned",
+          "urlId",
+          "access"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 145
+          },
+          "name": {
+            "type": "string",
+            "example": "Project Lollipop"
+          },
+          "access": {
+            "type": "string",
+            "$ref": "#/components/schemas/Access"
+          },
+          "isPinned": {
+            "type": "boolean",
+            "example": true
+          },
+          "urlId": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Workspaces": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Workspace"
+        }
+      },
+      "WorkspaceWithDocs": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Workspace"
+          },
+          {
+            "type": "object",
+            "required": [
+              "docs"
+            ],
+            "properties": {
+              "docs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Doc"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "WorkspaceWithOrg": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Workspace"
+          },
+          {
+            "type": "object",
+            "required": [
+              "org"
+            ],
+            "properties": {
+              "org": {
+                "$ref": "#/components/schemas/Org"
+              }
+            }
+          }
+        ]
+      },
+      "OrgWithWorkspaces": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Org"
+          },
+          {
+            "type": "object",
+            "required": [
+              "workspaces"
+            ],
+            "properties": {
+              "workspaces": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WorkspaceWithDocs"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DocWithWorkspace": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Doc"
+          },
+          {
+            "type": "object",
+            "required": [
+              "workspace"
+            ],
+            "properties": {
+              "workspace": {
+                "$ref": "#/components/schemas/WorkspaceWithOrg"
+              }
+            }
+          }
+        ]
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "picture"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 101
+          },
+          "name": {
+            "type": "string",
+            "example": "Helga Hufflepuff"
+          },
+          "picture": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Access": {
+        "type": "string",
+        "enum": [
+          "owners",
+          "editors",
+          "viewers"
+        ]
+      },
+      "Data": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": {
+          "type": "array",
+          "items": {}
+        },
+        "example": {
+          "id": [
+            1,
+            2
+          ],
+          "pet": [
+            "cat",
+            "dog"
+          ],
+          "popularity": [
+            67,
+            95
+          ]
+        }
+      },
+      "DataWithoutId": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {}
+        },
+        "example": {
+          "pet": [
+            "cat",
+            "dog"
+          ],
+          "popularity": [
+            67,
+            95
+          ]
+        }
+      },
+      "Records": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "fields"
+              ],
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "fields": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "records": [
+            {
+              "id": 1,
+              "fields": {
+                "pet": "cat",
+                "popularity": 67
+              }
+            },
+            {
+              "id": 2,
+              "fields": {
+                "pet": "dog",
+                "popularity": 95
+              }
+            }
+          ]
+        }
+      },
+      "RecordsWithoutId": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "fields"
+              ],
+              "properties": {
+                "fields": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "records": [
+            {
+              "fields": {
+                "pet": "cat",
+                "popularity": 67
+              }
+            },
+            {
+              "fields": {
+                "pet": "dog",
+                "popularity": 95
+              }
+            }
+          ]
+        }
+      },
+      "RecordsWithoutFields": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "records": [
+            {
+              "id": 1
+            },
+            {
+              "id": 2
+            }
+          ]
+        }
+      },
+      "RecordsWithRequire": {
+        "type": "object",
+        "required": [
+          "records"
+        ],
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "require"
+              ],
+              "properties": {
+                "require": {
+                  "type": "object",
+                  "description": "keys are column identifiers, and values are what we want we want to have in those columns (either by matching with an existing record, or creating a new record)\n"
+                },
+                "fields": {
+                  "type": "object",
+                  "description": "keys are column identifiers, and values are what to place in those columns (either overwriting values in an existing record, or in a new record)\n"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "records": [
+            {
+              "require": {
+                "pet": "cat"
+              },
+              "fields": {
+                "popularity": 67
+              }
+            },
+            {
+              "require": {
+                "pet": "dog"
+              },
+              "fields": {
+                "popularity": 95
+              }
+            }
+          ]
+        }
+      },
+      "Columns": {
+        "type": "object",
+        "required": [
+          "columns"
+        ],
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "fields"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "ColumnName"
+                },
+                "fields": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "columns": [
+            {
+              "id": "pet",
+              "fields": {
+                "label": "Pet"
+              }
+            },
+            {
+              "id": "popularity",
+              "fields": {
+                "label": "Popularity ❤"
+              }
+            }
+          ]
+        }
+      },
+      "RowIds": {
+        "type": "array",
+        "example": [
+          101,
+          102,
+          103
+        ],
+        "items": {
+          "type": "integer"
+        }
+      },
+      "DocParameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Competitive Analysis"
+          },
+          "isPinned": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "WorkspaceParameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Retreat Docs"
+          }
+        }
+      },
+      "OrgParameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ACME Unlimited"
+          }
+        }
+      },
+      "OrgAccessRead": {
+        "type": "object",
+        "required": [
+          "users"
+        ],
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Andrea"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "andrea@getgrist.com"
+                },
+                "access": {
+                  "$ref": "#/components/schemas/Access"
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrgAccessWrite": {
+        "type": "object",
+        "required": [
+          "users"
+        ],
+        "properties": {
+          "users": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "owners",
+                "editors",
+                "viewers",
+                "members",
+                null
+              ]
+            },
+            "example": {
+              "foo@getgrist.com": "owners",
+              "bar@getgrist.com": null
+            }
+          }
+        }
+      },
+      "WorkspaceAccessRead": {
+        "type": "object",
+        "required": [
+          "maxInheritedRole",
+          "users"
+        ],
+        "properties": {
+          "maxInheritedRole": {
+            "$ref": "#/components/schemas/Access"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Andrea"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "andrea@getgrist.com"
+                },
+                "access": {
+                  "$ref": "#/components/schemas/Access"
+                },
+                "parentAccess": {
+                  "$ref": "#/components/schemas/Access"
+                }
+              }
+            }
+          }
+        }
+      },
+      "WorkspaceAccessWrite": {
+        "type": "object",
+        "properties": {
+          "maxInheritedRole": {
+            "$ref": "#/components/schemas/Access"
+          },
+          "users": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "owners",
+                "editors",
+                "viewers",
+                "members",
+                null
+              ]
+            },
+            "example": {
+              "foo@getgrist.com": "owners",
+              "bar@getgrist.com": null
+            }
+          }
+        }
+      },
+      "DocAccessWrite": {
+        "$ref": "#/components/schemas/WorkspaceAccessWrite"
+      },
+      "DocAccessRead": {
+        "$ref": "#/components/schemas/WorkspaceAccessRead"
+      },
+      "AttachmentUpload": {
+        "type": "object",
+        "properties": {
+          "upload": {
+            "type": "array",
+            "items": {
+              "type": "File"
+            }
+          }
+        }
+      },
+      "AttachmentId": {
+        "type": "number",
+        "description": "An integer ID"
+      },
+      "AttachmentMetadata": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "example": "logo.png"
+          },
+          "fileSize": {
+            "type": "number",
+            "example": 12345
+          },
+          "timeUploaded": {
+            "type": "string",
+            "example": "2020-02-13T12:17:19.000Z"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "filterQueryParam": {
+        "in": "query",
+        "name": "filter",
+        "schema": {
+          "type": "string",
+          "description": "This is a JSON object mapping column names to arrays of allowed values.  For example, to filter column `pet` for values `cat` and `dog`, the filter would be `{\"pet\": [\"cat\", \"dog\"]}`. JSON contains characters that are not safe to place in a URL, so it is important to url-encode them.  For this example, the url-encoding is `%7B%22pet%22%3A%20%5B%22cat%22%2C%20%22dog%22%5D%7D`. See https://rosettacode.org/wiki/URL_encoding for how to url-encode a string, or https://www.urlencoder.org/ to try some examples. Multiple columns can be filtered. For example the filter for `pet` being either `cat` or `dog`, AND `size` being either `tiny` or `outrageously small`, would be `{\"pet\": [\"cat\", \"dog\"], \"size\": [\"tiny\", \"outrageously small\"]}`.",
+          "example": "{\"pet\": [\"cat\", \"dog\"]}"
+        },
+        "required": false
+      },
+      "sortQueryParam": {
+        "in": "query",
+        "name": "sort",
+        "schema": {
+          "type": "string",
+          "description": "Order in which to return results. If a single column name is given (e.g. `pet`), results are placed in ascending order of values in that column. To get results in an order that was previously prepared manually in Grist, use the special `manualSort` column name. Multiple columns can be specified, separated by commas (e.g. `pet,age`). For descending order, prefix a column name with a `-` character (e.g. `pet,-age`). To include additional sorting options append them after a colon (e.g. `pet,-age:naturalSort;emptyFirst,owner`). Available options are: `choiceOrder`, `naturalSort`, `emptyFirst`. Without the `sort` parameter, the order of results is unspecified.",
+          "example": "pet,-age"
+        },
+        "required": false
+      },
+      "limitQueryParam": {
+        "in": "query",
+        "name": "limit",
+        "schema": {
+          "type": "number",
+          "description": "Return at most this number of rows.  A value of 0 is equivalent to having no limit.",
+          "example": "5"
+        },
+        "required": false
+      },
+      "sortHeaderParam": {
+        "in": "header",
+        "name": "X-Sort",
+        "schema": {
+          "type": "string",
+          "description": "Same as `sort` query parameter.",
+          "example": "pet,-age"
+        },
+        "required": false
+      },
+      "limitHeaderParam": {
+        "in": "header",
+        "name": "X-Limit",
+        "schema": {
+          "type": "number",
+          "description": "Same as `limit` query parameter.",
+          "example": "5"
+        },
+        "required": false
+      },
+      "tableIdPathParam": {
+        "in": "path",
+        "name": "tableId",
+        "schema": {
+          "type": "string",
+          "description": "name of a table (normalized)"
+        },
+        "required": true
+      },
+      "docIdPathParam": {
+        "in": "path",
+        "name": "docId",
+        "schema": {
+          "$ref": "#/components/schemas/DocKey"
+        },
+        "required": true
+      },
+      "noparseQueryParam": {
+        "in": "query",
+        "name": "noparse",
+        "schema": {
+          "type": "boolean",
+          "description": "Set to true to prohibit parsing strings according to the column type."
+        }
+      }
+    }
+  }
+}

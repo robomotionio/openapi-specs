@@ -1,0 +1,1268 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Lemlist",
+    "version": "1.0",
+    "description": "Personalize cold emails, automate follow-ups, and engage with leads across all channels. lemlist is your sales automation and cold email software in one.\n\nOfficial documentation : https://developer.lemlist.com/#introduction",
+    "summary": "Personalize cold emails, automate follow-ups, and engage with leads across all channels. lemlist is your sales automation and cold email software in one.",
+    "contact": {
+      "name": "Meta API",
+      "url": "https://www.meta-api.io",
+      "email": "contact@meta-api.io"
+    },
+    "x-logo": {
+      "url": "https://assets.brandfetch.io/4c6ef595d69b437.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.lemlist.com"
+    }
+  ],
+  "paths": {
+    "/api/team": {
+      "get": {
+        "summary": "Get Team Information",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "userIds": {
+                      "type": "array",
+                      "items": {
+                        "required": [],
+                        "properties": {}
+                      }
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "apiKey": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "billing": {
+                      "type": "object",
+                      "properties": {
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "ok": {
+                          "type": "boolean"
+                        },
+                        "plan": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "quantity",
+                        "ok",
+                        "plan"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "name",
+                    "userIds",
+                    "createdBy",
+                    "createdAt",
+                    "apiKey",
+                    "billing"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "tea_aaqam5a3BkY8aje24",
+                      "name": "PiedPiper",
+                      "userIds": [
+                        "usr_aawMB5Gd5JJCFYvjp"
+                      ],
+                      "createdBy": "usr_aawMB5Gd5JJCFYvjp",
+                      "createdAt": "2018-04-30T12:19:42.829Z",
+                      "apiKey": "aa13722b45b9c475cc686231b1af6583",
+                      "billing": {
+                        "quantity": 1,
+                        "ok": true,
+                        "plan": "freetrial"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-team",
+        "description": "This endpoint retrieves information of your team."
+      }
+    },
+    "/api/campaigns": {
+      "get": {
+        "summary": "List All Campaigns",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id",
+                      "name"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "_id": "cam_aaWL92T22Sei3Bz6v",
+                        "name": "Campaign1"
+                      },
+                      {
+                        "_id": "cam_aaXwBiebA8pWPKqpK",
+                        "name": "Campaign2"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-campaigns",
+        "description": "This endpoint retrieves the list of all campaigns.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "(Optional) Offset from the start. For pagination."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "(Optional) Number of campaigns to retrieve. 100 per default ( and 100 max )."
+          }
+        ]
+      }
+    },
+    "/api/campaigns/{campaignId}/export": {
+      "get": {
+        "summary": "Export Statistics of a Campaign",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "csv"
+              }
+            }
+          }
+        },
+        "operationId": "get-api-campaigns-:campaignId-export",
+        "description": "This endpoint downloads a CSV file that contains all the statistics of a campaign."
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the campaign to retrieve."
+        }
+      ]
+    },
+    "/api/campaigns/{campaignId}/export/list": {
+      "get": {
+        "summary": "Export Leads of a Campaign",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "csv"
+              }
+            }
+          }
+        },
+        "operationId": "get-api-campaigns-:campaignId-export-list?state=all",
+        "description": "This endpoint downloads a CSV file that contains all the leads of a campaign.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "all"
+            },
+            "in": "query",
+            "name": "state",
+            "description": "Filter to export only the specified states, all will export all states. Possible states are imported, scanned, skipped, reviewed, contacted, hooked, attracted, warmed, notInterested, interested, emailsBounced, failed, emailsUnsubscribed"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the campaign to retrieve."
+        }
+      ]
+    },
+    "/api/campaigns/{campaignId}/leads/{email}": {
+      "post": {
+        "summary": "Add a Lead in a Campaign",
+        "operationId": "post-api-campaigns-:campaignId-leads-:email",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "campaignId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "campaignName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "leadUrl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "campaignId",
+                    "campaignName",
+                    "leadUrl",
+                    "_id",
+                    "email",
+                    "firstName",
+                    "lastName"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "campaignId": "cam_aa7uvyxECcni5KXBM",
+                      "campaignName": "Campaign1",
+                      "leadUrl": "https://api.lemlist.com/api/leads/richard%40piedpiper.com",
+                      "_id": "lea_aaNfSAHJoa4gj86Px",
+                      "email": "richard@piedpiper.com",
+                      "firstName": "Richard",
+                      "lastName": "Hendricks"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint adds a lead in a specific campaign. If the lead doesn't exist, it'll be created, then inserted to the campaign. The creator of the lead is the campaign's sender\n\nYou can just add the email without any body.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "in": "query",
+            "name": "deduplicate",
+            "description": "search email address in another campaign, will not insert the lead if email address already inserted"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "firstName": "Richard",
+                    "lastName": "Hendricks"
+                  }
+                },
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "First name of the lead."
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Last name of the lead."
+                  },
+                  "companyName": {
+                    "type": "string",
+                    "description": "Company name of the lead."
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName"
+                ]
+              }
+            }
+          },
+          "description": "Body is optionnal"
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the campaign to add the lead."
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email address of the lead"
+        }
+      ],
+      "patch": {
+        "summary": "Update a Lead in a Campaign",
+        "operationId": "patch-api-campaigns-campaignId-leads-email",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "description": "This endpoint updates a lead in a specific campaign.\n\nIf the lead doesn't exist a 404 error will be returned.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "firstName": "Richard",
+                    "lastName": "Hendricks"
+                  }
+                },
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "description": "First name of the lead."
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "Last name of the lead."
+                  },
+                  "companyName": {
+                    "type": "string",
+                    "description": "Company name of the lead."
+                  }
+                }
+              }
+            }
+          },
+          "description": "Body is mandatory. It must be a JSON object with any information you want to update on the lead.\n\nIf no body is specified a 400 error will be returned."
+        }
+      },
+      "delete": {
+        "summary": "Unsubscribe a Lead from a Campaign",
+        "operationId": "delete-api-campaigns-campaignId-leads-email",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "action",
+            "description": "Force the deletion of the lead. Value must be \"remove\" if used"
+          }
+        ],
+        "description": "This endpoint delete a lead from a specific campaign.\nAll information, including statistics, will be deleted."
+      }
+    },
+    "/api/leads/{email}": {
+      "get": {
+        "summary": "Get a Specific Lead by Email",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "email",
+                    "firstName",
+                    "lastName"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "lea_aaNfSAHJoa4gj86Px",
+                      "email": "richard@piedpiper.com",
+                      "firstName": "Richard",
+                      "lastName": "Hendricks"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-leads-:email",
+        "description": "This endpoint retrieves all the information of a specific lead using its email."
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email address of the lead."
+        }
+      ]
+    },
+    "/api/leads/pause/{email}": {
+      "post": {
+        "summary": "Pause a Specific Lead by Email",
+        "operationId": "post-api-leads-pause-:email",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id",
+                      "email",
+                      "firstName",
+                      "lastName"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "email": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "_id": "lea_aaNfSAHJoa4gj86Px",
+                        "email": "richard@piedpiper.com",
+                        "firstName": "Richard",
+                        "lastName": "Hendricks"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint pauses a specific lead using its email in all campaigns."
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email address of the lead."
+        }
+      ]
+    },
+    "/api/leads/start/{email}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email address of the lead."
+        }
+      ],
+      "post": {
+        "summary": "Resume a Specific Lead by Email",
+        "operationId": "post-api-leads-start-email",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id",
+                      "email",
+                      "firstName",
+                      "lastName"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "email": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "_id": "lea_aaNfSAHJoa4gj86Px",
+                        "email": "richard@piedpiper.com",
+                        "firstName": "Richard",
+                        "lastName": "Hendricks"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint starts a specific lead using its email in all campaigns."
+      }
+    },
+    "/api/activities": {
+      "get": {
+        "summary": "Get Activities",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id",
+                      "isFirst",
+                      "type",
+                      "teamId",
+                      "createdAt",
+                      "sendUserId",
+                      "sendUserEmail",
+                      "sendUserName",
+                      "leadId",
+                      "leadFirstName",
+                      "leadLastName",
+                      "leadEmail",
+                      "campaignId",
+                      "campaignName",
+                      "listId",
+                      "sequenceId",
+                      "sequenceStep",
+                      "emailTemplateId",
+                      "emailTemplateName",
+                      "emailId"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "isFirst": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sendUserId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sendUserEmail": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sendUserName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "leadId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "leadFirstName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "leadLastName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "leadEmail": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "campaignId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "campaignName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "listId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sequenceId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sequenceStep": {
+                        "type": "number"
+                      },
+                      "emailTemplateId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "emailTemplateName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "emailId": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "_id": "act_aaXiFy3Y7BNSuYwDr",
+                        "isFirst": true,
+                        "type": "emailsSent",
+                        "teamId": "tea_aaqam5a3BkY8zje24",
+                        "createdAt": "2018-08-24T14:56:39.172Z",
+                        "sendUserId": "usr_aawMB5Gd5JJCFYvjp",
+                        "sendUserEmail": "richard@piedpiper.com",
+                        "sendUserName": "Richard Hendricks",
+                        "leadId": "lea_aafF6i3BjsDRDNAWN",
+                        "leadFirstName": "Jeanne",
+                        "leadLastName": "Doe",
+                        "leadEmail": "jeanne@doe.com",
+                        "campaignId": "cam_aaktcZg9z9xJKQgqK",
+                        "campaignName": "Campaign1",
+                        "listId": "lst_aa5tgpggEfYeJ9vbJ",
+                        "sequenceId": "seq_aaPoZgbALLQhcLmqz",
+                        "sequenceStep": 2,
+                        "emailTemplateId": "etp_aatuEkEztDPm32b23",
+                        "emailTemplateName": "Sales: The Honest One",
+                        "emailId": "eml_aaFHxT2ejiz7apYnn"
+                      },
+                      {
+                        "_id": "act_aavmrPCCZGMSsCSNw",
+                        "isFirst": true,
+                        "type": "emailsSent",
+                        "teamId": "tea_aqam5a3BkY8zje24",
+                        "createdAt": "2018-08-24T14:51:35.726Z",
+                        "sendUserId": "usr_aawMB5Gd5JJCFYvjp",
+                        "sendUserEmail": "richard@piedpiper.com",
+                        "sendUserName": "Richard Hendricks",
+                        "leadId": "lea_aafF6i3BjsDRDNAWN",
+                        "leadFirstName": "Jeanne",
+                        "leadLastName": "Doe",
+                        "leadEmail": "jeanne",
+                        "campaignId": "cam_aaktcZg9z9xJKQgqK",
+                        "campaignName": "Campaign1",
+                        "listId": "lst_aa5tgpggEfYeJ9vbJ",
+                        "sequenceId": "seq_aaPoZgbALLQhcLmqz",
+                        "sequenceStep": 1,
+                        "emailTemplateId": "etp_aak9yNgefLCCB7ghA",
+                        "emailTemplateName": "I Just Call",
+                        "emailId": "eml_aabhRvzfe9sFErQ2b"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-activities",
+        "description": "This endpoint retrieves the last 100 activities.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "emailsSent",
+                "emailsOpened",
+                "emailsClicked",
+                "emailsReplied",
+                "emailsBounced",
+                "emailsSendFailed",
+                "emailsUnsubscribed"
+              ]
+            },
+            "in": "query",
+            "name": "type",
+            "description": "(Optional) The type of activity you want to retrieve. Can be emailsSent, emailsOpened, emailsClicked, emailsReplied, emailsBounced, emailsSendFailed, emailsUnsubscribed."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaignId",
+            "description": "(Optional) Retrieve activities of this campaignId."
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "isFirst",
+            "description": "(Optional) Only retrieve the first time this activity happened."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "(Optional) Offset from the start. For pagination."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "(Optional) Number of campaigns to retrieve. 100 per default ( and 100 max )."
+          }
+        ]
+      }
+    },
+    "/api/unsubscribes": {
+      "get": {
+        "summary": "List All Unsubscribes",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-unsubscribes",
+        "description": "This endpoint retrieves the list of all people who are unsubscribed.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset",
+            "description": "(Optional) Offset from the start. For pagination."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "(Optional) Number of email to retrieve. 100 per default."
+          }
+        ]
+      }
+    },
+    "/api/unsubscribes/export": {
+      "get": {
+        "summary": "Export the List of Unsubscribes",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "csv"
+              }
+            }
+          }
+        },
+        "operationId": "get-api-unsubscribes-export",
+        "description": "This endpoint downloads a CSV file that contains all the unsubscribed email addresses."
+      }
+    },
+    "/api/unsubscribes/{email}": {
+      "post": {
+        "summary": "Add an Email Address in the Unsubscribes",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "email"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "lea_aaJgm566c9tyzTBeu",
+                      "email": "a@a.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-unsubscribes-:email",
+        "description": "This endpoint adds a lead in the unsubscribed list."
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email address to unsubscribe."
+        }
+      ],
+      "delete": {
+        "summary": "Delete an Email Address from the Unsubscribes",
+        "operationId": "delete-api-unsubscribes-email",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "email"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "lea_aaJgm566c9tyzTBeu",
+                      "email": "a@a.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint deletes a lead in the unsubscribed list."
+      }
+    },
+    "/api/hooks": {
+      "get": {
+        "summary": "List All Hooks",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id",
+                      "targetUrl",
+                      "createdAt"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "targetUrl": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "_id": "hoo_aadabFv7dRoP2L8GJ",
+                        "targetUrl": "https://youserver.com/lemlist-hook",
+                        "createdAt": "2018-11-27T12:19:26.608Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-hooks",
+        "description": "This endpoint retrieves the list of all hooks."
+      },
+      "post": {
+        "summary": "Add a Hook",
+        "operationId": "post-api-hooks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "targetUrl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "targetUrl",
+                    "createdAt"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "hoo_aadabFv7dRoP2L8GJ",
+                      "targetUrl": "https://youserver.com/lemlist-hook",
+                      "createdAt": "2018-11-27T12:19:26.608Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint adds a hook in our system. Each time an event happen, we'll call targetUrl.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "emailsSent",
+                "emailsOpened",
+                "emailsClicked",
+                "emailsReplied",
+                "emailsBounced",
+                "emailsSendFailed",
+                "emailsUnsubscribed"
+              ]
+            },
+            "in": "query",
+            "name": "type",
+            "description": "(Optional) We'll call this hook only if the event is of the type type. type can be emailsSent, emailsOpened, emailsClicked, emailsReplied, emailsBounced, emailsSendFailed, emailsUnsubscribed."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "campaignId",
+            "description": "(Optional) We'll call this hook only for this campaignId."
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "isFirst",
+            "description": "(Optional) We'll call this hook only the first time this activity happened."
+          }
+        ]
+      }
+    },
+    "/api/hooks/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the hook that we have to remove."
+        }
+      ],
+      "delete": {
+        "summary": "Delete a Hook",
+        "operationId": "delete-api-hooks-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "targetUrl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "targetUrl",
+                    "createdAt"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "_id": "hoo_aadabFv7dRoP2L8GJ",
+                      "targetUrl": "https://youserver.com/lemlist-hook",
+                      "createdAt": "2018-11-27T12:19:26.608Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This endpoint delete a hook."
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "mailing"
+    },
+    {
+      "name": "marketing"
+    }
+  ],
+  "security": [
+    {
+      "basic": []
+    }
+  ]
+}

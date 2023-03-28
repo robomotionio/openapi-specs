@@ -1,0 +1,1246 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Digital Commerce Swiss Post web REST API for the generation of the address label. With the “Generate address label” request, the combinations of selected basic and additional services/delivery instructions will be tested automatically, whether or not you have already done this yourself beforehand. With the “Generate address label” operation, the mailing data (e.g. COD amount) is also validated. For the “Parcels”, “Express” and “Solutions” service groups, the mailing data is automatically transferred to DataTransfer. This means that you receive the same benefits as you would under DataTransfer.\nAPI documentation https://developer.post.ch/en/digital-commerce-api",
+    "version": "1.2",
+    "x-server-version": "${project.version}",
+    "title": "DIGITAL COMMERCE BARCODE API",
+    "contact": {
+      "name": "Digital Commerce API",
+      "url": "https://www.post.ch/digital-commerce/api",
+      "email": "digitalintegration@post.ch"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/barcode/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Barcode"
+    }
+  ],
+  "security": [
+    {
+      "oauth2ClientCredentials": [
+        "WEDEC_BARCODE_READ"
+      ]
+    }
+  ],
+  "paths": {
+    "/generateAddressLabel": {
+      "post": {
+        "tags": [
+          "Barcode"
+        ],
+        "summary": "Generate Label",
+        "operationId": "generateAddressLabel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateLabel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateLabelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/generateReplacementLabel": {
+      "post": {
+        "description": "Generate Label for replacement of defective products",
+        "tags": [
+          "Replacement"
+        ],
+        "operationId": "submitReplacementRequest",
+        "requestBody": {
+          "description": "Replacement Request data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplacementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplacementResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/generateSingleBarcodes": {
+      "post": {
+        "tags": [
+          "Single Barcode"
+        ],
+        "summary": "Generate Single Barcode",
+        "description": "Returns all single barcodes for one or several address labels generated in binary format.",
+        "operationId": "generateSingleBarcodes",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateSingleBarcodes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateSingleBarcodesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incomplete/Invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationError"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No results found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdditionalData": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "value": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,50}"
+          }
+        }
+      },
+      "Communication": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,160}"
+          },
+          "mobile": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{10,20}"
+          }
+        }
+      },
+      "GenerateSingleBarcodes": {
+        "type": "object",
+        "required": [
+          "language",
+          "barcodeDefinition",
+          "customer",
+          "frankingLicense",
+          "item"
+        ],
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "frankingLicense": {
+            "type": "string"
+          },
+          "ppFranking": {
+            "type": "boolean",
+            "default": false
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerAddress"
+          },
+          "customerSystem": {
+            "type": "string",
+            "pattern": "[a-zA-Z,0-9,\\s]{1,255}"
+          },
+          "barcodeDefinition": {
+            "$ref": "#/components/schemas/SingleBarcodesDefinition"
+          },
+          "sendingID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,50}"
+          },
+          "item": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          }
+        }
+      },
+      "SingleBarcodesDefinition": {
+        "type": "object",
+        "required": [
+          "imageFileType"
+        ],
+        "properties": {
+          "imageFileType": {
+            "type": "string",
+            "description": "Defines valid formats of images.",
+            "pattern": "[a-zA-Z0-9]{1,5}"
+          },
+          "imageResolution": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GenerateSingleBarcodesResponse": {
+        "type": "object",
+        "required": [
+          "barcodeDefinition"
+        ],
+        "properties": {
+          "barcodeDefinition": {
+            "$ref": "#/components/schemas/SingleBarcodesResponseDefinition"
+          },
+          "sendingID": {
+            "type": "string"
+          },
+          "item": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SingleBarcodesResponseItem"
+            }
+          }
+        }
+      },
+      "SingleBarcodesResponseDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SingleBarcodesDefinition"
+          },
+          {
+            "type": "object"
+          },
+          {
+            "properties": {
+              "colorPrintRequired": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "SingleBarcodesResponseItem": {
+        "type": "object",
+        "properties": {
+          "identCode": {
+            "type": "string"
+          },
+          "barcodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "itemID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,200}"
+          },
+          "errors": {
+            "$ref": "#/components/schemas/MessagesType"
+          },
+          "warnings": {
+            "$ref": "#/components/schemas/MessagesType"
+          }
+        }
+      },
+      "GenerateLabel": {
+        "type": "object",
+        "required": [
+          "language",
+          "labelDefinition",
+          "customer",
+          "frankingLicense",
+          "item"
+        ],
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "frankingLicense": {
+            "type": "string"
+          },
+          "ppFranking": {
+            "type": "boolean",
+            "default": false
+          },
+          "customer": {
+            "$ref": "#/components/schemas/GenerateLabelCustomer"
+          },
+          "customerSystem": {
+            "type": "string",
+            "pattern": "[a-zA-Z,0-9\\s]{1,255}"
+          },
+          "labelDefinition": {
+            "$ref": "#/components/schemas/GenerateLabelDefinition"
+          },
+          "sendingID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,50}"
+          },
+          "item": {
+            "$ref": "#/components/schemas/Item"
+          }
+        }
+      },
+      "GenerateLabelCustomer": {
+        "type": "object",
+        "required": [
+          "city",
+          "name1",
+          "street",
+          "zip"
+        ],
+        "properties": {
+          "name1": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "name2": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "street": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "zip": {
+            "type": "string",
+            "pattern": "([0-9]{4})|([0-9]{6})"
+          },
+          "city": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "[a-zA-Z]{2}"
+          },
+          "logo": {
+            "type": "string",
+            "format": "byte"
+          },
+          "logoFormat": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,3}"
+          },
+          "logoRotation": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Default value is 270.",
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ]
+          },
+          "logoAspectRatio": {
+            "type": "string",
+            "enum": [
+              "EXPAND",
+              "KEEP"
+            ]
+          },
+          "logoHorizontalAlign": {
+            "type": "string",
+            "enum": [
+              "WITH_CONTENT",
+              "LEFT"
+            ]
+          },
+          "logoVerticalAlign": {
+            "type": "string",
+            "enum": [
+              "TOP",
+              "MIDDLE"
+            ]
+          },
+          "domicilePostOffice": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "pobox": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateLabelDefinition": {
+        "type": "object",
+        "required": [
+          "labelLayout"
+        ],
+        "properties": {
+          "labelLayout": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]{2}"
+          },
+          "printAddresses": {
+            "type": "string",
+            "description": "Enumeration to indicated whether addresses are printed or not.",
+            "enum": [
+              "NONE",
+              "ONLY_RECIPIENT",
+              "ONLY_CUSTOMER",
+              "RECIPIENT_AND_CUSTOMER"
+            ]
+          },
+          "imageFileType": {
+            "type": "string",
+            "description": "Defines valid formats of images.",
+            "pattern": "[a-zA-Z0-9]{1,5}"
+          },
+          "imageResolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "printPreview": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "GenerateLabelResponse": {
+        "type": "object",
+        "required": [
+          "labelDefinition",
+          "item"
+        ],
+        "properties": {
+          "labelDefinition": {
+            "$ref": "#/components/schemas/ResponseGenerateLabelDefinition"
+          },
+          "sendingID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,50}"
+          },
+          "item": {
+            "$ref": "#/components/schemas/ResponseItem"
+          }
+        }
+      },
+      "ResponseGenerateLabelDefinition": {
+        "type": "object",
+        "required": [
+          "labelLayout"
+        ],
+        "properties": {
+          "labelLayout": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]{2}"
+          },
+          "printAddresses": {
+            "type": "string",
+            "description": "Enumeration to indicated whether addresses are printed or not.",
+            "enum": [
+              "NONE",
+              "ONLY_RECIPIENT",
+              "ONLY_CUSTOMER",
+              "RECIPIENT_AND_CUSTOMER"
+            ]
+          },
+          "imageFileType": {
+            "type": "string",
+            "description": "Defines valid formats of images.",
+            "pattern": "[a-zA-Z0-9]{1,5}"
+          },
+          "imageResolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "printPreview": {
+            "type": "boolean",
+            "default": false
+          },
+          "colorPrintRequired": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "required": [
+          "recipient"
+        ],
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,200}"
+          },
+          "itemNumber": {
+            "type": "string",
+            "pattern": "[0-9]{1,8}"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/Recipient"
+          },
+          "additionalData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalData"
+            }
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/ServiceCodeAttributes"
+          },
+          "notification": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Notification"
+            }
+          }
+        }
+      },
+      "LabelAddress": {
+        "type": "object",
+        "required": [
+          "labelLine"
+        ],
+        "properties": {
+          "labelLine": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Optional, used to declare a specific address on the label.\n If omitted, the address data of the recipient is taken.\n Useful if the address data of the recipient exceeds the length of the label."
+      },
+      "ResponseItem": {
+        "type": "object",
+        "properties": {
+          "itemID": {
+            "type": "string",
+            "pattern": "[^><?\":\\\\/*]{1,200}"
+          },
+          "errors": {
+            "$ref": "#/components/schemas/MessagesType"
+          },
+          "warnings": {
+            "$ref": "#/components/schemas/MessagesType"
+          },
+          "identCode": {
+            "$ref": "#/components/schemas/IdentCode"
+          },
+          "label": {
+            "type": "array",
+            "description": "Label images, base64 encoded",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        }
+      },
+      "MessageType": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "[W,E][0-9]{4}"
+          },
+          "message": {
+            "type": "string",
+            "pattern": ".{1,500}"
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "required": [
+          "communication",
+          "language"
+        ],
+        "properties": {
+          "communication": {
+            "$ref": "#/components/schemas/Communication"
+          },
+          "service": {
+            "type": "string",
+            "description": "Notification code that designates the notification.",
+            "pattern": "[0-9]{1,20}"
+          },
+          "freeText1": {
+            "type": "string",
+            "description": "Individual Text 1 for notification.",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,160}"
+          },
+          "freeText2": {
+            "type": "string",
+            "description": "Individual Text 2 for notification..",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,512}"
+          },
+          "deliveryInstructions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "10",
+                "14",
+                "18",
+                "20"
+              ]
+            },
+            "description": "Possible options to indicated the delivery instructions. \"10\" Deposit consignment, \"14\" Delivery to neightbour, \"18\" Desired day, \"20\" Forward consignment"
+          },
+          "dynPic": {
+            "$ref": "#/components/schemas/DynPicType"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "type": {
+            "$ref": "#/components/schemas/NotificationType"
+          }
+        }
+      },
+      "DynPicType": {
+        "type": "object",
+        "description": "is only a valid input for Post-internal applications. For Post-external applications the DynPic must not be set.",
+        "required": [
+          "urlPic",
+          "urlLink"
+        ],
+        "properties": {
+          "urlPic": {
+            "type": "string",
+            "description": "Image URL for notification. Allowed extension: jpg, jpeg, gif, png. Best results if the image has a resolution of 640px x 160px",
+            "pattern": "[^><]{1,1024}"
+          },
+          "urlLink": {
+            "type": "string",
+            "description": "Deeplink URL for notification.",
+            "pattern": "[^><]{1,1024}"
+          }
+        }
+      },
+      "NotificationType": {
+        "type": "string",
+        "description": "Specification of the medium.",
+        "enum": [
+          "EMAIL",
+          "SMS"
+        ]
+      },
+      "BaseRecipient": {
+        "type": "object",
+        "required": [
+          "city",
+          "name1"
+        ],
+        "properties": {
+          "postIdent": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,15}"
+          },
+          "title": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "personallyAddressed": {
+            "type": "boolean",
+            "default": true
+          },
+          "name1": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "firstName": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "name2": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "name3": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "addressSuffix": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "street": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "houseNo": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,10}"
+          },
+          "floorNo": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,5}"
+          },
+          "mailboxNo": {
+            "type": "string",
+            "pattern": "[0-9]{1,10}"
+          },
+          "zip": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,10}"
+          },
+          "city": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "[a-zA-Z]{2}"
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{10,20}"
+          },
+          "mobile": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{10,20}"
+          },
+          "pobox": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Recipient": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseRecipient"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "labelAddress": {
+                "$ref": "#/components/schemas/LabelAddress"
+              },
+              "houseKey": {
+                "type": "string",
+                "pattern": "\\d{1,13}"
+              }
+            }
+          }
+        ]
+      },
+      "ReturnInfoType": {
+        "type": "object",
+        "required": [
+          "returnNote",
+          "instructionForReturns"
+        ],
+        "properties": {
+          "returnNote": {
+            "type": "boolean",
+            "default": false
+          },
+          "instructionForReturns": {
+            "type": "boolean",
+            "default": false
+          },
+          "returnService": {
+            "type": "string",
+            "pattern": "\\d"
+          },
+          "customerIDReturnAddress": {
+            "type": "string",
+            "pattern": "\\d{1,8}"
+          }
+        }
+      },
+      "ServiceCodeAttributes": {
+        "type": "object",
+        "required": [
+          "przl"
+        ],
+        "properties": {
+          "przl": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "freeText": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,34}"
+          },
+          "deliveryDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-11-21T17:32:28Z"
+          },
+          "parcelNo": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 99
+          },
+          "parcelTotal": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 99
+          },
+          "deliveryPlace": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "proClima": {
+            "type": "boolean",
+            "default": false
+          },
+          "returnInfo": {
+            "$ref": "#/components/schemas/ReturnInfoType"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Weight in gramms."
+          },
+          "unnumbers": {
+            "$ref": "#/components/schemas/UNNumbers"
+          },
+          "dispatchInfo": {
+            "$ref": "#/components/schemas/DispatchInfo"
+          }
+        }
+      },
+      "UNNumbers": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": "Represents the UN Numbers for the additional service LQ (limited quantities)."
+      },
+      "DispatchInfo": {
+        "type": "object",
+        "properties": {
+          "dispatchDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2018-11-21"
+          },
+          "dispatchTime": {
+            "type": "string",
+            "pattern": "^([0-1]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)$",
+            "example": "17:32:28"
+          }
+        }
+      },
+      "MessagesType": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MessageType"
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Name of the field that failed the validation"
+          },
+          "error": {
+            "type": "string"
+          },
+          "rejectedValue": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplacementRequest": {
+        "type": "object",
+        "required": [
+          "language",
+          "customerDetails",
+          "sendReplacement",
+          "returnToWarehouse"
+        ],
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "customerDetails": {
+            "$ref": "#/components/schemas/ReplacementCustomerDetails"
+          },
+          "sendReplacement": {
+            "$ref": "#/components/schemas/ExchangeLabelDefinition"
+          },
+          "returnToWarehouse": {
+            "$ref": "#/components/schemas/ReplacementLabelDefinition"
+          },
+          "sendRepaired": {
+            "$ref": "#/components/schemas/ExchangeLabelDefinition"
+          },
+          "returnReplacement": {
+            "$ref": "#/components/schemas/ReplacementLabelDefinition"
+          }
+        }
+      },
+      "ReplacementLabelDefinition": {
+        "type": "object",
+        "required": [
+          "recipient",
+          "attributes"
+        ],
+        "properties": {
+          "labelId": {
+            "type": "string"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/BaseRecipient"
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/ServiceCodeAttributes"
+          }
+        }
+      },
+      "ExchangeLabelDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ReplacementLabelDefinition"
+          },
+          {
+            "type": "object",
+            "required": [
+              "notification"
+            ],
+            "properties": {
+              "notification": {
+                "$ref": "#/components/schemas/ExchangeNotification"
+              }
+            }
+          }
+        ]
+      },
+      "ExchangeNotification": {
+        "type": "object",
+        "description": "If type is 'SMS', then the 'mobile' property of the recipient of the label is mandatory.\nIf type is 'EMAIL', then the 'email' property of the recipient of the label is mandatory.\n",
+        "required": [
+          "language",
+          "type"
+        ],
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "type": {
+            "$ref": "#/components/schemas/NotificationType"
+          }
+        }
+      },
+      "ReplacementResponse": {
+        "type": "object",
+        "required": [
+          "sendReplacement",
+          "returnToWarehouse"
+        ],
+        "properties": {
+          "sendReplacement": {
+            "$ref": "#/components/schemas/ReplacementLabelResponse"
+          },
+          "returnToWarehouse": {
+            "$ref": "#/components/schemas/ReplacementLabelResponse"
+          },
+          "sendRepaired": {
+            "$ref": "#/components/schemas/ReplacementLabelResponse"
+          },
+          "returnReplacement": {
+            "$ref": "#/components/schemas/ReplacementLabelResponse"
+          }
+        }
+      },
+      "ReplacementLabelResponse": {
+        "type": "object",
+        "properties": {
+          "identcode": {
+            "$ref": "#/components/schemas/IdentCode"
+          },
+          "imageFileType": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]{1,5}"
+          },
+          "label": {
+            "type": "array",
+            "description": "Label images, base64 encoded",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        }
+      },
+      "ReplacementCustomerDetails": {
+        "type": "object",
+        "required": [
+          "licenseNo",
+          "labelLayout"
+        ],
+        "properties": {
+          "licenseNo": {
+            "type": "string",
+            "pattern": "[0-9]{8}"
+          },
+          "labelLayout": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]{2}"
+          },
+          "imageFileType": {
+            "type": "string",
+            "description": "Defines valid formats of images.",
+            "pattern": "[a-zA-Z0-9]{1,5}"
+          },
+          "imageResolution": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Allowed values: 200, 300, 600"
+          },
+          "printPreview": {
+            "type": "boolean",
+            "default": false
+          },
+          "address": {
+            "$ref": "#/components/schemas/CustomerAddress"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/CustomerLogo"
+          }
+        }
+      },
+      "IdentCode": {
+        "type": "string",
+        "pattern": "99\\d{16}"
+      },
+      "Language": {
+        "type": "string",
+        "enum": [
+          "DE",
+          "FR",
+          "IT",
+          "EN"
+        ]
+      },
+      "CustomerLogo": {
+        "type": "object",
+        "required": [
+          "image",
+          "format"
+        ],
+        "properties": {
+          "image": {
+            "type": "string",
+            "format": "byte"
+          },
+          "format": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,3}"
+          },
+          "rotation": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Default value is 270.",
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ]
+          },
+          "aspectRatio": {
+            "type": "string",
+            "enum": [
+              "EXPAND",
+              "KEEP"
+            ]
+          },
+          "horizontalAlign": {
+            "type": "string",
+            "enum": [
+              "WITH_CONTENT",
+              "LEFT"
+            ]
+          },
+          "verticalAlign": {
+            "type": "string",
+            "enum": [
+              "TOP",
+              "MIDDLE"
+            ]
+          }
+        }
+      },
+      "CustomerAddress": {
+        "type": "object",
+        "required": [
+          "city",
+          "name1",
+          "street",
+          "zip"
+        ],
+        "properties": {
+          "name1": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "name2": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "street": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "zip": {
+            "type": "string",
+            "pattern": "([0-9]{4})|([0-9]{6})"
+          },
+          "city": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,25}"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "[a-zA-Z]{2}"
+          },
+          "domicilePostOffice": {
+            "type": "string",
+            "pattern": "[^*{\\}\\[\\]=><\\\\]{1,35}"
+          },
+          "pobox": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth2ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/OAuth/token",
+            "scopes": {
+              "WEDEC_BARCODE_READ": "get barcode label"
+            }
+          }
+        }
+      }
+    }
+  }
+}

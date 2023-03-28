@@ -1,0 +1,7405 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Get Connected Client API",
+    "description": ""
+  },
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Login for API User",
+        "description": "Login for API User",
+        "operationId": "login",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/loginRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/loginObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "summary": "List agencies",
+        "description": "List agencies",
+        "operationId": "listAgencies",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/agencyObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Create new agency",
+        "description": "Create new agency",
+        "operationId": "createAgency",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/agencyRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Get agency details",
+        "description": "Get agency details",
+        "operationId": "getAgency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/agencyObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Update individual agency",
+        "description": "Update individual agency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "operationId": "updateAgency",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/agencyRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Delete existing agency",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteAgency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Operation successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/causes": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "List causes attached to an agency",
+        "description": "List causes attached to an agency",
+        "operationId": "agencyIndexCause",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/causeObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/causes/{cause_id}": {
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Attach cause to agency",
+        "description": "Attach cause to agency",
+        "operationId": "agencyCausePost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cause_id",
+            "in": "path",
+            "description": "ID of cause",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Delete cause from agency",
+        "description": "Delete",
+        "operationId": "agencyCauseDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cause_id",
+            "in": "path",
+            "description": "ID of cause",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/clusters": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "List clusters attached to an agency",
+        "description": "List clusters attached to an agency",
+        "operationId": "agencyIndexCluster",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/clusterObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/clusters/{cluster_id}": {
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Attach cluster to agency",
+        "description": "Attach cluster to agency",
+        "operationId": "agencyClusterPost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cluster_id",
+            "in": "path",
+            "description": "ID of cluster",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Delete cluster from agency",
+        "description": "Delete",
+        "operationId": "agencyClusterDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cluster_id",
+            "in": "path",
+            "description": "ID of cluster",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/managers": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "List managers attached to an agency",
+        "description": "List managers attached to an agency",
+        "operationId": "agencyIndexManager",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userMiniObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/managers/{user_id}": {
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Add an agency manager",
+        "description": "Add an agency manager",
+        "operationId": "createAgencyManager",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user being added as a manager",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Delete agency manager",
+        "description": "Delete",
+        "operationId": "deleteAgencyManager",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user being deleted as a manager",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/tags": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "List tags attached to an agency",
+        "description": "List tags attached to an agency",
+        "operationId": "agencyIndexTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/tagObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Attach tags to an agency",
+        "description": "Attach tags to an agency",
+        "operationId": "createAgencyTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tags"
+                ],
+                "properties": {
+                  "tags": {
+                    "type": "array",
+                    "example": [
+                      "Tag 1",
+                      "Tag 2"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/agencies/{id}/tags/{tag_id}": {
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "summary": "Delete tag from agency",
+        "description": "Delete",
+        "operationId": "agencyTagDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "ID of tag",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/benchmarks": {
+      "get": {
+        "tags": [
+          "Benchmark"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "summary": "List site benchmarks",
+        "description": "List site benchmarks",
+        "operationId": "listBenchmarks",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/benchmarkObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Benchmark"
+        ],
+        "summary": "Create record",
+        "description": "Description needed",
+        "operationId": "createBenchmark",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/benchmarkRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/benchmarks/{id}": {
+      "get": {
+        "tags": [
+          "Benchmark"
+        ],
+        "summary": "Get benchmark by id",
+        "description": "Get benchmark by id",
+        "operationId": "getBenchmark",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/benchmarkObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Benchmark"
+        ],
+        "summary": "Update benchmark",
+        "description": "Update benchmark",
+        "operationId": "updateBenchmark",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of benchmark",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/benchmarkRequest"
+        },
+        "responses": {
+          "204": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Benchmark"
+        ],
+        "summary": "Delete benchmark",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteBenchmark",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of benchmark",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/benchmarks/{id}/users": {
+      "get": {
+        "tags": [
+          "Benchmark"
+        ],
+        "summary": "List users who have the given benchmark",
+        "description": "List users who have the given benchmark",
+        "operationId": "listBenchmarkUsers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of benchmark",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userMiniObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/causes": {
+      "get": {
+        "tags": [
+          "Cause & Interest"
+        ],
+        "summary": "List site available causes",
+        "description": "List site available causes",
+        "operationId": "causesIndex",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/causeObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clusters": {
+      "get": {
+        "tags": [
+          "Cluster"
+        ],
+        "summary": "List site available clusters",
+        "description": "List site available clusters",
+        "operationId": "clustersIndex",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/clusterObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Cluster"
+        ],
+        "summary": "Create record",
+        "description": "Create record",
+        "operationId": "createCluster",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/clusterRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/clusterObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clusters/{id}": {
+      "delete": {
+        "tags": [
+          "Cluster"
+        ],
+        "summary": "Delete Cluster",
+        "description": "Delete Cluster",
+        "operationId": "deleteClusters",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of cluster",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/hours": {
+      "get": {
+        "tags": [
+          "Hour"
+        ],
+        "summary": "List Hours",
+        "description": "List Hours",
+        "operationId": "listHours",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/hourObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Hour"
+        ],
+        "summary": "Create record",
+        "description": "Submit hours either for a specific need or, with the lack of a need id, as individual",
+        "operationId": "createHour",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/hourRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "User has not responded to that need"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/hours/{id}": {
+      "get": {
+        "tags": [
+          "Hour"
+        ],
+        "summary": "Get hour",
+        "description": "Get hour",
+        "operationId": "getHour",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of hour",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/hourObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Hour"
+        ],
+        "summary": "Update Hour",
+        "description": "Update Hour",
+        "operationId": "updateHour",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Hour",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/hourRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Hour"
+        ],
+        "summary": "Delete hour",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteHour",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of hour",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/impacts": {
+      "get": {
+        "tags": [
+          "Impact"
+        ],
+        "summary": "List site available impact areas",
+        "description": "List site available impact areas",
+        "operationId": "impactsIndex",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/impactObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/interests": {
+      "get": {
+        "tags": [
+          "Cause & Interest"
+        ],
+        "summary": "List site available interests",
+        "description": "List site available interests",
+        "operationId": "interestsIndex",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/interestObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs": {
+      "get": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "List needs",
+        "description": "List needs",
+        "operationId": "listNeeds",
+        "parameters": [
+          {
+            "name": "agency_id",
+            "in": "query",
+            "description": "Id of agency that created need",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "need_title",
+            "in": "query",
+            "description": "Name of need you are search.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "need_status",
+            "in": "query",
+            "description": "Status of needs you would like to find.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "pending"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/needObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Create need",
+        "description": "Create need",
+        "operationId": "createNeed",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/needRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs/{id}": {
+      "get": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Get need",
+        "description": "Get need details",
+        "operationId": "getNeed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/needObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Update need",
+        "description": "Update need",
+        "operationId": "updateNeed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/needRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Delete existing Need",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteNeed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Operation successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs/{id}/responses": {
+      "get": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Get list of responses for a need",
+        "description": "Get list of responses for a need",
+        "operationId": "listNeedResponses",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/responseObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs/{id}/interests/{interest_id}/": {
+      "post": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Attach interest to need",
+        "description": "Attach interest to need",
+        "operationId": "needAddInterest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "interest_id",
+            "in": "path",
+            "description": "ID of interest",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Remove interest from need",
+        "description": "Remove interest from need",
+        "operationId": "needDeleteInterest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "interest_id",
+            "in": "path",
+            "description": "ID of interest",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs/{id}/qualifications/{qualification_id}/": {
+      "post": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Attach qualification to need",
+        "description": "Attach qualification to need",
+        "operationId": "needAddQualification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "qualification_id",
+            "in": "path",
+            "description": "ID of qualification",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Remove qualification from need",
+        "description": "Remove qualification from need",
+        "operationId": "needDeleteQualification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "qualification_id",
+            "in": "path",
+            "description": "ID of qualification",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/needs/{id}/questions": {
+      "get": {
+        "tags": [
+          "Need"
+        ],
+        "summary": "Get list of questions for a need",
+        "description": "Get list of questions for a need",
+        "operationId": "listNeedQuestions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Need",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/questionObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/qualifications": {
+      "get": {
+        "tags": [
+          "Qualification"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "summary": "List qualifications",
+        "description": "List qualifications",
+        "operationId": "listQualifications",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/qualificationObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Qualification"
+        ],
+        "summary": "Create record",
+        "description": "Description needed",
+        "operationId": "createQualification",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/qualificationRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/qualifications/{id}": {
+      "get": {
+        "tags": [
+          "Qualification"
+        ],
+        "summary": "Get Qualification",
+        "description": "Get Qualification",
+        "operationId": "getQualification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of qualification",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/qualificationObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Qualification"
+        ],
+        "summary": "Update qualification",
+        "description": "Update qualification",
+        "operationId": "updateQualification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of qualification",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/qualificationRequest"
+        },
+        "responses": {
+          "204": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Qualification"
+        ],
+        "summary": "Delete qualification",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteQualification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of qualification",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/qualifications/{id}/users": {
+      "get": {
+        "tags": [
+          "Qualification"
+        ],
+        "summary": "List users who have this qualification",
+        "description": "List users who have this qualification",
+        "operationId": "listQualificationUsers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/qualificationUsersObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/responses": {
+      "get": {
+        "tags": [
+          "Response"
+        ],
+        "summary": "Get list of responses",
+        "description": "Get list of responses",
+        "operationId": "listResponses",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/responseObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Response"
+        ],
+        "summary": "Create record",
+        "description": "Description needed",
+        "operationId": "createResponse",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/responseRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/responses/{id}": {
+      "get": {
+        "tags": [
+          "Response"
+        ],
+        "summary": "Get single response",
+        "description": "Get single response",
+        "operationId": "getResponse",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/responseObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Response"
+        ],
+        "summary": "Update Response",
+        "description": "Update Response",
+        "operationId": "updateResponse",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Response",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/responseRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Response"
+        ],
+        "summary": "Delete response",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteResponse",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of response",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/teams": {
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "summary": "List teams",
+        "description": "List teams",
+        "operationId": "listTeams",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/teamObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Create team",
+        "description": "Create team",
+        "operationId": "postTeam",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/teamRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/teams/{id}": {
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get team",
+        "description": "Get team",
+        "operationId": "getTeam",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/teamObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Delete team",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteTeam",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/teams/{id}/member/{member}": {
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Attach member to team",
+        "description": "Attach member to team",
+        "operationId": "teamMemberAttach",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "member",
+            "in": "path",
+            "description": "ID of user being attached to team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sch_id": {
+                    "description": "Schedule ID",
+                    "type": "string",
+                    "format": "number",
+                    "example": 235587
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Detach member from team",
+        "description": "Detach member from team",
+        "operationId": "teamMemberDetach",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "member",
+            "in": "path",
+            "description": "ID of user being detached from team",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List site users",
+        "description": "Multiple search values can be provided to narrow down the results",
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "name": "user_status",
+            "in": "query",
+            "description": "Status values that need to be considered for filter",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "pending",
+                  "imported",
+                  "inactive"
+                ],
+                "default": "active"
+              }
+            }
+          },
+          {
+            "name": "user_fname",
+            "in": "query",
+            "description": "User first name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_lname",
+            "in": "query",
+            "description": "User last name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_email",
+            "in": "query",
+            "description": "User email address",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create new user",
+        "description": "Create new user",
+        "operationId": "createUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/userRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get existing user",
+        "description": "Get existing user",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/userObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update existing user",
+        "description": "Update existing user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/userRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Operation successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete existing user",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Operation successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/agencies": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's fanned agencies",
+        "description": "Get list of a user's fanned agencies",
+        "operationId": "listUserAgencies",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/agencyMiniObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/agencies/{agency_id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Fan an agency",
+        "description": "Fan an agency",
+        "operationId": "createUserAgencyFan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "agency_id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete agency fan relationship",
+        "description": "Delete agency fan relationship",
+        "operationId": "deleteUserAgencyFan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "agency_id",
+            "in": "path",
+            "description": "ID of agency",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/benchmarks": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's benchmarks",
+        "description": "Get list of a user's benchmarks",
+        "operationId": "listUserBenchmarks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/benchmarkMiniObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/benchmarks/{benchmark_id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete benchmark from user",
+        "description": "Delete benchmark from user",
+        "operationId": "deleteUserBenchmark",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "benchmark_id",
+            "in": "path",
+            "description": "ID of benchmark",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/causes": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's causes",
+        "description": "Get list of a user's causes",
+        "operationId": "listUserCauses",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/causeObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/causes/{cause_id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Add cause to a user",
+        "description": "Add cause to a user",
+        "operationId": "createUserCause",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cause_id",
+            "in": "path",
+            "description": "ID of user / cause relationship",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Remove causes assigned to a user",
+        "description": "Remove causes assigned to a user",
+        "operationId": "deleteUserCause",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cause_id",
+            "in": "path",
+            "description": "ID of user / cause relationship",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/extras": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's extra data",
+        "description": "Get list of a user's extra data",
+        "operationId": "listUserExtras",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/extraObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update custom user extra data",
+        "description": "Update custom user extra data. Note that this payload will be the entirety of the user extras. If this is an update, it must also include previously stored extras.",
+        "operationId": "createUserExtra",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "example": "Language"
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "Spanish"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/hours": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List user submitted hours",
+        "description": "List user submitted hours",
+        "operationId": "listUserhours",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/hourObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/interests": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's interests",
+        "description": "Get list of a user's interests",
+        "operationId": "listUserInterests",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/interestObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/interests/{interest_id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Assign interest to a user",
+        "description": "Assign interest to a user",
+        "operationId": "addUserInterest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "interest_id",
+            "in": "path",
+            "description": "ID interest",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Remove interest assigned to a user",
+        "description": "Remove interest assigned to a user",
+        "operationId": "deleteUserInterest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "interest_id",
+            "in": "path",
+            "description": "ID of user / interests relationship",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/optouts": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Check if a user is opted out of communication",
+        "description": "Check if a user is opted out of communication",
+        "operationId": "getUserOptout",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User has opted out"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User has not opted out"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Opt user out of email communication",
+        "description": "Opt user out of email communication",
+        "operationId": "createUserOptout",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Remove optout assigned to a user",
+        "description": "Remove optout assigned to a user",
+        "operationId": "deleteUserOptout",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/qualifications": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's qualifications",
+        "description": "Get list of a user's qualifications",
+        "operationId": "listUserQualifications",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userQualificationsObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/responses": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List user responses",
+        "description": "List responses for a specific user",
+        "operationId": "listUserResponses",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userResponseObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/tracks": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's tracks",
+        "description": "Get list of a user's tracks",
+        "operationId": "listUserTracks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/trackMiniObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/tags": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get list of a user's tags",
+        "description": "Get list of a user's tags",
+        "operationId": "listUserTags",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/tagObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "List tags assigned to a user",
+        "description": "List tags assigned to a user",
+        "operationId": "createUserTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tags"
+                ],
+                "properties": {
+                  "tags": {
+                    "type": "array",
+                    "example": [
+                      "Tag 1",
+                      "Tag 2"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/tags/{tag_id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Remove tag assigned to a user",
+        "description": "Remove tag assigned to a user",
+        "operationId": "deleteUserTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "tag_id",
+            "in": "path",
+            "description": "ID of tag",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/groups": {
+      "get": {
+        "tags": [
+          "User Group"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since_id",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Filtering items that have been added since that ID"
+          },
+          {
+            "in": "query",
+            "name": "since_created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been added since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "since_updated",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "datetime",
+              "example": "2021-11-01 15:00"
+            },
+            "description": "Filtering items that have been updated since that date-time"
+          },
+          {
+            "in": "query",
+            "name": "show_inactive",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Yes",
+                "No"
+              ]
+            },
+            "description": "Default request will omit inactive records. Passing Yes will allow them to be returned."
+          }
+        ],
+        "summary": "List user groups",
+        "description": "List user groups",
+        "operationId": "listGroups",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/groupObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Create record",
+        "description": "Description needed",
+        "operationId": "postGroup",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/groupRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/{id}": {
+      "get": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Get single user group",
+        "description": "Get single user group",
+        "operationId": "getGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/groupObject"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Update user group",
+        "description": "Update user group",
+        "operationId": "updateGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/groupRequest"
+        },
+        "responses": {
+          "204": {
+            "description": "Updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Failed Validation"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Delete user group",
+        "description": "Please note that this is a soft delete and only marks the record as inactive.",
+        "operationId": "deleteGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/{id}/needs/{need_id}": {
+      "post": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Attach need to group",
+        "description": "Attach need to group",
+        "operationId": "postGroupNeed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "need_id",
+            "in": "path",
+            "description": "ID of need being added to group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Remove need from group",
+        "description": "Remove need from group",
+        "operationId": "deleteGroupNeed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "need_id",
+            "in": "path",
+            "description": "ID of need to remove",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/{id}/users/{user_id}": {
+      "post": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Attach user to group",
+        "description": "Attach user to group",
+        "operationId": "postGroupUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user to remove",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User Group"
+        ],
+        "summary": "Remove user from group",
+        "description": "Remove user from group",
+        "operationId": "deleteGroupUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user to remove",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "No results"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Production",
+      "url": "https://api.galaxydigital.com/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "requestBodies": {
+      "clusterRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/clusterRequestSchema"
+            }
+          }
+        }
+      },
+      "teamRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/teamRequestSchema"
+            }
+          }
+        }
+      },
+      "groupRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/groupRequestSchema"
+            }
+          }
+        }
+      },
+      "qualificationRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/qualificationRequestSchema"
+            }
+          }
+        }
+      },
+      "hourRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/hourRequestSchema"
+            }
+          }
+        }
+      },
+      "userRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/userRequestSchema"
+            }
+          }
+        }
+      },
+      "agencyRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/agencyRequestSchema"
+            }
+          }
+        }
+      },
+      "needRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/needRequestSchema"
+            }
+          }
+        }
+      },
+      "responseRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/responseRequestSchema"
+            }
+          }
+        }
+      },
+      "benchmarkRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/benchmarkRequestSchema"
+            }
+          }
+        }
+      },
+      "loginRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/loginRequestSchema"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "groupObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "ug_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive"
+            ]
+          },
+          "ug_title": {
+            "type": "string"
+          },
+          "ug_description": {
+            "type": "string"
+          },
+          "ug_description_private": {
+            "type": "string"
+          },
+          "ug_domains": {
+            "type": "string"
+          },
+          "ug_color": {
+            "type": "string",
+            "format": "hex"
+          },
+          "ug_text_color": {
+            "type": "string"
+          },
+          "ug_icon": {
+            "type": "string"
+          },
+          "ug_suppress_resume": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_allow_member_remove": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_submitted_hours": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "manual",
+              "approved"
+            ]
+          },
+          "ug_block_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "ug_limit": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_goal": {
+            "type": "string",
+            "format": "number"
+          },
+          "ug_approval": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "needs": {
+            "type": "array",
+            "description": "Needs attached to user group",
+            "items": {
+              "$ref": "#/components/schemas/needMiniObject"
+            }
+          },
+          "users": {
+            "type": "array",
+            "description": "Users attached to user group",
+            "items": {
+              "$ref": "#/components/schemas/GroupUserMiniObject"
+            }
+          },
+          "agencies": {
+            "type": "array",
+            "description": "Agencies attached to user group",
+            "items": {
+              "$ref": "#/components/schemas/agencyMiniObject"
+            }
+          },
+          "questions_reflection": {
+            "type": "array",
+            "description": "Reflection questions attached to user group",
+            "items": {
+              "$ref": "#/components/schemas/questionObject"
+            }
+          },
+          "questions_join": {
+            "type": "array",
+            "description": "Join questions attached to user group",
+            "items": {
+              "$ref": "#/components/schemas/questionObject"
+            }
+          }
+        }
+      },
+      "teamObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "team_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "team_title": {
+            "type": "string"
+          },
+          "team_description": {
+            "type": "string"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/userMiniObject"
+          },
+          "agency": {
+            "$ref": "#/components/schemas/agencyMiniObject"
+          },
+          "need": {
+            "$ref": "#/components/schemas/needMiniObject"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/teamMembersObject"
+            }
+          }
+        }
+      },
+      "agencyMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "domain_id": {
+            "type": "integer"
+          },
+          "agency_name": {
+            "type": "string"
+          }
+        }
+      },
+      "initiativeMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "init_title": {
+            "type": "string"
+          }
+        }
+      },
+      "groupMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "group_title": {
+            "type": "string"
+          }
+        }
+      },
+      "needMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "need_title": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseAnswerObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "area": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        }
+      },
+      "trackMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number",
+            "example": 432155
+          },
+          "name": {
+            "type": "string",
+            "example": "default"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "teamMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "GroupUserMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_fname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "leader": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        }
+      },
+      "userMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_fname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          }
+        }
+      },
+      "teamMembersObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_fname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "leader": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        }
+      },
+      "userQualificationsObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "qualification_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "qualification_title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive",
+              "expired",
+              "rejected",
+              "resubmit"
+            ]
+          },
+          "expires": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "qualificationUsersObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_fname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive",
+              "expired",
+              "rejected",
+              "resubmit"
+            ]
+          },
+          "expires": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "categoryObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "extraObject": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "qualificationObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "qualification_title": {
+            "type": "string"
+          },
+          "qualification_cat_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "qualification_question": {
+            "type": "string"
+          },
+          "qualification_type": {
+            "type": "string",
+            "enum": [
+              "select",
+              "radio",
+              "text",
+              "textarea"
+            ],
+            "example": "select"
+          },
+          "qualification_options": {
+            "type": "array",
+            "example": [
+              "Option A",
+              "Option B"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "qualification_link_url": {
+            "type": "string"
+          },
+          "qualification_link_text": {
+            "type": "string"
+          },
+          "qualification_level": {
+            "type": "string"
+          },
+          "qualification_duration": {
+            "type": "string",
+            "enum": [
+              "date",
+              "1month",
+              "6months",
+              "1year",
+              "2years",
+              "3years",
+              "forever",
+              "1week",
+              "2weeks",
+              "firstofyear"
+            ]
+          },
+          "qualification_approval": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "auto",
+              "ifCorrect"
+            ]
+          },
+          "qualification_status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "needObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "agency": {
+            "$ref": "#/components/schemas/agencyMiniObject"
+          },
+          "initiative": {
+            "$ref": "#/components/schemas/initiativeMiniObject"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/groupMiniObject"
+            }
+          },
+          "need_title": {
+            "type": "string"
+          },
+          "need_body": {
+            "type": "string"
+          },
+          "need_address": {
+            "type": "string"
+          },
+          "need_address2": {
+            "type": "string"
+          },
+          "need_city": {
+            "type": "string"
+          },
+          "need_state": {
+            "type": "string"
+          },
+          "need_postal": {
+            "type": "string"
+          },
+          "need_type": {
+            "type": "string"
+          },
+          "need_contact": {
+            "type": "string"
+          },
+          "need_response_notify": {
+            "type": "string"
+          },
+          "need_date": {
+            "type": "string",
+            "example": "2021-10-28"
+          },
+          "need_date_type": {
+            "type": "string"
+          },
+          "need_impact_area": {
+            "type": "string"
+          },
+          "need_volunteers_needed": {
+            "type": "string"
+          },
+          "need_public": {
+            "type": "string"
+          },
+          "need_allow_groups": {
+            "type": "string"
+          },
+          "need_hours": {
+            "type": "string"
+          },
+          "need_comments": {
+            "type": "string"
+          },
+          "need_latitude": {
+            "type": "string"
+          },
+          "need_longitude": {
+            "type": "string"
+          },
+          "need_date_close": {
+            "type": "string",
+            "format": "date",
+            "example": "2021-01-01"
+          },
+          "family_friendly": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "outdoors": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "outdoors_plan": {
+            "type": "string"
+          },
+          "accessible": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/tagObject"
+            }
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shiftObject"
+            }
+          },
+          "need_status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "background_check_required": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "agencyObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "agency_name": {
+            "type": "string"
+          },
+          "agency_link": {
+            "type": "string"
+          },
+          "agency_address": {
+            "type": "string"
+          },
+          "agency_address2": {
+            "type": "string"
+          },
+          "agency_city": {
+            "type": "string"
+          },
+          "agency_state": {
+            "type": "string"
+          },
+          "agency_postal": {
+            "type": "string"
+          },
+          "agency_extra_location": {
+            "type": "string"
+          },
+          "agency_phone": {
+            "type": "string"
+          },
+          "agency_phone_extension": {
+            "type": "string"
+          },
+          "agency_fax": {
+            "type": "string"
+          },
+          "agency_twitter_link": {
+            "type": "string"
+          },
+          "agency_facebook_link": {
+            "type": "string"
+          },
+          "agency_instagram_link": {
+            "type": "string"
+          },
+          "agency_youtube_link": {
+            "type": "string"
+          },
+          "agency_linkedin_link": {
+            "type": "string"
+          },
+          "agency_email": {
+            "type": "string"
+          },
+          "agency_video": {
+            "type": "string"
+          },
+          "agency_url": {
+            "type": "string"
+          },
+          "agency_ein": {
+            "type": "string"
+          },
+          "agency_comments": {
+            "type": "string"
+          },
+          "agency_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending",
+              "imported"
+            ]
+          },
+          "agency_latitude": {
+            "type": "string"
+          },
+          "agency_longitude": {
+            "type": "string"
+          },
+          "agency_contact": {
+            "type": "string"
+          },
+          "agency_contact_title": {
+            "type": "string"
+          },
+          "agency_news": {
+            "type": "string"
+          },
+          "agency_mission": {
+            "type": "string"
+          },
+          "agency_contacts": {
+            "type": "array",
+            "example": [
+              "mary.smith@example.com",
+              "kevin@example.com"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "agency_hours": {
+            "type": "string"
+          },
+          "agency_partner": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "shiftRequestSchema": {
+        "type": "object",
+        "properties": {
+          "slots": {
+            "type": "string",
+            "format": "number"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "time",
+            "example": "14:00"
+          },
+          "duration": {
+            "type": "string",
+            "format": "integer",
+            "example": 120,
+            "description": "Duration in minutes"
+          }
+        }
+      },
+      "shiftObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number",
+            "example": 1234567
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration": {
+            "type": "string",
+            "format": "number"
+          },
+          "slots": {
+            "type": "string",
+            "format": "number"
+          }
+        }
+      },
+      "userObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_reference_id": {
+            "type": "string"
+          },
+          "user_fname": {
+            "type": "string"
+          },
+          "user_mname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "user_phone": {
+            "type": "string"
+          },
+          "user_phone_cell": {
+            "type": "string"
+          },
+          "user_username": {
+            "type": "string"
+          },
+          "user_address": {
+            "type": "string"
+          },
+          "user_address2": {
+            "type": "string"
+          },
+          "user_city": {
+            "type": "string"
+          },
+          "user_state": {
+            "type": "string"
+          },
+          "user_postal": {
+            "type": "string"
+          },
+          "user_county": {
+            "type": "string"
+          },
+          "user_country": {
+            "type": "string"
+          },
+          "user_age_range": {
+            "type": "string",
+            "enum": [
+              "13-18",
+              "19-24",
+              "25-34",
+              "35-44",
+              "45-54",
+              "55-64",
+              "65+"
+            ]
+          },
+          "user_disaster": {
+            "type": "string",
+            "description": "Contact in event of disaster",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "user_birthday": {
+            "type": "string",
+            "format": "date"
+          },
+          "user_company": {
+            "type": "string"
+          },
+          "user_company_title": {
+            "type": "string"
+          },
+          "user_department": {
+            "type": "string"
+          },
+          "user_ethnicity": {
+            "type": "string",
+            "enum": [
+              "American Indian and Alaska Native",
+              "Asian",
+              "Black or African American",
+              "Hispanic",
+              "Native Hawaiian and Other Pacific Islander",
+              "Non-Hispanic White",
+              "White"
+            ]
+          },
+          "user_gender": {
+            "type": "string",
+            "enum": [
+              "Male",
+              "Female",
+              "PreferNotToSay",
+              "Other"
+            ]
+          },
+          "user_grad_semester": {
+            "type": "string",
+            "enum": [
+              "spring",
+              "summer",
+              "fall",
+              "winter"
+            ]
+          },
+          "user_grad_year": {
+            "type": "string",
+            "format": "year"
+          },
+          "user_notes": {
+            "type": "string"
+          },
+          "user_comments": {
+            "type": "string"
+          },
+          "user_status": {
+            "type": "string",
+            "example": "active",
+            "enum": [
+              "active",
+              "pending",
+              "imported",
+              "inactive"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "questionObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "q_type": {
+            "type": "string",
+            "example": "input",
+            "enum": [
+              "textarea",
+              "input",
+              "radio",
+              "checkbox",
+              "select"
+            ]
+          },
+          "q_options": {
+            "type": "array",
+            "example": [
+              "Option 1",
+              "Option 2"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "q_area": {
+            "type": "string",
+            "enum": [
+              "needResponse",
+              "initiativeResponse",
+              "reflections",
+              "initiativeNeed",
+              "userGroup",
+              "hoursQuestion"
+            ]
+          },
+          "q_area_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "q_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "hourObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user": {
+            "$ref": "#/components/schemas/userMiniObject"
+          },
+          "groups": {
+            "$ref": "#/components/schemas/groupMiniObject"
+          },
+          "need": {
+            "$ref": "#/components/schemas/needMiniObject"
+          },
+          "hour_description": {
+            "type": "string"
+          },
+          "hour_date_start": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "hour_date_end": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "hour_hours": {
+            "type": "string"
+          },
+          "hour_miles": {
+            "type": "string"
+          },
+          "hour_location": {
+            "type": "string"
+          },
+          "hour_contact_name": {
+            "type": "string"
+          },
+          "hour_contact_details": {
+            "type": "string"
+          },
+          "hour_relationship": {
+            "type": "string"
+          },
+          "hour_source": {
+            "type": "string"
+          },
+          "hour_status": {
+            "type": "string",
+            "example": "active",
+            "enum": [
+              "pending",
+              "approved",
+              "entered",
+              "denied",
+              "inactive"
+            ]
+          },
+          "hour_type": {
+            "type": "string",
+            "enum": [
+              "need",
+              "individual"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "userResponseObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "need_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "date_start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration": {
+            "type": "string",
+            "format": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "responseObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "domain_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "agency": {
+            "$ref": "#/components/schemas/agencyMiniObject"
+          },
+          "shift": {
+            "$ref": "#/components/schemas/shiftObject"
+          },
+          "need": {
+            "$ref": "#/components/schemas/needMiniObject"
+          },
+          "user": {
+            "$ref": "#/components/schemas/userMiniObject"
+          },
+          "initiative": {
+            "$ref": "#/components/schemas/initiativeMiniObject"
+          },
+          "team": {
+            "$ref": "#/components/schemas/teamMiniObject"
+          },
+          "response_phone": {
+            "type": "string",
+            "format": "phone"
+          },
+          "response_address": {
+            "type": "string"
+          },
+          "response_note": {
+            "type": "string"
+          },
+          "response_date_added": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "response_date_updated": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "response_source": {
+            "type": "string"
+          },
+          "response_status": {
+            "type": "string"
+          },
+          "response_comments": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseAnswerObject"
+            }
+          }
+        }
+      },
+      "tagObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "interestObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique id for the user / interest relationship",
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "impactObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique id for the impact area",
+            "type": "string",
+            "format": "number"
+          },
+          "impact_name": {
+            "type": "string"
+          }
+        }
+      },
+      "causeObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique id for the user / cause relationship",
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "loginObject": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "description": "User object",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "number"
+              },
+              "domain_id": {
+                "type": "string",
+                "format": "number"
+              },
+              "user_fname": {
+                "type": "string"
+              },
+              "user_lname": {
+                "type": "string"
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              }
+            }
+          },
+          "token": {
+            "type": "string"
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "clusterObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique id for the agency / cluster relationship",
+            "type": "string",
+            "format": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "benchmarkObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending"
+            ]
+          },
+          "benchmark_title": {
+            "type": "string"
+          },
+          "benchmark_icon": {
+            "type": "string",
+            "enum": [
+              "Bronze_10Hours",
+              "Bronze_25Hours",
+              "Bronze_CommunityChampion",
+              "Bronze_I_Made_A_Difference",
+              "Bronze_OutStandingService",
+              "Silver_20Hours",
+              "Silver_50Hours",
+              "Silver_CommunityChampion",
+              "Silver_I_Made_A_Difference",
+              "Silver_OutstandingService",
+              "Gold_50Hours",
+              "Gold_100Hours",
+              "Gold_CommunityChampion",
+              "Gold_I_Made_A_Difference",
+              "Gold_OutstandingService"
+            ]
+          },
+          "benchmark_hours": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_date_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "benchmark_date_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "benchmark_approval_required": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "benchmark_allow_indv_hours": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "benchmark_group_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "update_at": {
+            "type": "string",
+            "format": "date-",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "benchmarkMiniObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending"
+            ]
+          },
+          "benchmark_title": {
+            "type": "string"
+          },
+          "benchmark_icon": {
+            "type": "string",
+            "enum": [
+              "Bronze_10Hours",
+              "Bronze_25Hours",
+              "Bronze_CommunityChampion",
+              "Bronze_I_Made_A_Difference",
+              "Bronze_OutStandingService",
+              "Silver_20Hours",
+              "Silver_50Hours",
+              "Silver_CommunityChampion",
+              "Silver_I_Made_A_Difference",
+              "Silver_OutstandingService",
+              "Gold_50Hours",
+              "Gold_100Hours",
+              "Gold_CommunityChampion",
+              "Gold_I_Made_A_Difference",
+              "Gold_OutstandingService"
+            ]
+          },
+          "benchmark_hours": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_date_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "benchmark_date_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01 12:00:00"
+          },
+          "update_at": {
+            "type": "string",
+            "format": "date-",
+            "example": "2021-01-01 12:00:00"
+          }
+        }
+      },
+      "loginRequestSchema": {
+        "type": "object",
+        "required": [
+          "user_email",
+          "user_password",
+          "key"
+        ],
+        "properties": {
+          "user_email": {
+            "type": "string"
+          },
+          "user_password": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          }
+        }
+      },
+      "benchmarkRequestSchema": {
+        "type": "object",
+        "required": [
+          "benchmark_title",
+          "benchmark_status",
+          "benchmark_icon",
+          "benchmark_approval_required",
+          "benchmark_date_start",
+          "benchmark_date_end"
+        ],
+        "properties": {
+          "benchmark_title": {
+            "type": "string"
+          },
+          "benchmark_icon": {
+            "type": "string",
+            "enum": [
+              "Bronze_10Hours",
+              "Bronze_25Hours",
+              "Bronze_CommunityChampion",
+              "Bronze_I_Made_A_Difference",
+              "Bronze_OutStandingService",
+              "Silver_20Hours",
+              "Silver_50Hours",
+              "Silver_CommunityChampion",
+              "Silver_I_Made_A_Difference",
+              "Silver_OutstandingService",
+              "Gold_50Hours",
+              "Gold_100Hours",
+              "Gold_CommunityChampion",
+              "Gold_I_Made_A_Difference",
+              "Gold_OutstandingService"
+            ]
+          },
+          "benchmark_hours": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_approval_required": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "benchmark_date_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "benchmark_date_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "benchmark_allow_indv_hours": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "benchmark_group_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "benchmark_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending"
+            ]
+          }
+        }
+      },
+      "clusterRequestSchema": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "groupRequestSchema": {
+        "type": "object",
+        "required": [
+          "ug_status",
+          "ug_title",
+          "ug_type"
+        ],
+        "properties": {
+          "ug_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive"
+            ]
+          },
+          "ug_title": {
+            "type": "string"
+          },
+          "ug_description": {
+            "type": "string"
+          },
+          "ug_description_private": {
+            "type": "string"
+          },
+          "ug_domains": {
+            "type": "string"
+          },
+          "ug_color": {
+            "type": "string",
+            "format": "hex"
+          },
+          "ug_text_color": {
+            "type": "string"
+          },
+          "ug_icon": {
+            "type": "string"
+          },
+          "ug_suppress_resume": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_allow_member_remove": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_submitted_hours": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "auto",
+              "approved"
+            ]
+          },
+          "ug_type": {
+            "type": "string",
+            "description": "You can only submit slm type if you have the Service Learning module",
+            "enum": [
+              "gc",
+              "slm"
+            ]
+          },
+          "ug_limit": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "ug_block_id": {
+            "type": "string",
+            "format": "number",
+            "example": 432155
+          },
+          "ug_goal": {
+            "type": "string",
+            "format": "number",
+            "example": 25
+          },
+          "ug_approval": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        }
+      },
+      "hourRequestSchema": {
+        "type": "object",
+        "required": [
+          "hour_hours",
+          "hour_start",
+          "hour_status"
+        ],
+        "properties": {
+          "hour_hours": {
+            "type": "string",
+            "format": "number"
+          },
+          "hour_miles": {
+            "type": "string",
+            "format": "number"
+          },
+          "hour_start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hour_status": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "inactive",
+              "pending",
+              "denied",
+              "entered"
+            ]
+          },
+          "hour_location": {
+            "type": "string"
+          },
+          "hour_contact_name": {
+            "type": "string",
+            "example": "Mary Smith"
+          },
+          "hour_contact_details": {
+            "type": "string",
+            "format": "email"
+          },
+          "hour_relationship": {
+            "type": "string",
+            "example": "Coach"
+          },
+          "response_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "group_ids": {
+            "type": "array",
+            "description": "Array of user group ids",
+            "items": {
+              "type": "string",
+              "format": "number",
+              "example": 12345
+            }
+          }
+        }
+      },
+      "userRequestSchema": {
+        "type": "object",
+        "required": [
+          "user_fname",
+          "user_lname",
+          "user_email",
+          "user_status"
+        ],
+        "properties": {
+          "user_fname": {
+            "type": "string"
+          },
+          "user_mname": {
+            "type": "string"
+          },
+          "user_lname": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "user_username": {
+            "type": "string"
+          },
+          "user_address": {
+            "type": "string"
+          },
+          "user_address2": {
+            "type": "string"
+          },
+          "user_city": {
+            "type": "string"
+          },
+          "user_state": {
+            "type": "string"
+          },
+          "user_postal": {
+            "type": "string"
+          },
+          "user_county": {
+            "type": "string"
+          },
+          "user_country": {
+            "type": "string"
+          },
+          "user_phone": {
+            "type": "string"
+          },
+          "user_phone_cell": {
+            "type": "string"
+          },
+          "user_age_range": {
+            "type": "string"
+          },
+          "user_birthday": {
+            "type": "string"
+          },
+          "user_company": {
+            "type": "string"
+          },
+          "user_company_title": {
+            "type": "string"
+          },
+          "user_department": {
+            "type": "string"
+          },
+          "user_ethnicity": {
+            "type": "string"
+          },
+          "user_grad_semester": {
+            "type": "string",
+            "enum": [
+              "spring",
+              "summer",
+              "fall",
+              "winter"
+            ]
+          },
+          "user_grad_year": {
+            "type": "string"
+          },
+          "user_notes": {
+            "type": "string"
+          },
+          "user_comments": {
+            "type": "string"
+          },
+          "user_reference_id": {
+            "type": "string"
+          },
+          "user_disaster": {
+            "type": "string"
+          },
+          "user_status": {
+            "type": "string",
+            "example": "active",
+            "enum": [
+              "active",
+              "pending",
+              "imported",
+              "inactive"
+            ]
+          }
+        }
+      },
+      "agencyRequestSchema": {
+        "type": "object",
+        "required": [
+          "agency_name",
+          "agency_status",
+          "agency_postal"
+        ],
+        "properties": {
+          "agency_name": {
+            "type": "string"
+          },
+          "agency_link": {
+            "type": "string"
+          },
+          "agency_address": {
+            "type": "string"
+          },
+          "agency_address2": {
+            "type": "string"
+          },
+          "agency_city": {
+            "type": "string"
+          },
+          "agency_state": {
+            "type": "string"
+          },
+          "agency_postal": {
+            "type": "string"
+          },
+          "agency_phone": {
+            "type": "string"
+          },
+          "agency_phone_extension": {
+            "type": "string"
+          },
+          "agency_fax": {
+            "type": "string"
+          },
+          "agency_twitter_link": {
+            "type": "string"
+          },
+          "agency_facebook_link": {
+            "type": "string"
+          },
+          "agency_instagram_link": {
+            "type": "string"
+          },
+          "agency_youtube_link": {
+            "type": "string"
+          },
+          "agency_linkedin_link": {
+            "type": "string"
+          },
+          "agency_email": {
+            "type": "string"
+          },
+          "agency_video": {
+            "type": "string"
+          },
+          "agency_url": {
+            "type": "string"
+          },
+          "agency_ein": {
+            "type": "string"
+          },
+          "agency_comments": {
+            "type": "string"
+          },
+          "agency_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "pending"
+            ]
+          },
+          "agency_contact": {
+            "type": "string"
+          },
+          "agency_contact_title": {
+            "type": "string"
+          },
+          "agency_news": {
+            "type": "string"
+          },
+          "agency_mission": {
+            "type": "string"
+          },
+          "agency_contacts": {
+            "type": "string"
+          },
+          "agency_partner": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        }
+      },
+      "responseRequestSchema": {
+        "type": "object",
+        "required": [
+          "need_id",
+          "user_id",
+          "schedule_ids"
+        ],
+        "properties": {
+          "need_id": {
+            "type": "string",
+            "format": "number",
+            "example": 591717
+          },
+          "user_id": {
+            "type": "string",
+            "format": "number",
+            "example": 3456377
+          },
+          "team_id": {
+            "type": "string",
+            "format": "number",
+            "example": 874521
+          },
+          "schedule_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "number",
+              "example": 432511
+            }
+          },
+          "response_note": {
+            "type": "string"
+          },
+          "questions": {
+            "type": "object",
+            "description": "Example of customQuestions answers",
+            "properties": {
+              "needResponse": {
+                "type": "object",
+                "properties": {
+                  "5109": {
+                    "type": "string",
+                    "example": "Another response example"
+                  }
+                }
+              },
+              "initiativeResponse": {
+                "type": "object",
+                "properties": {
+                  "5009": {
+                    "type": "string",
+                    "example": "Answer input string one"
+                  },
+                  "8345": {
+                    "type": "array",
+                    "example": [
+                      "Option 1",
+                      "Option 2",
+                      "Option 4"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "inputFieldTest": {
+                    "type": "string",
+                    "example": "Dark Chox"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "needRequestSchema": {
+        "type": "object",
+        "required": [
+          "agency_id",
+          "need_title",
+          "need_body",
+          "need_public",
+          "need_status",
+          "need_date_type",
+          "need_hours",
+          "need_postal"
+        ],
+        "properties": {
+          "agency_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "initiative_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "number",
+              "example": 432511
+            }
+          },
+          "event_id": {
+            "type": "string",
+            "format": "number"
+          },
+          "need_title": {
+            "type": "string"
+          },
+          "need_body": {
+            "type": "string"
+          },
+          "need_address": {
+            "type": "string"
+          },
+          "need_address2": {
+            "type": "string"
+          },
+          "need_city": {
+            "type": "string"
+          },
+          "need_state": {
+            "type": "string"
+          },
+          "need_postal": {
+            "type": "string"
+          },
+          "need_type": {
+            "type": "string"
+          },
+          "need_contact": {
+            "type": "string"
+          },
+          "need_response_notify": {
+            "type": "string"
+          },
+          "need_date": {
+            "type": "string",
+            "example": "2021-10-28"
+          },
+          "need_date_type": {
+            "type": "string",
+            "enum": [
+              "on",
+              "until",
+              "ongoing",
+              "shifts",
+              "recurring",
+              "multi"
+            ]
+          },
+          "need_impact_area": {
+            "type": "string"
+          },
+          "need_volunteers_needed": {
+            "type": "string"
+          },
+          "need_public": {
+            "type": "string"
+          },
+          "need_allow_groups": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No",
+              "Only"
+            ]
+          },
+          "need_hours": {
+            "type": "string"
+          },
+          "need_hours_description": {
+            "type": "string",
+            "example": "9am to 5pm"
+          },
+          "need_comments": {
+            "type": "string"
+          },
+          "need_latitude": {
+            "type": "string"
+          },
+          "need_longitude": {
+            "type": "string"
+          },
+          "need_date_close": {
+            "type": "string",
+            "format": "date",
+            "example": "2021-01-01"
+          },
+          "need_status": {
+            "type": "string"
+          },
+          "virtual_need": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "family_friendly": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "outdoors": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "accessible": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "example": [
+              "Fun",
+              "Sun"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": [
+                "Park out front",
+                "Go left"
+              ]
+            }
+          },
+          "interests": {
+            "type": "array",
+            "example": [
+              "12345",
+              "54299"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shiftRequestSchema"
+            }
+          }
+        }
+      },
+      "qualificationRequestSchema": {
+        "type": "object",
+        "required": [
+          "qualification_title",
+          "qualification_status",
+          "qualification_type",
+          "qualification_question",
+          "qualification_level",
+          "qualification_duration"
+        ],
+        "properties": {
+          "qualification_title": {
+            "type": "string"
+          },
+          "qualification_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "qualification_type": {
+            "type": "string",
+            "enum": [
+              "select",
+              "radio",
+              "input",
+              "textarea"
+            ]
+          },
+          "qualification_question": {
+            "type": "string"
+          },
+          "qualification_options": {
+            "type": "array",
+            "example": [
+              "222",
+              "333"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Comma separated list of options for question types that are select or checkbox"
+          },
+          "qualification_correct_answer": {
+            "description": "If used, must be one of the options unsed in qualification_options",
+            "type": "string",
+            "example": "Option 1"
+          },
+          "qualification_approval": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "auto",
+              "ifCorrect"
+            ]
+          },
+          "qualification_level": {
+            "type": "string",
+            "enum": [
+              "notNeeded",
+              "viewAny",
+              "respondAny",
+              "useSite",
+              "viewSelected",
+              "respondSelected"
+            ]
+          },
+          "qualification_duration": {
+            "type": "string",
+            "enum": [
+              "date",
+              "1month",
+              "6months",
+              "1year",
+              "2years",
+              "3years",
+              "forever",
+              "1week",
+              "2weeks",
+              "firstofyear"
+            ]
+          },
+          "qualification_link_url": {
+            "type": "string"
+          },
+          "qualification_link_text": {
+            "type": "string"
+          },
+          "qualification_link_show": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "qualification_required": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "qualification_hide_from_registration": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        }
+      },
+      "teamRequestSchema": {
+        "type": "object",
+        "required": [
+          "team_title",
+          "team_status",
+          "need_id",
+          "sch_id",
+          "user_id"
+        ],
+        "properties": {
+          "team_title": {
+            "type": "string"
+          },
+          "team_description": {
+            "type": "string"
+          },
+          "team_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "inactive"
+            ]
+          },
+          "need_id": {
+            "type": "string",
+            "format": "number",
+            "example": 43119
+          },
+          "sch_id": {
+            "type": "string",
+            "format": "number",
+            "example": 87654332,
+            "description": "Schedule ID"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "number",
+            "example": 87654332,
+            "description": "User ID of first team member."
+          }
+        }
+      }
+    }
+  }
+}

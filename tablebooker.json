@@ -1,0 +1,4603 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Tablebooker API",
+    "description": "Hi, developer! This is the documentation for the tablebooker API. Tablebooker is a reservation platform for restaurants. The API is available for select partners. Interested in using the Tablebooker API? Contact us at dev@tablebooker.be.",
+    "termsOfService": "https://tablebooker.com/terms/",
+    "contact": {
+      "email": "dev@tablebooker.com"
+    },
+    "version": "2.0.0",
+    "x-logo": {
+      "url": "https://static.tablebooker.be/frontend/img/tablebooker_medium@2x.png"
+    }
+  },
+  "paths": {
+    "/availability": {
+      "get": {
+        "tags": [
+          "Availability"
+        ],
+        "summary": "Timeslot seats",
+        "description": "Get the maximum and available number of seats for each timeslot for one or more restaurants. A restaurant ID and date are required",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurantIds",
+            "in": "query",
+            "description": "IDs of the restaurants where you want to find the availability for. Comma separated list of ids.",
+            "required": true,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Start date where you want to know the availability for. Format: Y-m-d",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "description": "End date where you want to know the availability for. Format: Y-m-d",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotionIds",
+            "in": "query",
+            "description": "ID of the promotion(s) you want to check the availability for. Comma separated list of ids.",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "couponId",
+            "in": "query",
+            "description": "ID of the coupon type that you want to check the availability for",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of availabilities per restaurant. Due to legacy reasons all alvailability will be under promotions. Promotion with id -1 are the normal availabilities.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "restaurants": {
+                      "properties": {
+                        "[restaurantId]": {
+                          "properties": {
+                            "promotions": {
+                              "properties": {
+                                "[promotionId]": {
+                                  "properties": {
+                                    "[date]": {
+                                      "properties": {
+                                        "[time]": {
+                                          "properties": {
+                                            "max_seats": {
+                                              "type": "string"
+                                            },
+                                            "seats_left": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "type": "object"
+                                        }
+                                      },
+                                      "type": "object"
+                                    }
+                                  },
+                                  "type": "object"
+                                }
+                              },
+                              "type": "object"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/coupons/sellsGiftCards": {
+      "get": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "Lists all restaurants that sell the resto gift cards.",
+        "description": "",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant where you want to find the coupons for.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Partner id to check for. It will only return coupons enabled for this partner.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "result": {
+                      "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                      "properties": {
+                        "restaurants": {
+                          "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                          "type": "array",
+                          "items": {
+                            "properties": {
+                              "restaurant_id": {
+                                "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                                "type": "string"
+                              },
+                              "resto_id": {
+                                "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                                "type": "integer"
+                              }
+                            },
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "result": {
+                      "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                      "properties": {
+                        "restaurants": {
+                          "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                          "type": "array",
+                          "items": {
+                            "properties": {
+                              "restaurant_id": {
+                                "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                                "type": "string"
+                              },
+                              "resto_id": {
+                                "description": "Returns a list of all restaurants that have resto gift cards enabled.",
+                                "type": "integer"
+                              }
+                            },
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/coupons/index": {
+      "get": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "Get the possible coupons for a restaurant",
+        "description": "A restaurant ID and date are required",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant where you want to find the coupons for.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Partner id to check for. It will only return coupons enabled for this partner.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "couponCapacityIds",
+            "in": "query",
+            "description": "IDs of coupon types. Comma separated list of ids.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/coupons/validCode": {
+      "get": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "Check if coupon code is valid.",
+        "description": "Checks if a code for a coupon of a specific type is valid",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant where you want to find the coupons for.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Partner id to check for. It will only return coupons enabled for this partner.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "description": "Coupon type id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "coupon_code",
+            "in": "query",
+            "description": "The coupon code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Register a new customer",
+        "description": "Register a new customer",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": {
+                    "description": "Customer first name.",
+                    "type": "string"
+                  },
+                  "lastname": {
+                    "description": "Customer last name.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "description": "Customer company name.",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Customer email address.",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "Customer phone number in international format +3212345678.",
+                    "type": "string"
+                  },
+                  "vat": {
+                    "description": "Customer company vat number.",
+                    "type": "string"
+                  },
+                  "language": {
+                    "description": "Customer preffered language (en, nl, fr, ...)",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Optional password chosen by the user.",
+                    "type": "string"
+                  },
+                  "password_confirmation": {
+                    "description": "Optional password comfirmation. (Required when password is in the request)",
+                    "type": "string"
+                  },
+                  "street": {
+                    "description": "Street name and number.",
+                    "type": "string"
+                  },
+                  "postal": {
+                    "description": "Postal code of customer.",
+                    "type": "string"
+                  },
+                  "city": {
+                    "description": "City of the customer",
+                    "type": "string"
+                  },
+                  "country": {
+                    "description": "Two letter country code. (BE, NL, FR, ...)",
+                    "type": "string"
+                  },
+                  "birthday": {
+                    "description": "Birthday of the customer in YYYY-MM-DD format",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "description": "Gender of the user (M or F)",
+                    "type": "string"
+                  },
+                  "restaurant_id": {
+                    "description": "ID of the restaurant the customer will be linked to.",
+                    "type": "string"
+                  },
+                  "accept_terms": {
+                    "description": "Indicate if the customer accept Tablebooker terms.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "firstname",
+                  "lastname",
+                  "email",
+                  "language"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer registration succeeded."
+          },
+          "400": {
+            "description": "Customer registration failed because of missing or invalid parameter(s). Or unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Customer registration failed because of duplicate customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/customers/password": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Reset user password",
+        "description": "Reset user password.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Customer email address.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Reset password failed because of missing or invalid parameter(s).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User could not be found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "General"
+        ],
+        "summary": "Health",
+        "description": "You can use this to check the status of the Tablebooker API.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The API is up and running"
+          },
+          "400": {
+            "description": "There is a problem with the service."
+          },
+          "500": {
+            "description": "There is a problem with the service."
+          }
+        }
+      }
+    },
+    "/menus/restaurant": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get all visible menu's configured for a given restaurant",
+        "description": "Get all visible menu's configured for a given restaurant.",
+        "parameters": [
+          {
+            "name": "restaurant_id",
+            "in": "path",
+            "description": "ID of the restaurant.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Unknown restaurant ID"
+          }
+        }
+      }
+    },
+    "/menus/menu": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get the menu together with all its items.",
+        "description": "Get the menu together with all its items.",
+        "parameters": [
+          {
+            "name": "menu_id",
+            "in": "query",
+            "description": "ID of the menu.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Unknown menu ID"
+          }
+        }
+      }
+    },
+    "/partners/restaurants": {
+      "get": {
+        "tags": [
+          "Partners"
+        ],
+        "summary": "List of activated restaurants",
+        "description": "Get a list of all restaurants that you can access with your partner account.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "use_paging",
+            "in": "query",
+            "description": "Page the results (1) or return in one list (0). By default the results will be paged.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to request.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "rpp",
+            "in": "query",
+            "description": "Number of results per page.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fake",
+            "in": "query",
+            "description": "Results will include demo and test restaurants when this is set to 1.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "includeAddress",
+            "in": "query",
+            "description": "Include the address of the restaurant in the results.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of restaurants.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartnerRestaurants"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartnerRestaurants"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid partner API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "invalid_api_key"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "invalid_api_key"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/promotions": {
+      "get": {
+        "tags": [
+          "Promotions"
+        ],
+        "summary": "Promotions details",
+        "description": "Get get all details for a list of promotions.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "Obfuscated restaurant id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "Reservation source.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Id of the reservation partner.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "promotionIds",
+            "in": "query",
+            "description": "ID of the promotion(s) you want to check the availability for. Comma separated list of ids.",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Language to return the promotion info in. Defaults to nl, fr and en.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/promotions/{id}": {
+      "get": {
+        "tags": [
+          "Promotions"
+        ],
+        "summary": "Promotion details",
+        "description": "Get get all details for a single promotion.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "Obfuscated restaurant id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Obfuscated promotion id. To return a single promotion.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "Reservation source.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Id of the reservation partner.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Language to return the promotion info in. Defaults to nl, fr and en.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/promotions/validateCode": {
+      "post": {
+        "tags": [
+          "Promotions"
+        ],
+        "summary": "Validate promotions code",
+        "description": "Check validate of promotions code",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "restaurant_id": {
+                    "description": "Obfuscated restaurant id",
+                    "type": "string"
+                  },
+                  "promotion_id": {
+                    "description": "Obfuscated promotion id",
+                    "type": "string"
+                  },
+                  "code": {
+                    "description": "Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "restaurant_id",
+                  "promotion_id",
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "invalid arguments"
+          }
+        }
+      }
+    },
+    "/reservations/availabledays": {
+      "get": {
+        "tags": [
+          "Reservations",
+          "Availability"
+        ],
+        "summary": "Available days",
+        "description": "Get the days that are available for reservation in a specific restaurant.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests to make a reservation for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "First day to check (format: 'Y-m-d')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "description": "Last day to check. Defaults to now + 3 months. (format: 'Y-m-d')",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected coupon capacity (type of coupon)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected promotion",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "preload",
+            "in": "query",
+            "description": "Determines if it should preload availability data for extra checks (1|0)",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "shift_id",
+            "in": "query",
+            "description": "Obfuscated id. Limit the availability check to a specific service, for example only lunch.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeslot_from",
+            "in": "query",
+            "description": "Start timeslot to check (should be start of the shift when shift_id is set). Format: hh:mm:ss",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeslot_to",
+            "in": "query",
+            "description": "End timeslot to check (should be end time of the shift when shift_id is set). Format: hh:mm:ss",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "Reservation source that is checking the availability",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "If source is 'partner' a partner id is expected",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/reservations/availablehours": {
+      "get": {
+        "tags": [
+          "Reservations",
+          "Availability"
+        ],
+        "summary": "Available hours",
+        "description": "Get all hours for the specified day where there is at least one spot available.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests to make a reservation for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Day to check (format: 'Y-m-d' or Unix timestamp)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected coupon capacity (type of coupon)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected promotion",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shift_id",
+            "in": "query",
+            "description": "Obfuscated id. Limit the availability check to a specific service, for example only lunch.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "Duration of the reservation in seconds",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "The source where the reservation is coming from. This can be 'website', 'partner', 'manual', .... Defaults to website",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/reservations/checkReservation": {
+      "get": {
+        "tags": [
+          "Reservations",
+          "Availability"
+        ],
+        "summary": "Check reservation possible",
+        "description": "Does a final check if the table is available and creates a lock on the reservation. This request is required before you can create the actual reservation.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests to make a reservation for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timeslot",
+            "in": "query",
+            "description": "Date and time of the reservation. Unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "query",
+            "description": "Unique device id to create a temporary reservation lock. The same device id should be used for all calls.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Id of the reservation partner.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected coupon capacity (type of coupon)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "description": "Obfuscated id of a selected promotion",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "Duration of the reservation in seconds",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "room",
+            "in": "query",
+            "description": "Obfuscated Id of the preferred room",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table",
+            "in": "query",
+            "description": "Obfuscated Id of the desired table.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reservation_id",
+            "in": "query",
+            "description": "Obfuscated id of an existing reservation that you want to change",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "Obfuscated Tablemanager user id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/reservations/alerts": {
+      "get": {
+        "tags": [
+          "Reservations",
+          "Alerts"
+        ],
+        "summary": "Get alerts",
+        "description": "Get the alerts for a reservation linked to a set of parameters (nr of guests, date, time, specific table, ...). Can also be used for batch lookup of alerts for multiple days and times.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "Obfuscated id of the restaurant.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date of the reservation in YYYY-MM-DD format (e.g. 2020-08-23), or 'date from' in case 'to_date' is set. If set, a date will be added with each alert in the response if applicable.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "description": "In case of batch lookup for multiple days a 'to_date' can be set. Response will contain alerts for each date between date and to_date. In YYYY-MM-DD format (e.g. 2020-08-25).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "Time of the reservation in HH:mm format (e.g. 19:30), or 'time from' in case 'to_time' is set. If set, a date and time attribute will be added with each alert in the response if applicable.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_time",
+            "in": "query",
+            "description": "In case of batch lookup for multiple timeslots a 'to_time' can be set. Response will contain alerts per 15 minutes for each timeslot between time and to_time. In HH:mm format (e.g. 20:30).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests of a reservation.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "description": "Id of a coupon type that is used for the reservation (obfuscated)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "description": "Id of the promotion that is used for the reservation (obfuscated)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table",
+            "in": "query",
+            "description": "The table id(s) that are assigned to a reservation. Comma separated if there are more tables. (obfuscated id)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "Duration of the reservation in seconds",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "Source of the reservation. Manual, website, facebook, ...",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "takeaway",
+            "in": "query",
+            "description": "Indicate that this is a takeway reservation or a regular reservation. Default false = regular reservation.",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of alert messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationAlerts"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationAlerts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Missing or invalid parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found. Unknown restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/renewLock": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Renew reservation lock",
+        "description": "Renews the temporary reservation that was created after all reservation details were entered so the free seats stay 'locked'.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests to make a reservation for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timeslot",
+            "in": "query",
+            "description": "Date and time of the reservation. Unix timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "query",
+            "description": "Unique device id to create a temporary reservation lock.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "Duration of the reservation in seconds",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/reservations/waitinglist": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Create a waitinglist entry",
+        "description": "Creates a new waiting list entry.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWaitinglistEntry"
+              }
+            }
+          },
+          "description": "The data needed to create a waitinglist entry"
+        },
+        "responses": {
+          "200": {
+            "description": "successfully create the waitinglist entry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWaitinglistResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWaitinglistResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown shift or restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unknown server error"
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/reservations": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get Reservations",
+        "description": "Get all reservations for a specific customer.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email address of a customer.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "description": "Obfuscated id of a customer.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "google_user_id",
+            "in": "query",
+            "description": "User id from google booking service.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "past",
+                "future",
+                "confirmed"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Bad Request. Missing or invalid parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Create a reservation",
+        "description": "Creates a new reservation. Beware! You need to call /reservations/checkReservation first to check availability and to reserve the available seats,",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReservationData"
+              }
+            }
+          },
+          "description": "The data needed to create a reservation"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a reservation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing field or reservation data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No table was available OR Tried to create reservation for unknown or unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Creating the reservation failed unexpectedly OR The reservation lock has expired or is invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/{reservation_id}": {
+      "put": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Update a reservation",
+        "description": "Updates an existing reservation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "reservation_id",
+            "in": "path",
+            "description": "obfuscated id of the reservation",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReservationData"
+              }
+            }
+          },
+          "description": "The data needed to update a reservation"
+        },
+        "responses": {
+          "200": {
+            "description": "successfully updated the reservation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateReservationResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No free tables available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown reservation or restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unknown server error"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Cancel a reservation",
+        "description": "Cancels an existing reservation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "reservation_id",
+            "in": "path",
+            "description": "obfuscated id of the reservation",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelReservationData"
+              }
+            }
+          },
+          "description": "The data needed to cancel a reservation"
+        },
+        "responses": {
+          "200": {
+            "description": "Reservation cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelReservationResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No free tables available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown restaurant or reservation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unknown server error"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/reservations/{id}": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get Reservation",
+        "description": "Get a specific reservation by id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the reservation.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a reservation object"
+          },
+          "400": {
+            "description": "Bad Request. Missing or invalid parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found. Unknown reservation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/restaurants/tablebookerid": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Get Tablebooker ID",
+        "description": "Get a Tablebooker ID by passing an external ID.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "externalid",
+            "in": "query",
+            "description": "Partner ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "restobookings_id",
+            "in": "query",
+            "description": "Restobookings id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "tablebooker_id": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "tablebooker_id": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/restaurants/updated": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Recently updated restaurants",
+        "description": "Get the id's or restaurants that had a change in the last x minutes.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "externalid",
+            "in": "query",
+            "description": "Partner ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "restobookings_id",
+            "in": "query",
+            "description": "Restobookings id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "restaurants": {
+                      "description": "TODO: should we just check the occupancy cache for the last changes? ==> Nope, invalidate deletes all",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "restaurants": {
+                      "description": "TODO: should we just check the occupancy cache for the last changes? ==> Nope, invalidate deletes all",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid restaurant ID supplied"
+          },
+          "401": {
+            "description": "Partner key is invalid"
+          }
+        }
+      }
+    },
+    "/restaurants/mostbookedpromotions": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Most booked restaurants for a specific promotion",
+        "description": "Get the most popular restaurants for a promotion.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "promotionIds",
+            "in": "query",
+            "description": "Partner ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit number of returned results",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Format: Y-m-d",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "obfuscated_id": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "obfuscated_id": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/info": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Restaurant information",
+        "description": "Get information about a restaurant.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "tablebooker_id",
+            "in": "query",
+            "description": "ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "Optional ID of the reservation partner that is calling the API.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "The source/channel that is calling the API (for example 'website', 'facebook', ...)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "yelp_id",
+            "in": "query",
+            "description": "Yelp ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "foursquare_id",
+            "in": "query",
+            "description": "Foursquare ID of the restaurant.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "booking_parameters_only",
+            "in": "query",
+            "description": "Indicates that you only want restaurant information related to bookings.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "tablebooker_id": {
+                      "description": "The restaurant ID",
+                      "type": "string",
+                      "example": "0003487"
+                    },
+                    "name": {
+                      "description": "The restaurant name",
+                      "type": "string",
+                      "example": "L'Exemple"
+                    },
+                    "description": {
+                      "description": "A description of the restaurant",
+                      "type": "string",
+                      "example": "The Tablebooker test restaurant"
+                    },
+                    "phone": {
+                      "description": "Restaurant phone number",
+                      "type": "string",
+                      "example": "+3212345678"
+                    },
+                    "email": {
+                      "description": "Restaurant email",
+                      "type": "string",
+                      "example": "support@tablebooker.com"
+                    },
+                    "tablebooker_page": {
+                      "description": "The Tablebooker page of the restaurant",
+                      "type": "string",
+                      "example": "https://tablebooker.com/restaurant/0003487/Lexemple"
+                    },
+                    "tablebooker_rating": {
+                      "description": "The Tablebooker rating for the restaurant",
+                      "type": "string",
+                      "example": "4"
+                    },
+                    "address": {
+                      "$ref": "#/components/schemas/FullRestaurantAddress"
+                    },
+                    "opening_hours": {
+                      "$ref": "#/components/schemas/OpeningHours"
+                    },
+                    "categories": {
+                      "description": "Categorisation of the restaurant",
+                      "properties": {
+                        "kitchen": {
+                          "description": "Served kitchen types",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "atmosphere": {
+                          "description": "Type of atmosphere.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "price": {
+                          "description": "Price range of the restaurant",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "payment": {
+                          "description": "List of accepted payment types",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "facilities": {
+                          "description": "List of facilities offered by the restaurant",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "images": {
+                      "description": "A list of urls of restaurant photos",
+                      "type": "array",
+                      "items": {
+                        "description": "Image url",
+                        "type": "string",
+                        "example": "https://s3-eu-west-1.amazonaws.com/tablebooker-dev/restaurants/0003487/5027a1b6ed860.770.jpg"
+                      }
+                    },
+                    "video": {
+                      "description": "Url of a video about the restaurant",
+                      "type": "string"
+                    },
+                    "has_menu": {
+                      "description": "The restaurant has menu cards available. You can fetch them with the Menus API.",
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "shifts": {
+                      "description": "List of restaurant shifts",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/shift"
+                      }
+                    },
+                    "reservation_possibilities": {
+                      "description": "Reservation specifications",
+                      "properties": {
+                        "additional_reservation_data": {
+                          "description": "Additional data needed for a reservation in the restaurant",
+                          "properties": {
+                            "booking": {
+                              "description": "Additional booking data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_data_field"
+                              }
+                            },
+                            "personal": {
+                              "description": "Additional personal data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_data_field"
+                              }
+                            },
+                            "custom": {
+                              "description": "Additional custom data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_custom_data_section"
+                              }
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "free_booking": {
+                          "description": "Specifications for normal bookings.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Normal bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "groups_allowed": {
+                              "description": "Group bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "max_guests": {
+                              "description": "Maximum number of guests for a booking",
+                              "type": "integer",
+                              "example": "10"
+                            },
+                            "groups_alert": {
+                              "description": "Message to be displayed in case groups are not allowed.",
+                              "type": "string",
+                              "example": "Please call +321234567 for group bookings."
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "promotions": {
+                          "description": "Specifications for promotion bookings.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Promotion bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "has_promotions": {
+                              "description": "There are promotions available to be booked",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "coupons": {
+                          "description": "Specifications for bookings with a coupon or gift card.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Bookings with a coupon or gift card are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "has_coupons": {
+                              "description": "There are coupons or gift cards that can be used",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "min_guests_reservation": {
+                          "description": "Minimum number of guests for a reservation",
+                          "type": "integer",
+                          "example": "1"
+                        },
+                        "max_guests_reservation": {
+                          "description": "Maximum number of guests for a reservation",
+                          "type": "integer",
+                          "example": "10"
+                        },
+                        "min_group_guests": {
+                          "description": "Reservations with this nmber of people and up are regared as a group",
+                          "type": "integer",
+                          "example": "6"
+                        },
+                        "policy": {
+                          "description": "Update and cancellation policy for reservations.",
+                          "properties": {
+                            "cancel": {
+                              "description": "Update policy for reservations.",
+                              "properties": {
+                                "type": {
+                                  "description": "Policy type. The options are 'never', 'always' or 'relative'",
+                                  "type": "string",
+                                  "example": "relative"
+                                },
+                                "secs_from_reservation": {
+                                  "description": "Represents a cutoff at a time in seconds relative to the reservation time.",
+                                  "type": "integer",
+                                  "example": "3600"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "change": {
+                              "description": "Change policy for reservations.",
+                              "properties": {
+                                "type": {
+                                  "description": "Policy type. The options are 'never', 'always' or 'relative'",
+                                  "type": "string",
+                                  "example": "relative"
+                                },
+                                "secs_from_reservation": {
+                                  "description": "Represents a cutoff at a time in seconds relative to the reservation time.",
+                                  "type": "integer",
+                                  "example": "3600"
+                                }
+                              },
+                              "type": "object"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "tracking": {
+                      "description": "Restaurant conversion tracking codes. Only the ones that have been set by the restaurant.",
+                      "properties": {
+                        "google_analytics": {
+                          "description": "Google Analytics tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Google Analytics ID.",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "google_tag_manager": {
+                          "description": "Google Tag Manager tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Google Tag Manager ID.",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "facebook_pixel": {
+                          "description": "Facebook Pixel tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Facebook Pixel ID",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "shop": {
+                      "description": "Details and options related to the restaurants Tablebooker shop",
+                      "properties": {
+                        "vouchers": {
+                          "description": "Details about the shops vouchers and gift cards section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If vouchers are enabled for the shop.",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "url": {
+                              "description": "Link to the shops voucher section. Null when disabled.",
+                              "type": "string",
+                              "example": "https://widget.tablebooker.shop/?shop-id=1"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "takeaway": {
+                          "description": "Details about the shops takeaway section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If takeaway is enabled for the shop.",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "url": {
+                              "description": "Link to the shops takeaway section. Null when disabled.",
+                              "type": "string",
+                              "example": "https://widget.tablebooker.shop/?shop-id=1"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "general": {
+                          "description": "Details about the shops products section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If general products are sold in the shop.",
+                              "type": "boolean",
+                              "example": false
+                            },
+                            "url": {
+                              "description": "Link to the general shop. Null when disabled.",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "tablebooker_id": {
+                      "description": "The restaurant ID",
+                      "type": "string",
+                      "example": "0003487"
+                    },
+                    "name": {
+                      "description": "The restaurant name",
+                      "type": "string",
+                      "example": "L'Exemple"
+                    },
+                    "description": {
+                      "description": "A description of the restaurant",
+                      "type": "string",
+                      "example": "The Tablebooker test restaurant"
+                    },
+                    "phone": {
+                      "description": "Restaurant phone number",
+                      "type": "string",
+                      "example": "+3212345678"
+                    },
+                    "email": {
+                      "description": "Restaurant email",
+                      "type": "string",
+                      "example": "support@tablebooker.com"
+                    },
+                    "tablebooker_page": {
+                      "description": "The Tablebooker page of the restaurant",
+                      "type": "string",
+                      "example": "https://tablebooker.com/restaurant/0003487/Lexemple"
+                    },
+                    "tablebooker_rating": {
+                      "description": "The Tablebooker rating for the restaurant",
+                      "type": "string",
+                      "example": "4"
+                    },
+                    "address": {
+                      "$ref": "#/components/schemas/FullRestaurantAddress"
+                    },
+                    "opening_hours": {
+                      "$ref": "#/components/schemas/OpeningHours"
+                    },
+                    "categories": {
+                      "description": "Categorisation of the restaurant",
+                      "properties": {
+                        "kitchen": {
+                          "description": "Served kitchen types",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "atmosphere": {
+                          "description": "Type of atmosphere.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "price": {
+                          "description": "Price range of the restaurant",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "payment": {
+                          "description": "List of accepted payment types",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "facilities": {
+                          "description": "List of facilities offered by the restaurant",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "images": {
+                      "description": "A list of urls of restaurant photos",
+                      "type": "array",
+                      "items": {
+                        "description": "Image url",
+                        "type": "string",
+                        "example": "https://s3-eu-west-1.amazonaws.com/tablebooker-dev/restaurants/0003487/5027a1b6ed860.770.jpg"
+                      }
+                    },
+                    "video": {
+                      "description": "Url of a video about the restaurant",
+                      "type": "string"
+                    },
+                    "has_menu": {
+                      "description": "The restaurant has menu cards available. You can fetch them with the Menus API.",
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "shifts": {
+                      "description": "List of restaurant shifts",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/shift"
+                      }
+                    },
+                    "reservation_possibilities": {
+                      "description": "Reservation specifications",
+                      "properties": {
+                        "additional_reservation_data": {
+                          "description": "Additional data needed for a reservation in the restaurant",
+                          "properties": {
+                            "booking": {
+                              "description": "Additional booking data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_data_field"
+                              }
+                            },
+                            "personal": {
+                              "description": "Additional personal data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_data_field"
+                              }
+                            },
+                            "custom": {
+                              "description": "Additional custom data needed for a reservation in the restaurant",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/additional_custom_data_section"
+                              }
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "free_booking": {
+                          "description": "Specifications for normal bookings.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Normal bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "groups_allowed": {
+                              "description": "Group bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "max_guests": {
+                              "description": "Maximum number of guests for a booking",
+                              "type": "integer",
+                              "example": "10"
+                            },
+                            "groups_alert": {
+                              "description": "Message to be displayed in case groups are not allowed.",
+                              "type": "string",
+                              "example": "Please call +321234567 for group bookings."
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "promotions": {
+                          "description": "Specifications for promotion bookings.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Promotion bookings are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "has_promotions": {
+                              "description": "There are promotions available to be booked",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "coupons": {
+                          "description": "Specifications for bookings with a coupon or gift card.",
+                          "properties": {
+                            "allowed": {
+                              "description": "Bookings with a coupon or gift card are allowed",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "has_coupons": {
+                              "description": "There are coupons or gift cards that can be used",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "min_guests_reservation": {
+                          "description": "Minimum number of guests for a reservation",
+                          "type": "integer",
+                          "example": "1"
+                        },
+                        "max_guests_reservation": {
+                          "description": "Maximum number of guests for a reservation",
+                          "type": "integer",
+                          "example": "10"
+                        },
+                        "min_group_guests": {
+                          "description": "Reservations with this nmber of people and up are regared as a group",
+                          "type": "integer",
+                          "example": "6"
+                        },
+                        "policy": {
+                          "description": "Update and cancellation policy for reservations.",
+                          "properties": {
+                            "cancel": {
+                              "description": "Update policy for reservations.",
+                              "properties": {
+                                "type": {
+                                  "description": "Policy type. The options are 'never', 'always' or 'relative'",
+                                  "type": "string",
+                                  "example": "relative"
+                                },
+                                "secs_from_reservation": {
+                                  "description": "Represents a cutoff at a time in seconds relative to the reservation time.",
+                                  "type": "integer",
+                                  "example": "3600"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "change": {
+                              "description": "Change policy for reservations.",
+                              "properties": {
+                                "type": {
+                                  "description": "Policy type. The options are 'never', 'always' or 'relative'",
+                                  "type": "string",
+                                  "example": "relative"
+                                },
+                                "secs_from_reservation": {
+                                  "description": "Represents a cutoff at a time in seconds relative to the reservation time.",
+                                  "type": "integer",
+                                  "example": "3600"
+                                }
+                              },
+                              "type": "object"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "tracking": {
+                      "description": "Restaurant conversion tracking codes. Only the ones that have been set by the restaurant.",
+                      "properties": {
+                        "google_analytics": {
+                          "description": "Google Analytics tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Google Analytics ID.",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "google_tag_manager": {
+                          "description": "Google Tag Manager tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Google Tag Manager ID.",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "facebook_pixel": {
+                          "description": "Facebook Pixel tracking",
+                          "properties": {
+                            "code": {
+                              "description": "The Facebook Pixel ID",
+                              "type": "string"
+                            },
+                            "html_element": {
+                              "description": "The preferred HTML element to put this tracking code in.",
+                              "type": "string",
+                              "example": "head, body"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "shop": {
+                      "description": "Details and options related to the restaurants Tablebooker shop",
+                      "properties": {
+                        "vouchers": {
+                          "description": "Details about the shops vouchers and gift cards section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If vouchers are enabled for the shop.",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "url": {
+                              "description": "Link to the shops voucher section. Null when disabled.",
+                              "type": "string",
+                              "example": "https://widget.tablebooker.shop/?shop-id=1"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "takeaway": {
+                          "description": "Details about the shops takeaway section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If takeaway is enabled for the shop.",
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "url": {
+                              "description": "Link to the shops takeaway section. Null when disabled.",
+                              "type": "string",
+                              "example": "https://widget.tablebooker.shop/?shop-id=1"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "general": {
+                          "description": "Details about the shops products section.",
+                          "properties": {
+                            "enabled": {
+                              "description": "If general products are sold in the shop.",
+                              "type": "boolean",
+                              "example": false
+                            },
+                            "url": {
+                              "description": "Link to the general shop. Null when disabled.",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Partner key is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "invalid_api_key"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "invalid_api_key"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/numberOfReservations": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Number of reservations in restaurant",
+        "description": "Get the number of reservations in a restaurant for a specific period.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurantsIds",
+            "in": "query",
+            "description": "IDs of the restaurants.",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Unix timestamp",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/restaurants/numberOfAllReservations": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Number of reservations over all restaurants. (Resto.be)",
+        "description": "Helper API for Resto.be. Get the number of reservations for a specific period. Currently hardcoded to Resto.be reservations.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Format: Unix Timestamp",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/restaurants/lastReservation/{restaurant_id}": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Last reservation",
+        "description": "Returns the last reservation in a given restaurant.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "path",
+            "description": "ID of the restaurant.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/restaurants/message": {
+      "post": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Send a message to a restaurant",
+        "description": "Send a new message to the specified restaurant",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tablebooker_id": {
+                    "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+                    "type": "string"
+                  },
+                  "reservation_id": {
+                    "description": "ID of the reservation you want to send a message about.",
+                    "type": "string"
+                  },
+                  "sender_name": {
+                    "description": "Name of the sender",
+                    "type": "string"
+                  },
+                  "sender_email": {
+                    "description": "Email address of the sender",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "description": "Subject of the message",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The message you want to send",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tablebooker_id",
+                  "sender_name",
+                  "sender_email",
+                  "subject",
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message_id": {
+                      "description": "Id of the message that was sent.",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message_id": {
+                      "description": "Id of the message that was sent.",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    },
+                    "error_explanation": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    },
+                    "field": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    },
+                    "error_explanation": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    },
+                    "field": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "description": "Send a message to the restaurant",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [],
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/restaurants/openingHours": {
+      "get": {
+        "tags": [
+          "Restaurants"
+        ],
+        "summary": "Opening hours",
+        "description": "Get the restaurant opening hours.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "tablebooker_id",
+            "in": "path",
+            "description": "ID of the restaurant.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of opening hours per day and exceptions to those opening hours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "opening_hours": {
+                      "$ref": "#/components/schemas/OpeningHours"
+                    },
+                    "exceptions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OpeningHourExceptionSlot"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "opening_hours": {
+                      "$ref": "#/components/schemas/OpeningHours"
+                    },
+                    "exceptions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OpeningHourExceptionSlot"
+                      }
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown restaurant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "example": "unknown_restaurant"
+                    },
+                    "error_explanation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reviews/index": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Reviews",
+        "description": "Get one or multiple reviews.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Reservation id",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "onlyComplete",
+            "in": "query",
+            "description": "Only return fully completed reviews (with text) or also return rating-only reviews.",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "updated_since",
+            "in": "query",
+            "description": "Reviews that are newer then this date (Format: d-m-Y).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rpp",
+            "in": "query",
+            "description": "Results per page.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Result page to load.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/reviews/rating": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Restaurant Rating",
+        "description": "Get Tablebooker rating for a restaurant.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Accept-Language"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "description": "Obfuscated restaurant id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Tablebooker",
+    "url": "https://tablebooker.com"
+  },
+  "servers": [
+    {
+      "url": "https://api.tablebooker.com/v2"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "Accept-Language": {
+        "name": "Accept-Language",
+        "in": "header",
+        "description": "Language you want to work in. When creating reservations this language will be set for the customer.",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "X-API-KEY",
+        "in": "header"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "CustomerError": {
+        "required": [
+          "status",
+          "error_code"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "error_code": {
+            "type": "string"
+          },
+          "error_explanation": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "PartnerRestaurants": {
+        "required": [
+          "tablebooker_id",
+          "resto_id",
+          "name",
+          "iframe_url"
+        ],
+        "properties": {
+          "tablebooker_id": {
+            "description": "The unique Tablebooker ID",
+            "type": "string",
+            "example": "0003487"
+          },
+          "resto_id": {
+            "description": "The unique RestoGroup ID",
+            "type": "string",
+            "example": "160180"
+          },
+          "name": {
+            "description": "The restaurant name",
+            "type": "string",
+            "example": "L'Exemple"
+          },
+          "address": {
+            "$ref": "#/components/schemas/FullRestaurantAddress"
+          },
+          "iframe_url": {
+            "description": "The url of the booking module",
+            "type": "string",
+            "example": "https://partner.tablebooker.be/partnername/0003487/nl/light"
+          }
+        }
+      },
+      "ReservationError": {
+        "required": [
+          "status",
+          "error_code"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "error_code": {
+            "type": "string"
+          },
+          "error_explanation": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateReservationData": {
+        "required": [
+          "restaurant_id",
+          "device_id",
+          "guests",
+          "timeslot"
+        ],
+        "properties": {
+          "restaurant_id": {
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "type": "string",
+            "example": "0003487"
+          },
+          "device_id": {
+            "description": "Unique device id to create a temporary reservation lock. This should be the same as the device id used in CheckReservation.",
+            "type": "string",
+            "example": "2ak1247yf8ri2jrio8yn"
+          },
+          "guests": {
+            "description": "Number of guests to make a reservation for",
+            "type": "integer",
+            "example": "2"
+          },
+          "timeslot": {
+            "description": "Date and time of the reservation. Unix timestamp",
+            "type": "integer",
+            "example": "1619191496"
+          },
+          "end_timeslot": {
+            "description": "Date and time when the reservation ends. Unix timestamp",
+            "type": "integer"
+          },
+          "duration": {
+            "description": "Duration of the reservation in seconds. This is an alternative to passing an end_timeslot.",
+            "type": "integer"
+          },
+          "takeaway": {
+            "description": "Indicate that this is a takeway reservation or a regular reservation. Default false = regular reservation.",
+            "type": "boolean",
+            "example": "false"
+          },
+          "source": {
+            "description": "Reservation source. Options are website, manual, partner, facebook",
+            "type": "string",
+            "example": "partner"
+          },
+          "partner_id": {
+            "description": "Id of the reservation partner.",
+            "type": "integer",
+            "example": "110"
+          },
+          "partner_source": {
+            "description": "Source of the partner.",
+            "type": "string",
+            "example": "website"
+          },
+          "coupon_id": {
+            "description": "Obfuscated id of a selected coupon capacity (type of coupon)",
+            "type": "string"
+          },
+          "coupon_code": {
+            "description": "Code for the selected coupon.",
+            "type": "string"
+          },
+          "promotion_id": {
+            "description": "Obfuscated id of a selected promotion",
+            "type": "string"
+          },
+          "promotion_codes": {
+            "description": "Array of codes for the selected promotion",
+            "type": "string"
+          },
+          "walkin": {
+            "description": "Indicate if the customer is a walkin",
+            "type": "string"
+          },
+          "google_user_id": {
+            "description": "User id from google booking service.",
+            "type": "string"
+          },
+          "customer_id": {
+            "description": "Obfuscated id of an existing customer where you want to create the reservation for.",
+            "type": "string"
+          },
+          "customer_token": {
+            "description": "Authentication token for a specific customer.",
+            "type": "string"
+          },
+          "customer_type": {
+            "description": "Type of customer ('personal', 'business').",
+            "type": "string",
+            "example": "personal"
+          },
+          "customer_company": {
+            "description": "Customers company name.",
+            "type": "string"
+          },
+          "customer_vat": {
+            "description": "Customer company VAT number.",
+            "type": "string"
+          },
+          "customer_lastname": {
+            "description": "Customer last name.",
+            "type": "string",
+            "example": "Doe"
+          },
+          "customer_firstname": {
+            "description": "Customer first name",
+            "type": "string",
+            "example": "John"
+          },
+          "customer_email": {
+            "description": "Customer email address.",
+            "type": "string",
+            "example": "john.doe@example.com"
+          },
+          "customer_phone": {
+            "description": "Customer phone number in international format +3212345678.",
+            "type": "string",
+            "example": "+3212345678"
+          },
+          "customer_postal": {
+            "description": "Postal code of the customer.",
+            "type": "string",
+            "example": "1932"
+          },
+          "customer_language": {
+            "description": "Language of the customer. Defaults to the language of the API call.",
+            "type": "string",
+            "example": "en"
+          },
+          "customer_gender": {
+            "description": "Gender of the customer",
+            "type": "string",
+            "example": "male"
+          },
+          "customer_country": {
+            "description": "Country of the customer. (BE, NL, FR, ...)",
+            "type": "string",
+            "example": "be"
+          },
+          "notes": {
+            "description": "Notes added by the restaurant about the reservation.",
+            "type": "string"
+          },
+          "customer_notes": {
+            "description": "Notes added by the customer about the reservation. If this is used, customer_emails should be filled in.",
+            "type": "string",
+            "example": "I am allergic to peanuts."
+          },
+          "external_customer_id": {
+            "description": "Id customer id of an external system.",
+            "type": "string"
+          },
+          "external_reservation_id": {
+            "description": "Id of an external reservation system.",
+            "type": "string"
+          },
+          "additional_data": {
+            "description": "JSON encoded list of additional reservation data",
+            "type": "string",
+            "example": "1932"
+          },
+          "room": {
+            "description": "Obfusctaed id of the desired room.",
+            "type": "string"
+          },
+          "table": {
+            "description": "Obfuscated id of the desired table. Can be a comma separated list of ids",
+            "type": "string"
+          },
+          "user_info": {
+            "description": "JSON string with information about the person making the reservation (ip address, request url, device/browser info, ...",
+            "type": "string"
+          },
+          "waiter": {
+            "description": "Name of the waiter that is adding the reservation. (Only in case of a manual reservation)",
+            "type": "string"
+          },
+          "manualnotification_sms": {
+            "description": "Indicate if an extra notification has to be send by SMS",
+            "type": "boolean"
+          },
+          "manualnotification_email": {
+            "description": "Indicate if an extra notification has to be send by email",
+            "type": "boolean"
+          },
+          "authorized_data": {
+            "description": "Indicate if a customer authorized their data to be sotred by tablebooker and accessed by the restaurant.",
+            "type": "boolean"
+          },
+          "authorized_promo": {
+            "description": "Indicate if a customer authorized promos to be send",
+            "type": "boolean"
+          },
+          "authorized_partner_data": {
+            "description": "Indicate if a customer authorized data access to a promo",
+            "type": "booleean"
+          },
+          "user_id": {
+            "description": "Obfuscated Tablemanager user id for the user creating the reservation. (Only for manual reservations)",
+            "type": "string"
+          },
+          "menu_selection": {
+            "description": "JSON object containing the selected menu items for this reservation",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateReservationResponse": {
+        "required": [
+          "status",
+          "reservation_status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "OK"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "0123456"
+          },
+          "reservation_status": {
+            "description": "The status of the newly created reservation ('confirmed', 'unconfirmed', 'denied', 'cancelled', 'noshow', 'waitingforpayment')",
+            "type": "string",
+            "example": "confirmed"
+          },
+          "reservation_url": {
+            "description": "URI to the reservation details page for the user.",
+            "type": "string",
+            "example": "https://managemyreservation.com/r/84kdAYuCWgdLjRitOwOq1111"
+          },
+          "confirmation_by": {
+            "description": "The ways a confirmation will be sent to the user ('email', 'sms', 'push')",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "email"
+            }
+          },
+          "payment": {
+            "description": "When a payment is required this will contain details about that payment.",
+            "properties": {
+              "payment_type": {
+                "description": "advance, guarantee or takeaway",
+                "type": "string",
+                "example": "advance"
+              },
+              "payment_expires": {
+                "description": "If and when the required payment expires",
+                "type": "string",
+                "example": "2022-12-31 20:00:00"
+              },
+              "url": {
+                "description": "URI where the user can access the payment page.",
+                "type": "string",
+                "example": "https://pay.tablebooker.be/pay/en/c70885857dd7c8d8576c82ec0f4ee12d"
+              }
+            },
+            "type": "object"
+          },
+          "messages": {
+            "description": "Messages, notifications and information that can be shown to the user.",
+            "properties": {
+              "heading": {
+                "description": "General confirmation message.",
+                "type": "string",
+                "example": "Thank you for your reservation!"
+              },
+              "status": {
+                "description": "Message describing the status of the reservation",
+                "type": "string",
+                "example": "Before this order is final, you must pay a deposit of &euro; 50."
+              },
+              "status_details": {
+                "description": "Additional information about the status.",
+                "type": "string"
+              },
+              "notification": {
+                "description": "Message describing how the user will be notified. See confirmation_by.",
+                "type": "string",
+                "example": "You will soon receive a confirmation of your reservation via e-mail. Be sure to also check your spam folder regularly."
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateReservationData": {
+        "required": [
+          "restaurant_id"
+        ],
+        "properties": {
+          "restaurant_id": {
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "type": "string",
+            "example": "0003487"
+          },
+          "guests": {
+            "description": "Number of guests to update the reservation to.",
+            "type": "integer",
+            "example": "2"
+          },
+          "timestamp": {
+            "description": "New date and time of the reservation. Unix timestamp.",
+            "type": "integer",
+            "example": "1619191496"
+          },
+          "end_timeslot": {
+            "description": "Date and time when the reservation ends. Unix timestamp",
+            "type": "integer"
+          },
+          "duration": {
+            "description": "Duration of the reservation in seconds. This is an alternative to passing an end_timeslot.",
+            "type": "integer"
+          },
+          "source": {
+            "description": "Reservation source. Options are website, manual, partner, facebook",
+            "type": "string",
+            "example": "partner"
+          },
+          "partner_id": {
+            "description": "Id of the reservation partner.",
+            "type": "integer",
+            "example": "110"
+          },
+          "user_id": {
+            "description": "Obfuscated Tablemanager user id for the user creating the reservation. (Only for manual reservations)",
+            "type": "string"
+          },
+          "waiter": {
+            "description": "Name of the waiter that is updating the reservation. (Only in case of a manual update)",
+            "type": "string"
+          },
+          "table": {
+            "description": "Obfuscated id of the desired table. Can be a comma separated list of ids",
+            "type": "string"
+          },
+          "room": {
+            "description": "Obfusctaed id of the desired room.",
+            "type": "string"
+          },
+          "notes": {
+            "description": "Notes added by the restaurant about the reservation.",
+            "type": "string"
+          },
+          "status": {
+            "description": "Set a new status for the reservation.",
+            "type": "string"
+          },
+          "additional_data": {
+            "description": "JSON encoded list of additional reservation data",
+            "type": "string",
+            "example": "1932"
+          },
+          "remove": {
+            "description": "Remove the reservation from the system",
+            "type": "boolean"
+          },
+          "spam": {
+            "description": "Mark the reservation as spam",
+            "type": "boolean"
+          },
+          "overrideAvailability": {
+            "description": "Set to true if you want to override the default availability checks",
+            "type": "boolean"
+          },
+          "overrideTableChoice": {
+            "description": "Set to true if you want to override the default table selection. You need to pass table ids if you use this.",
+            "type": "boolean"
+          },
+          "swappable": {
+            "description": "If reservations that are already on the preferred tables can be swapped.",
+            "type": "boolean"
+          },
+          "locked": {
+            "description": "Lock the reservation to the current tables.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateReservationResponse": {
+        "required": [
+          "status",
+          "reservation_id",
+          "reservation_status",
+          "reservation_url"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "OK"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "0123456"
+          },
+          "reservation_status": {
+            "description": "The status of the updateed created reservation ('confirmed', 'unconfirmed', 'denied', 'cancelled', 'noshow', 'waitingforpayment')",
+            "type": "string",
+            "example": "confirmed"
+          },
+          "reservation_url": {
+            "description": "URI to the reservation details page for the user.",
+            "type": "string",
+            "example": "https://managemyreservation.com/r/84kdAYuCWgdLjRitOwOq1111"
+          },
+          "reservation_alerts": {
+            "description": "Any messages related to the reservation.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CancelReservationData": {
+        "required": [
+          "restaurant_id"
+        ],
+        "properties": {
+          "restaurant_id": {
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "type": "string",
+            "example": "0003487"
+          },
+          "user_id": {
+            "description": "Obfuscated Tablemanager user id of the user cancelling the reservation.",
+            "type": "string"
+          },
+          "waiter": {
+            "description": "Name of the waiter cancelling the reservation.",
+            "type": "string"
+          },
+          "refund": {
+            "description": "Refund action when the reservation is cancelled by the restaurant (full, partial).",
+            "type": "string"
+          },
+          "charge_guarantee": {
+            "description": "Charge the amount of money of the reservation via Stripe. Can only be charged if new status is noshow",
+            "type": "boolean"
+          },
+          "source": {
+            "description": "Reservation change source. Options are website, manual, partner, facebook, managemyreservation",
+            "type": "string",
+            "example": "partner"
+          },
+          "status": {
+            "description": "New reservation status (cancelled, denied or noshow). This will default to cancelled.",
+            "type": "string",
+            "example": "cancelled"
+          },
+          "message": {
+            "description": "Optional message with the reason for the cancellation. Only when source = manual.",
+            "type": "string",
+            "example": "We have to cancel due to unexpected urgent rennovations."
+          }
+        },
+        "type": "object"
+      },
+      "CancelReservationResponse": {
+        "required": [
+          "status",
+          "reservation_id",
+          "reservation_status",
+          "reservation_url"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "OK"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "0123456"
+          },
+          "reservation_status": {
+            "description": "The status of the updateed created reservation ('confirmed', 'unconfirmed', 'denied', 'cancelled', 'noshow', 'waitingforpayment')",
+            "type": "string",
+            "example": "confirmed"
+          },
+          "messages": {
+            "description": "Any messages related to cancelling the reservation.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "CreateWaitinglistEntry": {
+        "required": [
+          "restaurant_id",
+          "date",
+          "shift_id",
+          "last_name",
+          "phone"
+        ],
+        "properties": {
+          "restaurant_id": {
+            "description": "ID of the restaurant. Obfuscated Tablebooker restaurant id",
+            "type": "string",
+            "example": "0003487"
+          },
+          "date": {
+            "description": "Date where you want to add the waiting list entry. Format: Y-m-d",
+            "type": "date",
+            "example": "2022-12-31"
+          },
+          "guests": {
+            "description": "Number of guests",
+            "type": "integer",
+            "example": "2"
+          },
+          "shift_id": {
+            "description": "Obfuscated ID of the service.",
+            "type": "string",
+            "example": "00139777"
+          },
+          "first_name": {
+            "description": "Customer first name",
+            "type": "string",
+            "example": "John"
+          },
+          "last_name": {
+            "description": "Customer last name.",
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "description": "Customer email address.",
+            "type": "string",
+            "example": "john.doe@example.com"
+          },
+          "phone": {
+            "description": "Customer phone number in international format +3212345678.",
+            "type": "string",
+            "example": "+3212345678"
+          }
+        },
+        "type": "object"
+      },
+      "CreateWaitinglistResponse": {
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "OK"
+          },
+          "waiting_list_id": {
+            "type": "integer",
+            "example": "1"
+          }
+        },
+        "type": "object"
+      },
+      "ReservationAlert": {
+        "required": [
+          "type",
+          "message"
+        ],
+        "properties": {
+          "type": {
+            "description": "The field/domain this message belongs to.",
+            "type": "string",
+            "enum": [
+              "restaurant",
+              "reservation",
+              "guests",
+              "payment",
+              "promotion",
+              "coupon"
+            ]
+          },
+          "message": {
+            "description": "The actual alert message in the requested Accept-Language.",
+            "type": "string"
+          },
+          "date": {
+            "description": "If requested and relevant for the alert, the date for which alerts have been requests or a date between requested date and to_date. In YYYY-MM-DD format (e.g. 2020-08-23).",
+            "type": "string"
+          },
+          "time": {
+            "description": "If requested and relevant for the alert, the time for which alerts have been requests or a time between requested time and to_time (15 min interval). In HH:mm format (e.g. 19:45).",
+            "type": "string"
+          }
+        }
+      },
+      "ReservationAlerts": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ReservationAlert"
+        }
+      },
+      "FullRestaurantAddress": {
+        "description": "The restaurant address",
+        "properties": {
+          "street": {
+            "description": "Class Restaurants",
+            "type": "string",
+            "example": "Dirtroad 10"
+          },
+          "postalCode": {
+            "description": "Class Restaurants",
+            "type": "string",
+            "example": "1234"
+          },
+          "city": {
+            "description": "Class Restaurants",
+            "type": "string",
+            "example": "Dusttown"
+          },
+          "country": {
+            "description": "Class Restaurants",
+            "type": "string",
+            "example": "Belgium"
+          },
+          "coordinates": {
+            "description": "Class Restaurants",
+            "properties": {
+              "latitude": {
+                "description": "Class Restaurants",
+                "type": "number",
+                "example": "50.868810"
+              },
+              "longitude": {
+                "description": "Class Restaurants",
+                "type": "number",
+                "example": "4.463480"
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "shift": {
+        "description": "A restaurant shift",
+        "properties": {
+          "id": {
+            "description": "Unique id of the shift",
+            "type": "string",
+            "example": "012345"
+          },
+          "name": {
+            "description": "Localized name of the shift",
+            "type": "string",
+            "example": "Diner"
+          },
+          "start": {
+            "description": "Start time of the shift",
+            "type": "string",
+            "example": "17:00"
+          },
+          "end": {
+            "description": "End time of the shift",
+            "type": "string",
+            "example": "23:00"
+          }
+        }
+      },
+      "field_option": {
+        "description": "A possible field value, can be used with field input_type: select, checkbox, radio.",
+        "properties": {
+          "value": {
+            "description": "The option value.",
+            "type": "string"
+          },
+          "label": {
+            "description": "The label (optional).",
+            "type": "string"
+          }
+        }
+      },
+      "additional_data_field": {
+        "description": "Additional reservation field",
+        "properties": {
+          "name": {
+            "description": "The field name",
+            "type": "string",
+            "example": "Birthdate"
+          },
+          "input_type": {
+            "description": "The input type of the field. One of: select, checkbox, radio, date, datetime, time, email, number, text.",
+            "type": "string",
+            "example": "date"
+          },
+          "required": {
+            "description": "The field obligation",
+            "type": "boolean",
+            "example": true
+          },
+          "options": {
+            "description": "List of possible values for the field, if applicable.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/field_option"
+            }
+          }
+        }
+      },
+      "additional_custom_data_section": {
+        "description": "Group/section of dynamic additional reservation fields, restaurant specific.",
+        "properties": {
+          "section_name": {
+            "description": "The section name in the requested language.",
+            "type": "string",
+            "example": "Allergens, Children"
+          },
+          "section_questions": {
+            "description": "List of custom data questions.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/additional_custom_data_question"
+            }
+          }
+        }
+      },
+      "additional_custom_data_question": {
+        "description": "Dynamic additional reservation question, restaurant specific.",
+        "properties": {
+          "question_id": {
+            "description": "The question id",
+            "type": "string",
+            "example": "children_children"
+          },
+          "question_type": {
+            "description": "The input type of the field. One of: text, number, select, checkbox, radio, json.",
+            "type": "string",
+            "example": "text"
+          },
+          "question_name": {
+            "description": "The question/field name in the requested language",
+            "type": "string",
+            "example": "Kinderen"
+          },
+          "question_description": {
+            "description": "A short description, can be used as field info or field hint. If field type='json', this will be a json encoded string. Can be empty.",
+            "type": "string"
+          },
+          "question_required": {
+            "description": "The field obligation",
+            "type": "boolean",
+            "example": true
+          },
+          "question_options": {
+            "description": "List of possible values for the field. If field type is one of 'select', 'radio' or 'checkbox'.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/field_option"
+            }
+          },
+          "question_json": {
+            "description": "A json encoded string containing all possible values. If field type='json'. Currently only used for children age ranges.",
+            "type": "string",
+            "example": "[{\"from\":\"0\",\"to\":\"8\",\"number\":0},{\"from\":\"9\",\"to\":\"12\",\"number\":0},{\"from\":\"13\",\"to\":\"18\",\"number\":0}]"
+          }
+        }
+      },
+      "OpeningHourSlot": {
+        "properties": {
+          "opens": {
+            "description": "Opening time",
+            "type": "string",
+            "example": "08:00"
+          },
+          "closes": {
+            "description": "Closing time",
+            "type": "string",
+            "example": "20:00"
+          }
+        }
+      },
+      "OpeningHourExceptionSlot": {
+        "properties": {
+          "closed": {
+            "description": "Exceptionally closed or exceptionally open",
+            "type": "bool",
+            "example": "1"
+          },
+          "open": {
+            "description": "Start date and time of the exception",
+            "type": "string",
+            "example": "2020-12-31 08:00"
+          },
+          "close": {
+            "description": "End date and time of the exception",
+            "type": "string",
+            "example": "2020-12-31 22:00"
+          }
+        }
+      },
+      "OpeningHours": {
+        "description": "The default restaurant opening hours.",
+        "properties": {
+          "monday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "tuesday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "wednesday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "thursday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "friday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "saturday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          },
+          "sunday": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpeningHourSlot"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,687 @@
+{
+  "openapi": "3.0.0",
+  "x-origin": "meta-api.io",
+  "info": {
+    "title": "sms77",
+    "version": "1.0",
+    "description": "Send SMS, make text-to-speech calls and perform phone number lookups such as CNAM, HLR & MNP.",
+    "contact": {
+      "name": "seven communications GmbH & Co. KG",
+      "url": "",
+      "email": ""
+    },
+    "termsOfService": ""
+  },
+  "servers": [
+    {
+      "url": "https://gateway.sms77.io/api"
+    }
+  ],
+  "paths": {
+    "/sms": {
+      "post": {
+        "summary": "Send SMS",
+        "operationId": "post-sms",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "debug": {
+                    "type": "boolean"
+                  },
+                  "flash": {
+                    "type": "boolean"
+                  },
+                  "foreign_id": {
+                    "type": "string",
+                    "example": "My custom foreign ID"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "My custom label"
+                  },
+                  "performance_tracking": {
+                    "type": "boolean"
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "Hello friend!"
+                  },
+                  "to": {
+                    "type": "string",
+                    "example": "+491771783130"
+                  }
+                },
+                "required": [
+                  "text",
+                  "to"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "success": "100",
+                    "total_price": 0,
+                    "balance": 112.495,
+                    "debug": "true",
+                    "sms_type": "direct",
+                    "messages": [
+                      {
+                        "id": null,
+                        "sender": "Meta API",
+                        "recipient": "4917661254799",
+                        "text": "Hi friend!",
+                        "encoding": "gsm",
+                        "label": null,
+                        "parts": 1,
+                        "udh": null,
+                        "is_binary": false,
+                        "price": 0,
+                        "success": true,
+                        "error": null,
+                        "error_text": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/voice": {
+      "post": {
+        "summary": "Text-To-Speech Call",
+        "operationId": "post-voice",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "debug": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "from": {
+                    "type": "string",
+                    "example": "+4915126716517"
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "Hello friend"
+                  },
+                  "to": {
+                    "type": "string",
+                    "example": "+491771783130"
+                  }
+                },
+                "required": [
+                  "text",
+                  "to"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "success": "100",
+                    "total_price": 0,
+                    "balance": 112.57,
+                    "debug": true,
+                    "messages": [
+                      {
+                        "id": "123456789",
+                        "sender": "491771783130",
+                        "recipient": "4917661254799",
+                        "text": "Hey",
+                        "price": 0,
+                        "success": true,
+                        "error": null,
+                        "error_text": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balance": {
+      "get": {
+        "summary": "Balance",
+        "operationId": "get-balancejson1",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "number",
+                      "example": 112.57
+                    },
+                    "currency": {
+                      "type": "string",
+                      "example": "EUR"
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "amount": 112.57,
+                      "currency": "EUR"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lookup/cnam": {
+      "post": {
+        "summary": "Lookup CNAM",
+        "operationId": "post-lookup-cnam",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "100"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "GERMANY"
+                    },
+                    "number": {
+                      "type": "string",
+                      "example": "+4915126716517"
+                    },
+                    "success": {
+                      "type": "string",
+                      "example": "true"
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "code": "100",
+                      "name": "GERMANY",
+                      "number": "+4915126716517",
+                      "success": "true"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "example": "+4915126716517"
+                  }
+                },
+                "required": [
+                  "number"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "number": "+4915126716517"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lookup/hlr": {
+      "post": {
+        "summary": "Lookup HLR",
+        "operationId": "post-lookup-hlr",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "status_message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "lookup_outcome": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "lookup_outcome_message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "international_format_number": {
+                      "type": "string",
+                      "example": "491632429751"
+                    },
+                    "international_formatted": {
+                      "type": "string",
+                      "example": "+49 163 2429751"
+                    },
+                    "national_format_number": {
+                      "type": "string",
+                      "example": "0163 2429751"
+                    },
+                    "country_code": {
+                      "type": "string",
+                      "example": "DE"
+                    },
+                    "country_code_iso3": {
+                      "type": "string",
+                      "example": "DEU"
+                    },
+                    "country_name": {
+                      "type": "string",
+                      "example": "Germany"
+                    },
+                    "country_prefix": {
+                      "type": "string",
+                      "example": "49"
+                    },
+                    "current_carrier": {
+                      "type": "object",
+                      "properties": {
+                        "network_code": {
+                          "type": "string",
+                          "example": "26203"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "E-Plus Mobilfunk"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "DE"
+                        },
+                        "network_type": {
+                          "type": "string",
+                          "example": "mobile"
+                        }
+                      }
+                    },
+                    "original_carrier": {
+                      "type": "object",
+                      "properties": {
+                        "network_code": {
+                          "type": "string",
+                          "example": "26203"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "E-Plus Mobilfunk"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "DE"
+                        },
+                        "network_type": {
+                          "type": "string",
+                          "example": "mobile"
+                        }
+                      }
+                    },
+                    "valid_number": {
+                      "type": "string",
+                      "example": "valid"
+                    },
+                    "reachable": {
+                      "type": "string",
+                      "example": "reachable"
+                    },
+                    "ported": {
+                      "type": "string",
+                      "example": "assumed_not_ported"
+                    },
+                    "roaming": {
+                      "type": "string",
+                      "example": "not_roaming"
+                    },
+                    "gsm_code": {
+                      "type": "string",
+                      "example": "0"
+                    },
+                    "gsm_message": {
+                      "type": "string",
+                      "example": "No error"
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "status": true,
+                      "status_message": "success",
+                      "lookup_outcome": true,
+                      "lookup_outcome_message": "success",
+                      "international_format_number": "491632429751",
+                      "international_formatted": "+49 163 2429751",
+                      "national_format_number": "0163 2429751",
+                      "country_code": "DE",
+                      "country_code_iso3": "DEU",
+                      "country_name": "Germany",
+                      "country_prefix": "49",
+                      "current_carrier": {
+                        "network_code": "26203",
+                        "name": "E-Plus Mobilfunk",
+                        "country": "DE",
+                        "network_type": "mobile"
+                      },
+                      "original_carrier": {
+                        "network_code": "26203",
+                        "name": "E-Plus Mobilfunk",
+                        "country": "DE",
+                        "network_type": "mobile"
+                      },
+                      "valid_number": "valid",
+                      "reachable": "reachable",
+                      "ported": "assumed_not_ported",
+                      "roaming": "not_roaming",
+                      "gsm_code": "0",
+                      "gsm_message": "No error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "example": "+4915126716517"
+                  }
+                },
+                "required": [
+                  "number"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "number": "+4915126716517"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lookup/mnp": {
+      "post": {
+        "summary": "Lookup MNP",
+        "operationId": "post-lookup-mnp",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "mnp": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string",
+                          "example": "DE"
+                        },
+                        "isPorted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "international_formatted": {
+                          "type": "string",
+                          "example": "+49 163 2429751"
+                        },
+                        "mccmnc": {
+                          "type": "string",
+                          "example": "26201"
+                        },
+                        "national_format": {
+                          "type": "string",
+                          "example": "01512 6716517"
+                        },
+                        "network": {
+                          "type": "string",
+                          "example": "Telekom Deutschland GmbH (Telekom)"
+                        },
+                        "number": {
+                          "type": "string",
+                          "example": "+4915126716517"
+                        }
+                      }
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 0.005
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "code": 100,
+                      "mnp": {
+                        "country": "DE",
+                        "isPorted": false,
+                        "international_formatted": "+49 163 2429751",
+                        "mccmnc": "26201",
+                        "national_format": "01512 6716517",
+                        "network": "Telekom Deutschland GmbH (Telekom)",
+                        "number": "+4915126716517"
+                      },
+                      "price": 0.005,
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "example": "+4915126716517"
+                  }
+                },
+                "required": [
+                  "number"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "number": "+4915126716517"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lookup/format": {
+      "post": {
+        "summary": "Lookup Format",
+        "operationId": "post-lookup-format",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "carrier": {
+                      "type": "string",
+                      "example": "Eplus"
+                    },
+                    "country_code": {
+                      "type": "string",
+                      "example": "49"
+                    },
+                    "country_iso": {
+                      "type": "string",
+                      "example": "DE"
+                    },
+                    "country_name": {
+                      "type": "string",
+                      "example": "Germany"
+                    },
+                    "international": {
+                      "type": "string",
+                      "example": "+491632429751"
+                    },
+                    "international_formatted": {
+                      "type": "string",
+                      "example": "+49 163 2429751"
+                    },
+                    "national": {
+                      "type": "string",
+                      "example": "0163 2429751"
+                    },
+                    "network_type": {
+                      "type": "string",
+                      "example": "mobile"
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "carrier": "Eplus",
+                      "country_code": "49",
+                      "country_iso": "DE",
+                      "country_name": "Germany",
+                      "international": "+491632429751",
+                      "international_formatted": "+49 163 2429751",
+                      "national": "0163 2429751",
+                      "network_type": "mobile",
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "example": "+491632429751"
+                  }
+                },
+                "required": [
+                  "number"
+                ]
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "number": "+491632429751"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  },
+  "security": [
+    {
+      "key": []
+    }
+  ]
+}

@@ -1,0 +1,596 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "description": "API Documentation Deep Talk",
+      "url": "https://connect.deep-talk.ai"
+    }
+  ],
+  "info": {
+    "description": "Here you find details about all our available endpoints, their required query parameters and payloads, response formats and status codes.",
+    "version": "1.0.0",
+    "title": "API Documentation Deep Talk",
+    "contact": {
+      "email": "deeptalk@deep-talk.ai"
+    }
+  },
+  "tags": [
+    {
+      "name": "Project",
+      "description": "All endpoints related to Projects."
+    },
+    {
+      "name": "Analysis",
+      "description": "All endpoints related to Analysis."
+    },
+    {
+      "name": "Deeper",
+      "description": "All endpoints related to Deepers."
+    },
+    {
+      "name": "Sentiments",
+      "description": "All endpoints related to Sentiments."
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuthentication": []
+    }
+  ],
+  "paths": {
+    "/project": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "List all Projects",
+        "description": "Get a list containing all your current projects.\n",
+        "responses": {
+          "200": {
+            "description": "A list of Projects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectList"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/deepers": {
+      "get": {
+        "tags": [
+          "Deeper"
+        ],
+        "summary": "List all Deepers",
+        "description": "Get a list containing all your current Deepers.\n",
+        "responses": {
+          "200": {
+            "description": "A list of Deepers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeeperList"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/deepers/predict": {
+      "post": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "deeper",
+            "schema": {
+              "type": "string",
+              "example": "881d4e10-b0d7-4599-b2b4-86cb999667c4"
+            },
+            "required": true,
+            "description": "The identifier of your Deeper. You find this on your Deeper's settings tab or in its url."
+          },
+          {
+            "in": "query",
+            "name": "actions-type",
+            "schema": {
+              "type": "string",
+              "example": "item"
+            },
+            "required": true,
+            "description": "Always use the value \"item\"."
+          }
+        ],
+        "tags": [
+          "Deeper"
+        ],
+        "summary": "Make a prediction",
+        "description": "Make a prediction using one of your Deepers.\n\nSend a text unit to this endpoint \nto know whether it matches the concept that you trained your Deeper on.\n\nThe returned response also contains the sentiment for your text unit.\n",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeeperPredict"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sentiment": {
+      "post": {
+        "tags": [
+          "Sentiments"
+        ],
+        "summary": "Make a sentiment analysis",
+        "description": "Make a sentiment analysis.\n\nSend a text unit to this endpoint \nto get the sentiment analysis\n",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSentimentAnalysis"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SentimentAnalysis"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analysis": {
+      "get": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "List all analyses",
+        "description": "Get a list of all your current analyses.\n",
+        "responses": {
+          "200": {
+            "description": "A list of analyses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisList"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "Start a new analysis",
+        "description": "You start a new analysis by providing either a list of text units, or, a url pointing to your data file.\n\nYou need to specify the project_id, such that we know where the analysis should be created.\nWe also need a a model_tag, which serves as a base for the name that you want to give to the analysis.\n\nIf providing a direct url to your data file, you must additionally provide details about the file format,\nsuch that we know which column contains the text that you want to structure.\n\n*As we must be able to read from this url, we recommend sending a file url only for non-sensitive data.*\n\nWhen you submit the request, we will subtract the rows of data that are required for the analysis from your quota.\n",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Wrong payload"
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateAnalysisWithContent"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CreateAnalysisWithFile"
+                  }
+                ]
+              }
+            }
+          },
+          "description": "Start a new analysis."
+        }
+      }
+    },
+    "/analysis/{id}/topics": {
+      "get": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "List all topics",
+        "description": "Get a list of all topics found in specific clustering analysis.\n",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The analysis ID"
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            },
+            "description": "Use this to filter by topic levels."
+          },
+          {
+            "in": "query",
+            "name": "parent_topic",
+            "schema": {
+              "type": "string",
+              "example": "3e073481-cdfa-43f8-a1f1-b89e7ed3eacb"
+            },
+            "description": "Use it to filter the topic by parents. Only for levels 2 and 3."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTopics"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong payload"
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuthentication": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "You can create your api key when you are logged in to our platform.\nThe api key is long lived and should never be shared with anyone.\n"
+      }
+    },
+    "schemas": {
+      "ProjectList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ProjectObject"
+        }
+      },
+      "ProjectObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My Project"
+          },
+          "id": {
+            "type": "number",
+            "example": 725
+          },
+          "description": {
+            "type": "string",
+            "example": "This project contains analyses from social media data."
+          }
+        }
+      },
+      "AnalysisList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AnalysisObject"
+        }
+      },
+      "AnalysisObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My Analysis"
+          },
+          "id": {
+            "type": "number",
+            "example": 125
+          },
+          "status": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "DeeperList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/DeeperObject"
+        }
+      },
+      "DeeperObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My Detector"
+          },
+          "id": {
+            "type": "string",
+            "example": "3e073481-cdfa-43f8-a1f1-b89e7ed3eacb"
+          }
+        }
+      },
+      "DeeperPredict": {
+        "type": "object",
+        "required": [
+          "content"
+        ],
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "This is the text that I want my Deeper to analyze.",
+            "description": "The text that you want to send to your Deeper for detection."
+          },
+          "author": {
+            "type": "string",
+            "example": "twitter_account",
+            "description": "Enter the author of the text that you are sending for analysis. Examples would be an email address, a Twitter account, or any other identifier that helps you to know who wrote the text."
+          },
+          "source": {
+            "type": "string",
+            "example": "Twitter",
+            "description": "Enter the source of the text. This field can help you later to identify where a certain detection was made. Common examples of sources would be \"Twitter\", or \"Facebook\" for social media analysis, \"Personal Email\" when analysing your email, or \"Survey Campaign X\" for a specific survey that you run online."
+          },
+          "external_reference": {
+            "type": "string",
+            "example": "http://twitter.com/tweet",
+            "description": "Here you can put a direct reference to the text. This could be a url to a Tweet, an identifier of an online survey, or a link to a reddit thread."
+          }
+        }
+      },
+      "CreateAnalysisWithContent": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "model_tag",
+          "content"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 736,
+            "description": "This project must already exist in your Deep Talk account."
+          },
+          "model_tag": {
+            "type": "string",
+            "example": "api_model",
+            "description": "This tag is used as part of the name of the analysis that will be initialized.\nWe append a random string to the model_tag to avoid duplications.\n"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "example": [
+              {
+                "text": "Some text to analyze."
+              },
+              {
+                "text": "Another text to analyze."
+              },
+              {
+                "text": "Even more text to analyze."
+              }
+            ],
+            "description": "Array of objects containing the text units that you want to analyze.\n"
+          }
+        }
+      },
+      "CreateAnalysisWithFile": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "model_tag",
+          "file_url",
+          "column_content"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 736,
+            "description": "This project must already exist in your Deep Talk account."
+          },
+          "model_tag": {
+            "type": "string",
+            "example": "api_model",
+            "description": "This tag is used as part of the name of the analysis that will be initialized.\nWe append a random string to the model_tag to avoid duplications.\n"
+          },
+          "file_url": {
+            "type": "string",
+            "example": "https://example.com/some-path/reviews.csv",
+            "description": "The url of your data file.\nNote that we need read access to this file\nand hence do only recommend this for non-sensitive data.\n"
+          },
+          "column_content": {
+            "type": "string",
+            "example": "text_of_review",
+            "description": "The name of the column of the data file that contains the text that you want to analyze.\n"
+          },
+          "column_created_at": {
+            "type": "string",
+            "example": "2021-02-01T15:27:31.000Z",
+            "description": "The name of the column of the data file that contains the date in ISO format that you want to analyze.\n"
+          }
+        }
+      },
+      "GetTopics": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TopicsObject"
+        }
+      },
+      "TopicsObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "room",
+            "description": "Name given automatically to the topic."
+          },
+          "id": {
+            "type": "string",
+            "example": "3e073481-cdfa-43f8-a1f1-b89e7ed3eacb",
+            "description": "The unique identifier of the topic (uuid)."
+          },
+          "custom_user_name": {
+            "type": "string",
+            "example": "hotel_room",
+            "description": "Name given by the user to the topic."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "example": [
+                "room",
+                "tidy",
+                "view",
+                "tv",
+                "beautiful",
+                "service",
+                "bathroom",
+                "balcony"
+              ]
+            },
+            "description": "Most important words that appear in the topic."
+          },
+          "level": {
+            "type": "integer",
+            "example": 2,
+            "description": "The topic level.\nDeep Talk's clustering analysis creates a hierarchical clustering of three levels.\nTopics increase in precision and decrease in size moving from the most inner level (1) to the most outer level(3).\nTopics of the first level usually capture very general concepts, such as \"staff\" or \"room\" in case of hotel reviews.\nMoving to the second level, the topics capture concepts that frequently occur in relation to the first level.\nExamples would be \"room.view\", or \"room.service\". On the third, the most outer level, very precise and consistent topics are captured.\nThese usually focus on a very specific detail about the view from the room or the room service. \n"
+          },
+          "parent_topic": {
+            "type": "string",
+            "example": "2e2aaaab-ad2e-4079-b442-898ba64f2935",
+            "description": "The parent topic. Because of the hierarchy, there exist relations between the topics.\nThe topics of a higher level, are connected to one specific topic of the previous level.\nFor example, the topic of the second level \"room.service\" lives under the more general topic of the first level \"room\".\nThis relation is captured by the parent_topic.\nThe parent topic is the unique identifier of the topic living one level higher.\nIn the case from above, the parent_topic of \"room.service\" would be the identifier of the topic \"room\".\n"
+          },
+          "size": {
+            "type": "integer",
+            "example": 722,
+            "description": "Number of text units that were assigned to the topic.\nThe more units, or members, that were assigned to a topic, the more frequent is this topic in your text data.\n"
+          },
+          "average_sentiment": {
+            "type": "float",
+            "example": 0.22759887898185602,
+            "description": "The average sentiment of the topic. This is calculated by taking the average sentiment of all topic members."
+          },
+          "fraction": {
+            "type": "float",
+            "example": 0.0024193548387096775,
+            "description": "Percentage of text documents in which this topic is mentioned.\nFor example, when you upload reviews of hotels, this number indicates in which percentage of these reviews a specific topic occurs.\n"
+          },
+          "metadata_averages": {
+            "type": "object",
+            "example": {
+              "Room price": 124.65,
+              "Room evaluation": 3.33,
+              "Number of nights": 2.4
+            },
+            "description": "Average of each number-like column in your data.\nDeep Talk tries to analyse each column of your data file.\nFor any number-like column that we detect we return to you the average of this column across the members of the topic.\n"
+          }
+        }
+      },
+      "SentimentAnalysis": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "I really enjoyed the food here, but the room itself was a bit too small.",
+            "description": "The text that you want to send to the sentiment analysis."
+          }
+        }
+      },
+      "ResponseSentimentAnalysis": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "I really enjoyed the food here, but the room itself was a bit too small.",
+            "description": "This is the text that you sent to the sentiment analysis for analysis."
+          },
+          "sentiment": {
+            "type": "float",
+            "example": 0.529,
+            "description": "The overall sentiment of the text that you sent for analysis."
+          },
+          "segments": {
+            "description": "When sending a text, we may divide it into various smaller parts.\nWe call these parts segments.\nAdditionally to the overall sentiment of the text, we return sentiment results for each of the segments.\nThis can give you a more detail view and understanding of the text.\n",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1,
+                  "description": "The segment ID"
+                },
+                "segment": {
+                  "type": "string",
+                  "example": "I really enjoyed the food here",
+                  "description": "The text of the segment."
+                },
+                "sentiment": {
+                  "type": "float",
+                  "example": 0.87,
+                  "description": "The sentiment of the segment."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

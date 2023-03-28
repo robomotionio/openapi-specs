@@ -1,0 +1,5746 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "33pfyqpx63njm"
+  },
+  "info": {
+    "title": "Upflow API V1",
+    "description": "<!-- TODO Error handling should be explained. -->\n\nUpflow api documentation.\n\n## Sandbox Environment\n\nYou can develop and test your integration in our API sandbox: `https://api.sandbox.upflow.io/v1/`\n\n## Reliability recommendations\n\nMake sure to implement API call retries with exponential backoff for the rare cases of API being down.\n\n## Authentication\n\nAll requests must include the `X-Api-Key` and `X-Api-Secret` authentication headers with each request. Project administrators can obtain these from the settings menu.\n\n## Addressing Models using `externalId`\n\n<!-- TODO Can probably be rephrased. Explain difference with customId. -->\n\nAll models contain an `externalId` field. You can use this field to store your own identifier in Upflow.\nIf you opt for this type of integration, you can prefix ids with `external:` in order to lookup Upflow models using your identifier.\n\nExamples:\n\n- `GET https://api.upflow.io/v1/customers/12345` returns the customer with `id = 12345`\n\n- `GET https://api.upflow.io/v1/customers/external:12345` returns the customer with `externalId = 12345`\n\n## Notes\n\n- All amounts are stored as `Integer` and represent the lowest division of the currency (e.g., cents for US Dollars).\n\n- Currencies follow [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) (e.g., EUR, USD, GBP).\n\n- The API is rate limited to 300 requests per minute.",
+    "contact": {},
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.upflow.io/v1",
+      "variables": {}
+    },
+    {
+      "url": "https://api.sandbox.upflow.io/v1",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/customers/{customerId}/invoices": {
+      "post": {
+        "summary": "Import Invoice (deprecated)",
+        "description": "<!--\n### Create invoice [POST /invoices]\n\n+ Request Create invoice for customer using an external ID (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n        + customerExternalId: 1a2c3b (required, string) - an external id that uniquely references the customer\n\n\n+ Request Create invoice for new customer (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n    \n        + customer (CustomerAttribs)\n\n+ Response 201 (application/json)\n    + Attributes (Invoice)\n-->",
+        "operationId": "ImportInvoice(deprecated)",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/LegacyInvoiceCommonAttribsNoPDF"
+                  },
+                  {
+                    "example": {
+                      "customId": "FAC123",
+                      "externalId": "54654321",
+                      "issuedAt": "2015-05-05T12:30:00",
+                      "dueDate": "2015-05-05T12:30:00",
+                      "name": "Facture couvrant les prestations de service de Decembre",
+                      "currency": "EUR",
+                      "grossAmount": 1700,
+                      "netAmount": 1500
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "customId": "FAC123",
+                "externalId": "54654321",
+                "issuedAt": "2015-05-05T12:30:00",
+                "dueDate": "2015-05-05T12:30:00",
+                "name": "Facture couvrant les prestations de service de Decembre",
+                "currency": "EUR",
+                "grossAmount": 1700,
+                "netAmount": 1500
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoice"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/invoices": {
+      "post": {
+        "summary": "Import Invoice",
+        "description": "<!--\n### Create invoice [POST /invoices]\n\n+ Request Create invoice for customer using an external ID (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n        + customerExternalId: 1a2c3b (required, string) - an external id that uniquely references the customer\n\n\n+ Request Create invoice for new customer (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n    \n        + customer (CustomerAttribs)\n\n+ Response 201 (application/json)\n    + Attributes (Invoice)\n-->This endpoint can be used to create or update (if externalId already exists) an invoice.\n\nIt cannot be used when using a native integration as invoices are only created by the native integration in that case.",
+        "operationId": "ImportInvoice",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/InvoiceCommonAttribsNoPDF"
+                  },
+                  {
+                    "example": {
+                      "customId": "FAC123",
+                      "externalId": "54654321",
+                      "issuedAt": "2015-05-05T12:30:00",
+                      "dueDate": "2015-05-05T12:30:00",
+                      "name": "Facture couvrant les prestations de service de Decembre",
+                      "currency": "EUR",
+                      "grossAmount": 1700,
+                      "netAmount": 1500,
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      }
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "customId": "FAC123",
+                "externalId": "54654321",
+                "issuedAt": "2015-05-05T12:30:00",
+                "dueDate": "2015-05-05T12:30:00",
+                "name": "Facture couvrant les prestations de service de Decembre",
+                "currency": "EUR",
+                "grossAmount": 1700,
+                "netAmount": 1500,
+                "customer": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoice"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "summary": "List Invoices",
+        "description": "<!--\n### Create invoice [POST /invoices]\n\n+ Request Create invoice for customer using an external ID (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n        + customerExternalId: 1a2c3b (required, string) - an external id that uniquely references the customer\n\n\n+ Request Create invoice for new customer (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n    \n        + customer (CustomerAttribs)\n\n+ Response 201 (application/json)\n    + Attributes (Invoice)\n-->",
+        "operationId": "ListInvoices",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 100
+            }
+          },
+          {
+            "name": "customer.id",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "name": "customer.externalId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "134"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListInvoicesresponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/invoices/{invoiceId}": {
+      "get": {
+        "summary": "Get Invoice",
+        "description": "<!--\n### Create invoice [POST /invoices]\n\n+ Request Create invoice for customer using an external ID (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n        + customerExternalId: 1a2c3b (required, string) - an external id that uniquely references the customer\n\n\n+ Request Create invoice for new customer (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n    \n        + customer (CustomerAttribs)\n\n+ Response 201 (application/json)\n    + Attributes (Invoice)\n-->",
+        "operationId": "GetInvoice",
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "the Invoice ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "X-Api-Key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoice"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "",
+        "operationId": "delete-invoices-invoiceId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "X-Api-Key",
+            "required": true
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "invoiceId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/invoices/{invoiceId}/pdf": {
+      "post": {
+        "summary": "Upload Invoice PDF",
+        "description": "<!--\n### Create invoice [POST /invoices]\n\n+ Request Create invoice for customer using an external ID (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n        + customerExternalId: 1a2c3b (required, string) - an external id that uniquely references the customer\n\n\n+ Request Create invoice for new customer (application/json)\n    + Headers\n    \n            X-Api-Key: YOUR_API_KEY\n            X-Api-Secret: YOUR_API_SECRET\n\n    + Attributes (InvoiceCommonAttribs)\n    \n        + customer (CustomerAttribs)\n\n+ Response 201 (application/json)\n    + Attributes (Invoice)\n-->You can either send the PDF in a multipart/form-data request (ie. a regular \"file upload\" in HTML) or a JSON request with the file encoded in base64.",
+        "operationId": "UploadInvoicePDF",
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "multipart/form-data or application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PDFImportAttr"
+                  },
+                  {
+                    "example": {
+                      "data": "'JVBERi0xLjYNJeLjz9MNCjE5IDAgb2JqDTw8L0Zp...DSUlRU9GDQ=='"
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "data": "'JVBERi0xLjYNJeLjz9MNCjE5IDAgb2JqDTw8L0Zp...DSUlRU9GDQ=='"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "invoiceId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/customers": {
+      "post": {
+        "summary": "Import Customer",
+        "description": "Handles `external ids` on `customer` level.This endpoint can be used to create or update (if externalId already exists) a customer.\n\nThis endpoint cannot be used when using a native integration as customers are only created by the native integration in that case.",
+        "operationId": "ImportCustomer",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ImportCustomerrequest"
+                  },
+                  {
+                    "example": {
+                      "name": "Upflow SAS",
+                      "vatNumber": "838718328",
+                      "accountingRef": "UPFL",
+                      "externalId": "1a2c3b",
+                      "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                      "address": {
+                        "address": "25 Passage Dubail",
+                        "zipcode": "75010",
+                        "city": "Paris",
+                        "state": "Île",
+                        "country": "France"
+                      },
+                      "parent": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      },
+                      "paymentMethods": {
+                        "card": {
+                          "enabled": false
+                        },
+                        "check": {
+                          "enabled": false
+                        },
+                        "achDebit": {
+                          "enabled": false
+                        },
+                        "sepaDebit": {
+                          "enabled": false
+                        },
+                        "goCardless": {
+                          "enabled": false
+                        },
+                        "wireTransfer": {
+                          "enabled": false,
+                          "bankAccount": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        }
+                      },
+                      "contacts": [
+                        {
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "phone": "+33678059778",
+                          "email": "john@example.com",
+                          "position": "ACCOUNTING",
+                          "externalId": "CONT123",
+                          "isMain": true
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "name": "Upflow SAS",
+                "vatNumber": "838718328",
+                "accountingRef": "UPFL",
+                "externalId": "1a2c3b",
+                "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                "address": {
+                  "address": "25 Passage Dubail",
+                  "zipcode": "75010",
+                  "city": "Paris",
+                  "state": "Île",
+                  "country": "France"
+                },
+                "parent": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                },
+                "paymentMethods": {
+                  "card": {
+                    "enabled": false
+                  },
+                  "check": {
+                    "enabled": false
+                  },
+                  "achDebit": {
+                    "enabled": false
+                  },
+                  "sepaDebit": {
+                    "enabled": false
+                  },
+                  "goCardless": {
+                    "enabled": false
+                  },
+                  "wireTransfer": {
+                    "enabled": false,
+                    "bankAccount": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                    }
+                  }
+                },
+                "contacts": [
+                  {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "phone": "+33678059778",
+                    "email": "john@example.com",
+                    "position": "ACCOUNTING",
+                    "externalId": "CONT123",
+                    "isMain": true
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Customer"
+                    },
+                    {
+                      "example": {
+                        "name": "Upflow SAS",
+                        "vatNumber": "838718328",
+                        "accountingRef": "UPFL",
+                        "externalId": "1a2c3b",
+                        "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                        "address": {
+                          "address": "25 Passage Dubail",
+                          "zipcode": "75010",
+                          "city": "Paris",
+                          "state": "Île",
+                          "country": "France"
+                        },
+                        "parent": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b"
+                        },
+                        "paymentMethods": {
+                          "card": {
+                            "enabled": false
+                          },
+                          "check": {
+                            "enabled": false
+                          },
+                          "achDebit": {
+                            "enabled": false
+                          },
+                          "sepaDebit": {
+                            "enabled": false
+                          },
+                          "goCardless": {
+                            "enabled": false
+                          },
+                          "wireTransfer": {
+                            "enabled": false,
+                            "bankAccount": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                            }
+                          }
+                        },
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "countInvoicesDue": 0,
+                        "countInvoicesOverdue": 1,
+                        "amountDue": 0,
+                        "amountOverdue": 118000,
+                        "currency": "Currency",
+                        "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "name": "Upflow SAS",
+                  "vatNumber": "838718328",
+                  "accountingRef": "UPFL",
+                  "externalId": "1a2c3b",
+                  "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                  "address": {
+                    "address": "25 Passage Dubail",
+                    "zipcode": "75010",
+                    "city": "Paris",
+                    "state": "Île",
+                    "country": "France"
+                  },
+                  "parent": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b"
+                  },
+                  "paymentMethods": {
+                    "card": {
+                      "enabled": false
+                    },
+                    "check": {
+                      "enabled": false
+                    },
+                    "achDebit": {
+                      "enabled": false
+                    },
+                    "sepaDebit": {
+                      "enabled": false
+                    },
+                    "goCardless": {
+                      "enabled": false
+                    },
+                    "wireTransfer": {
+                      "enabled": false,
+                      "bankAccount": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  },
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "countInvoicesDue": 0,
+                  "countInvoicesOverdue": 1,
+                  "amountDue": 0,
+                  "amountOverdue": 118000,
+                  "currency": "Currency",
+                  "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "summary": "List Customers",
+        "description": "Handles `external ids` on `customer` level.",
+        "operationId": "ListCustomers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ListCustomersresponse"
+                    },
+                    {
+                      "example": {
+                        "page": 1,
+                        "limit": 10,
+                        "total": 100,
+                        "customers": [
+                          {
+                            "name": "Upflow SAS",
+                            "vatNumber": "838718328",
+                            "accountingRef": "UPFL",
+                            "externalId": "1a2c3b",
+                            "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                            "address": {
+                              "address": "25 Passage Dubail",
+                              "zipcode": "75010",
+                              "city": "Paris",
+                              "state": "Île",
+                              "country": "France"
+                            },
+                            "parent": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "externalId": "1a2c3b"
+                            },
+                            "paymentMethods": {
+                              "card": {
+                                "enabled": false
+                              },
+                              "check": {
+                                "enabled": false
+                              },
+                              "achDebit": {
+                                "enabled": false
+                              },
+                              "sepaDebit": {
+                                "enabled": false
+                              },
+                              "goCardless": {
+                                "enabled": false
+                              },
+                              "wireTransfer": {
+                                "enabled": false,
+                                "bankAccount": {
+                                  "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                                }
+                              }
+                            },
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "countInvoicesDue": 0,
+                            "countInvoicesOverdue": 1,
+                            "amountDue": 0,
+                            "amountOverdue": 118000,
+                            "currency": "Currency",
+                            "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "page": 1,
+                  "limit": 10,
+                  "total": 100,
+                  "customers": [
+                    {
+                      "name": "Upflow SAS",
+                      "vatNumber": "838718328",
+                      "accountingRef": "UPFL",
+                      "externalId": "1a2c3b",
+                      "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                      "address": {
+                        "address": "25 Passage Dubail",
+                        "zipcode": "75010",
+                        "city": "Paris",
+                        "state": "Île",
+                        "country": "France"
+                      },
+                      "parent": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      },
+                      "paymentMethods": {
+                        "card": {
+                          "enabled": false
+                        },
+                        "check": {
+                          "enabled": false
+                        },
+                        "achDebit": {
+                          "enabled": false
+                        },
+                        "sepaDebit": {
+                          "enabled": false
+                        },
+                        "goCardless": {
+                          "enabled": false
+                        },
+                        "wireTransfer": {
+                          "enabled": false,
+                          "bankAccount": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        }
+                      },
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "countInvoicesDue": 0,
+                      "countInvoicesOverdue": 1,
+                      "amountDue": 0,
+                      "amountOverdue": 118000,
+                      "currency": "Currency",
+                      "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customerId}": {
+      "put": {
+        "summary": "Update Customer",
+        "description": "Handles `external ids` on `customer` level.",
+        "operationId": "UpdateCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CustomerAttribs"
+                  },
+                  {
+                    "example": {
+                      "name": "Upflow SAS",
+                      "vatNumber": "838718328",
+                      "accountingRef": "UPFL",
+                      "externalId": "1a2c3b",
+                      "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                      "address": {
+                        "address": "25 Passage Dubail",
+                        "zipcode": "75010",
+                        "city": "Paris",
+                        "state": "Île",
+                        "country": "France"
+                      },
+                      "parent": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      },
+                      "paymentMethods": {
+                        "card": {
+                          "enabled": false
+                        },
+                        "check": {
+                          "enabled": false
+                        },
+                        "achDebit": {
+                          "enabled": false
+                        },
+                        "sepaDebit": {
+                          "enabled": false
+                        },
+                        "goCardless": {
+                          "enabled": false
+                        },
+                        "wireTransfer": {
+                          "enabled": false,
+                          "bankAccount": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "name": "Upflow SAS",
+                "vatNumber": "838718328",
+                "accountingRef": "UPFL",
+                "externalId": "1a2c3b",
+                "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                "address": {
+                  "address": "25 Passage Dubail",
+                  "zipcode": "75010",
+                  "city": "Paris",
+                  "state": "Île",
+                  "country": "France"
+                },
+                "parent": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                },
+                "paymentMethods": {
+                  "card": {
+                    "enabled": false
+                  },
+                  "check": {
+                    "enabled": false
+                  },
+                  "achDebit": {
+                    "enabled": false
+                  },
+                  "sepaDebit": {
+                    "enabled": false
+                  },
+                  "goCardless": {
+                    "enabled": false
+                  },
+                  "wireTransfer": {
+                    "enabled": false,
+                    "bankAccount": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Customer"
+                    },
+                    {
+                      "example": {
+                        "name": "Upflow SAS",
+                        "vatNumber": "838718328",
+                        "accountingRef": "UPFL",
+                        "externalId": "1a2c3b",
+                        "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                        "address": {
+                          "address": "25 Passage Dubail",
+                          "zipcode": "75010",
+                          "city": "Paris",
+                          "state": "Île",
+                          "country": "France"
+                        },
+                        "parent": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b"
+                        },
+                        "paymentMethods": {
+                          "card": {
+                            "enabled": false
+                          },
+                          "check": {
+                            "enabled": false
+                          },
+                          "achDebit": {
+                            "enabled": false
+                          },
+                          "sepaDebit": {
+                            "enabled": false
+                          },
+                          "goCardless": {
+                            "enabled": false
+                          },
+                          "wireTransfer": {
+                            "enabled": false,
+                            "bankAccount": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                            }
+                          }
+                        },
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "countInvoicesDue": 0,
+                        "countInvoicesOverdue": 1,
+                        "amountDue": 0,
+                        "amountOverdue": 118000,
+                        "currency": "Currency",
+                        "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "name": "Upflow SAS",
+                  "vatNumber": "838718328",
+                  "accountingRef": "UPFL",
+                  "externalId": "1a2c3b",
+                  "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                  "address": {
+                    "address": "25 Passage Dubail",
+                    "zipcode": "75010",
+                    "city": "Paris",
+                    "state": "Île",
+                    "country": "France"
+                  },
+                  "parent": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b"
+                  },
+                  "paymentMethods": {
+                    "card": {
+                      "enabled": false
+                    },
+                    "check": {
+                      "enabled": false
+                    },
+                    "achDebit": {
+                      "enabled": false
+                    },
+                    "sepaDebit": {
+                      "enabled": false
+                    },
+                    "goCardless": {
+                      "enabled": false
+                    },
+                    "wireTransfer": {
+                      "enabled": false,
+                      "bankAccount": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  },
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "countInvoicesDue": 0,
+                  "countInvoicesOverdue": 1,
+                  "amountDue": 0,
+                  "amountOverdue": 118000,
+                  "currency": "Currency",
+                  "directUrl": "https://app.upflow.io/customers/ABCDEFGHI"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "summary": "Get Customer",
+        "description": "Handles `external ids` on `customer` level.",
+        "operationId": "GetCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/GetCustomerresponse"
+                    },
+                    {
+                      "example": {
+                        "name": "Upflow SAS",
+                        "vatNumber": "838718328",
+                        "accountingRef": "UPFL",
+                        "externalId": "1a2c3b",
+                        "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                        "address": {
+                          "address": "25 Passage Dubail",
+                          "zipcode": "75010",
+                          "city": "Paris",
+                          "state": "Île",
+                          "country": "France"
+                        },
+                        "parent": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b"
+                        },
+                        "paymentMethods": {
+                          "card": {
+                            "enabled": false
+                          },
+                          "check": {
+                            "enabled": false
+                          },
+                          "achDebit": {
+                            "enabled": false
+                          },
+                          "sepaDebit": {
+                            "enabled": false
+                          },
+                          "goCardless": {
+                            "enabled": false
+                          },
+                          "wireTransfer": {
+                            "enabled": false,
+                            "bankAccount": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                            }
+                          }
+                        },
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "countInvoicesDue": 0,
+                        "countInvoicesOverdue": 1,
+                        "amountDue": 0,
+                        "amountOverdue": 118000,
+                        "currency": "Currency",
+                        "directUrl": "https://app.upflow.io/customers/ABCDEFGHI",
+                        "contacts": [
+                          {
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "phone": "+33678059778",
+                            "email": "john@example.com",
+                            "position": "ACCOUNTING",
+                            "externalId": "CONT123",
+                            "isMain": true,
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "name": "Upflow SAS",
+                  "vatNumber": "838718328",
+                  "accountingRef": "UPFL",
+                  "externalId": "1a2c3b",
+                  "accountManagerId": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "dunningPlanId": "7a6c91dc-3580-4c43-aefb-397190134655",
+                  "address": {
+                    "address": "25 Passage Dubail",
+                    "zipcode": "75010",
+                    "city": "Paris",
+                    "state": "Île",
+                    "country": "France"
+                  },
+                  "parent": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b"
+                  },
+                  "paymentMethods": {
+                    "card": {
+                      "enabled": false
+                    },
+                    "check": {
+                      "enabled": false
+                    },
+                    "achDebit": {
+                      "enabled": false
+                    },
+                    "sepaDebit": {
+                      "enabled": false
+                    },
+                    "goCardless": {
+                      "enabled": false
+                    },
+                    "wireTransfer": {
+                      "enabled": false,
+                      "bankAccount": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  },
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "countInvoicesDue": 0,
+                  "countInvoicesOverdue": 1,
+                  "amountDue": 0,
+                  "amountOverdue": 118000,
+                  "currency": "Currency",
+                  "directUrl": "https://app.upflow.io/customers/ABCDEFGHI",
+                  "contacts": [
+                    {
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "phone": "+33678059778",
+                      "email": "john@example.com",
+                      "position": "ACCOUNTING",
+                      "externalId": "CONT123",
+                      "isMain": true,
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "Delete Customer",
+        "description": "Handles `external ids` on `customer` level.",
+        "operationId": "DeleteCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "the Customer ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customerId}/customer_summary": {
+      "post": {
+        "summary": "Generate Customer Summary Page URL",
+        "description": "Handles `external ids` on `customer` level.",
+        "operationId": "GenerateCustomerSummaryPageURL",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/GenerateCustomerSummaryPageURLresponse"
+                    },
+                    {
+                      "example": {
+                        "url": "https://app.upflow.com/customerSummary?token=xxx"
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "url": "https://app.upflow.com/customerSummary?token=xxx"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customer_id}/contacts": {
+      "post": {
+        "summary": "Create Customer Contact",
+        "description": "",
+        "operationId": "CreateCustomerContact",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "description": "2be3-4c43-aefb-397190134655' (required, string, `00a70b35-2be3-4c43-aefb-397190134655`)",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "'00a70b35"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactAttribs"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Contact"
+                    },
+                    {
+                      "example": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "phone": "+33678059778",
+                        "email": "john@example.com",
+                        "position": "ACCOUNTING",
+                        "externalId": "CONT123",
+                        "isMain": true,
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "phone": "+33678059778",
+                  "email": "john@example.com",
+                  "position": "ACCOUNTING",
+                  "externalId": "CONT123",
+                  "isMain": true,
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customer_id}/contacts/{id}": {
+      "put": {
+        "summary": "Update Customer Contact",
+        "description": "",
+        "operationId": "UpdateCustomerContact",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "description": "2be3-4c43-aefb-397190134655' (required, string, `00a70b35-2be3-4c43-aefb-397190134655`)",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "'00a70b35"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "2be3-4c43-aefb-397190134611' (required, string, `00a70b35-2be3-4c43-aefb-397190134611`)",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "'00a70b35"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactAttribs"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Contact"
+                    },
+                    {
+                      "example": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "phone": "+33678059778",
+                        "email": "john@example.com",
+                        "position": "ACCOUNTING",
+                        "externalId": "CONT123",
+                        "isMain": true,
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "phone": "+33678059778",
+                  "email": "john@example.com",
+                  "position": "ACCOUNTING",
+                  "externalId": "CONT123",
+                  "isMain": true,
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "summary": "Get Customer Contact",
+        "description": "",
+        "operationId": "GetCustomerContact",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "description": "2be3-4c43-aefb-397190134655' (required, string, `00a70b35-2be3-4c43-aefb-397190134655`)",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "'00a70b35"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "2be3-4c43-aefb-397190134611' (required, string, `00a70b35-2be3-4c43-aefb-397190134611`)",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "'00a70b35"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ContactAttribs"
+                    },
+                    {
+                      "example": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "phone": "+33678059778",
+                        "email": "john@example.com",
+                        "position": "ACCOUNTING",
+                        "externalId": "CONT123",
+                        "isMain": true
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "phone": "+33678059778",
+                  "email": "john@example.com",
+                  "position": "ACCOUNTING",
+                  "externalId": "CONT123",
+                  "isMain": true
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customerId}/contacts": {
+      "get": {
+        "summary": "List Customer Contacts",
+        "description": "",
+        "operationId": "ListCustomerContacts",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 100
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ListCustomerContactsresponse"
+                    },
+                    {
+                      "example": {
+                        "page": 1,
+                        "limit": 10,
+                        "total": 100,
+                        "contacts": [
+                          {
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "phone": "+33678059778",
+                            "email": "john@example.com",
+                            "position": "ACCOUNTING",
+                            "externalId": "CONT123",
+                            "isMain": true,
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "page": 1,
+                  "limit": 10,
+                  "total": 100,
+                  "contacts": [
+                    {
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "phone": "+33678059778",
+                      "email": "john@example.com",
+                      "position": "ACCOUNTING",
+                      "externalId": "CONT123",
+                      "isMain": true,
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/customers/{customerId}/contacts/{contactId}": {
+      "delete": {
+        "summary": "Delete Customer Contact",
+        "description": "",
+        "operationId": "DeleteCustomerContact",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "the Customer ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "the Contact ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/payments/{paymentId}": {
+      "get": {
+        "summary": "Get Payment",
+        "description": "",
+        "operationId": "GetPayment",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Payment"
+                    },
+                    {
+                      "example": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "type": "ACCOUNT",
+                        "amountLinked": 1700,
+                        "modifiedAt": "2015-05-05T12:30:00",
+                        "linkedInvoices": [
+                          {
+                            "linkedAmount": 3000,
+                            "invoice": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "currency": "EUR",
+                              "status": "DUE",
+                              "amountOutstanding": 1500,
+                              "customId": "FAC123",
+                              "grossAmount": 1700,
+                              "netAmount": 1500,
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "paidDate": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37"
+                            }
+                          }
+                        ],
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "currency": "EUR",
+                  "amount": 1700,
+                  "instrument": "CARD",
+                  "validatedAt": "2015-05-05T12:30:00",
+                  "externalId": "92842AB37",
+                  "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "type": "ACCOUNT",
+                  "amountLinked": 1700,
+                  "modifiedAt": "2015-05-05T12:30:00",
+                  "linkedInvoices": [
+                    {
+                      "linkedAmount": 3000,
+                      "invoice": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "currency": "EUR",
+                        "status": "DUE",
+                        "amountOutstanding": 1500,
+                        "customId": "FAC123",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "paidDate": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37"
+                      }
+                    }
+                  ],
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "Delete Payment",
+        "description": "",
+        "operationId": "DeletePayment",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "description": "the Payment ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/payments": {
+      "get": {
+        "summary": "List Payments",
+        "description": "",
+        "operationId": "ListPayments",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 100
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "path",
+            "description": "+ Members:\n    + `modifiedAt` - sort by modified at\n    + `validatedAt` - sort by validated at",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "modifiedAt"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SortOrder"
+                },
+                {
+                  "example": "DESC"
+                }
+              ]
+            }
+          },
+          {
+            "name": "modifiedAt.gte",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "2015-05-05T12:30:00"
+            }
+          },
+          {
+            "name": "modifiedAt.lte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "2015-05-05T12:30:00"
+            }
+          },
+          {
+            "name": "validatedAt.gte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "2015-05-05T12:30:00"
+            }
+          },
+          {
+            "name": "validatedAt.lte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "2015-05-05T12:30:00"
+            }
+          },
+          {
+            "name": "amountLinked",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "amountLinked.gt",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "amountLinked.gte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "amountLinked.lt",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 1000
+            }
+          },
+          {
+            "name": "amountLinked.lte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 1000
+            }
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 3000
+            }
+          },
+          {
+            "name": "amount.gt",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 3000
+            }
+          },
+          {
+            "name": "amount.gte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 3000
+            }
+          },
+          {
+            "name": "amount.lt",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 3000
+            }
+          },
+          {
+            "name": "amount.lte",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 3000
+            }
+          },
+          {
+            "name": "customer.id",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "name": "customer.externalId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "134"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PaymentsListResponse"
+                    },
+                    {
+                      "example": {
+                        "offset": 0,
+                        "limit": 10,
+                        "total": 100,
+                        "items": [
+                          {
+                            "currency": "EUR",
+                            "amount": 1700,
+                            "instrument": "CARD",
+                            "validatedAt": "2015-05-05T12:30:00",
+                            "externalId": "92842AB37",
+                            "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "type": "ACCOUNT",
+                            "amountLinked": 1700,
+                            "modifiedAt": "2015-05-05T12:30:00",
+                            "linkedInvoices": [
+                              {
+                                "linkedAmount": 3000,
+                                "invoice": {
+                                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                                  "currency": "EUR",
+                                  "status": "DUE",
+                                  "amountOutstanding": 1500,
+                                  "customId": "FAC123",
+                                  "grossAmount": 1700,
+                                  "netAmount": 1500,
+                                  "name": "Facture couvrant les prestations de service de Decembre",
+                                  "issuedAt": "2015-05-05T12:30:00",
+                                  "dueDate": "2015-05-05T12:30:00",
+                                  "paidDate": "2015-05-05T12:30:00",
+                                  "externalId": "92842AB37"
+                                }
+                              }
+                            ],
+                            "customer": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "externalId": "1a2c3b",
+                              "companyName": "Upflow SAS",
+                              "accountingRef": "UPFL"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "offset": 0,
+                  "limit": 10,
+                  "total": 100,
+                  "items": [
+                    {
+                      "currency": "EUR",
+                      "amount": 1700,
+                      "instrument": "CARD",
+                      "validatedAt": "2015-05-05T12:30:00",
+                      "externalId": "92842AB37",
+                      "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "type": "ACCOUNT",
+                      "amountLinked": 1700,
+                      "modifiedAt": "2015-05-05T12:30:00",
+                      "linkedInvoices": [
+                        {
+                          "linkedAmount": 3000,
+                          "invoice": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "currency": "EUR",
+                            "status": "DUE",
+                            "amountOutstanding": 1500,
+                            "customId": "FAC123",
+                            "grossAmount": 1700,
+                            "netAmount": 1500,
+                            "name": "Facture couvrant les prestations de service de Decembre",
+                            "issuedAt": "2015-05-05T12:30:00",
+                            "dueDate": "2015-05-05T12:30:00",
+                            "paidDate": "2015-05-05T12:30:00",
+                            "externalId": "92842AB37"
+                          }
+                        }
+                      ],
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b",
+                        "companyName": "Upflow SAS",
+                        "accountingRef": "UPFL"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "summary": "Import payment",
+        "description": "This endpoint can be used to create or update (if externalId already exists) a payment.\n\nIt cannot be used when using a native integration as payments are only created by the native integration in that case.",
+        "operationId": "Importpayment",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PaymentCreation"
+                  },
+                  {
+                    "example": {
+                      "currency": "EUR",
+                      "amount": 1700,
+                      "instrument": "CARD",
+                      "validatedAt": "2015-05-05T12:30:00",
+                      "externalId": "92842AB37",
+                      "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "linkedInvoices": [
+                        {
+                          "amountLinked": 3000,
+                          "invoice": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "externalId": "AEGaaZD",
+                            "customId": "AEGaaZD"
+                          }
+                        }
+                      ],
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      }
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "currency": "EUR",
+                "amount": 1700,
+                "instrument": "CARD",
+                "validatedAt": "2015-05-05T12:30:00",
+                "externalId": "92842AB37",
+                "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                "linkedInvoices": [
+                  {
+                    "amountLinked": 3000,
+                    "invoice": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "externalId": "AEGaaZD",
+                      "customId": "AEGaaZD"
+                    }
+                  }
+                ],
+                "customer": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Payment"
+                    },
+                    {
+                      "example": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "type": "ACCOUNT",
+                        "amountLinked": 1700,
+                        "modifiedAt": "2015-05-05T12:30:00",
+                        "linkedInvoices": [
+                          {
+                            "linkedAmount": 3000,
+                            "invoice": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "currency": "EUR",
+                              "status": "DUE",
+                              "amountOutstanding": 1500,
+                              "customId": "FAC123",
+                              "grossAmount": 1700,
+                              "netAmount": 1500,
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "paidDate": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37"
+                            }
+                          }
+                        ],
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "currency": "EUR",
+                  "amount": 1700,
+                  "instrument": "CARD",
+                  "validatedAt": "2015-05-05T12:30:00",
+                  "externalId": "92842AB37",
+                  "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "type": "ACCOUNT",
+                  "amountLinked": 1700,
+                  "modifiedAt": "2015-05-05T12:30:00",
+                  "linkedInvoices": [
+                    {
+                      "linkedAmount": 3000,
+                      "invoice": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "currency": "EUR",
+                        "status": "DUE",
+                        "amountOutstanding": 1500,
+                        "customId": "FAC123",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "paidDate": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37"
+                      }
+                    }
+                  ],
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/credit_notes": {
+      "get": {
+        "summary": "List credit notes",
+        "description": "",
+        "operationId": "Listcreditnotes",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 100
+            }
+          },
+          {
+            "name": "customer.id",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "name": "customer.externalId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "134"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CreditNotesListResponse"
+                    },
+                    {
+                      "example": {
+                        "offset": 0,
+                        "limit": 10,
+                        "total": 100,
+                        "items": [
+                          {
+                            "customId": "FAC123",
+                            "externalId": "92842AB37",
+                            "issuedAt": "2015-05-05T12:30:00",
+                            "dueDate": "2015-05-05T12:30:00",
+                            "name": "Facture couvrant les prestations de service de Decembre",
+                            "currency": "EUR",
+                            "grossAmount": 1700,
+                            "netAmount": 1500,
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "pdfUrl": "http://example.com/invoice.pdf",
+                            "customer": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "externalId": "1a2c3b",
+                              "companyName": "Upflow SAS",
+                              "accountingRef": "UPFL"
+                            },
+                            "linkedInvoices": [
+                              {
+                                "amountLinked": 2000,
+                                "invoice": {
+                                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                                  "currency": "EUR",
+                                  "status": "DUE",
+                                  "amountOutstanding": 1500,
+                                  "customId": "FAC123",
+                                  "grossAmount": 1700,
+                                  "netAmount": 1500,
+                                  "name": "Facture couvrant les prestations de service de Decembre",
+                                  "issuedAt": "2015-05-05T12:30:00",
+                                  "dueDate": "2015-05-05T12:30:00",
+                                  "paidDate": "2015-05-05T12:30:00",
+                                  "externalId": "92842AB37"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "offset": 0,
+                  "limit": 10,
+                  "total": 100,
+                  "items": [
+                    {
+                      "customId": "FAC123",
+                      "externalId": "92842AB37",
+                      "issuedAt": "2015-05-05T12:30:00",
+                      "dueDate": "2015-05-05T12:30:00",
+                      "name": "Facture couvrant les prestations de service de Decembre",
+                      "currency": "EUR",
+                      "grossAmount": 1700,
+                      "netAmount": 1500,
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "pdfUrl": "http://example.com/invoice.pdf",
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b",
+                        "companyName": "Upflow SAS",
+                        "accountingRef": "UPFL"
+                      },
+                      "linkedInvoices": [
+                        {
+                          "amountLinked": 2000,
+                          "invoice": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "currency": "EUR",
+                            "status": "DUE",
+                            "amountOutstanding": 1500,
+                            "customId": "FAC123",
+                            "grossAmount": 1700,
+                            "netAmount": 1500,
+                            "name": "Facture couvrant les prestations de service de Decembre",
+                            "issuedAt": "2015-05-05T12:30:00",
+                            "dueDate": "2015-05-05T12:30:00",
+                            "paidDate": "2015-05-05T12:30:00",
+                            "externalId": "92842AB37"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "summary": "Import credit note",
+        "description": "This endpoint can be used to create or update (if externalId already exists) a credit note.\n\nIt cannot be used when using a native integration as credit notes are only created by the native integration in that case.",
+        "operationId": "Importcreditnote",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreditNoteCreation"
+                  },
+                  {
+                    "example": {
+                      "customId": "FAC123",
+                      "externalId": "92842AB37",
+                      "issuedAt": "2015-05-05T12:30:00",
+                      "dueDate": "2015-05-05T12:30:00",
+                      "name": "Facture couvrant les prestations de service de Decembre",
+                      "currency": "EUR",
+                      "grossAmount": 1700,
+                      "netAmount": 1500,
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      },
+                      "linkedInvoices": [
+                        {
+                          "amountLinked": 2000,
+                          "invoice": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "externalId": "92842AB37",
+                            "customId": "FAC123"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "customId": "FAC123",
+                "externalId": "92842AB37",
+                "issuedAt": "2015-05-05T12:30:00",
+                "dueDate": "2015-05-05T12:30:00",
+                "name": "Facture couvrant les prestations de service de Decembre",
+                "currency": "EUR",
+                "grossAmount": 1700,
+                "netAmount": 1500,
+                "customer": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                },
+                "linkedInvoices": [
+                  {
+                    "amountLinked": 2000,
+                    "invoice": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "externalId": "92842AB37",
+                      "customId": "FAC123"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CreditNote"
+                    },
+                    {
+                      "example": {
+                        "customId": "FAC123",
+                        "externalId": "92842AB37",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "currency": "EUR",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "pdfUrl": "http://example.com/invoice.pdf",
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        },
+                        "linkedInvoices": [
+                          {
+                            "amountLinked": 2000,
+                            "invoice": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "currency": "EUR",
+                              "status": "DUE",
+                              "amountOutstanding": 1500,
+                              "customId": "FAC123",
+                              "grossAmount": 1700,
+                              "netAmount": 1500,
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "paidDate": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "customId": "FAC123",
+                  "externalId": "92842AB37",
+                  "issuedAt": "2015-05-05T12:30:00",
+                  "dueDate": "2015-05-05T12:30:00",
+                  "name": "Facture couvrant les prestations de service de Decembre",
+                  "currency": "EUR",
+                  "grossAmount": 1700,
+                  "netAmount": 1500,
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "pdfUrl": "http://example.com/invoice.pdf",
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  },
+                  "linkedInvoices": [
+                    {
+                      "amountLinked": 2000,
+                      "invoice": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "currency": "EUR",
+                        "status": "DUE",
+                        "amountOutstanding": 1500,
+                        "customId": "FAC123",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "paidDate": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/credit_notes/{creditNoteId}": {
+      "get": {
+        "summary": "Get credit note",
+        "description": "",
+        "operationId": "Getcreditnote",
+        "parameters": [
+          {
+            "name": "creditNoteId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/CreditNote"
+                    },
+                    {
+                      "example": {
+                        "customId": "FAC123",
+                        "externalId": "92842AB37",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "currency": "EUR",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "pdfUrl": "http://example.com/invoice.pdf",
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        },
+                        "linkedInvoices": [
+                          {
+                            "amountLinked": 2000,
+                            "invoice": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "currency": "EUR",
+                              "status": "DUE",
+                              "amountOutstanding": 1500,
+                              "customId": "FAC123",
+                              "grossAmount": 1700,
+                              "netAmount": 1500,
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "paidDate": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "customId": "FAC123",
+                  "externalId": "92842AB37",
+                  "issuedAt": "2015-05-05T12:30:00",
+                  "dueDate": "2015-05-05T12:30:00",
+                  "name": "Facture couvrant les prestations de service de Decembre",
+                  "currency": "EUR",
+                  "grossAmount": 1700,
+                  "netAmount": 1500,
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "pdfUrl": "http://example.com/invoice.pdf",
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  },
+                  "linkedInvoices": [
+                    {
+                      "amountLinked": 2000,
+                      "invoice": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "currency": "EUR",
+                        "status": "DUE",
+                        "amountOutstanding": 1500,
+                        "customId": "FAC123",
+                        "grossAmount": 1700,
+                        "netAmount": 1500,
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "paidDate": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "Delete Credit Note",
+        "description": "",
+        "operationId": "DeleteCreditNote",
+        "parameters": [
+          {
+            "name": "creditNoteId",
+            "in": "path",
+            "description": "the Credit Note ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/credit_notes/{creditNoteId}/pdf": {
+      "post": {
+        "summary": "Upload Credit Note PDF",
+        "description": "You can either send the PDF in a multipart/form-data request (ie. a regular \"file upload\" in HTML) or a JSON request with the file encoded in base64.",
+        "operationId": "UploadCreditNotePDF",
+        "parameters": [
+          {
+            "name": "creditNoteId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "multipart/form-data or application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PDFImportAttr"
+                  },
+                  {
+                    "example": {
+                      "data": "'JVBERi0xLjYNJeLjz9MNCjE5IDAgb2JqDTw8L0Zp...DSUlRU9GDQ=='"
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "data": "'JVBERi0xLjYNJeLjz9MNCjE5IDAgb2JqDTw8L0Zp...DSUlRU9GDQ=='"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "List Users",
+        "description": "",
+        "operationId": "ListUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/UserListResponse"
+                    },
+                    {
+                      "example": {
+                        "users": [
+                          {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "position": "ACCOUNT_MANAGER",
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "phone1": "+33609090909",
+                            "phone2": "+33609090909",
+                            "email": "john@example.com"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "users": [
+                    {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "position": "ACCOUNT_MANAGER",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "phone1": "+33609090909",
+                      "phone2": "+33609090909",
+                      "email": "john@example.com"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/bank_accounts": {
+      "get": {
+        "summary": "List BankAccounts",
+        "description": "",
+        "operationId": "ListBankAccounts",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ListBankAccountsresponse"
+                    },
+                    {
+                      "example": {
+                        "offset": 0,
+                        "limit": 50,
+                        "total": 100,
+                        "items": [
+                          {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "externalId": "bWwsZWZuem8g",
+                            "alias": "USA Account",
+                            "currency": "EUR",
+                            "source": "USER_DEFINED",
+                            "swift": "SEFRPP",
+                            "accountNumber": "FR1420041010050500013M02606",
+                            "routingNumber": "091000019",
+                            "bankName": "Bank Of America",
+                            "isMain": false,
+                            "region": "EU"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "offset": 0,
+                  "limit": 50,
+                  "total": 100,
+                  "items": [
+                    {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "externalId": "bWwsZWZuem8g",
+                      "alias": "USA Account",
+                      "currency": "EUR",
+                      "source": "USER_DEFINED",
+                      "swift": "SEFRPP",
+                      "accountNumber": "FR1420041010050500013M02606",
+                      "routingNumber": "091000019",
+                      "bankName": "Bank Of America",
+                      "isMain": false,
+                      "region": "EU"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/refunds": {
+      "get": {
+        "summary": "List Refunds",
+        "description": "",
+        "operationId": "ListRefunds",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "example": 100
+            }
+          },
+          {
+            "name": "customer.id",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          },
+          {
+            "name": "customer.externalId",
+            "in": "query",
+            "description": "",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "134"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "path",
+            "description": "+ Members:\n    + `modifiedAt` - sort by modified at\n    + `validatedAt` - sort by validated at",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "modifiedAt"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SortOrder"
+                },
+                {
+                  "example": "DESC"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ListRefundsresponse"
+                    },
+                    {
+                      "example": {
+                        "offset": 0,
+                        "limit": 50,
+                        "total": 100,
+                        "items": [
+                          {
+                            "currency": "EUR",
+                            "amount": 1700,
+                            "instrument": "CARD",
+                            "validatedAt": "2015-05-05T12:30:00",
+                            "externalId": "92842AB37",
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "amountLinked": 1700,
+                            "modifiedAt": "2015-05-05T12:30:00",
+                            "linkedTransactions": [
+                              {
+                                "linkedAmount": 3000,
+                                "payment": {
+                                  "currency": "EUR",
+                                  "amount": 1700,
+                                  "instrument": "CARD",
+                                  "validatedAt": "2015-05-05T12:30:00",
+                                  "externalId": "92842AB37",
+                                  "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                                }
+                              }
+                            ],
+                            "linkedCreditNotes": [
+                              {
+                                "linkedAmount": 3000,
+                                "creditNote": {
+                                  "customId": "FAC123",
+                                  "externalId": "92842AB37",
+                                  "issuedAt": "2015-05-05T12:30:00",
+                                  "dueDate": "2015-05-05T12:30:00",
+                                  "name": "Facture couvrant les prestations de service de Decembre",
+                                  "currency": "EUR",
+                                  "grossAmount": 1700,
+                                  "netAmount": 1500
+                                }
+                              }
+                            ],
+                            "customer": {
+                              "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                              "externalId": "1a2c3b",
+                              "companyName": "Upflow SAS",
+                              "accountingRef": "UPFL"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "offset": 0,
+                  "limit": 50,
+                  "total": 100,
+                  "items": [
+                    {
+                      "currency": "EUR",
+                      "amount": 1700,
+                      "instrument": "CARD",
+                      "validatedAt": "2015-05-05T12:30:00",
+                      "externalId": "92842AB37",
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "amountLinked": 1700,
+                      "modifiedAt": "2015-05-05T12:30:00",
+                      "linkedTransactions": [
+                        {
+                          "linkedAmount": 3000,
+                          "payment": {
+                            "currency": "EUR",
+                            "amount": 1700,
+                            "instrument": "CARD",
+                            "validatedAt": "2015-05-05T12:30:00",
+                            "externalId": "92842AB37",
+                            "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                          }
+                        }
+                      ],
+                      "linkedCreditNotes": [
+                        {
+                          "linkedAmount": 3000,
+                          "creditNote": {
+                            "customId": "FAC123",
+                            "externalId": "92842AB37",
+                            "issuedAt": "2015-05-05T12:30:00",
+                            "dueDate": "2015-05-05T12:30:00",
+                            "name": "Facture couvrant les prestations de service de Decembre",
+                            "currency": "EUR",
+                            "grossAmount": 1700,
+                            "netAmount": 1500
+                          }
+                        }
+                      ],
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b",
+                        "companyName": "Upflow SAS",
+                        "accountingRef": "UPFL"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "summary": "Import Refund",
+        "description": "This endpoint can be used to create or update (if externalId already exists) a refund.\n\nIt cannot be used when using a native integration as refunds are only created by the native integration in that case.",
+        "operationId": "ImportRefund",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefundCreation"
+                  },
+                  {
+                    "example": {
+                      "currency": "EUR",
+                      "amount": 1700,
+                      "instrument": "CARD",
+                      "validatedAt": "2015-05-05T12:30:00",
+                      "externalId": "92842AB37",
+                      "linkedPayments": [
+                        {
+                          "amountLinked": 3000,
+                          "payment": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "externalId": "AEGaaZD"
+                          }
+                        }
+                      ],
+                      "linkedCreditNotes": [
+                        {
+                          "amountLinked": 3000,
+                          "creditNote": {
+                            "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                            "externalId": "AEGaaZD",
+                            "customId": "AEGaaZD"
+                          }
+                        }
+                      ],
+                      "customer": {
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "externalId": "1a2c3b"
+                      }
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "currency": "EUR",
+                "amount": 1700,
+                "instrument": "CARD",
+                "validatedAt": "2015-05-05T12:30:00",
+                "externalId": "92842AB37",
+                "linkedPayments": [
+                  {
+                    "amountLinked": 3000,
+                    "payment": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "externalId": "AEGaaZD"
+                    }
+                  }
+                ],
+                "linkedCreditNotes": [
+                  {
+                    "amountLinked": 3000,
+                    "creditNote": {
+                      "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                      "externalId": "AEGaaZD",
+                      "customId": "AEGaaZD"
+                    }
+                  }
+                ],
+                "customer": {
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "externalId": "1a2c3b"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Refund"
+                    },
+                    {
+                      "example": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "amountLinked": 1700,
+                        "modifiedAt": "2015-05-05T12:30:00",
+                        "linkedTransactions": [
+                          {
+                            "linkedAmount": 3000,
+                            "payment": {
+                              "currency": "EUR",
+                              "amount": 1700,
+                              "instrument": "CARD",
+                              "validatedAt": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37",
+                              "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                            }
+                          }
+                        ],
+                        "linkedCreditNotes": [
+                          {
+                            "linkedAmount": 3000,
+                            "creditNote": {
+                              "customId": "FAC123",
+                              "externalId": "92842AB37",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "currency": "EUR",
+                              "grossAmount": 1700,
+                              "netAmount": 1500
+                            }
+                          }
+                        ],
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "currency": "EUR",
+                  "amount": 1700,
+                  "instrument": "CARD",
+                  "validatedAt": "2015-05-05T12:30:00",
+                  "externalId": "92842AB37",
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "amountLinked": 1700,
+                  "modifiedAt": "2015-05-05T12:30:00",
+                  "linkedTransactions": [
+                    {
+                      "linkedAmount": 3000,
+                      "payment": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  ],
+                  "linkedCreditNotes": [
+                    {
+                      "linkedAmount": 3000,
+                      "creditNote": {
+                        "customId": "FAC123",
+                        "externalId": "92842AB37",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "currency": "EUR",
+                        "grossAmount": 1700,
+                        "netAmount": 1500
+                      }
+                    }
+                  ],
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/refunds/{refund_id}": {
+      "get": {
+        "summary": "Get Refund",
+        "description": "",
+        "operationId": "GetRefund",
+        "parameters": [
+          {
+            "name": "refund_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Refund"
+                    },
+                    {
+                      "example": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                        "amountLinked": 1700,
+                        "modifiedAt": "2015-05-05T12:30:00",
+                        "linkedTransactions": [
+                          {
+                            "linkedAmount": 3000,
+                            "payment": {
+                              "currency": "EUR",
+                              "amount": 1700,
+                              "instrument": "CARD",
+                              "validatedAt": "2015-05-05T12:30:00",
+                              "externalId": "92842AB37",
+                              "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                            }
+                          }
+                        ],
+                        "linkedCreditNotes": [
+                          {
+                            "linkedAmount": 3000,
+                            "creditNote": {
+                              "customId": "FAC123",
+                              "externalId": "92842AB37",
+                              "issuedAt": "2015-05-05T12:30:00",
+                              "dueDate": "2015-05-05T12:30:00",
+                              "name": "Facture couvrant les prestations de service de Decembre",
+                              "currency": "EUR",
+                              "grossAmount": 1700,
+                              "netAmount": 1500
+                            }
+                          }
+                        ],
+                        "customer": {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "1a2c3b",
+                          "companyName": "Upflow SAS",
+                          "accountingRef": "UPFL"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "example": {
+                  "currency": "EUR",
+                  "amount": 1700,
+                  "instrument": "CARD",
+                  "validatedAt": "2015-05-05T12:30:00",
+                  "externalId": "92842AB37",
+                  "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                  "amountLinked": 1700,
+                  "modifiedAt": "2015-05-05T12:30:00",
+                  "linkedTransactions": [
+                    {
+                      "linkedAmount": 3000,
+                      "payment": {
+                        "currency": "EUR",
+                        "amount": 1700,
+                        "instrument": "CARD",
+                        "validatedAt": "2015-05-05T12:30:00",
+                        "externalId": "92842AB37",
+                        "bankAccountId": "00a70b35-2be3-4c43-aefb-397190134655"
+                      }
+                    }
+                  ],
+                  "linkedCreditNotes": [
+                    {
+                      "linkedAmount": 3000,
+                      "creditNote": {
+                        "customId": "FAC123",
+                        "externalId": "92842AB37",
+                        "issuedAt": "2015-05-05T12:30:00",
+                        "dueDate": "2015-05-05T12:30:00",
+                        "name": "Facture couvrant les prestations de service de Decembre",
+                        "currency": "EUR",
+                        "grossAmount": 1700,
+                        "netAmount": 1500
+                      }
+                    }
+                  ],
+                  "customer": {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "1a2c3b",
+                    "companyName": "Upflow SAS",
+                    "accountingRef": "UPFL"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "Delete Refund",
+        "description": "",
+        "operationId": "DeleteRefund",
+        "parameters": [
+          {
+            "name": "refund_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "00a70b35-2be3-4c43-aefb-397190134655"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/reconcile": {
+      "post": {
+        "summary": "Reconcile Invoices, Credit Notes, Payments, Refunds",
+        "description": "Manage a reconciliation, which assigns credit notes, payments and/or refunds previously created to existing invoices.\n\nA successful call will bind amounts and change invoices statuses accordingly\n\nIn order to avoid duplicating reconciliation, you have to provide a unique `externalId` to identify it.\n\n<!-- TODO Give guidance on how externalId should be chosen by the API implementers -->",
+        "operationId": "ReconcileInvoices,CreditNotes,Payments,Refunds",
+        "parameters": [
+          {
+            "name": "X-Api-Key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "enum": [
+                "YOUR_API_KEY"
+              ],
+              "type": "string",
+              "example": "YOUR_API_KEY"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ReconcileRequest"
+                  },
+                  {
+                    "example": {
+                      "externalId": "AEGaaZD",
+                      "invoices": [
+                        {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "92842AB37",
+                          "customId": "FAC123",
+                          "amountLinked": 2000
+                        }
+                      ],
+                      "payments": [
+                        {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "AEGaaZD",
+                          "amountLinked": 3000
+                        }
+                      ],
+                      "creditNotes": [
+                        {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "AEGaaZD",
+                          "customId": "AEGaaZD",
+                          "amountLinked": 3000
+                        }
+                      ],
+                      "refunds": [
+                        {
+                          "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                          "externalId": "AEGaaZD",
+                          "amountLinked": 1700
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "externalId": "AEGaaZD",
+                "invoices": [
+                  {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "92842AB37",
+                    "customId": "FAC123",
+                    "amountLinked": 2000
+                  }
+                ],
+                "payments": [
+                  {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "AEGaaZD",
+                    "amountLinked": 3000
+                  }
+                ],
+                "creditNotes": [
+                  {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "AEGaaZD",
+                    "customId": "AEGaaZD",
+                    "amountLinked": 3000
+                  }
+                ],
+                "refunds": [
+                  {
+                    "id": "00a70b35-2be3-4c43-aefb-397190134655",
+                    "externalId": "AEGaaZD",
+                    "amountLinked": 1700
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconcileResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PDFImportAttr": {
+        "title": "PDFImportAttr",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "base64 string for PDF file, mandatory when using the application/json content-type",
+            "example": "'JVBERi0xLjYNJeLjz9MNCjE5IDAgb2JqDTw8L0Zp...DSUlRU9GDQ=='"
+          },
+          "file": {
+            "type": "string",
+            "description": "The file must be provided as the value of a form field named \"file\", with any filename, when using the multipart/form-data content-type."
+          }
+        }
+      },
+      "Contact": {
+        "title": "Contact",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ContactAttribs"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the contact ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              }
+            }
+          }
+        ]
+      },
+      "ContactAttribs": {
+        "title": "ContactAttribs",
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "contact first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "contact last name",
+            "example": "Doe"
+          },
+          "phone": {
+            "type": "string",
+            "description": "contact phone number",
+            "example": "+33678059778"
+          },
+          "email": {
+            "type": "string",
+            "description": "contact email (must be unique)",
+            "example": "john@example.com"
+          },
+          "position": {
+            "$ref": "#/components/schemas/ContactPosition"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "contact custom id",
+            "example": "CONT123"
+          },
+          "isMain": {
+            "type": "boolean",
+            "description": "Is main contact or not?",
+            "example": true
+          }
+        }
+      },
+      "ContactPosition": {
+        "title": "ContactPosition",
+        "enum": [
+          "ACCOUNTING",
+          "SALES",
+          "PAYER",
+          "PURCHASER"
+        ],
+        "type": "string"
+      },
+      "CreditNote": {
+        "title": "CreditNote",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreditNoteCommonAttribs"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the Invoice ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              },
+              "pdfUrl": {
+                "type": "string",
+                "description": "invoice pdf",
+                "example": "http://example.com/invoice.pdf"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/CustomerLite"
+              },
+              "linkedInvoices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LinkedInvoice"
+                },
+                "description": "The list of invoices linked to this credit note"
+              }
+            }
+          }
+        ]
+      },
+      "CreditNoteCreation": {
+        "title": "CreditNoteCreation",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreditNoteCommonAttribs"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "customer": {
+                "$ref": "#/components/schemas/CustomerReference"
+              },
+              "linkedInvoices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LinkedInvoiceCreation"
+                },
+                "description": "The list of invoices linked to this credit note"
+              }
+            }
+          }
+        ]
+      },
+      "CreditNoteCommonAttribs": {
+        "title": "CreditNoteCommonAttribs",
+        "required": [
+          "customId",
+          "currency",
+          "grossAmount",
+          "netAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "customId": {
+            "type": "string",
+            "description": "credit notes custom id",
+            "example": "FAC123"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "credit note external id",
+            "example": "92842AB37"
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "The date at which the invoice was issued (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "name": {
+            "type": "string",
+            "description": "the credit note name",
+            "example": "Facture couvrant les prestations de service de Decembre"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "grossAmount": {
+            "type": "number",
+            "description": "amount including taxes",
+            "example": 1700
+          },
+          "netAmount": {
+            "type": "number",
+            "description": "amount net of taxes",
+            "example": 1500
+          }
+        }
+      },
+      "CreditNotesListResponse": {
+        "title": "CreditNotesListResponse",
+        "required": [
+          "offset",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "number",
+            "description": "page number",
+            "example": 0
+          },
+          "limit": {
+            "type": "number",
+            "description": "maximum number of items to return",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "description": "total items in the set",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreditNote"
+            },
+            "description": ""
+          }
+        }
+      },
+      "BankAccount": {
+        "title": "BankAccount",
+        "required": [
+          "id",
+          "currency",
+          "swift",
+          "accountNumber",
+          "isMain"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the bank account",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Bank account external ID",
+            "example": "bWwsZWZuem8g"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Descriptive name of the bank account",
+            "example": "USA Account"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "source": {
+            "type": "string",
+            "example": "USER_DEFINED"
+          },
+          "swift": {
+            "type": "string",
+            "description": "The SWIFT/RIB code of the bank",
+            "example": "SEFRPP"
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "The bank account number or IBAN for European accounts",
+            "example": "FR1420041010050500013M02606"
+          },
+          "routingNumber": {
+            "type": "string",
+            "description": "The routing transit number for the bank account. Required for US accounts, but optional for European accounts.",
+            "example": "091000019"
+          },
+          "bankName": {
+            "type": "string",
+            "description": "The name of the bank",
+            "example": "Bank Of America"
+          },
+          "isMain": {
+            "type": "boolean",
+            "description": "Indicates if it's the main bank account that should be displayed by default on the customer portal.",
+            "example": false
+          },
+          "region": {
+            "type": "string",
+            "description": "The region of the bank account: `EU` or `US`",
+            "example": "EU"
+          }
+        }
+      },
+      "CardCustomerPaymentMethod": {
+        "title": "CardCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether card payments are enabled for this customer."
+          }
+        }
+      },
+      "CheckCustomerPaymentMethod": {
+        "title": "CheckCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether check payments are enabled for this customer."
+          }
+        }
+      },
+      "ACHDebitCustomerPaymentMethod": {
+        "title": "ACHDebitCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether ACH debit payments are enabled for this customer."
+          }
+        }
+      },
+      "SEPADebitCustomerPaymentMethod": {
+        "title": "SEPADebitCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether SEPA debit payments are enabled for this customer."
+          }
+        }
+      },
+      "GoCardlessCustomerPaymentMethod": {
+        "title": "GoCardlessCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether GoCardless payments are enabled for this customer."
+          }
+        }
+      },
+      "WireTransferCustomerPaymentMethod": {
+        "title": "WireTransferCustomerPaymentMethod",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Change whether wire transfer payments are enabled for this customer. Setting to false will erase any bank account setting for this customer."
+          },
+          "bankAccount": {
+            "$ref": "#/components/schemas/BankAccountReference"
+          }
+        }
+      },
+      "CustomerPaymentMethods": {
+        "title": "CustomerPaymentMethods",
+        "type": "object",
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardCustomerPaymentMethod"
+          },
+          "check": {
+            "$ref": "#/components/schemas/CheckCustomerPaymentMethod"
+          },
+          "achDebit": {
+            "$ref": "#/components/schemas/ACHDebitCustomerPaymentMethod"
+          },
+          "sepaDebit": {
+            "$ref": "#/components/schemas/SEPADebitCustomerPaymentMethod"
+          },
+          "goCardless": {
+            "$ref": "#/components/schemas/GoCardlessCustomerPaymentMethod"
+          },
+          "wireTransfer": {
+            "$ref": "#/components/schemas/WireTransferCustomerPaymentMethod"
+          }
+        }
+      },
+      "BankAccountReference": {
+        "title": "BankAccountReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the BankAccount ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          }
+        }
+      },
+      "Currency": {
+        "title": "Currency",
+        "enum": [
+          "EUR",
+          "CHF",
+          "USD",
+          "CAD",
+          "GBP"
+        ],
+        "type": "string"
+      },
+      "Customer": {
+        "title": "Customer",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CustomerAttribs"
+          },
+          {
+            "required": [
+              "id",
+              "countInvoicesDue",
+              "countInvoicesOverdue",
+              "amountDue",
+              "amountOverdue",
+              "currency",
+              "directUrl"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the Customer ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              },
+              "countInvoicesDue": {
+                "type": "number",
+                "description": "the count of due invoices",
+                "example": 0
+              },
+              "countInvoicesOverdue": {
+                "type": "number",
+                "description": "the count of overdue invoices",
+                "example": 1
+              },
+              "amountDue": {
+                "type": "number",
+                "description": "the total amount that is due",
+                "example": 0
+              },
+              "amountOverdue": {
+                "type": "number",
+                "description": "the total amount that is overdue",
+                "example": 118000
+              },
+              "currency": {
+                "type": "string",
+                "description": "the customer currency",
+                "example": "Currency"
+              },
+              "directUrl": {
+                "type": "string",
+                "description": "the url of the customer page in the UI",
+                "example": "https://app.upflow.io/customers/ABCDEFGHI"
+              }
+            }
+          }
+        ]
+      },
+      "CustomerAttribs": {
+        "title": "CustomerAttribs",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "customer nameale",
+            "example": "Upflow SAS"
+          },
+          "vatNumber": {
+            "type": "string",
+            "description": "customer vat number",
+            "example": "838718328"
+          },
+          "accountingRef": {
+            "type": "string",
+            "description": "SAS (optional, string) - customer accounting reference (used in accounting tool)",
+            "example": "UPFL"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "an external id that uniquely references the customer",
+            "example": "1a2c3b"
+          },
+          "accountManagerId": {
+            "type": "string",
+            "description": "id of the User managing the Customer",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "dunningPlanId": {
+            "type": "string",
+            "description": "the id of the dunning plan",
+            "example": "7a6c91dc-3580-4c43-aefb-397190134655"
+          },
+          "address": {
+            "$ref": "#/components/schemas/address"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/CustomerReference"
+          },
+          "paymentMethods": {
+            "$ref": "#/components/schemas/CustomerPaymentMethods"
+          }
+        }
+      },
+      "CustomerReference": {
+        "title": "CustomerReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the Customer ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "an external id that uniquely references the customer",
+            "example": "1a2c3b"
+          }
+        }
+      },
+      "CustomerLite": {
+        "title": "CustomerLite",
+        "required": [
+          "id",
+          "companyName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the Customer ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "an external id that uniquely references the customer",
+            "example": "1a2c3b"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "customer name",
+            "example": "Upflow SAS"
+          },
+          "accountingRef": {
+            "type": "string",
+            "description": "SAS (optional, string) - customer accounting reference (used in accounting tool)",
+            "example": "UPFL"
+          }
+        }
+      },
+      "DocumentType": {
+        "title": "DocumentType",
+        "enum": [
+          "'CREDIT_NOTE'"
+        ],
+        "type": "string",
+        "example": "'CREDIT_NOTE'"
+      },
+      "LinkedInvoice": {
+        "title": "LinkedInvoice",
+        "required": [
+          "amountLinked"
+        ],
+        "type": "object",
+        "properties": {
+          "amountLinked": {
+            "type": "number",
+            "description": "amount allocated to the invoice",
+            "example": 2000
+          },
+          "invoice": {
+            "$ref": "#/components/schemas/InvoiceLite"
+          }
+        }
+      },
+      "LinkedInvoiceCreation": {
+        "title": "LinkedInvoiceCreation",
+        "required": [
+          "amountLinked"
+        ],
+        "type": "object",
+        "properties": {
+          "amountLinked": {
+            "type": "number",
+            "description": "amount allocated to the invoice",
+            "example": 2000
+          },
+          "invoice": {
+            "$ref": "#/components/schemas/InvoiceReference"
+          }
+        }
+      },
+      "Invoice": {
+        "title": "Invoice",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InvoiceCommonAttribs"
+          },
+          {
+            "required": [
+              "id",
+              "state"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the Invoice ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              },
+              "customerId": {
+                "type": "string",
+                "description": "customer id",
+                "example": "a1b2c3"
+              },
+              "payments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PaymentsObject"
+                },
+                "description": ""
+              },
+              "pdfUrl": {
+                "type": "string",
+                "description": "invoice pdf",
+                "example": "http://example.com/invoice.pdf"
+              },
+              "state": {
+                "$ref": "#/components/schemas/InvoiceStatus"
+              }
+            }
+          }
+        ]
+      },
+      "InvoiceCommonAttribs": {
+        "title": "InvoiceCommonAttribs",
+        "required": [
+          "currency",
+          "grossAmount",
+          "netAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "description": "invoice custom id",
+            "example": "FAC123"
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "The date at which the invoice was issued (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "name": {
+            "type": "string",
+            "description": "the invoice name",
+            "example": "Facture couvrant les prestations de service de Decembre"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "grossAmount": {
+            "type": "number",
+            "description": "amount including taxes",
+            "example": 1700
+          },
+          "netAmount": {
+            "type": "number",
+            "description": "amount net of taxes",
+            "example": 1500
+          }
+        }
+      },
+      "InvoiceLite": {
+        "title": "InvoiceLite",
+        "required": [
+          "id",
+          "currency",
+          "status",
+          "amountOutstanding",
+          "grossAmount",
+          "netAmount",
+          "issuedAt",
+          "dueDate"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the Invoice ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvoiceStatus"
+          },
+          "amountOutstanding": {
+            "type": "number",
+            "description": "outstanding amount",
+            "example": 1500
+          },
+          "customId": {
+            "type": "string",
+            "description": "invoice custom id",
+            "example": "FAC123"
+          },
+          "grossAmount": {
+            "type": "number",
+            "description": "amount including taxes",
+            "example": 1700
+          },
+          "netAmount": {
+            "type": "number",
+            "description": "amount net of taxes",
+            "example": 1500
+          },
+          "name": {
+            "type": "string",
+            "description": "the invoice name",
+            "example": "Facture couvrant les prestations de service de Decembre"
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "The date at which the invoice was issued (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "paidDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Invoice external id",
+            "example": "92842AB37"
+          }
+        }
+      },
+      "InvoiceReference": {
+        "title": "InvoiceReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Invoice ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Invoice external id",
+            "example": "92842AB37"
+          },
+          "customId": {
+            "type": "string",
+            "description": "Invoice custom id",
+            "example": "FAC123"
+          }
+        }
+      },
+      "InvoiceStatus": {
+        "title": "InvoiceStatus",
+        "enum": [
+          "DUE",
+          "OVERDUE",
+          "PAID",
+          "WRITTEN_OFF",
+          "DISPUTED"
+        ],
+        "type": "string"
+      },
+      "LegacyInvoiceCommonAttribsNoPDF": {
+        "title": "LegacyInvoiceCommonAttribsNoPDF",
+        "required": [
+          "customId",
+          "issuedAt",
+          "dueDate",
+          "currency",
+          "grossAmount",
+          "netAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "customId": {
+            "type": "string",
+            "description": "invoice custom id",
+            "example": "FAC123"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "invoice external id",
+            "example": "54654321"
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "The date at which the invoice was issued (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "name": {
+            "type": "string",
+            "description": "the invoice name",
+            "example": "Facture couvrant les prestations de service de Decembre"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "grossAmount": {
+            "type": "number",
+            "description": "amount including taxes",
+            "example": 1700
+          },
+          "netAmount": {
+            "type": "number",
+            "description": "amount net of taxes",
+            "example": 1500
+          }
+        }
+      },
+      "InvoiceCommonAttribsNoPDF": {
+        "title": "InvoiceCommonAttribsNoPDF",
+        "required": [
+          "customId",
+          "issuedAt",
+          "dueDate",
+          "currency",
+          "grossAmount",
+          "netAmount",
+          "customer"
+        ],
+        "type": "object",
+        "properties": {
+          "customId": {
+            "type": "string",
+            "description": "invoice custom id",
+            "example": "FAC123"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "invoice external id",
+            "example": "54654321"
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "The date at which the invoice was issued (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "The date when the invoice is due (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "name": {
+            "type": "string",
+            "description": "the invoice name",
+            "example": "Facture couvrant les prestations de service de Decembre"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "grossAmount": {
+            "type": "number",
+            "description": "amount including taxes",
+            "example": 1700
+          },
+          "netAmount": {
+            "type": "number",
+            "description": "amount net of taxes",
+            "example": 1500
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerReference"
+          }
+        }
+      },
+      "PaymentCommonAttribs": {
+        "title": "PaymentCommonAttribs",
+        "required": [
+          "currency",
+          "amount",
+          "validatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "amount": {
+            "type": "number",
+            "description": "amount",
+            "example": 1700
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/PaymentInstrument"
+          },
+          "validatedAt": {
+            "type": "string",
+            "description": "The date when the payment is validated (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Payment external id",
+            "example": "92842AB37"
+          },
+          "bankAccountId": {
+            "type": "string",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          }
+        }
+      },
+      "Payment": {
+        "title": "Payment",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaymentCommonAttribs"
+          },
+          {
+            "required": [
+              "id",
+              "amountLinked",
+              "modifiedAt",
+              "linkedInvoices"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the Payment ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              },
+              "type": {
+                "$ref": "#/components/schemas/PaymentType"
+              },
+              "amountLinked": {
+                "type": "number",
+                "description": "amount allocated to invoices",
+                "example": 1700
+              },
+              "modifiedAt": {
+                "type": "string",
+                "description": "The date when the payment was updated (ISO8601 format)",
+                "example": "2015-05-05T12:30:00"
+              },
+              "linkedInvoices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvoiceAllocation"
+                },
+                "description": "List of linked invoices with the allocated amount"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/CustomerLite"
+              }
+            }
+          }
+        ]
+      },
+      "PaymentCreation": {
+        "title": "PaymentCreation",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaymentCommonAttribs"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "linkedInvoices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvoiceAllocationCreation"
+                },
+                "description": "List of invoices to link this payment to"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/CustomerReference"
+              }
+            }
+          }
+        ]
+      },
+      "InvoiceAllocation": {
+        "title": "InvoiceAllocation",
+        "required": [
+          "linkedAmount",
+          "invoice"
+        ],
+        "type": "object",
+        "properties": {
+          "linkedAmount": {
+            "type": "number",
+            "description": "payment share allocated to the invoice",
+            "example": 3000
+          },
+          "invoice": {
+            "$ref": "#/components/schemas/InvoiceLite"
+          }
+        }
+      },
+      "InvoiceAllocationCreationInvoice": {
+        "title": "InvoiceAllocationCreationInvoice",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the invoice ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "the invoice external ID",
+            "example": "AEGaaZD"
+          },
+          "customId": {
+            "type": "string",
+            "description": "the invoice custom ID",
+            "example": "AEGaaZD"
+          }
+        }
+      },
+      "InvoiceAllocationCreation": {
+        "title": "InvoiceAllocationCreation",
+        "required": [
+          "amountLinked",
+          "invoice"
+        ],
+        "type": "object",
+        "properties": {
+          "amountLinked": {
+            "type": "number",
+            "description": "payment share allocated to the invoice",
+            "example": 3000
+          },
+          "invoice": {
+            "$ref": "#/components/schemas/InvoiceAllocationCreationInvoice"
+          }
+        }
+      },
+      "PaymentsListResponse": {
+        "title": "PaymentsListResponse",
+        "required": [
+          "offset",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "number",
+            "description": "page number",
+            "example": 0
+          },
+          "limit": {
+            "type": "number",
+            "description": "maximum number of items to return",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "description": "total items in the set",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            },
+            "description": ""
+          }
+        }
+      },
+      "PaymentsObject": {
+        "title": "PaymentsObject",
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "amount of payment.",
+            "example": 1700
+          },
+          "executedAt": {
+            "type": "string",
+            "description": "payment execution date",
+            "example": "2015-05-05T12:30:00"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/PaymentInstrument"
+          }
+        }
+      },
+      "PaymentType": {
+        "title": "PaymentType",
+        "enum": [
+          "ACCOUNT",
+          "MANUAL",
+          "PARSED_INVOICE",
+          "API",
+          "BATCH_IMPORT",
+          "NATIVE_INTEGRATION"
+        ],
+        "type": "string"
+      },
+      "PaymentInstrument": {
+        "title": "PaymentInstrument",
+        "enum": [
+          "WIRE_TRANSFER",
+          "DIRECT_DEBIT",
+          "CARD",
+          "CASH",
+          "CHECK",
+          "UNKNOWN"
+        ],
+        "type": "string"
+      },
+      "RefundCommonAttributes": {
+        "title": "RefundCommonAttributes",
+        "required": [
+          "currency",
+          "amount",
+          "validatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "amount": {
+            "type": "number",
+            "description": "amount",
+            "example": 1700
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/PaymentInstrument"
+          },
+          "validatedAt": {
+            "type": "string",
+            "description": "The date when the refund is validated (ISO8601 format)",
+            "example": "2015-05-05T12:30:00"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Refund external id",
+            "example": "92842AB37"
+          }
+        }
+      },
+      "Refund": {
+        "title": "Refund",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefundCommonAttributes"
+          },
+          {
+            "required": [
+              "id",
+              "amountLinked",
+              "modifiedAt"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "the Payment ID",
+                "example": "00a70b35-2be3-4c43-aefb-397190134655"
+              },
+              "amountLinked": {
+                "type": "number",
+                "description": "amount linked to refund.",
+                "example": 1700
+              },
+              "modifiedAt": {
+                "type": "string",
+                "description": "The date when the refund was updated (ISO8601 format)",
+                "example": "2015-05-05T12:30:00"
+              },
+              "linkedTransactions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PaymentAllocation"
+                },
+                "description": "List of linked payments with the allocated amount"
+              },
+              "linkedCreditNotes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreditNoteAllocation"
+                },
+                "description": "List of linked payments with the allocated amount"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/CustomerLite"
+              }
+            }
+          }
+        ]
+      },
+      "PaymentAllocation": {
+        "title": "PaymentAllocation",
+        "required": [
+          "linkedAmount",
+          "payment"
+        ],
+        "type": "object",
+        "properties": {
+          "linkedAmount": {
+            "type": "number",
+            "description": "refund's share linked to payment",
+            "example": 3000
+          },
+          "payment": {
+            "$ref": "#/components/schemas/PaymentCommonAttribs"
+          }
+        }
+      },
+      "CreditNoteAllocation": {
+        "title": "CreditNoteAllocation",
+        "required": [
+          "linkedAmount",
+          "creditNote"
+        ],
+        "type": "object",
+        "properties": {
+          "linkedAmount": {
+            "type": "number",
+            "description": "payment share linked to the credit note",
+            "example": 3000
+          },
+          "creditNote": {
+            "$ref": "#/components/schemas/CreditNoteCommonAttribs"
+          }
+        }
+      },
+      "RefundCreation": {
+        "title": "RefundCreation",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefundCommonAttributes"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "linkedPayments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PaymentAllocationCreation"
+                },
+                "description": "payment linked to this refund"
+              },
+              "linkedCreditNotes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreditNoteAllocationCreation"
+                },
+                "description": "credit note linked to this refund"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/CustomerReference"
+              }
+            }
+          }
+        ]
+      },
+      "PaymentAllocationCreation": {
+        "title": "PaymentAllocationCreation",
+        "required": [
+          "amountLinked",
+          "payment"
+        ],
+        "type": "object",
+        "properties": {
+          "amountLinked": {
+            "type": "number",
+            "description": "payment share allocated to the invoice",
+            "example": 3000
+          },
+          "payment": {
+            "$ref": "#/components/schemas/PaymentReference"
+          }
+        }
+      },
+      "CreditNoteAllocationCreation": {
+        "title": "CreditNoteAllocationCreation",
+        "required": [
+          "amountLinked",
+          "creditNote"
+        ],
+        "type": "object",
+        "properties": {
+          "amountLinked": {
+            "type": "number",
+            "description": "payment share allocated to the invoice",
+            "example": 3000
+          },
+          "creditNote": {
+            "$ref": "#/components/schemas/CreditNoteReference"
+          }
+        }
+      },
+      "PaymentReference": {
+        "title": "PaymentReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the payment transaction ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "the payment external ID",
+            "example": "AEGaaZD"
+          }
+        }
+      },
+      "CreditNoteReference": {
+        "title": "CreditNoteReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the payment transaction ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "the payment external ID",
+            "example": "AEGaaZD"
+          },
+          "customId": {
+            "type": "string",
+            "description": "the invoice custom ID",
+            "example": "AEGaaZD"
+          }
+        }
+      },
+      "SortOrder": {
+        "title": "SortOrder",
+        "enum": [
+          "DESC",
+          "ASC"
+        ],
+        "type": "string"
+      },
+      "UpdateContactAttribs": {
+        "title": "UpdateContactAttribs",
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "contact first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "contact last name",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "contact email (must be unique)",
+            "example": "john@example.com"
+          },
+          "position": {
+            "$ref": "#/components/schemas/ContactPosition"
+          }
+        }
+      },
+      "User": {
+        "title": "User",
+        "required": [
+          "id",
+          "position",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the User ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "position": {
+            "$ref": "#/components/schemas/UserPosition"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "phone1": {
+            "type": "string",
+            "example": "+33609090909"
+          },
+          "phone2": {
+            "type": "string",
+            "example": "+33609090909"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          }
+        }
+      },
+      "UserPosition": {
+        "title": "UserPosition",
+        "enum": [
+          "ACCOUNT_MANAGER",
+          "FINANCE_USER",
+          "ACCOUNTANT"
+        ],
+        "type": "string"
+      },
+      "UserListResponse": {
+        "title": "UserListResponse",
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "description": ""
+          }
+        }
+      },
+      "RefundReference": {
+        "title": "RefundReference",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the refund ID",
+            "example": "00a70b35-2be3-4c43-aefb-397190134655"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "the refund external ID",
+            "example": "AEGaaZD"
+          }
+        }
+      },
+      "InvoiceRefWithAmount": {
+        "title": "InvoiceRefWithAmount",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InvoiceReference"
+          },
+          {
+            "required": [
+              "amountLinked"
+            ],
+            "type": "object",
+            "properties": {
+              "amountLinked": {
+                "type": "number",
+                "description": "amount allocated to the invoice",
+                "example": 2000
+              }
+            }
+          }
+        ]
+      },
+      "RefundRefWithAmount": {
+        "title": "RefundRefWithAmount",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefundReference"
+          },
+          {
+            "required": [
+              "amountLinked"
+            ],
+            "type": "object",
+            "properties": {
+              "amountLinked": {
+                "type": "number",
+                "description": "amount linked to refund.",
+                "example": 1700
+              }
+            }
+          }
+        ]
+      },
+      "PaymentRefWithAmount": {
+        "title": "PaymentRefWithAmount",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaymentReference"
+          },
+          {
+            "required": [
+              "amountLinked"
+            ],
+            "type": "object",
+            "properties": {
+              "amountLinked": {
+                "type": "number",
+                "description": "payment share allocated to the invoice",
+                "example": 3000
+              }
+            }
+          }
+        ]
+      },
+      "CreditNoteRefWithAmount": {
+        "title": "CreditNoteRefWithAmount",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreditNoteReference"
+          },
+          {
+            "required": [
+              "amountLinked"
+            ],
+            "type": "object",
+            "properties": {
+              "amountLinked": {
+                "type": "number",
+                "description": "payment share allocated to the invoice",
+                "example": 3000
+              }
+            }
+          }
+        ]
+      },
+      "ReconcileRequest": {
+        "title": "ReconcileRequest",
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "description": "the refund external ID",
+            "example": "AEGaaZD"
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceRefWithAmount"
+            },
+            "description": ""
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRefWithAmount"
+            },
+            "description": ""
+          },
+          "creditNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreditNoteRefWithAmount"
+            },
+            "description": ""
+          },
+          "refunds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefundRefWithAmount"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ReconcileResponse": {
+        "title": "ReconcileResponse",
+        "enum": [
+          "CREATED",
+          "UPDATED",
+          "IGNORED",
+          "UNCHANGED",
+          "DELETED"
+        ],
+        "type": "string"
+      },
+      "address": {
+        "title": "address",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "the address",
+            "example": "25 Passage Dubail"
+          },
+          "zipcode": {
+            "type": "string",
+            "description": "(optional, string) - zip code",
+            "example": "75010"
+          },
+          "city": {
+            "type": "string",
+            "description": "(optional, string) - city name",
+            "example": "Paris"
+          },
+          "state": {
+            "type": "string",
+            "description": "de-France - (optional, string) - state",
+            "example": "Île"
+          },
+          "country": {
+            "type": "string",
+            "description": "(optional, string) - country",
+            "example": "France"
+          }
+        }
+      },
+      "GenerateCustomerSummaryPageURLresponse": {
+        "title": "GenerateCustomerSummaryPageURLresponse",
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL for the Customer Summary Page",
+            "example": "https://app.upflow.com/customerSummary?token=xxx"
+          }
+        }
+      },
+      "GetCustomerresponse": {
+        "title": "GetCustomerresponse",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Customer"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "contacts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Contact"
+                },
+                "description": ""
+              }
+            }
+          }
+        ]
+      },
+      "ImportCustomerrequest": {
+        "title": "ImportCustomerrequest",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CustomerAttribs"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "contacts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ContactAttribs"
+                },
+                "description": ""
+              }
+            }
+          }
+        ]
+      },
+      "ListBankAccountsresponse": {
+        "title": "ListBankAccountsresponse",
+        "required": [
+          "offset",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "number",
+            "description": "0-based index of the first item to return.",
+            "example": 0
+          },
+          "limit": {
+            "type": "number",
+            "description": "The maximum number of items to return.",
+            "example": 50
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankAccount"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ListCustomerContactsresponse": {
+        "title": "ListCustomerContactsresponse",
+        "required": [
+          "page",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "number of contacts returned max",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "description": "total number of conacts for customer",
+            "example": 100
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ListCustomersresponse": {
+        "title": "ListCustomersresponse",
+        "required": [
+          "page",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "maximum number of items to return",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "description": "total items in the set",
+            "example": 100
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ListInvoicesresponse": {
+        "title": "ListInvoicesresponse",
+        "required": [
+          "page",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "maximum number of items to return",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "description": "total items in the set",
+            "example": 100
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            },
+            "description": ""
+          }
+        }
+      },
+      "ListRefundsresponse": {
+        "title": "ListRefundsresponse",
+        "required": [
+          "offset",
+          "limit",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "number",
+            "description": "0 based index of the first item to return.",
+            "example": 0
+          },
+          "limit": {
+            "type": "number",
+            "description": "The maximum number of items to return.",
+            "example": 50
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Refund"
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "API Secret key": {
+        "name": "X-Api-Secret",
+        "type": "apiKey",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [],
+  "security": [
+    {
+      "API Secret key": []
+    }
+  ]
+}

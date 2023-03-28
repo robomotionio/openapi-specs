@@ -1,0 +1,3391 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Track",
+    "description": "The Tracking API supports Package, Ground Freight and Air Freight shipments.",
+    "termsOfService": "https://www.ups.com/upsdeveloperkit/assets/html/serviceAgreement.html",
+    "version": "1.0.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about Track , Error Codes and Appendix",
+    "url": "https://www.ups.com/upsdeveloperkit/assets/html/TrackStatic.html"
+  },
+  "servers": [
+    {
+      "url": "https://wwwcie.ups.com/rest"
+    },
+    {
+      "url": "https://onlinetools.ups.com/rest"
+    }
+  ],
+  "paths": {
+    "/track/v1/details/{inquiryNumber}": {
+      "post": {
+        "summary": "Get Tracking Response",
+        "operationId": "Track",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Username",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The customers MyUPS username.Maximum length:16",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Password",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The customers MyUPS password.Maximum length:26",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "AccessLicenseNumber",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Authorization: Access Key obtained \nthrough on-boarding process. \nContact your UPS representative for \nadditional information. Maximum Length:16",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "transId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "An identifier unique to the request. Length 32",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "transactionSrc",
+            "schema": {
+              "type": "string"
+            },
+            "description": "An identifier of the client/source application that is making the request.Length 512",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "The language and country code combination. If \nnot provided will default to ï¿½en_USï¿½.. Length 5",
+            "required": false
+          },
+          {
+            "in": "path",
+            "name": "inquiryNumber",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "The tracking number for which tracking \ninformation is requested. The number must be \nbetween 7 and 34 characters in length.Max Length 34",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Get Tracking Response",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TRACKRequestWrapper"
+              },
+              "examples": {
+                "json": {
+                  "summary": "A sample JSON request",
+                  "value": "{\r\n }\r\n"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/TRACKRequestWrapper"
+              },
+              "examples": {
+                "xml": {
+                  "summary": "A sample XML request",
+                  "value": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\r\nxmlns:v1=\"http://www.ups.com/XMLSchema/XOLTWS/UPSS/v1.0\"\r\nxmlns:v3=\"http://www.ups.com/XMLSchema/XOLTWS/Track/v2.0\"\r\nxmlns:v11=\"http://www.ups.com/XMLSchema/XOLTWS/Common/v1.0\">\r\n <soapenv:Header>\r\n <v1:UPSSecurity>\r\n <v1:UsernameToken>\r\n <v1:Username>YourUserID</v1:Username>\r\n <v1:Password>YourPassword</v1:Password>\r\n </v1:UsernameToken>\r\n <v1:ServiceAccessToken>\r\n <v1:AccessLicenseNumber>YourLicenseNumber</v1:AccessLicenseNumber>\r\n </v1:ServiceAccessToken>\r\n </v1:UPSSecurity>\r\n </soapenv:Header>\r\n <soapenv:Body>\r\n <v3:TrackRequest>\r\n <v11:Request>\r\n <v11:RequestOption>1</v11:RequestOption>\r\n <v11:TransactionReference>\r\n <v11:CustomerContext>Your Test Case Summary Description</v11:CustomerContext>\r\n </v11:TransactionReference>\r\n </v11:Request>\r\n <v3:InquiryNumber>YourTrackingNumber</v3:InquiryNumber>\r\n </v3:TrackRequest>\r\n </soapenv:Body>\r\n</soapenv:Envelope>\r\n"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TRACKResponseWrapper"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TRACKResponseWrapper"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TRACKRequestWrapper": {
+        "xml": {
+          "name": "TrackRequest"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "TrackRequest"
+        ],
+        "properties": {
+          "TrackRequest": {
+            "$ref": "#/components/schemas/TrackRequest"
+          }
+        }
+      },
+      "TRACKResponseWrapper": {
+        "xml": {
+          "name": "TrackResponse"
+        },
+        "description": "N/A  ",
+        "maximum": 1,
+        "type": "object",
+        "required": [
+          "TrackResponse"
+        ],
+        "properties": {
+          "TrackResponse": {
+            "$ref": "#/components/schemas/TrackResponse"
+          }
+        }
+      },
+      "TrackRequest": {
+        "type": "object",
+        "required": [
+          "ShipFrom",
+          "Request",
+          "ShipperNumber",
+          "ShipTo",
+          "PickupDateRange"
+        ],
+        "properties": {
+          "Request": {
+            "$ref": "#/components/schemas/TrackRequest_Request"
+          },
+          "InquiryNumber": {
+            "description": "Inquiry Number. \n\nPackage:\nFor package, the number will be treated as Shipment Identification Number or Package Tracking Number based on the value of the element TrackingOption. \n\nTracking options: \n01, the inquiry number will be treated as shipment identification number.\n02, the inquiry number will be treated as package Tracking number. \n\nFreight:\nFor freight, the number will be always treated as the tracking number of the shipment regardless of the value of the TrackingOption.  \n\nMail Innovations:\nFor mail innovations this number will be the tracking number. When tracking for mail innovations by tracking number the TrackingOption also needs to be set to03.\n\nFor mail innovations different types of tracking numbers apply like - Sequence number (Mail Manifest ID / MMS), Postal service Tracking ID.",
+            "type": "string"
+          },
+          "IncludeMailInnovationIndicator": {
+            "description": "The presence of this indicator means supports Mail Innovation tracking without tracking option",
+            "type": "string"
+          },
+          "TrackingOption": {
+            "description": "TrackingOption applies to Package and Mail Innovations only.\n\nPackage:\n01 - Single trackable entity with more trackable entities inside it\n02 - Single trackable entity with no more trackable entities inside it\n\nIf value or element is not found, then Inquiry number will be treated as Shipment Identification Number.\n\nIf the TrackingOption is not present then it will return all packages information if it is a Multi-package shipment (Which means Tracking number will be treated as Shipment Identification number). \nFreight:\n\nFreight:\nFor Freight, This element will be ignored and the Inquiry number will always be treated as Shipment Identification Number. \n\nFor Freight Inquiry Number this field will not be used so all the information about that freight shipment will be returned. \n\nMail Innovations:\nFor Mail Innovations track by number, this is a mandatory field which has to be set to 03. \nFor Mail Innovations a single shipment has single package.",
+            "type": "string"
+          },
+          "CandidateBookmark": {
+            "description": "During InquiryNumber and Reference Number searches, it is possible that duplicate shipments will be found. If duplicate shipments are found, then a Candidate Summary with a corresponding CandidateBookmark for each of the Shipments will be returned in the track response. \n\nThis Base64 encoded CandidateBookmark can be passed back to the Tracking service in a separate request to retrieve tracking information about the particular shipment of interest. It does not apply to package tracking or Mail Innovations.",
+            "type": "string"
+          },
+          "ReferenceNumber": {
+            "$ref": "#/components/schemas/TrackRequest_ReferenceNumber"
+          },
+          "PickupDateRange": {
+            "$ref": "#/components/schemas/TrackRequest_PickupDateRange"
+          },
+          "ShipperNumber": {
+            "description": "The UPS account number used to narrow a reference number search.",
+            "type": "string"
+          },
+          "ShipFrom": {
+            "$ref": "#/components/schemas/TrackRequest_ShipFrom"
+          },
+          "ShipTo": {
+            "$ref": "#/components/schemas/TrackRequest_ShipTo"
+          },
+          "ShipmentType": {
+            "$ref": "#/components/schemas/TrackRequest_ShipmentType"
+          },
+          "ShipperAccountInfo": {
+            "$ref": "#/components/schemas/TrackRequest_ShipperAccountInfo"
+          },
+          "QuantumViewNotification": {
+            "$ref": "#/components/schemas/TrackRequest_QuantumViewNotification"
+          },
+          "PreauthorizedReturnIndicator": {
+            "description": "Indicator to request Pre-authorized For Return (PFR) eligibility information, URL to submit pre-authorized return request and other PFR related data. For small package and Mail Innovation packages.\nValid value is:\nY - PFR information is required.",
+            "type": "string"
+          },
+          "Locale": {
+            "description": "Locale will be used to provide translated text in Activity Status Description and Current Status Description.\nDefault Value is:\nen_US",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TrackRequest"
+        },
+        "maximum": 1,
+        "description": "Container for the root Track Request. Package, Mail Innovations and freight shipment can be tracked by invoking this request. \n\nUsers have three ways to track, by inquiry number, by reference number, or by candidate bookmark. Candidate bookmark applies to Freight tracking only."
+      },
+      "TrackRequest_Request": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "RequestOption": {
+            "description": "For optional processing.",
+            "type": "string"
+          },
+          "SubVersion": {
+            "description": "When UPS introduces new elements in the response that are not associated with new request elements, Subversion is used. This ensures backward compatibility.\n\nTo get such elements you need to have the right Subversion. The value of the subversion is explained in the Response element Description.\n\n\nExample: Itemized Charges are returned only when the Subversion element is present and greater than or equal to '1601'. \n\nFormat: YYMM = Year and month of the release.\nExample: 1601 = 2016 January",
+            "type": "string"
+          },
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Request_TransactionReference"
+          }
+        },
+        "xml": {
+          "name": "Request"
+        },
+        "required": [
+          "TransactionReference",
+          "SubVersion"
+        ],
+        "description": "Common Request element should be provided by users"
+      },
+      "Request_RequestOption": {
+        "description": "For optional processing.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 15
+      },
+      "Request_SubVersion": {
+        "description": "When UPS introduces new elements in the response that are not associated with new request elements, Subversion is used. This ensures backward compatibility.\n\nTo get such elements you need to have the right Subversion. The value of the subversion is explained in the Response element Description.\n\n\nExample: Itemized Charges are returned only when the Subversion element is present and greater than or equal to '1601'. \n\nFormat: YYMM = Year and month of the release.\nExample: 1601 = 2016 January",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 4
+      },
+      "Request_TransactionReference": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "CustomerContext"
+        ],
+        "properties": {
+          "CustomerContext": {
+            "description": "The CustomerContext Information which will be echoed during response.",
+            "type": "string"
+          },
+          "TransactionIdentifier": {
+            "description": "The Unique TransactionIdentifier Information for that transaction. This will be present only if requested in the request.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "TransactionReference identifies transactions between client and server."
+      },
+      "TransactionReference_CustomerContext": {
+        "description": "The CustomerContext Information which will be echoed during response.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "TransactionReference_TransactionIdentifier": {
+        "description": "The Unique TransactionIdentifier Information for that transaction. This will be present only if requested in the request.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 35,
+        "maxLength": 35
+      },
+      "TrackRequest_InquiryNumber": {
+        "description": "Inquiry Number. \n\nPackage:\nFor package, the number will be treated as Shipment Identification Number or Package Tracking Number based on the value of the element TrackingOption. \n\nTracking options: \n01, the inquiry number will be treated as shipment identification number.\n02, the inquiry number will be treated as package Tracking number. \n\nFreight:\nFor freight, the number will be always treated as the tracking number of the shipment regardless of the value of the TrackingOption.  \n\nMail Innovations:\nFor mail innovations this number will be the tracking number. When tracking for mail innovations by tracking number the TrackingOption also needs to be set to03.\n\nFor mail innovations different types of tracking numbers apply like - Sequence number (Mail Manifest ID / MMS), Postal service Tracking ID.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 9,
+        "maxLength": 34
+      },
+      "TrackRequest_IncludeMailInnovationIndicator": {
+        "description": "The presence of this indicator means supports Mail Innovation tracking without tracking option",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TrackRequest_TrackingOption": {
+        "description": "TrackingOption applies to Package and Mail Innovations only.\n\nPackage:\n01 - Single trackable entity with more trackable entities inside it\n02 - Single trackable entity with no more trackable entities inside it\n\nIf value or element is not found, then Inquiry number will be treated as Shipment Identification Number.\n\nIf the TrackingOption is not present then it will return all packages information if it is a Multi-package shipment (Which means Tracking number will be treated as Shipment Identification number). \nFreight:\n\nFreight:\nFor Freight, This element will be ignored and the Inquiry number will always be treated as Shipment Identification Number. \n\nFor Freight Inquiry Number this field will not be used so all the information about that freight shipment will be returned. \n\nMail Innovations:\nFor Mail Innovations track by number, this is a mandatory field which has to be set to 03. \nFor Mail Innovations a single shipment has single package.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TrackRequest_CandidateBookmark": {
+        "description": "During InquiryNumber and Reference Number searches, it is possible that duplicate shipments will be found. If duplicate shipments are found, then a Candidate Summary with a corresponding CandidateBookmark for each of the Shipments will be returned in the track response. \n\nThis Base64 encoded CandidateBookmark can be passed back to the Tracking service in a separate request to retrieve tracking information about the particular shipment of interest. It does not apply to package tracking or Mail Innovations.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 15
+      },
+      "TrackRequest_ReferenceNumber": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Value"
+        ],
+        "properties": {
+          "Value": {
+            "description": "Customer supplied reference number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ReferenceNumber"
+        },
+        "description": "The reference number container. Required if an inquiry number or candidate bookmark is not present. \nThe reference number for Mail Innovations needs to be set here along with appropriate code in ShipmentType."
+      },
+      "ReferenceNumber_Value": {
+        "description": "Customer supplied reference number.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "TrackRequest_PickupDateRange": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "EndDate",
+          "BeginDate"
+        ],
+        "properties": {
+          "BeginDate": {
+            "description": "The beginning pickup date used to narrow a reference number search. \nFormat: YYYYMMDD.",
+            "type": "string"
+          },
+          "EndDate": {
+            "description": "The end pickup date used to narrow a reference number search. \nFormat: YYYYMMDD. MM ranges from 01 to 12.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "PickupDateRange"
+        },
+        "description": "The additional information of pickup date range to support and narrow a reference number search. \nFor Mail Innovations this is optional field for tracking by reference number."
+      },
+      "PickupDateRange_BeginDate": {
+        "description": "The beginning pickup date used to narrow a reference number search. \nFormat: YYYYMMDD.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "PickupDateRange_EndDate": {
+        "description": "The end pickup date used to narrow a reference number search. \nFormat: YYYYMMDD. MM ranges from 01 to 12.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "TrackRequest_ShipperNumber": {
+        "description": "The UPS account number used to narrow a reference number search.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 10
+      },
+      "TrackRequest_ShipFrom": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipFrom_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipFrom"
+        },
+        "description": "Container for ship from address used to narrow a reference number search.",
+        "maximum": 1
+      },
+      "ShipFrom_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "PostalCode",
+          "CountryCode"
+        ],
+        "properties": {
+          "PostalCode": {
+            "description": "Activity locations postal code.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Activity locations country or territory code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Container for the origin country or territory code and origin postal code used to narrow a reference number search."
+      },
+      "Address_PostalCode": {
+        "description": "Activity locations postal code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 16
+      },
+      "Address_CountryCode": {
+        "description": "Activity locations country or territory code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TrackRequest_ShipTo": {
+        "type": "object",
+        "required": [
+          "Address"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ShipTo_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipTo"
+        },
+        "description": "Container for the Destination Address to narrow the reference number search.",
+        "maximum": 1
+      },
+      "ShipTo_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "PostalCode",
+          "CountryCode"
+        ],
+        "properties": {
+          "PostalCode": {
+            "description": "Activity locations postal code.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Activity locations country or territory code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Container for the destination postal code and destination country or territory Code"
+      },
+      "TrackRequest_ShipmentType": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "This element will be used to indicate the type of the shipment being tracked, either Package, Mail Innovations or Freight.\n01 - Package\n02 - Freight\n03 - Mail Innovations",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipmentType"
+        },
+        "description": "Container for the type of Shipment when doing a Reference Number search. This element is required if the Reference Number element is specified."
+      },
+      "ShipmentType_Code": {
+        "description": "This element will be used to indicate the type of the shipment being tracked, either Package, Mail Innovations or Freight.\n01 - Package\n02 - Freight\n03 - Mail Innovations",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TrackRequest_ShipperAccountInfo": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "PostalCode",
+          "CountryCode"
+        ],
+        "properties": {
+          "PostalCode": {
+            "description": "Postal Code of the Shipper Account used to place the shipment. \n\nThis data will be used in verifying the rights of the customer to view signature results.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Country or Territory Code of the Shipper Account used to place the shipment. \n\nThis data will be used in verifying the rights of the customer to view signature results.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipperAccountInfo"
+        },
+        "description": "Container for Shippers account details.\n\nUsed to verify the customers signature tracking privileges for package tracking if shipper selects one of the RequestOption including signature track."
+      },
+      "ShipperAccountInfo_PostalCode": {
+        "description": "Postal Code of the Shipper Account used to place the shipment. \n\nThis data will be used in verifying the rights of the customer to view signature results.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 9
+      },
+      "ShipperAccountInfo_CountryCode": {
+        "description": "Country or Territory Code of the Shipper Account used to place the shipment. \n\nThis data will be used in verifying the rights of the customer to view signature results.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TrackRequest_QuantumViewNotification": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "FailureEmailAddress",
+          "Language",
+          "RecipientEmailAddress"
+        ],
+        "properties": {
+          "RecipientEmailAddress": {
+            "description": "The recipient email address for sending notification email.",
+            "type": "string"
+          },
+          "FailureEmailAddress": {
+            "description": "The email address used when recipient email address is not reachable.",
+            "type": "string"
+          },
+          "Language": {
+            "$ref": "#/components/schemas/QuantumViewNotification_Language"
+          },
+          "ExceptionNotificationIndicator": {
+            "description": "If an exception notification is requested, this indicator must be set.\nBoth exception notification indicator and delivery notification indicator can be set if needed. At least 1 indicator must be set.",
+            "type": "string"
+          },
+          "DeliveryNotificationIndicator": {
+            "description": "If a delivery notification is requested, this indicator must be set.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "QuantumViewNotification"
+        },
+        "description": "Container for supplying quantum view notification.\nThis container applies only when the track request is by inquiry number."
+      },
+      "QuantumViewNotification_RecipientEmailAddress": {
+        "description": "The recipient email address for sending notification email.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "QuantumViewNotification_FailureEmailAddress": {
+        "description": "The email address used when recipient email address is not reachable.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "QuantumViewNotification_Language": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Dialect",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "The two-character long language code in lower case such as en.\nFor a list of valid language dialect pairs supported for Quantum View Notification, please refer to the Language-Dialect combination table in the Appendix.",
+            "type": "string"
+          },
+          "Dialect": {
+            "description": "The two-character long dialect code in upper case such as US.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Language"
+        },
+        "description": "Container for supplying the language information for quantum view notification"
+      },
+      "Language_Code": {
+        "description": "The two-character long language code in lower case such as en.\nFor a list of valid language dialect pairs supported for Quantum View Notification, please refer to the Language-Dialect combination table in the Appendix.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Language_Dialect": {
+        "description": "The two-character long dialect code in upper case such as US.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "QuantumViewNotification_ExceptionNotificationIndicator": {
+        "description": "If an exception notification is requested, this indicator must be set.\nBoth exception notification indicator and delivery notification indicator can be set if needed. At least 1 indicator must be set.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "QuantumViewNotification_DeliveryNotificationIndicator": {
+        "description": "If a delivery notification is requested, this indicator must be set.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "TrackRequest_PreauthorizedReturnIndicator": {
+        "description": "Indicator to request Pre-authorized For Return (PFR) eligibility information, URL to submit pre-authorized return request and other PFR related data. For small package and Mail Innovation packages.\nValid value is:\nY - PFR information is required.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "TrackRequest_Locale": {
+        "description": "Locale will be used to provide translated text in Activity Status Description and Current Status Description.\nDefault Value is:\nen_US",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 5
+      },
+      "TrackResponse": {
+        "type": "object",
+        "required": [
+          "Response",
+          "Shipment"
+        ],
+        "properties": {
+          "Response": {
+            "$ref": "#/components/schemas/TrackResponse_Response"
+          },
+          "Shipment": {
+            "$ref": "#/components/schemas/TrackResponse_Shipment"
+          },
+          "Disclaimer": {
+            "description": "Any necessary or special notice.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TrackResponse"
+        },
+        "description": "Container for root Track Response.",
+        "maximum": 1
+      },
+      "TrackResponse_Response": {
+        "type": "object",
+        "required": [
+          "ResponseStatus"
+        ],
+        "properties": {
+          "ResponseStatus": {
+            "$ref": "#/components/schemas/Response_ResponseStatus"
+          },
+          "Alert": {
+            "$ref": "#/components/schemas/Response_Alert"
+          },
+          "TransactionReference": {
+            "$ref": "#/components/schemas/Response_TransactionReference"
+          }
+        },
+        "xml": {
+          "name": "Response"
+        },
+        "description": "Container for common Response element.",
+        "maximum": 1
+      },
+      "Response_ResponseStatus": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Identifies the success or failure of the transaction. \n1 = Successful\n0 = Failure",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Describes Response Status Code. Returns text of Success.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ResponseStatus"
+        },
+        "description": "Response Status Container."
+      },
+      "ResponseStatus_Code": {
+        "description": "Identifies the success or failure of the transaction. \n1 = Successful\n0 = Failure",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "ResponseStatus_Description": {
+        "description": "Describes Response Status Code. Returns text of Success.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Response_Alert": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Warning code returned by the system.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Warning messages returned by the system",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Alert"
+        },
+        "description": "Alert Container. There can be zero to many alert containers with code and description."
+      },
+      "Alert_Code": {
+        "description": "Warning code returned by the system.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "Alert_Description": {
+        "description": "Warning messages returned by the system",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 150
+      },
+      "Response_TransactionReference": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "CustomerContext"
+        ],
+        "properties": {
+          "CustomerContext": {
+            "description": "The CustomerContext Information which will be echoed during response.",
+            "type": "string"
+          },
+          "TransactionIdentifier": {
+            "description": "The Unique TransactionIdentifier Information for that transaction. This will be present only if requested in the request.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransactionReference"
+        },
+        "description": "Transaction Reference Container."
+      },
+      "TrackResponse_Shipment": {
+        "type": "object",
+        "required": [
+          "CarrierActivityInformation",
+          "ShipmentAddress",
+          "InquiryNumber",
+          "Document",
+          "FileNumber"
+        ],
+        "properties": {
+          "InquiryNumber": {
+            "$ref": "#/components/schemas/Shipment_InquiryNumber"
+          },
+          "ShipmentType": {
+            "$ref": "#/components/schemas/Shipment_ShipmentType"
+          },
+          "CandidateBookmark": {
+            "description": "During Tracking and Reference Number searches, it is possible that duplicate shipments will be found. \n\nIf duplicate shipments are found, then a Candidate Summary with a corresponding Base64 encodedCandidate Bookmark for each of the Shipments will be returned in the response. \n\nThe Candidate Bookmark can be passed back to the tracking web service in a separate track transaction to retrieve tracking information about the particular shipment of interest.",
+            "type": "string"
+          },
+          "ShipperNumber": {
+            "description": "The shippers UPS account number that placed this shipment",
+            "type": "string"
+          },
+          "ShipmentAddress": {
+            "$ref": "#/components/schemas/Shipment_ShipmentAddress"
+          },
+          "ShipmentWeight": {
+            "$ref": "#/components/schemas/Shipment_ShipmentWeight"
+          },
+          "Service": {
+            "$ref": "#/components/schemas/Shipment_Service"
+          },
+          "ReferenceNumber": {
+            "$ref": "#/components/schemas/Shipment_ReferenceNumber"
+          },
+          "CurrentStatus": {
+            "$ref": "#/components/schemas/Shipment_CurrentStatus"
+          },
+          "PickupDate": {
+            "description": "Date the shipment was picked-up. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "ServiceCenter": {
+            "$ref": "#/components/schemas/Shipment_ServiceCenter"
+          },
+          "DeliveryDateUnavailable": {
+            "$ref": "#/components/schemas/Shipment_DeliveryDateUnavailable"
+          },
+          "DeliveryDetail": {
+            "$ref": "#/components/schemas/Shipment_DeliveryDetail"
+          },
+          "Volume": {
+            "$ref": "#/components/schemas/Shipment_Volume"
+          },
+          "BillToName": {
+            "description": "Name of the person to whom the shipment is billed to.",
+            "type": "string"
+          },
+          "NumberOfPackagingUnit": {
+            "$ref": "#/components/schemas/Shipment_NumberOfPackagingUnit"
+          },
+          "COD": {
+            "$ref": "#/components/schemas/Shipment_COD"
+          },
+          "SignedForByName": {
+            "description": "Person that received the shipment. May be the addressee, or another person that signed for the shipment",
+            "type": "string"
+          },
+          "Activity": {
+            "$ref": "#/components/schemas/Shipment_Activity"
+          },
+          "OriginPortDetail": {
+            "$ref": "#/components/schemas/Shipment_OriginPortDetail"
+          },
+          "DestinationPortDetail": {
+            "$ref": "#/components/schemas/Shipment_DestinationPortDetail"
+          },
+          "DescriptionOfGoods": {
+            "description": "Description of Goods in the shipment.",
+            "type": "string"
+          },
+          "CargoReady": {
+            "$ref": "#/components/schemas/Shipment_CargoReady"
+          },
+          "Manifest": {
+            "$ref": "#/components/schemas/Shipment_Manifest"
+          },
+          "CarrierActivityInformation": {
+            "$ref": "#/components/schemas/Shipment_CarrierActivityInformation"
+          },
+          "Document": {
+            "$ref": "#/components/schemas/Shipment_Document"
+          },
+          "FileNumber": {
+            "description": "File Number of the shipment.",
+            "type": "string"
+          },
+          "Appointment": {
+            "$ref": "#/components/schemas/Shipment_Appointment"
+          },
+          "Package": {
+            "$ref": "#/components/schemas/Shipment_Package"
+          },
+          "QuantumViewNotification": {
+            "$ref": "#/components/schemas/Shipment_QuantumViewNotification"
+          }
+        },
+        "xml": {
+          "name": "Shipment"
+        },
+        "maximum": 1,
+        "description": "Shipment Container",
+        "minLength": 1,
+        "maxLength": 240
+      },
+      "Shipment_InquiryNumber": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Value",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code to indicate the type of Inquiry Number. \n\nPackage:\nFor package this element returns: \n01 -Shipment Identification Number\n\nMail Innovations: \n03- Mail Innovation tracking number\n\nFreight:\nHAWB - House Airway Bill\nHBL - House Bill of Lading\nPRO ï¿½ PRO Number\nSUBPRO ï¿½ Sub-PRO Number\nDO ï¿½ Delivery Order",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the Inquiry Number as indicated by code as above.",
+            "type": "string"
+          },
+          "Value": {
+            "description": "The actual value of the Inquiry Number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "InquiryNumber"
+        },
+        "description": "Shipment Inquiry Number Container"
+      },
+      "InquiryNumber_Code": {
+        "description": "Code to indicate the type of Inquiry Number. \n\nPackage:\nFor package this element returns: \n01 -Shipment Identification Number\n\nMail Innovations: \n03- Mail Innovation tracking number\n\nFreight:\nHAWB - House Airway Bill\nHBL - House Bill of Lading\nPRO ï¿½ PRO Number\nSUBPRO ï¿½ Sub-PRO Number\nDO ï¿½ Delivery Order",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 6
+      },
+      "InquiryNumber_Description": {
+        "description": "Description of the Inquiry Number as indicated by code as above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "InquiryNumber_Value": {
+        "description": "The actual value of the Inquiry Number.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 34
+      },
+      "Shipment_ShipmentType": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "This element will be used to indicate the type of the shipment being tracked, either Package, Mail Innovations or Freight.\n01 - Package\n02 - Freight\n03 - Mail Innovations",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipmentType"
+        },
+        "description": "Container for the type of Shipment."
+      },
+      "ShipmentType_Description": {
+        "description": "Description of the code above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 15
+      },
+      "Shipment_CandidateBookmark": {
+        "description": "During Tracking and Reference Number searches, it is possible that duplicate shipments will be found. \n\nIf duplicate shipments are found, then a Candidate Summary with a corresponding Base64 encodedCandidate Bookmark for each of the Shipments will be returned in the response. \n\nThe Candidate Bookmark can be passed back to the tracking web service in a separate track transaction to retrieve tracking information about the particular shipment of interest.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 15
+      },
+      "Shipment_ShipperNumber": {
+        "description": "The shippers UPS account number that placed this shipment",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 10
+      },
+      "Shipment_ShipmentAddress": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Address"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/ShipmentAddress_Type"
+          },
+          "Address": {
+            "$ref": "#/components/schemas/ShipmentAddress_Address"
+          }
+        },
+        "xml": {
+          "name": "ShipmentAddress"
+        },
+        "description": "An array of addresses associated with this shipment."
+      },
+      "ShipmentAddress_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of address."
+      },
+      "Type_Code": {
+        "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Type_Description": {
+        "description": "Description of the code above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "ShipmentAddress_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "AddressLine",
+          "StateProvinceCode",
+          "PostalCode",
+          "City",
+          "CountryCode"
+        ],
+        "properties": {
+          "AddressLine": {
+            "description": "Activity locationï¿½s street address including name and number (when applicable) and/or building floor, room, suite, and PO Box number. Up to three AddressLine can be returned.",
+            "type": "string"
+          },
+          "City": {
+            "description": "City name. This is optional for Mail Innovations",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "Activity locationï¿½s state or province code. This is optional for Mail Innovations.",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Activity locations postal code.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Activity locations country or territory code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Address detail."
+      },
+      "Address_AddressLine": {
+        "description": "Activity locationï¿½s street address including name and number (when applicable) and/or building floor, room, suite, and PO Box number. Up to three AddressLine can be returned.",
+        "maximum": 3,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_City": {
+        "description": "City name. This is optional for Mail Innovations",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Address_StateProvinceCode": {
+        "description": "Activity locationï¿½s state or province code. This is optional for Mail Innovations.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 5
+      },
+      "Shipment_ShipmentWeight": {
+        "type": "object",
+        "required": [
+          "UnitOfMeasurement",
+          "Weight"
+        ],
+        "properties": {
+          "UnitOfMeasurement": {
+            "$ref": "#/components/schemas/ShipmentWeight_UnitOfMeasurement"
+          },
+          "Weight": {
+            "description": "Shipmentï¿½s total weight. Set to 0 for shipment with package type of letter.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ShipmentWeight"
+        },
+        "maximum": 1,
+        "description": "Shipment weight container."
+      },
+      "ShipmentWeight_UnitOfMeasurement": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Package weight unit of measurement code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UnitOfMeasurement"
+        },
+        "description": "Shipment weight unit of measurement container."
+      },
+      "UnitOfMeasurement_Code": {
+        "description": "Package weight unit of measurement code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 3
+      },
+      "ShipmentWeight_Weight": {
+        "description": "Shipmentï¿½s total weight. Set to 0 for shipment with package type of letter.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Shipment_Service": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Service Code. For valid values, see Service Codes in the Appendix.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the service.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Service"
+        },
+        "description": "Container for UPS service associated with the shipment"
+      },
+      "Service_Code": {
+        "description": "Service Code. For valid values, see Service Codes in the Appendix.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 4
+      },
+      "Service_Description": {
+        "description": "Description of the service.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_ReferenceNumber": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Value",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Package Reference number type code. The code specifies the Reference name.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          },
+          "Value": {
+            "description": "Customer supplied reference number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ReferenceNumber"
+        },
+        "description": "Shipment reference number container"
+      },
+      "ReferenceNumber_Code": {
+        "description": "Package Reference number type code. The code specifies the Reference name.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "ReferenceNumber_Description": {
+        "description": "Description of the code above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_CurrentStatus": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code for the current status of the shipment.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the current status of the shipment.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "CurrentStatus"
+        },
+        "description": "Container for the current status of the shipment."
+      },
+      "CurrentStatus_Code": {
+        "description": "Code for the current status of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 3
+      },
+      "CurrentStatus_Description": {
+        "description": "Description of the current status of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_PickupDate": {
+        "description": "Date the shipment was picked-up. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Shipment_ServiceCenter": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Address"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/ServiceCenter_Type"
+          },
+          "Address": {
+            "$ref": "#/components/schemas/ServiceCenter_Address"
+          }
+        },
+        "xml": {
+          "name": "ServiceCenter"
+        },
+        "description": "Service center container."
+      },
+      "ServiceCenter_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "The type of service center for freight shipment."
+      },
+      "ServiceCenter_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "StateProvinceCode",
+          "City"
+        ],
+        "properties": {
+          "City": {
+            "description": "City name. This is optional for Mail Innovations",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "Activity locationï¿½s state or province code. This is optional for Mail Innovations.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Service center address."
+      },
+      "Shipment_DeliveryDateUnavailable": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Type",
+          "Description"
+        ],
+        "properties": {
+          "Type": {
+            "description": "Type is Scheduled Delivery.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "A description is return to indicate the scheduled delivery date is unavailable",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "DeliveryDateUnavailable"
+        },
+        "description": "DeliveryDate Unavailable container.\nNote: This container is return if SubVersion is 0114 and above."
+      },
+      "DeliveryDateUnavailable_Type": {
+        "description": "Type is Scheduled Delivery.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 19
+      },
+      "DeliveryDateUnavailable_Description": {
+        "description": "A description is return to indicate the scheduled delivery date is unavailable",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 73
+      },
+      "Shipment_DeliveryDetail": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/DeliveryDetail_Type"
+          },
+          "Date": {
+            "description": "The delivery date. Format: YYYYMMDD (military format)",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Format: HHMMSS or HHMM (military format)",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "DeliveryDetail"
+        },
+        "maximum": 1,
+        "description": "Delivery detail information."
+      },
+      "DeliveryDetail_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of delivery detail."
+      },
+      "DeliveryDetail_Date": {
+        "description": "The delivery date. Format: YYYYMMDD (military format)",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "DeliveryDetail_Time": {
+        "description": "Format: HHMMSS or HHMM (military format)",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 6
+      },
+      "Shipment_Volume": {
+        "type": "object",
+        "required": [
+          "UnitOfMeasurement",
+          "Value"
+        ],
+        "properties": {
+          "UnitOfMeasurement": {
+            "$ref": "#/components/schemas/Volume_UnitOfMeasurement"
+          },
+          "Value": {
+            "description": "Value of the total volume of the shipment.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Volume"
+        },
+        "maximum": 1,
+        "description": "Container for the volume of freight Shipment."
+      },
+      "Volume_UnitOfMeasurement": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Package weight unit of measurement code.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the package weight measurement units.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UnitOfMeasurement"
+        },
+        "description": "Unit of measurement container."
+      },
+      "UnitOfMeasurement_Description": {
+        "description": "Description of the package weight measurement units.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Volume_Value": {
+        "description": "Value of the total volume of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_BillToName": {
+        "description": "Name of the person to whom the shipment is billed to.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_NumberOfPackagingUnit": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Value"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/NumberOfPackagingUnit_Type"
+          },
+          "Value": {
+            "description": "The actual number of unit.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "NumberOfPackagingUnit"
+        },
+        "maximum": 1,
+        "description": "Number of packaging unit."
+      },
+      "NumberOfPackagingUnit_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of packaging"
+      },
+      "NumberOfPackagingUnit_Value": {
+        "description": "The actual number of unit.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 15
+      },
+      "Shipment_COD": {
+        "type": "object",
+        "required": [
+          "Amount"
+        ],
+        "properties": {
+          "Amount": {
+            "$ref": "#/components/schemas/COD_Amount"
+          }
+        },
+        "xml": {
+          "name": "COD"
+        },
+        "description": "Container for COD for the shipment.",
+        "maximum": 1
+      },
+      "COD_Amount": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "CurrencyCode",
+          "MonetaryValue"
+        ],
+        "properties": {
+          "CurrencyCode": {
+            "description": "Currency code of COD amount.",
+            "type": "string"
+          },
+          "MonetaryValue": {
+            "description": "Cash On Delivery (COD) Amount that is due.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Amount"
+        },
+        "description": "Container for COD amount information."
+      },
+      "Amount_CurrencyCode": {
+        "description": "Currency code of COD amount.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 3
+      },
+      "Amount_MonetaryValue": {
+        "description": "Cash On Delivery (COD) Amount that is due.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 11,
+        "maxLength": 11
+      },
+      "Shipment_SignedForByName": {
+        "description": "Person that received the shipment. May be the addressee, or another person that signed for the shipment",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_Activity": {
+        "type": "object",
+        "properties": {
+          "ActivityLocation": {
+            "$ref": "#/components/schemas/Activity_ActivityLocation"
+          },
+          "Description": {
+            "description": "Description of the Activity.",
+            "type": "string"
+          },
+          "Date": {
+            "description": "Date of activity. \nMilitary format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of activity. \nMilitary format: HHMMSS or HHMM",
+            "type": "string"
+          },
+          "Trailer": {
+            "description": "Trailer Code for the shipment",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Activity"
+        },
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Time",
+          "Date",
+          "Trailer"
+        ],
+        "description": "Container for shipment activity."
+      },
+      "Activity_ActivityLocation": {
+        "type": "object",
+        "required": [
+          "Description",
+          "Address",
+          "Code"
+        ],
+        "properties": {
+          "Address": {
+            "$ref": "#/components/schemas/ActivityLocation_Address"
+          },
+          "TransportFacility": {
+            "$ref": "#/components/schemas/ActivityLocation_TransportFacility"
+          },
+          "Code": {
+            "description": "Activity location code.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Activity location description.",
+            "type": "string"
+          },
+          "SignedForByName": {
+            "description": "Name of the person who signed.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ActivityLocation"
+        },
+        "maximum": 1,
+        "description": "Activity location container."
+      },
+      "ActivityLocation_City": {
+        "description": "Activity city.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "ActivityLocation_StateProvinceCode": {
+        "description": "Activity State or province code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 5
+      },
+      "ActivityLocation_PostalCode": {
+        "description": "Activity postal code",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 16
+      },
+      "ActivityLocation_CountryCode": {
+        "description": "Activity country code",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Activity_Description": {
+        "description": "Description of the Activity.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 370
+      },
+      "Activity_Date": {
+        "description": "Date of activity. \nMilitary format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Activity_Time": {
+        "description": "Time of activity. \nMilitary format: HHMMSS or HHMM",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 6
+      },
+      "Activity_Trailer": {
+        "description": "Trailer Code for the shipment",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Shipment_OriginPortDetail": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "OriginPort",
+          "EstimatedDeparture"
+        ],
+        "properties": {
+          "OriginPort": {
+            "description": "Origin Port of the shipment.",
+            "type": "string"
+          },
+          "EstimatedDeparture": {
+            "$ref": "#/components/schemas/OriginPortDetail_EstimatedDeparture"
+          }
+        },
+        "xml": {
+          "name": "OriginPortDetail"
+        },
+        "description": "Details of origin port of the shipment."
+      },
+      "OriginPortDetail_OriginPort": {
+        "description": "Origin Port of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "OriginPortDetail_EstimatedDeparture": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Date of the Estimated Departure Time Stamp at the origin port. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of the Estimated Departure Time Stamp at the origin port. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "EstimatedDeparture"
+        },
+        "description": "Container for Estimated Departure Time Stamp at the origin port."
+      },
+      "EstimatedDeparture_Date": {
+        "description": "Date of the Estimated Departure Time Stamp at the origin port. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "EstimatedDeparture_Time": {
+        "description": "Time of the Estimated Departure Time Stamp at the origin port. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Shipment_DestinationPortDetail": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "EstimatedArrival",
+          "DestinationPort"
+        ],
+        "properties": {
+          "DestinationPort": {
+            "description": "Destination port of the shipment.",
+            "type": "string"
+          },
+          "EstimatedArrival": {
+            "$ref": "#/components/schemas/DestinationPortDetail_EstimatedArrival"
+          }
+        },
+        "xml": {
+          "name": "DestinationPortDetail"
+        },
+        "description": "Container for the destination port of the shipment."
+      },
+      "DestinationPortDetail_DestinationPort": {
+        "description": "Destination port of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "DestinationPortDetail_EstimatedArrival": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Container for Estimated Arrival Time Stamp at the Destination Port. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of the Estimated Arrival Time Stamp at the Destination Port. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "EstimatedArrival"
+        },
+        "description": "Container for Estimated Arrival Time Stamp at the Destination Port"
+      },
+      "EstimatedArrival_Date": {
+        "description": "Container for Estimated Arrival Time Stamp at the Destination Port. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "EstimatedArrival_Time": {
+        "description": "Time of the Estimated Arrival Time Stamp at the Destination Port. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Shipment_DescriptionOfGoods": {
+        "description": "Description of Goods in the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "Shipment_CargoReady": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Cargo Ready date for the shipment. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Cargo Ready time for the shipment. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "CargoReady"
+        },
+        "description": "Container for cargo ready date and time."
+      },
+      "CargoReady_Date": {
+        "description": "Cargo Ready date for the shipment. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "CargoReady_Time": {
+        "description": "Cargo Ready time for the shipment. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Shipment_Manifest": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Manifest date for the shipment. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Manifest time for the shipment. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Manifest"
+        },
+        "description": "Container for Manifest date and time."
+      },
+      "Manifest_Date": {
+        "description": "Manifest date for the shipment. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Manifest_Time": {
+        "description": "Manifest time for the shipment. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Shipment_CarrierActivityInformation": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Status",
+          "CarrierId",
+          "Description",
+          "Departure",
+          "OriginPort",
+          "Arrival",
+          "DestinationPort"
+        ],
+        "properties": {
+          "CarrierId": {
+            "description": "Id number of the carrier",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the carrier e.g: Flight or Vessel.",
+            "type": "string"
+          },
+          "Status": {
+            "description": "Status of the carrier",
+            "type": "string"
+          },
+          "Arrival": {
+            "$ref": "#/components/schemas/CarrierActivityInformation_Arrival"
+          },
+          "Departure": {
+            "$ref": "#/components/schemas/CarrierActivityInformation_Departure"
+          },
+          "OriginPort": {
+            "description": "Origin Port of the Carrierï¿½s leg of the journey",
+            "type": "string"
+          },
+          "DestinationPort": {
+            "description": "Destination Port of the Carrierï¿½s leg of the journey",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "CarrierActivityInformation"
+        },
+        "description": "Container for carrier activity information for the shipment."
+      },
+      "CarrierActivityInformation_CarrierId": {
+        "description": "Id number of the carrier",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "CarrierActivityInformation_Description": {
+        "description": "Description of the carrier e.g: Flight or Vessel.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "CarrierActivityInformation_Status": {
+        "description": "Status of the carrier",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "CarrierActivityInformation_Arrival": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Date of the arrival time stamp. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of the arrival time stamp. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Arrival"
+        },
+        "description": "Container for arrival time stamp information of the carrier"
+      },
+      "Arrival_Date": {
+        "description": "Date of the arrival time stamp. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Arrival_Time": {
+        "description": "Time of the arrival time stamp. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "CarrierActivityInformation_Departure": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Date of the arrival time stamp. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of the arrival time stamp. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Departure"
+        },
+        "description": "Container for Departure time stamp information of the carrier"
+      },
+      "Departure_Date": {
+        "description": "Date of the arrival time stamp. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Departure_Time": {
+        "description": "Time of the arrival time stamp. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "CarrierActivityInformation_OriginPort": {
+        "description": "Origin Port of the Carrierï¿½s leg of the journey",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "CarrierActivityInformation_DestinationPort": {
+        "description": "Destination Port of the Carrierï¿½s leg of the journey",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Shipment_Document": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Format",
+          "Content"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/Document_Type"
+          },
+          "Content": {
+            "description": "Base64 Encoded PODLetter in html format or the customer's name for Electronic Delivery Notice.",
+            "type": "string"
+          },
+          "Format": {
+            "$ref": "#/components/schemas/Document_Format"
+          }
+        },
+        "xml": {
+          "name": "Document"
+        },
+        "maximum": 1,
+        "description": "Container for the various documents returned to the customer.\n\nReturned if Signature Tracking is enabled and authorized.\nReturned if any of the documents i.e., Signature, Free Astrays, Delivery Receipt or POD is requested using the request option. \nNot returned for documents like SCS Freight, UPS Freight TL/LTL.\n\nRefer to the Request Option Matrix in the Appendix."
+      },
+      "Document_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of Document."
+      },
+      "Document_Content": {
+        "description": "Base64 Encoded PODLetter in html format or the customer's name for Electronic Delivery Notice.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Document_Format": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "Code": {
+            "description": "Format code of the content.\n03 - HTML\n04 - Plain text",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of Format code above. \nPlain text format will only apply if the code above is 04.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Format"
+        },
+        "required": [
+          "Description"
+        ],
+        "description": "Container for document format."
+      },
+      "Format_Code": {
+        "description": "Format code of the content.\n03 - HTML\n04 - Plain text",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 3
+      },
+      "Format_Description": {
+        "description": "Description of Format code above. \nPlain text format will only apply if the code above is 04.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Shipment_FileNumber": {
+        "description": "File Number of the shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "Shipment_Appointment": {
+        "type": "object",
+        "required": [
+          "Requested",
+          "Made",
+          "EndTime",
+          "BeginTime"
+        ],
+        "properties": {
+          "Made": {
+            "$ref": "#/components/schemas/Appointment_Made"
+          },
+          "Requested": {
+            "$ref": "#/components/schemas/Appointment_Requested"
+          },
+          "BeginTime": {
+            "description": "Appointment Begin Time. Format: HHMMSS",
+            "type": "string"
+          },
+          "EndTime": {
+            "description": "Appointment End Time. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Appointment"
+        },
+        "maximum": 1,
+        "description": "Appointment Details."
+      },
+      "Appointment_Made": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Appointment Made Date. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Appointment Made Time. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Made"
+        },
+        "description": "Container for Appointment Made Date and Time."
+      },
+      "Made_Date": {
+        "description": "Appointment Made Date. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Made_Time": {
+        "description": "Appointment Made Time. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Appointment_Requested": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Appointment Requested Date. Format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Appointment Requested Time. Format: HHMMSS",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Requested"
+        },
+        "description": "Container for Appointment Requested Date and Time"
+      },
+      "Requested_Date": {
+        "description": "Appointment Requested Date. Format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Requested_Time": {
+        "description": "Appointment Requested Time. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Appointment_BeginTime": {
+        "description": "Appointment Begin Time. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Appointment_EndTime": {
+        "description": "Appointment End Time. Format: HHMMSS",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Shipment_Package": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "TrackingNumber",
+          "DeliveryIndicator",
+          "DeliveryDate",
+          "Redirect",
+          "DeliveryDetail"
+        ],
+        "properties": {
+          "TrackingNumber": {
+            "description": "TrackingNumber of the package.",
+            "type": "string"
+          },
+          "DeliveryIndicator": {
+            "description": "Returns \"Y\" if packagehas been delivered, and \"N\" if it has not.",
+            "type": "string"
+          },
+          "DeliveryDate": {
+            "description": "The delivery date of the package. Will be returned if delivery date indicator is Y .ï¿½ï¿½The format is: YYYYMMDD",
+            "type": "string"
+          },
+          "EstimatedDeliveryWindow": {
+            "$ref": "#/components/schemas/Package_EstimatedDeliveryWindow"
+          },
+          "SRSizeCode": {
+            "description": "Simple Rate package size.\nValid Values:\nXS\nS\nM\nL\nXL \nNote: This container is return if SubVersion is 1909 or above",
+            "type": "string"
+          },
+          "Redirect": {
+            "$ref": "#/components/schemas/Package_Redirect"
+          },
+          "DeliveryDetail": {
+            "$ref": "#/components/schemas/Package_DeliveryDetail"
+          },
+          "PackageAddress": {
+            "$ref": "#/components/schemas/Package_PackageAddress"
+          },
+          "PackageServiceOption": {
+            "$ref": "#/components/schemas/Package_PackageServiceOption"
+          },
+          "COD": {
+            "$ref": "#/components/schemas/Package_COD"
+          },
+          "Activity": {
+            "$ref": "#/components/schemas/Package_Activity"
+          },
+          "Message": {
+            "$ref": "#/components/schemas/Package_Message"
+          },
+          "PackageWeight": {
+            "$ref": "#/components/schemas/Package_PackageWeight"
+          },
+          "ReferenceNumber": {
+            "$ref": "#/components/schemas/Package_ReferenceNumber"
+          },
+          "AlternateTrackingNumber": {
+            "description": "Alternate tracking number returned for this package.",
+            "type": "string"
+          },
+          "AlternateTrackingInfo": {
+            "$ref": "#/components/schemas/Package_AlternateTrackingInfo"
+          },
+          "DimensionalWeightScanIndicator": {
+            "description": "Present if Dimensional Weight Scan is used to recalculate schedule delivery date.\nNote: This Indicator is return if SubVersion is 1407 and above.",
+            "type": "string"
+          },
+          "PreauthorizedReturnInformation": {
+            "$ref": "#/components/schemas/Package_PreauthorizedReturnInformation"
+          }
+        },
+        "xml": {
+          "name": "Package"
+        },
+        "description": "Container for package information."
+      },
+      "Package_TrackingNumber": {
+        "description": "TrackingNumber of the package.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 34
+      },
+      "Package_DeliveryIndicator": {
+        "description": "Returns \"Y\" if packagehas been delivered, and \"N\" if it has not.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "Package_DeliveryDate": {
+        "description": "The delivery date of the package. Will be returned if delivery date indicator is Y .ï¿½ï¿½The format is: YYYYMMDD",
+        "maximum": 8,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Package_EstimatedDeliveryWindow": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "EndTime",
+          "StartTime",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Estimated delivery date of the package\nFormat: YYYY-MM-DD",
+            "type": "string"
+          },
+          "StartTime": {
+            "description": "Estimated delivery Start Time.\nFormat: hh:mm:ss",
+            "type": "string"
+          },
+          "EndTime": {
+            "description": "Estimated delivery End Time.\nFormat: hh:mm:ss",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "EstimatedDeliveryWindow"
+        },
+        "description": "Container for Estimated Delivery Window. Will be available only for authorized users.\nNote: This container is returned if SubVersion is 1907 and above."
+      },
+      "EstimatedDeliveryWindow_Date": {
+        "description": "Estimated delivery date of the package\nFormat: YYYY-MM-DD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "EstimatedDeliveryWindow_StartTime": {
+        "description": "Estimated delivery Start Time.\nFormat: hh:mm:ss",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "EstimatedDeliveryWindow_EndTime": {
+        "description": "Estimated delivery End Time.\nFormat: hh:mm:ss",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 6
+      },
+      "Package_SRSizeCode": {
+        "description": "Simple Rate package size.\nValid Values:\nXS\nS\nM\nL\nXL \nNote: This container is return if SubVersion is 1909 or above",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2
+      },
+      "Package_Redirect": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "CompanyName",
+          "LocationID",
+          "PickupDate"
+        ],
+        "properties": {
+          "CompanyName": {
+            "description": "UPS Access Point Business Name.",
+            "type": "string"
+          },
+          "LocationID": {
+            "description": "UPS Access Point Location ID.",
+            "type": "string"
+          },
+          "PickupDate": {
+            "description": "The last date the package is held for pickup at a UPS Access Point. Date of the arrival time stamp. \nFormat: YYYYMMDD",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Redirect"
+        },
+        "description": "Container tag for Redirect package to UPS Access Point\nNote: This container is return if SubVersion is 0114 or above"
+      },
+      "Redirect_CompanyName": {
+        "description": "UPS Access Point Business Name.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "Redirect_LocationID": {
+        "description": "UPS Access Point Location ID.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 9
+      },
+      "Redirect_PickupDate": {
+        "description": "The last date the package is held for pickup at a UPS Access Point. Date of the arrival time stamp. \nFormat: YYYYMMDD",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Package_DeliveryDetail": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/DeliveryDetail_Type"
+          },
+          "Date": {
+            "description": "The delivery date. Format: YYYYMMDD (military format)",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Format: HHMMSS or HHMM (military format)",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "DeliveryDetail"
+        },
+        "maximum": 1,
+        "description": "Delivery Detail container."
+      },
+      "Package_PackageAddress": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Address"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/PackageAddress_Type"
+          },
+          "Address": {
+            "$ref": "#/components/schemas/PackageAddress_Address"
+          }
+        },
+        "xml": {
+          "name": "PackageAddress"
+        },
+        "description": "Package address container."
+      },
+      "PackageAddress_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of the package address"
+      },
+      "PackageAddress_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "AddressLine",
+          "StateProvinceCode",
+          "PostalCode",
+          "City",
+          "CountryCode"
+        ],
+        "properties": {
+          "AddressLine": {
+            "description": "Activity locationï¿½s street address including name and number (when applicable) and/or building floor, room, suite, and PO Box number. Up to three AddressLine can be returned.",
+            "type": "string"
+          },
+          "City": {
+            "description": "City name. This is optional for Mail Innovations",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "Activity locationï¿½s state or province code. This is optional for Mail Innovations.",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Activity locations postal code.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Activity locations country or territory code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Address Container."
+      },
+      "Package_PackageServiceOption": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Value"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/PackageServiceOption_Type"
+          },
+          "Value": {
+            "description": "PackageServiceOption Type Code values:\n04 = R - Commercial Invoice Removal Requested or S - Commercial Invoice Removal Success. \n06 = USPS Package Identification number that is returned for UPS Returns Flexible Access Shipments.\n07 = The specific product description. \n09 = R ï¿½ Return Exchange Requested or S - Exchange Completed.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "PackageServiceOption"
+        },
+        "maximum": 1,
+        "description": "Container for package service option."
+      },
+      "PackageServiceOption_Type": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code of Document Type.\n04 - POD Letter\n05 - Electronic Delivery Letter\n**Returned if customer has authorized release of the package with the signature.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Type"
+        },
+        "description": "Type of package service option"
+      },
+      "PackageServiceOption_Value": {
+        "description": "PackageServiceOption Type Code values:\n04 = R - Commercial Invoice Removal Requested or S - Commercial Invoice Removal Success. \n06 = USPS Package Identification number that is returned for UPS Returns Flexible Access Shipments.\n07 = The specific product description. \n09 = R ï¿½ Return Exchange Requested or S - Exchange Completed.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "Package_COD": {
+        "type": "object",
+        "required": [
+          "Status",
+          "Amount",
+          "ControlNumber"
+        ],
+        "properties": {
+          "Amount": {
+            "$ref": "#/components/schemas/COD_Amount"
+          },
+          "Status": {
+            "$ref": "#/components/schemas/COD_Status"
+          },
+          "ControlNumber": {
+            "description": "Barcode COD Control Number or UPS imprinted Control Number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "COD"
+        },
+        "maximum": 1,
+        "description": "COD container at package level. \nRefer to the Request Option Matrix in the Appendix."
+      },
+      "COD_Status": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "The status code.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "The descriptions for Corresponding code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        },
+        "description": "Container for COD status."
+      },
+      "Status_Code": {
+        "description": "The status code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Status_Description": {
+        "description": "The descriptions for Corresponding code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "COD_ControlNumber": {
+        "description": "Barcode COD Control Number or UPS imprinted Control Number.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "Package_Activity": {
+        "type": "object",
+        "required": [
+          "Time",
+          "AlternateTrackingInfo",
+          "Date"
+        ],
+        "properties": {
+          "AlternateTrackingInfo": {
+            "$ref": "#/components/schemas/Activity_AlternateTrackingInfo"
+          },
+          "ActivityLocation": {
+            "$ref": "#/components/schemas/Activity_ActivityLocation"
+          },
+          "Status": {
+            "$ref": "#/components/schemas/Activity_Status"
+          },
+          "Date": {
+            "description": "Date of activity. \nMilitary format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of activity. \nMilitary format: HHMMSS or HHMM",
+            "type": "string"
+          },
+          "DeliveryDateFromManifestIndicator": {
+            "description": "The presence of this indicator means manifest information is available and used to calculate the expected delivery date. \nThis will be available when Track sub version >=1507",
+            "type": "string"
+          },
+          "NextScheduleActivity": {
+            "$ref": "#/components/schemas/Activity_NextScheduleActivity"
+          },
+          "GMTDate": {
+            "description": "Date of activity. Format: YYYY-MM-DD\nNote: This container is return if SubVersion is 1907 and above.",
+            "type": "string"
+          },
+          "GMTTime": {
+            "description": "Time of activity. Format: hh:mm:ss or hh:mm\nNote: This container is return if SubVersion is 1907 and above.",
+            "type": "string"
+          },
+          "GMTOffset": {
+            "description": "GMT Offset of activity for the time zone. Format: (+/-)hh:mm\nNote: This container is return if SubVersion is 1907 and above.",
+            "type": "string"
+          },
+          "Document": {
+            "$ref": "#/components/schemas/Activity_Document"
+          },
+          "AdditionalAttribute": {
+            "$ref": "#/components/schemas/Activity_AdditionalAttribute"
+          }
+        },
+        "xml": {
+          "name": "Activity"
+        },
+        "maximum": 1,
+        "description": "Package activity container"
+      },
+      "Activity_AlternateTrackingInfo": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Type",
+          "Value"
+        ],
+        "properties": {
+          "Type": {
+            "description": "Package Alternate Tracking info type.",
+            "type": "string"
+          },
+          "Value": {
+            "description": "This contains value of the alternate tracking number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "AlternateTrackingInfo"
+        },
+        "description": "Alternate tracking number."
+      },
+      "AlternateTrackingInfo_Type": {
+        "description": "Package Alternate Tracking info type.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "AlternateTrackingInfo_Value": {
+        "description": "This contains value of the alternate tracking number.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 34
+      },
+      "ActivityLocation_Address": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "AddressLine",
+          "StateProvinceCode",
+          "PostalCode",
+          "City",
+          "CountryCode"
+        ],
+        "properties": {
+          "AddressLine": {
+            "description": "Activity locationï¿½s street address including name and number (when applicable) and/or building floor, room, suite, and PO Box number. Up to three AddressLine can be returned.",
+            "type": "string"
+          },
+          "City": {
+            "description": "City name. This is optional for Mail Innovations",
+            "type": "string"
+          },
+          "StateProvinceCode": {
+            "description": "Activity locationï¿½s state or province code. This is optional for Mail Innovations.",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Activity locations postal code.",
+            "type": "string"
+          },
+          "CountryCode": {
+            "description": "Activity locations country or territory code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Address"
+        },
+        "description": "Address of Activity location."
+      },
+      "ActivityLocation_TransportFacility": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Type",
+          "Code"
+        ],
+        "properties": {
+          "Type": {
+            "description": "Type of facility for Mail Innovations shipment.",
+            "type": "string"
+          },
+          "Code": {
+            "description": "This code is associated with the Mail Innovations facility.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "TransportFacility"
+        },
+        "description": "This container is for storing the type and code of the transport facility associated with the Mail Innovations activity."
+      },
+      "TransportFacility_Type": {
+        "description": "Type of facility for Mail Innovations shipment.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "TransportFacility_Code": {
+        "description": "This code is associated with the Mail Innovations facility.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 5
+      },
+      "ActivityLocation_Code": {
+        "description": "Activity location code.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "ActivityLocation_Description": {
+        "description": "Activity location description.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 35
+      },
+      "ActivityLocation_SignedForByName": {
+        "description": "Name of the person who signed.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "Activity_Status": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Type",
+          "Code"
+        ],
+        "properties": {
+          "Type": {
+            "description": "Type of activity status:\nI = In Transit\nD = Delivered\nX = Exception\nP = Pickup\nM = Manifest Pickup.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "The descriptions for Corresponding code.",
+            "type": "string"
+          },
+          "Code": {
+            "description": "The status code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        },
+        "description": "Container for activity status."
+      },
+      "Status_Type": {
+        "description": "Type of activity status:\nI = In Transit\nD = Delivered\nX = Exception\nP = Pickup\nM = Manifest Pickup.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 3
+      },
+      "Activity_DeliveryDateFromManifestIndicator": {
+        "description": "The presence of this indicator means manifest information is available and used to calculate the expected delivery date. \nThis will be available when Track sub version >=1507",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Activity_NextScheduleActivity": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Time",
+          "Date"
+        ],
+        "properties": {
+          "Date": {
+            "description": "Date of activity. \nMilitary format: YYYYMMDD",
+            "type": "string"
+          },
+          "Time": {
+            "description": "Time of activity.\nMilitary format: HHMMSS or HHMM",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "NextScheduleActivity"
+        },
+        "description": "Container tag to describe when the next schedule activity will occur.\nNote: This container is return if SubVersion is 0114 and above"
+      },
+      "NextScheduleActivity_Date": {
+        "description": "Date of activity. \nMilitary format: YYYYMMDD",
+        "maximum": 1,
+        "type": "string"
+      },
+      "NextScheduleActivity_Time": {
+        "description": "Time of activity.\nMilitary format: HHMMSS or HHMM",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Activity_GMTDate": {
+        "description": "Date of activity. Format: YYYY-MM-DD\nNote: This container is return if SubVersion is 1907 and above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "Activity_GMTTime": {
+        "description": "Time of activity. Format: hh:mm:ss or hh:mm\nNote: This container is return if SubVersion is 1907 and above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 4
+      },
+      "Activity_GMTOffset": {
+        "description": "GMT Offset of activity for the time zone. Format: (+/-)hh:mm\nNote: This container is return if SubVersion is 1907 and above.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Activity_Document": {
+        "type": "object",
+        "required": [
+          "Type",
+          "Format",
+          "Content"
+        ],
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/Document_Type"
+          },
+          "Content": {
+            "description": "Base64 Encoded PODLetter in html format or the customer's name for Electronic Delivery Notice.",
+            "type": "string"
+          },
+          "Format": {
+            "$ref": "#/components/schemas/Document_Format"
+          }
+        },
+        "xml": {
+          "name": "Document"
+        },
+        "maximum": 1,
+        "description": "Documents at package activity level.\nExample: PODLetter\n\nRefer to the Request Option Matrix in the Appendix."
+      },
+      "Activity_AdditionalAttribute": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Value",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "",
+            "type": "string"
+          },
+          "Description": {
+            "description": "",
+            "type": "string"
+          },
+          "Value": {
+            "description": "",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "AdditionalAttribute"
+        },
+        "description": ""
+      },
+      "AdditionalAttribute_Code": {
+        "description": "",
+        "maximum": 1,
+        "type": "string"
+      },
+      "AdditionalAttribute_Description": {
+        "description": "",
+        "maximum": 1,
+        "type": "string"
+      },
+      "AdditionalAttribute_Value": {
+        "description": "",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Package_Message": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Code describing what type of message the customer can receive.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description for the code above.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Message"
+        },
+        "description": "Container for additional delivery information."
+      },
+      "Message_Code": {
+        "description": "Code describing what type of message the customer can receive.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2
+      },
+      "Message_Description": {
+        "description": "Description for the code above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "Package_PackageWeight": {
+        "type": "object",
+        "required": [
+          "UnitOfMeasurement",
+          "Weight"
+        ],
+        "properties": {
+          "UnitOfMeasurement": {
+            "$ref": "#/components/schemas/PackageWeight_UnitOfMeasurement"
+          },
+          "Weight": {
+            "description": "Packages weight. Set to 0 for package type of letters.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "PackageWeight"
+        },
+        "maximum": 1,
+        "description": "Container for package weight."
+      },
+      "PackageWeight_UnitOfMeasurement": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Package weight unit of measurement code.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the package weight measurement units.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UnitOfMeasurement"
+        },
+        "description": "Container for package weight unit of measurement."
+      },
+      "PackageWeight_Weight": {
+        "description": "Packages weight. Set to 0 for package type of letters.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 7,
+        "maxLength": 7
+      },
+      "Package_ReferenceNumber": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Value",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Package Reference number type code. The code specifies the Reference name.",
+            "type": "string"
+          },
+          "Value": {
+            "description": "Customer supplied reference number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "ReferenceNumber"
+        },
+        "description": "Container for package reference number. Up to 20 reference numbers can be returned."
+      },
+      "Package_AlternateTrackingNumber": {
+        "description": "Alternate tracking number returned for this package.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 21
+      },
+      "Package_AlternateTrackingInfo": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Type",
+          "Value"
+        ],
+        "properties": {
+          "Type": {
+            "description": "Package Alternate Tracking info type.",
+            "type": "string"
+          },
+          "Value": {
+            "description": "This contains value of the alternate tracking number.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "AlternateTrackingInfo"
+        },
+        "description": "Alternate tracking number returned for this package."
+      },
+      "Package_DimensionalWeightScanIndicator": {
+        "description": "Present if Dimensional Weight Scan is used to recalculate schedule delivery date.\nNote: This Indicator is return if SubVersion is 1407 and above.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "Package_PreauthorizedReturnInformation": {
+        "type": "object",
+        "maximum": 1,
+        "properties": {
+          "ReturnEligibilityIndicator": {
+            "description": "Contains Eligibility of the original package to initiate the ï¿½return processï¿½ via the given url.\nValid values are :\nY - Eligible\nN - Not Eligible",
+            "type": "string"
+          },
+          "ReturnExpirationDate": {
+            "description": "Contains the last date at which the original package can request a ï¿½return processï¿½ via the given url.",
+            "type": "string"
+          },
+          "ReturnRequestURL": {
+            "description": "Contains the url that can be used to initiate the ï¿½return processï¿½.",
+            "type": "string"
+          },
+          "OriginalTrackingNumber": {
+            "description": "Contains the tracking number of the original package.",
+            "type": "string"
+          },
+          "ReturnTrackingNumber": {
+            "description": "Contains the tracking number of the return package.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "PreauthorizedReturnInformation"
+        },
+        "description": "Container for the Pre-authorized For Return Information. If this information is requested and available, then this container will be populated for small packages and Mail Innovation packages."
+      },
+      "PreauthorizedReturnInformation_ReturnEligibilityIndicator": {
+        "description": "Contains Eligibility of the original package to initiate the ï¿½return processï¿½ via the given url.\nValid values are :\nY - Eligible\nN - Not Eligible",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1
+      },
+      "PreauthorizedReturnInformation_ReturnExpirationDate": {
+        "description": "Contains the last date at which the original package can request a ï¿½return processï¿½ via the given url.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 8
+      },
+      "PreauthorizedReturnInformation_ReturnRequestURL": {
+        "description": "Contains the url that can be used to initiate the ï¿½return processï¿½.",
+        "maximum": 1,
+        "type": "string"
+      },
+      "PreauthorizedReturnInformation_OriginalTrackingNumber": {
+        "description": "Contains the tracking number of the original package.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 21
+      },
+      "PreauthorizedReturnInformation_ReturnTrackingNumber": {
+        "description": "Contains the tracking number of the return package.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 21
+      },
+      "TrackResponse_Disclaimer": {
+        "description": "Any necessary or special notice.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      },
+      "Shipment_QuantumViewNotification": {
+        "type": "object",
+        "required": [
+          "Status"
+        ],
+        "properties": {
+          "Status": {
+            "$ref": "#/components/schemas/QuantumViewNotification_Status"
+          },
+          "FailureDetail": {
+            "$ref": "#/components/schemas/QuantumViewNotification_FailureDetail"
+          }
+        },
+        "xml": {
+          "name": "QuantumViewNotification"
+        },
+        "description": "Container returned when quantum view notification is requested.",
+        "maximum": 1
+      },
+      "QuantumViewNotification_Status": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "The status code.",
+            "type": "string"
+          },
+          "Description": {
+            "description": "The descriptions for Corresponding code.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        },
+        "description": "Container returning the quantum view notification status information."
+      },
+      "QuantumViewNotification_FailureDetail": {
+        "type": "object",
+        "maximum": 1,
+        "required": [
+          "Description",
+          "Code"
+        ],
+        "properties": {
+          "Code": {
+            "description": "Distinct code for the error returned.   \nPossible error codes and descriptions are: \n- QVN1001 The provided failure email address is not in the proper format. \n- QVN1002 The failure email address exceeds the maximum character limit.\n- QVN1005 The language code must be two-character long\n- QVN1007 The language dialect must be two-character long  \n- QVN1003 The provided Recipient Email Address is not in the proper format.\n- QVN1004 The Recipient Email Address exceeds the maximum character limit.\n- QVN1005 The language code must be two-character long. \n- QVN1007 The language dialect must be two-character long.  \n- QVN1008 The language code and language dialect pair is invalid. \n- QVN1009 The package is delivered QVN1010 Unknown Error",
+            "type": "string"
+          },
+          "Description": {
+            "description": "Description of the error, see above.",
+            "type": "string"
+          },
+          "TrackingNumber": {
+            "description": "The tracking number of the package to which this failure detail applies to.",
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "FailureDetail"
+        },
+        "description": "Details of the errors occurred while requesting QV notification."
+      },
+      "FailureDetail_Code": {
+        "description": "Distinct code for the error returned.   \nPossible error codes and descriptions are: \n- QVN1001 The provided failure email address is not in the proper format. \n- QVN1002 The failure email address exceeds the maximum character limit.\n- QVN1005 The language code must be two-character long\n- QVN1007 The language dialect must be two-character long  \n- QVN1003 The provided Recipient Email Address is not in the proper format.\n- QVN1004 The Recipient Email Address exceeds the maximum character limit.\n- QVN1005 The language code must be two-character long. \n- QVN1007 The language dialect must be two-character long.  \n- QVN1008 The language code and language dialect pair is invalid. \n- QVN1009 The package is delivered QVN1010 Unknown Error",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 7,
+        "maxLength": 7
+      },
+      "FailureDetail_Description": {
+        "description": "Description of the error, see above.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "FailureDetail_TrackingNumber": {
+        "description": "The tracking number of the package to which this failure detail applies to.",
+        "maximum": 1,
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 21
+      }
+    }
+  }
+}

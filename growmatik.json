@@ -1,0 +1,1397 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Growmatik API Reference",
+    "description": "</br><h1>Overview</h1>This document aims to provide all of the information needed\n            for developers to use Growmatik RESTful API.</br>\n            The Growmatik API offers several options for integrations with other platforms.\n            Version 1 of the Growmatik API is structured around REST principles.\n            It supports GET, POST requests.</br></br>\n            Learn more about API creation by checking the following knowledge base article:\n           </br> <code><b>https://growmatik.ai/help/api/</code></b>\n           </br></br>\n            All methods referenced in the documentation have the following base URL: </br>\n            <mark> <b>https://<span></span>api.growmatik.ai/public/v1/</b></mark></br>\n           </br><h1>Authorization</h1>\n           In order to use the Growmatik API we provide two keys which are:\n           <ul><li>apiKey</li><li>apiSecret</li></ul>\n           You need apiKey to access all the endpoints and for POST requests you need apiSecret in addition to apiKey.\n           You can make authorized requests to our API by passing your apiKey in the request header.\n           </br> </br> <img src='https://developers.growmatik.ai/img/apiAuth.png'> </br> </br> <b>Note:</b>\n            Remember to keep your apiSecret and apiKey secret.\n           Do not share it and take care not to expose it publicly in client-side JavaScript.</br></br>\n           <h1>Response Format</h1>\n            The API uses standard HTTP status codes to indicate the success or failure of the API call.\n            The body of the response will be JSON in the following format:\n            <p>{\n            </br>'success' : 'a boolean to show the status of the request',\n            </br>'message' : 'relevant message',\n            </br>'code' : 'HTTP status code'\n            </br>}</p>\n            </br>",
+    "termsOfService": "https://growmatik.ai/terms-of-use/",
+    "contact": {
+      "email": "info@growmatik.ai",
+      "name": "growmatik"
+    },
+    "version": "0.9.0",
+    "x-logo": {
+      "url": "https://api.growmatik.ai/logo.png",
+      "altText": "Marketing Automation & Personalization"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.growmatik.ai/public/v1",
+      "description": "Growmatik API Server"
+    }
+  ],
+  "paths": {
+    "/pages": {
+      "get": {
+        "tags": [
+          "Contents"
+        ],
+        "summary": "List Contents",
+        "description": "Retrieve all pages, posts of site with pagination",
+        "operationId": "getPages",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of returned contacts in each page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contents"
+        ],
+        "summary": "Add/Update Contents",
+        "description": "Add or Update pages, posts of site.\n            Multiple page/post can be provided as nested json in pages.\n            The message field in the response returns the number of additions / updates.",
+        "operationId": "addPages",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass pages info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "pages",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1122"
+                        },
+                        "title": {
+                          "type": "integer",
+                          "example": "New content"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "/new"
+                        },
+                        "content": {
+                          "type": "string",
+                          "example": "your text"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "img.jpg"
+                          }
+                        },
+                        "categories": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3
+                          }
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/pages/category": {
+      "get": {
+        "tags": [
+          "Contents"
+        ],
+        "summary": "List Content Categories",
+        "description": "Retrieve all post categories",
+        "operationId": "getPageCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contents"
+        ],
+        "summary": "Add Content Categories",
+        "description": "Add Content Categories\n            Multiple categories can be added as nested json in category.\n            The message field in response returns the number of additions / fails.",
+        "operationId": "addPageCategories",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass categories info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "category",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "category": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "3"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "pagecat1"
+                        },
+                        "slug": {
+                          "type": "string",
+                          "example": "The page cat"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List Products",
+        "description": "List all products with pagination",
+        "operationId": "getProducts",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of returned products in each page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add/Update Products",
+        "description": "Add or update products in Growmatik\n            Multiple products can be added as nested json in products.\n            The message field in response returns the number of additions / fails.",
+        "operationId": "addProducts",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass product info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "products",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 112
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "SampleProduct"
+                        },
+                        "sku": {
+                          "type": "string",
+                          "example": "342"
+                        },
+                        "content": {
+                          "type": "string",
+                          "example": "sample text"
+                        },
+                        "excerpt": {
+                          "type": "string",
+                          "example": "a text"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "/SampleProduct"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "/SampleProduct.png"
+                          }
+                        },
+                        "price": {
+                          "type": "integer",
+                          "example": 3000
+                        },
+                        "salePrice": {
+                          "type": "integer",
+                          "example": 3500
+                        },
+                        "publishAt": {
+                          "type": "string",
+                          "example": "2020-01-21 06:05:06"
+                        },
+                        "categories": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3
+                          }
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/products/category": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List Product Categories",
+        "description": "List all product categories with pagination",
+        "operationId": "getProductCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add Product Categories",
+        "description": "Add product category.\n            Multiple categories can be added as nested json in category.\n            The message field in response returns the number of additions / fails.",
+        "operationId": "addProductCategories",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass categories info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "category",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "category": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "33"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "product cat 1"
+                        },
+                        "slug": {
+                          "type": "string",
+                          "example": "productcat1"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "List Orders ",
+        "description": "List all purchased orders with pagination",
+        "operationId": "getOrders",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of returned order_item in each page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Add Order Item",
+        "description": "Add order items.\n            Multiple items can be added as nested json in orderItems.\n            The message field in response returns the number of additions / fails.",
+        "operationId": "addOrders",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass product info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "products",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "orderItems": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "purchaseAt": {
+                          "type": "string",
+                          "example": "2020-01-21 06:05:06"
+                        },
+                        "productId": {
+                          "type": "integer",
+                          "example": 2
+                        },
+                        "orderId": {
+                          "type": "integer",
+                          "example": 20
+                        },
+                        "quantity": {
+                          "type": "string",
+                          "example": "3"
+                        },
+                        "paymentMethod": {
+                          "type": "string",
+                          "example": "cod"
+                        },
+                        "orderTotal": {
+                          "type": "integer",
+                          "example": 3000
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "IRR"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/site": {
+      "get": {
+        "tags": [
+          "Site"
+        ],
+        "summary": "Get Site Info ",
+        "description": "Show basic information of site",
+        "operationId": "getSiteInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/site/tags": {
+      "get": {
+        "tags": [
+          "Site"
+        ],
+        "summary": "List Tags",
+        "description": "List of all defined tags for site in the growmatik.",
+        "operationId": "getTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/site/attributes": {
+      "get": {
+        "tags": [
+          "Site"
+        ],
+        "summary": "List Custom Attributes.",
+        "description": "List of all defined custom attributes for site in the growmatik.",
+        "operationId": "getCustomAttributes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "List Contacts",
+        "description": "List all contacts (site users) with pagination",
+        "operationId": "getContacts",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of returned contacts in each page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Add/Update Contacts",
+        "description": "Add or update Contacts (site user).\n    Multiple contacts can be added/ updated as nested json in users.\n    The message field in response returns the number of updated users / added users / fails.",
+        "operationId": "addContacts",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass users info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "users",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "users": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "a@gmail.com"
+                        },
+                        "userId": {
+                          "type": "integer",
+                          "example": 123
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "user11"
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "example": "Do"
+                        },
+                        "birthdate": {
+                          "type": "string",
+                          "example": "2000-01-21"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "513 John Calvin Drive"
+                        },
+                        "phoneNumber": {
+                          "type": "string",
+                          "example": "56124376"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "Germany"
+                        },
+                        "region": {
+                          "type": "string",
+                          "example": "Hamburg"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "Hamburg"
+                        },
+                        "device": {
+                          "type": "string",
+                          "example": "Mobile"
+                        },
+                        "browser": {
+                          "type": "string",
+                          "example": "Chrome"
+                        },
+                        "euConsent": {
+                          "type": "string",
+                          "example": "granted"
+                        },
+                        "marketingEmailConsent": {
+                          "type": "string",
+                          "example": "denied"
+                        },
+                        "registerAt": {
+                          "type": "string",
+                          "example": "2020-09-10"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/email": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Contact By Email",
+        "description": "Return specific contact(site user) info by email.",
+        "operationId": "getContactByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email of contact",
+            "example": "test@gmail.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/id": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Contact By ID",
+        "description": "Return specific contact(site user) info by id.",
+        "operationId": "getContactById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The user's id",
+            "example": "2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Add/Update a Contact",
+        "description": "Add or Update Contact (a site user).\n    The data field in response returns userId, gmId, userEmail of updated/added user",
+        "operationId": "addContact",
+        "parameters": [],
+        "requestBody": {
+          "description": "User info in a json object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "user",
+                  "apiSecret"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "user": {
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "a@gmail.com"
+                      },
+                      "userId": {
+                        "type": "integer",
+                        "example": 123
+                      },
+                      "userName": {
+                        "type": "string",
+                        "example": "user11"
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "example": "John"
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "example": "Do"
+                      },
+                      "birthdate": {
+                        "type": "string",
+                        "example": "2000-01-21"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "513 John Calvin Drive"
+                      },
+                      "phoneNumber": {
+                        "type": "string",
+                        "example": "56124376"
+                      },
+                      "country": {
+                        "type": "string",
+                        "example": "Germany"
+                      },
+                      "region": {
+                        "type": "string",
+                        "example": "Hamburg"
+                      },
+                      "city": {
+                        "type": "string",
+                        "example": "Hamburg"
+                      },
+                      "device": {
+                        "type": "string",
+                        "example": "Mobile"
+                      },
+                      "browser": {
+                        "type": "string",
+                        "example": "Chrome"
+                      },
+                      "euConsent": {
+                        "type": "string",
+                        "example": "granted"
+                      },
+                      "marketingEmailConsent": {
+                        "type": "string",
+                        "example": "denied"
+                      },
+                      "registerAt": {
+                        "type": "string",
+                        "example": "2020-09-10"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/attribute/email": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Custom Attributes By email ",
+        "description": "Return custom attributes for a user by user email ",
+        "operationId": "getCustomAttributesByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email of contact",
+            "example": "test@gmail.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Add Custom Attributes",
+        "description": "Add Custom attribute value to a contact by email.\n    Multiple attributes can be added with json format as data.\n    The message field in response returns the number of added attributes / fails.",
+        "operationId": "addCustomAttributes",
+        "parameters": [],
+        "requestBody": {
+          "description": "Pass users info in an array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "email",
+                  "apiSecret",
+                  "data"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "a@gmail.com"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "test_attribute"
+                        },
+                        "value": {
+                          "type": "string",
+                          "example": "some value"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/attribute/id": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Custom Attributes By Id ",
+        "description": "Return custom attributes for a user by user Id ",
+        "operationId": "getCustomAttributesById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The user's id",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/tags/id": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Tags By ID",
+        "description": "Return applied tags to the contact (site user) by id.",
+        "operationId": "getTagsById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The user's id",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Apply tags By user id ",
+        "description": "Apply multiple tags to a user by user id ",
+        "operationId": "addTagsById",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "tags",
+                  "apiSecret",
+                  "email"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "tags": {
+                    "type": "object",
+                    "example": "[3,12]"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Remove applied tags By user ID ",
+        "description": "remove multiple tags of a user by user ID",
+        "operationId": "removeTagsById",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "tags",
+                  "apiSecret",
+                  "id"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "tags": {
+                    "type": "object",
+                    "example": "[3,12]"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contact/tags/email": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Tags By Email",
+        "description": "Return applied tags to the contact (site user) by user email.",
+        "operationId": "getTagsByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "The email of contact",
+            "schema": {
+              "type": "string"
+            },
+            "example": "a@test.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Apply tags By email ",
+        "description": "Apply multiple tags to a user by user email ",
+        "operationId": "addTagsByEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "tags",
+                  "apiSecret",
+                  "email"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "a@test.com"
+                  },
+                  "tags": {
+                    "type": "object",
+                    "example": "[3,12]"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Remove applied tags By email ",
+        "description": "remove multiple tags of a user by email",
+        "operationId": "removeTagsByEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "tags",
+                  "apiSecret",
+                  "email"
+                ],
+                "properties": {
+                  "apiSecret": {
+                    "type": "string",
+                    "example": "B5VsqSSdMOmls8pXUEMV"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "a@test.com"
+                  },
+                  "tags": {
+                    "type": "object",
+                    "example": "[3,12]"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid apiKey"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Contents",
+      "description": "Contents in Growmatik includes any content published on the site,\n           for example pages, posts, custom-posts, forms, ..."
+    },
+    {
+      "name": "Products",
+      "description": "Product refers to the simple and general form of the product,\n           which can have price, sku and can be digital or physical."
+    },
+    {
+      "name": "Orders",
+      "description": "Orders include details of all purchases that can be retrieved with a unique orderId.\n           Only complete(successful) orders are stored in Growmatik."
+    },
+    {
+      "name": "Site",
+      "description": "General stored information about the site that is the same for all users."
+    },
+    {
+      "name": "Contacts",
+      "description": "Contacts refers to people who are the target of marketing.\n           These people can be users of the site or have been added to Growmatik separately."
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Growmatik",
+    "url": "https://growmatik.ai"
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "name": "apiKey",
+        "type": "apiKey",
+        "in": "header",
+        "description": "Your API credential (apiKey)"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}

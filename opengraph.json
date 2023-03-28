@@ -1,0 +1,508 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Opengraph.io",
+    "description": "Simplest API to unfurl URL descriptions, titles, images, products, from all sites without being blocked.  Fast and reliable.",
+    "version": "v1",
+    "x-logo": {
+      "url": "https://www.opengraph.io/wp-content/uploads/2016/06/opengraph-white-27h.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://opengraph.io/api/1.1",
+      "description": "Base URL"
+    }
+  ],
+  "tags": [],
+  "paths": {
+    "/site/{encoded_site_url}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "cache_ok",
+            "in": "query",
+            "required": false,
+            "description": "This will force our servers to pull a fresh version of the site being requested. By default this value is true",
+            "schema": {
+              "externalDocs": {
+                "url": ""
+              },
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "max_cache_age",
+            "in": "query",
+            "required": false,
+            "description": "This specifies the maximum age in milliseconds that a cached response should be. If not specified the value is set to 5 days. (5 days * 24 hours * 60 minutes * 60 seconds * 1000 ms = 432,000,000 ms)",
+            "schema": {
+              "default": 432000000,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "full_render",
+            "in": "query",
+            "required": false,
+            "description": "This will fully render the site using a chrome browser before parsing its contents. This is especially helpful for single page applications and JS redirects. This will slow down the time it takes to get a response by around 1.5 seconds.",
+            "schema": {
+              "externalDocs": {
+                "url": ""
+              },
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "accept_lang",
+            "in": "query",
+            "required": false,
+            "description": "This specifies the request language sent when requesting the url. This is useful if you want to get the site for languages other than english. The default setting for this will return an english version of a page if it exists. Note: if you specify the value auto the api will use the same language settings of your current request.",
+            "schema": {
+              "default": "en-US,en;q=0.9",
+              "type": "string"
+            }
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            },
+            "in": "query",
+            "name": "use_proxy",
+            "description": "Route your request through residential and mobile proxies to avoid bot detection. This will slow down requests 3-10 seconds and can cause requests to time out."
+          }
+        ],
+        "externalDocs": {
+          "description": "",
+          "url": ""
+        },
+        "operationId": "Site-Lookup",
+        "description": "Get site description, title, image, and products",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "hybridGraph": {
+                        "title": "reddit",
+                        "description": "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!",
+                        "type": "website",
+                        "image": "https://www.redditstatic.com/icon.png",
+                        "imageWidth": "256",
+                        "imageHeight": "256",
+                        "url": "https://www.reddit.com/",
+                        "favicon": "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+                        "site_name": "reddit"
+                      },
+                      "openGraph": {
+                        "title": "reddit",
+                        "type": "website",
+                        "image": {
+                          "url": "https://www.redditstatic.com/icon.png",
+                          "width": "256",
+                          "height": "256"
+                        },
+                        "url": "https://www.reddit.com/",
+                        "site_name": "reddit"
+                      },
+                      "htmlInferred": {
+                        "title": "reddit",
+                        "description": "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!",
+                        "type": "site",
+                        "image": "https://www.redditstatic.com/icon.png",
+                        "url": "https://reddit.com",
+                        "favicon": "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+                        "site_name": "reddit",
+                        "images": [
+                          "https://styles.redditmedia.com/t5_2yrq6/styles/communityIcon_jce8cbhcznr61.jpg?format=pjpg&s=21c771b6e61a765b5201c1472c303ce7b6a5c109",
+                          "https://www.redditstatic.com/gold/awards/icon/gold_32.png",
+                          "https://www.redditstatic.com/gold/awards/icon/SnooClapping_32.png",
+                          "https://preview.redd.it/award_images/t5_22cerq/vu6om0xnb7e41_This.png?width=32&height=32&crop=smart&auto=webp&s=28ab000ce7ffd383ede645836f56309b2de9b119",
+                          "https://preview.redd.it/award_images/t5_q0gj4/35d17tf5e5f61_oldrocketlike.png?width=32&height=32&crop=smart&auto=webp&s=1e2178cc0b2b52a6ae3bdeb43288ab2a58bb1111",
+                          "https://www.redditstatic.com/desktop2x/img/renderTimingPixel.png",
+                          "https://styles.redditmedia.com/t5_qir9n/styles/communityIcon_yj35rtvfupy61.png",
+                          "https://preview.redd.it/award_images/t5_22cerq/klvxk1wggfd41_Helpful.png?width=32&height=32&crop=smart&auto=webp&s=e50908c50d797edd935ba8b5d9f0fb1372ff0bae",
+                          "https://preview.redd.it/award_images/t5_22cerq/5izbv4fn0md41_Wholesome.png?width=32&height=32&crop=smart&auto=webp&s=b3267c9d510c7b06dda6ec7d53cb587b9e822e44",
+                          "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                          "https://preview.redd.it/award_images/t5_q0gj4/ks45ij6w05f61_oldHugz.png?width=32&height=32&crop=smart&auto=webp&s=fe84dfd3b09cbf43e7161d04fd0f15b69b54010f",
+                          "https://preview.redd.it/781h5mhxas371.jpg?width=640&height=643&crop=smart&auto=webp&s=a75321a2d80a6fe6e1949c00ff89ec6ad084cf22",
+                          "https://styles.redditmedia.com/t5_2qj0l/styles/communityIcon_z9sg4iqxiff51.jpg?format=pjpg&s=07c1cca7b70fa2f6e35f1c1cc9fc3d7f6a9c5c61",
+                          "https://styles.redditmedia.com/t5_2tex6/styles/communityIcon_u89jf60zv7p41.png",
+                          "https://preview.redd.it/bt5nldtvor371.png?width=640&height=372&crop=smart&auto=webp&s=6bd48ad7ad9c4ca37a6102cc6cd89d08ee4958f1",
+                          "https://styles.redditmedia.com/t5_2t7no/styles/communityIcon_5b1rj1migm341.png",
+                          "https://styles.redditmedia.com/t5_2ugf9/styles/communityIcon_faarfl5fp2351.png",
+                          "https://b.thumbs.redditmedia.com/U8Sdvj6YDpWprFYlTxd9GhEm_v4t-6wx6_qs2KMV2Zs.png",
+                          "https://styles.redditmedia.com/t5_2til0c/styles/communityIcon_mynlqfss0g851.jpg?format=pjpg&s=73ee3feea640fe3297411a5774c1bfd789c45359",
+                          "https://b.thumbs.redditmedia.com/bzp2GW1mjKHOI1DAb-VsavxnZRG-3N_JVmFQ4WxeE0E.png",
+                          "https://b.thumbs.redditmedia.com/4XdZ2vmJkkw-L6lc7e-ysk-QiTU3C_6QjRsXeumCDsc.png"
+                        ]
+                      },
+                      "requestInfo": {
+                        "redirects": 0,
+                        "host": "https://reddit.com",
+                        "responseCode": 200,
+                        "cache_ok": true,
+                        "max_cache_age": 432000000,
+                        "accept_lang": "en-US,en;q=0.9",
+                        "url": "https://reddit.com",
+                        "full_render": false,
+                        "use_proxy": false,
+                        "use_premium": false,
+                        "responseContentType": "text/html; charset=utf-8"
+                      },
+                      "accept_lang": "en-US,en;q=0.9",
+                      "is_cache": false,
+                      "url": "https://reddit.com"
+                    }
+                  },
+                  "properties": {
+                    "hybridGraph": {
+                      "type": "object",
+                      "required": [
+                        "title",
+                        "description",
+                        "type",
+                        "image",
+                        "imageWidth",
+                        "imageHeight",
+                        "url",
+                        "favicon",
+                        "site_name"
+                      ],
+                      "description": "As much of the Open Graph data that can be inferred from the site requested. Our service will first check for proper OG tags\non the site. If they exist the hybridGraph element will mirror them. For elements that are not discovered, our service will\nanalyze the site’s markup to make best guesses for each OG data point where possible.For the quickest solution, we recommend you use this for your application if you just need to know basic information about the site",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "description": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "image": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "imageWidth": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "imageHeight": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "url": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "favicon": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "site_name": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "openGraph": {
+                      "type": "object",
+                      "required": [
+                        "title",
+                        "type",
+                        "image",
+                        "url",
+                        "site_name"
+                      ],
+                      "description": "The OpenGraph tags pulled from the site. These values will be empty if there are no tags specified for a page. In most cases, you should probably be using the `hybridGraph` element",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "image": {
+                          "type": "object",
+                          "required": [
+                            "url",
+                            "width",
+                            "height"
+                          ],
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "width": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "height": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          }
+                        },
+                        "url": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "site_name": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "htmlInferred": {
+                      "type": "object",
+                      "required": [
+                        "title",
+                        "description",
+                        "type",
+                        "image",
+                        "url",
+                        "favicon",
+                        "site_name",
+                        "images"
+                      ],
+                      "description": "The resulting relevant information found when parsing the site’s markup.",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "description": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "image": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "url": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "favicon": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "site_name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "requestInfo": {
+                      "type": "object",
+                      "required": [
+                        "redirects",
+                        "host",
+                        "responseCode",
+                        "cache_ok",
+                        "max_cache_age",
+                        "accept_lang",
+                        "url",
+                        "full_render",
+                        "use_proxy",
+                        "use_premium",
+                        "responseContentType"
+                      ],
+                      "properties": {
+                        "redirects": {
+                          "type": "number"
+                        },
+                        "host": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "responseCode": {
+                          "type": "number"
+                        },
+                        "cache_ok": {
+                          "type": "boolean"
+                        },
+                        "max_cache_age": {
+                          "type": "number"
+                        },
+                        "accept_lang": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "url": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "full_render": {
+                          "type": "boolean"
+                        },
+                        "use_proxy": {
+                          "type": "boolean"
+                        },
+                        "use_premium": {
+                          "type": "boolean"
+                        },
+                        "responseContentType": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "accept_lang": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "is_cache": {
+                      "type": "boolean"
+                    },
+                    "url": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The url that was provided in the request. The URL must be URL Encoded. Please be sure to only URL encode the site. Do not URL encode the parameters you provide to the API such as the app_id."
+                    }
+                  },
+                  "required": [
+                    "hybridGraph",
+                    "openGraph",
+                    "htmlInferred",
+                    "requestInfo",
+                    "accept_lang",
+                    "is_cache",
+                    "url"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "hybridGraph": {
+                        "title": "reddit",
+                        "description": "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!",
+                        "type": "website",
+                        "image": "https://www.redditstatic.com/icon.png",
+                        "imageWidth": "256",
+                        "imageHeight": "256",
+                        "url": "https://www.reddit.com/",
+                        "favicon": "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+                        "site_name": "reddit"
+                      },
+                      "openGraph": {
+                        "title": "reddit",
+                        "type": "website",
+                        "image": {
+                          "url": "https://www.redditstatic.com/icon.png",
+                          "width": "256",
+                          "height": "256"
+                        },
+                        "url": "https://www.reddit.com/",
+                        "site_name": "reddit"
+                      },
+                      "htmlInferred": {
+                        "title": "reddit",
+                        "description": "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!",
+                        "type": "site",
+                        "image": "https://www.redditstatic.com/icon.png",
+                        "url": "https://reddit.com",
+                        "favicon": "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+                        "site_name": "reddit",
+                        "images": [
+                          "https://styles.redditmedia.com/t5_2yrq6/styles/communityIcon_jce8cbhcznr61.jpg?format=pjpg&s=21c771b6e61a765b5201c1472c303ce7b6a5c109",
+                          "https://www.redditstatic.com/gold/awards/icon/gold_32.png",
+                          "https://www.redditstatic.com/gold/awards/icon/SnooClapping_32.png",
+                          "https://preview.redd.it/award_images/t5_22cerq/vu6om0xnb7e41_This.png?width=32&height=32&crop=smart&auto=webp&s=28ab000ce7ffd383ede645836f56309b2de9b119",
+                          "https://preview.redd.it/award_images/t5_q0gj4/35d17tf5e5f61_oldrocketlike.png?width=32&height=32&crop=smart&auto=webp&s=1e2178cc0b2b52a6ae3bdeb43288ab2a58bb1111",
+                          "https://www.redditstatic.com/desktop2x/img/renderTimingPixel.png",
+                          "https://styles.redditmedia.com/t5_qir9n/styles/communityIcon_yj35rtvfupy61.png",
+                          "https://preview.redd.it/award_images/t5_22cerq/klvxk1wggfd41_Helpful.png?width=32&height=32&crop=smart&auto=webp&s=e50908c50d797edd935ba8b5d9f0fb1372ff0bae",
+                          "https://preview.redd.it/award_images/t5_22cerq/5izbv4fn0md41_Wholesome.png?width=32&height=32&crop=smart&auto=webp&s=b3267c9d510c7b06dda6ec7d53cb587b9e822e44",
+                          "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                          "https://preview.redd.it/award_images/t5_q0gj4/ks45ij6w05f61_oldHugz.png?width=32&height=32&crop=smart&auto=webp&s=fe84dfd3b09cbf43e7161d04fd0f15b69b54010f",
+                          "https://preview.redd.it/781h5mhxas371.jpg?width=640&height=643&crop=smart&auto=webp&s=a75321a2d80a6fe6e1949c00ff89ec6ad084cf22",
+                          "https://styles.redditmedia.com/t5_2qj0l/styles/communityIcon_z9sg4iqxiff51.jpg?format=pjpg&s=07c1cca7b70fa2f6e35f1c1cc9fc3d7f6a9c5c61",
+                          "https://styles.redditmedia.com/t5_2tex6/styles/communityIcon_u89jf60zv7p41.png",
+                          "https://preview.redd.it/bt5nldtvor371.png?width=640&height=372&crop=smart&auto=webp&s=6bd48ad7ad9c4ca37a6102cc6cd89d08ee4958f1",
+                          "https://styles.redditmedia.com/t5_2t7no/styles/communityIcon_5b1rj1migm341.png",
+                          "https://styles.redditmedia.com/t5_2ugf9/styles/communityIcon_faarfl5fp2351.png",
+                          "https://b.thumbs.redditmedia.com/U8Sdvj6YDpWprFYlTxd9GhEm_v4t-6wx6_qs2KMV2Zs.png",
+                          "https://styles.redditmedia.com/t5_2til0c/styles/communityIcon_mynlqfss0g851.jpg?format=pjpg&s=73ee3feea640fe3297411a5774c1bfd789c45359",
+                          "https://b.thumbs.redditmedia.com/bzp2GW1mjKHOI1DAb-VsavxnZRG-3N_JVmFQ4WxeE0E.png",
+                          "https://b.thumbs.redditmedia.com/4XdZ2vmJkkw-L6lc7e-ysk-QiTU3C_6QjRsXeumCDsc.png"
+                        ]
+                      },
+                      "requestInfo": {
+                        "redirects": 0,
+                        "host": "https://reddit.com",
+                        "responseCode": 200,
+                        "cache_ok": true,
+                        "max_cache_age": 432000000,
+                        "accept_lang": "en-US,en;q=0.9",
+                        "url": "https://reddit.com",
+                        "full_render": false,
+                        "use_proxy": false,
+                        "use_premium": false,
+                        "responseContentType": "text/html; charset=utf-8"
+                      },
+                      "accept_lang": "en-US,en;q=0.9",
+                      "is_cache": false,
+                      "url": "https://reddit.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "https://opengraph.io/api/1.1/site/https%3A%2F%2Fwww.reddit.com%2Fr%2Fvideos%2F"
+          },
+          "name": "encoded_site_url",
+          "in": "path",
+          "required": true,
+          "description": "The url to provided in the request. The URL must be URL Encoded. Please be sure to only URL encode the site. GOOD: https://opengraph.io/api/1.1/site/https%3A%2F%2Fwww.reddit.com%2Fr%2Fvideos%2F?app_id=XX BAD: https://opengraph.io/api/1.1/site/https://www.reddit.com/r/videos/?app_id=XX BAD: https://opengraph.io/api/1.1/site/https%3A%2F%2Fwww.reddit.com%2Fr%2Fvideos%2F%3Fapp_id%3DXX"
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "App_id": {
+        "name": "app_id",
+        "type": "apiKey",
+        "in": "query",
+        "description": "The API key for registered users.  Create an account (no cc ever required) to receive your app_id"
+      }
+    }
+  },
+  "security": [
+    {
+      "App_id": []
+    }
+  ]
+}

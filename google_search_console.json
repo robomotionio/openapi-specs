@@ -1,0 +1,544 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Google Search Console API",
+    "version": "1.0",
+    "description": "Access all ressources from Google Search Console API to manage your website on Google and access analytics\n\nOriginal documentation is available here : https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics"
+  },
+  "servers": [
+    {
+      "url": "https://www.googleapis.com/webmasters/v3"
+    }
+  ],
+  "paths": {
+    "/sites/{siteUrl}/searchAnalytics/query": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "siteUrl",
+          "in": "path",
+          "required": true,
+          "description": "The URL of the property as defined in Search Console. Examples: http://www.example.com/ (for a URL-prefix property) or sc-domain:example.com (for a Domain property) "
+        }
+      ],
+      "post": {
+        "summary": "Search Analytics: query",
+        "operationId": "post-sites-siteUrl-searchAnalytics-query",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "rows": [
+                        {
+                          "keys": [
+                            "string"
+                          ],
+                          "clicks": 2.3,
+                          "impressions": 2.3,
+                          "ctr": 22.3,
+                          "position": 2.3
+                        }
+                      ],
+                      "responseAggregationType": "string"
+                    }
+                  },
+                  "properties": {
+                    "rows": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "description": "A list of rows grouped by the key values in the order given in the query.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "keys": {
+                            "type": "array",
+                            "description": "A list of the dimension values for that row, grouped according to the dimensions in the request, in the order specified in the request.",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "clicks": {
+                            "type": "number",
+                            "description": "Click count for the row."
+                          },
+                          "impressions": {
+                            "type": "number",
+                            "description": "Impression count for the row."
+                          },
+                          "ctr": {
+                            "type": "number",
+                            "description": "Click Through Rate (CTR) for the row. Values range from 0 to 1.0, inclusive."
+                          },
+                          "position": {
+                            "type": "number",
+                            "description": "Average position in search results."
+                          }
+                        }
+                      }
+                    },
+                    "responseAggregationType": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "How the results were aggregated. See the help documentation to learn how data is calculated differently by site versus by page.\n\nAcceptable values are:\n\n    \"auto\"\n    \"byPage\": Results were aggregated by page.\n    \"byProperty\": Results were aggregated by property.\n"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Query your search traffic data with filters and parameters that you define. The method returns zero or more rows grouped by the row keys (dimensions) that you define. You must define a date range of one or more days.\n\nWhen date is one of the dimensions, any days without data are omitted from the result list. To learn which days have data, issue a query without filters grouped by date, for the date range of interest.\n\nResults are sorted by click count descending. If two rows have the same click count, they are sorted in an arbitrary way.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "startDate": "string",
+                    "endDate": "string",
+                    "dimensions": [
+                      "string"
+                    ],
+                    "type": "string",
+                    "dimensionFilterGroups": [
+                      {
+                        "groupType": "string",
+                        "filters": [
+                          {
+                            "dimension": "string",
+                            "operator": "string",
+                            "expression": "string"
+                          }
+                        ]
+                      }
+                    ],
+                    "aggregationType": "string",
+                    "rowLimit": 1,
+                    "startRow": 2
+                  }
+                },
+                "properties": {
+                  "startDate": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Start date of the requested date range, in YYYY-MM-DD format, in PT time (UTC - 7:00/8:00). Must be less than or equal to the end date. This value is included in the range."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "End date of the requested date range, in YYYY-MM-DD format, in PT time (UTC - 7:00/8:00). Must be greater than or equal to the start date. This value is included in the range."
+                  },
+                  "dimensions": {
+                    "type": "array",
+                    "description": "Zero or more dimensions to group results by. Results are grouped in the order that you supply these dimensions. You can use any dimension name in dimensionFilterGroups[].filters[].dimension as well as \"date\". The grouping dimension values are combined to create a unique key for each result row. If no dimensions are specified, all values will be combined into a single row. There is no limit to the number of dimensions that you can group by, but you cannot group by the same dimension twice. Example: [country, device]",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Filter results to the following type:\n\n    \"discover\": Discover results\n    \"googleNews\": Results from news.google.com and the Google News app on Android and iOS. Doesn't include results from the \"News\" tab in Google Search.\n    \"news\": Search results from the \"News\" tab in Google Search.\n    \"image\": Search results from the \"Image\" tab in Google Search.\n    \"video\": Video search results\n    \"web\": [Default] Filter results to the combined (\"All\") tab in Google Search. Does not include Discover or Google News results.\n"
+                  },
+                  "dimensionFilterGroups": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "Zero or more groups of filters to apply to the dimension grouping values. All filter groups must match in order for a row to be returned in the response. Within a single filter group, you can specify whether all filters must match, or at least one must match.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "groupType": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Whether all filters in this group must return true (\"and\"), or one or more must return true (not yet supported).\n\nAcceptable values are:\n\n    \"and\": All filters in the group must return true for the filter group to be true.\n\n\t"
+                        },
+                        "filters": {
+                          "type": "array",
+                          "uniqueItems": true,
+                          "minItems": 1,
+                          "description": "Zero or more filters to test against the row. Each filter consists of a dimension name, an operator, and a value. Examples:\n\ncountry equals FRA\nquery contains mobile use\ndevice notContains tablet",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "dimension": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "The dimension that this filter applies to. You can filter by any dimension listed here, even if you are not grouping by that dimension.\n\nAcceptable values are:\n\n    \"country\": Filter against the specified country, as specified by 3-letter country code (ISO 3166-1 alpha-3).\n    \"device\": Filter results against the specified device type. Supported values:\n        DESKTOP\n        MOBILE\n        TABLET\n    \"page\": Filter against the specified URI string.\n    \"query\": Filter against the specified query string.\n    \"searchAppearance\": Filter against a specific search result feature. To see a list of available values, run a query grouped by \"searchAppearance\".\n"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "How your specified value must match (or not match) the dimension value for the row.\n\nAcceptable values are:\n\n    \"contains\": The row value must either contain or equal your expression (non-case-sensitive).\n    \"equals\": [Default] Your expression must exactly equal the row value (case-sensitive for page and query dimensions).\n    \"notContains\": The row value must not contain your expression either as a substring or a (non-case-sensitive) complete match.\n    \"notEquals\": Your expression must not exactly equal the row value (case-sensitive for page and query dimensions).\n    \"includingRegex\": An RE2 syntax regular expression that must be matched.\n    \"excludingRegex\": An RE2 syntax regular expression that must not be matched.\n"
+                              },
+                              "expression": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "The value for the filter to match or exclude, depending on the operator."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "aggregationType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "How data is aggregated. If aggregated by property, all data for the same property is aggregated; if aggregated by page, all data is aggregated by canonical URI. If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; see the help documentation to learn how data is calculated differently by site versus by page.\n\nNote: If you group or filter by page, you cannot aggregate by property.\n\nIf you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. The API will never change your aggregation type if the requested type is invalid.\nAcceptable values are:\n\n    \"auto\": [Default] Let the service decide the appropriate aggregation type.\n    \"byPage\": Aggregate values by URI.\n    \"byProperty\": Aggregate values by property. Not supported for type=discover or type=googleNews\n"
+                  },
+                  "rowLimit": {
+                    "type": "number",
+                    "description": "The maximum number of rows to return. To page through results, use the startRow offset."
+                  },
+                  "startRow": {
+                    "type": "number",
+                    "description": "Zero-based index of the first row in the response. Must be a non-negative number. If startRow exceeds the number of results for the query, the response will be a successful response with zero rows."
+                  },
+                  "dataState": {
+                    "type": "string",
+                    "description": "If \"all\" (case-insensitive), data will include fresh data. If \"final\" (case-insensitive) or if this parameter is omitted, the returned data will include only finalized data."
+                  }
+                },
+                "required": [
+                  "startDate",
+                  "endDate"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sites/{siteUrl}/sitemaps/{feedpath}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "siteUrl",
+          "in": "path",
+          "required": true,
+          "description": "The URL of the property as defined in Search Console. For example: http://www.example.com/ (URL-prefix property), or sc-domain:example.com (Domain property). "
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "feedpath",
+          "in": "path",
+          "required": true,
+          "description": "The URL of the actual sitemap. For example: http://www.example.com/sitemap.xml"
+        }
+      ],
+      "delete": {
+        "summary": "Sitemaps: delete",
+        "operationId": "delete-sites-siteUrl-sitemaps-feedpath",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Deletes a sitemap from this site.",
+        "security": [
+          {
+            "oauth": [
+              "https://www.googleapis.com/auth/webmasters"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "summary": "Sitemaps: get",
+        "operationId": "get-sites-siteUrl-sitemaps-feedpath",
+        "description": "Retrieves information about a specific sitemap.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sitemap"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Sitemaps: submit",
+        "operationId": "put-sites-siteUrl-sitemaps-feedpath",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Submits a sitemap for a site.",
+        "security": [
+          {
+            "oauth": [
+              "https://www.googleapis.com/auth/webmasters"
+            ]
+          }
+        ]
+      }
+    },
+    "/sites/{siteUrl}/sitemaps": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "siteUrl",
+          "in": "path",
+          "required": true,
+          "description": "The URL of the property as defined in Search Console. For example: http://www.example.com/ (URL-prefix property), or sc-domain:example.com (Domain property). "
+        }
+      ],
+      "get": {
+        "summary": "Sitemaps: list",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sitemap": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Sitemap"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-sites-siteUrl-sitemaps",
+        "description": "Lists the sitemaps-entries submitted for this site, or included in the sitemap index file (if sitemapIndex is specified in the request).",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sitemapIndex",
+            "description": "A URL of a site's sitemap index. For example: http://www.example.com/sitemapindex.xml"
+          }
+        ]
+      }
+    },
+    "/sites/{siteUrl}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "siteUrl",
+          "in": "path",
+          "required": true,
+          "description": "The URL of the property to retrieve, as defined by Search Console. Examples: http://www.example.com/ (for a URL-prefix property) or sc-domain:example.com (for a Domain property) "
+        }
+      ],
+      "get": {
+        "summary": "Sites: get",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-sites-siteUrl",
+        "description": "Retrieves information about specific site."
+      },
+      "post": {
+        "summary": "Sites: add",
+        "operationId": "post-sites-siteUrl",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Adds a site to the set of the user's sites in Search Console"
+      },
+      "delete": {
+        "summary": "Sites: delete",
+        "operationId": "delete-sites-siteUrl",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Removes a site from the set of the user's Search Console sites"
+      }
+    },
+    "/sites": {
+      "get": {
+        "summary": "Sites: list",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "siteEntry": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Site"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-sites",
+        "description": "Lists the user's Search Console sites"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Sitemap": {
+        "description": "Contains detailed information about a specific URL submitted as a sitemap.",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "path": "string",
+            "lastSubmitted": "string",
+            "isPending": true,
+            "isSitemapsIndex": true,
+            "type": "string",
+            "lastDownloaded": "string",
+            "warnings": 123,
+            "errors": 123,
+            "contents": [
+              {
+                "type": "string",
+                "submitted": 123,
+                "indexed": 123
+              }
+            ]
+          }
+        },
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The url of the sitemap."
+          },
+          "lastSubmitted": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Date & time in which this sitemap was submitted. Date format is in RFC 3339 format (yyyy-mm-dd)."
+          },
+          "isPending": {
+            "type": "boolean",
+            "description": " \tIf true, the sitemap has not been processed."
+          },
+          "isSitemapsIndex": {
+            "type": "boolean",
+            "description": "If true, the sitemap is a collection of sitemaps."
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The type of the sitemap. For example: rssFeed.\n\nAcceptable values are:\n\n    \"atomFeed\"\n    \"notSitemap\"\n    \"patternSitemap\"\n    \"rssFeed\"\n    \"sitemap\"\n    \"urlList\"\n"
+          },
+          "lastDownloaded": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Date & time in which this sitemap was last downloaded. Date format is in RFC 3339 format (yyyy-mm-dd)."
+          },
+          "warnings": {
+            "type": "number",
+            "description": "Number of warnings for the sitemap. These are generally non-critical issues with URLs in the sitemaps."
+          },
+          "errors": {
+            "type": "number",
+            "description": "Number of errors in the sitemap. These are issues with the sitemap itself that need to be fixed before it can be processed correctly."
+          },
+          "contents": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "description": "The various content types in the sitemap.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The specific type of content in this sitemap. For example: web.\n\nAcceptable values are:\n\n    \"androidApp\"\n    \"image\"\n    \"iosApp\"\n    \"mobile\"\n    \"news\"\n    \"pattern\"\n    \"video\"\n    \"web\"\n"
+                },
+                "submitted": {
+                  "type": "number",
+                  "description": " \tThe number of URLs in the sitemap (of the content type)."
+                },
+                "indexed": {
+                  "type": "number",
+                  "description": "Deprecated; do not use."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Site": {
+        "title": "Site",
+        "type": "object",
+        "description": "Contains permission level information about a Search Console site",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "The URL of the property to add. Examples: http://www.example.com/ (for a URL-prefix property) or sc-domain:example.com (for a Domain property) "
+          },
+          "permissionLevel": {
+            "type": "string",
+            "description": "The user's permission level for the site.\n\nAcceptable values are:\n\n    \"siteFullUser\"\n    \"siteOwner\"\n    \"siteRestrictedUser\"\n    \"siteUnverifiedUser\"\n"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/auth",
+            "tokenUrl": "https://accounts.google.com/o/oauth2/token",
+            "refreshUrl": "https://accounts.google.com/o/oauth2/token",
+            "scopes": {
+              "https://www.googleapis.com/auth/webmasters.readonly": "Read only access for webmasters",
+              "https://www.googleapis.com/auth/webmasters": "Read and write access for webmasters"
+            }
+          }
+        }
+      }
+    },
+    "responses": {}
+  },
+  "security": [
+    {
+      "oauth": [
+        "https://www.googleapis.com/auth/webmasters.readonly",
+        "https://www.googleapis.com/auth/webmasters"
+      ]
+    }
+  ]
+}

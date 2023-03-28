@@ -1,0 +1,585 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "name": "OpenCage GmbH",
+      "url": "https://opencagedata.com/contact"
+    },
+    "version": "1",
+    "termsOfService": "https://opencagedata.com/terms",
+    "title": "OpenCage Geocoder",
+    "description": "Worldwide forward and reverse geocoding",
+    "x-origin": {
+      "format": "swagger",
+      "url": "https://opencagedata.com/swagger.yaml",
+      "version": "2.0"
+    },
+    "x-logo": {
+      "url": "https://opencagedata.com/opencagelogo-green.png"
+    }
+  },
+  "externalDocs": {
+    "description": "OpenCage Geocoder Website",
+    "url": "https://opencagedata.com/api"
+  },
+  "paths": {
+    "/v{version}/{format}": {
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "description": "API version",
+          "schema": {
+            "type": "number",
+            "default": 1,
+            "example": 1
+          }
+        },
+        {
+          "name": "format",
+          "in": "path",
+          "required": true,
+          "description": "Response format",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "json",
+              "geojson",
+              "xml",
+              "google-v3-json"
+            ],
+            "default": "json",
+            "example": "json"
+          }
+        }
+      ],
+      "get": {
+        "description": "geocode a query",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "the query string to be geocoded: a latitude, longitude or a placename/address.  The query should be URL encoded. Instead of, for example, non-ascii strings like München you should send us M%C3%BCnchen.  When reverse geocoding the query should be in latitude, longitude order in decimal format. Use periods as decimals, not commas.  Reverse geocoding example usage: q=52.3877830,9.7334394 There is no reason to send more than six or seven digits past the decimal as that is down to the precision of a centimeter - see Wikipedia about decimal degree precision. If impossible coordinates are supplied you will receive a response with status 400 invalid coordinates.  Forward geocoding example usage: q=Berlin%2C%20Germany When forward geocoding there are many things you can do to help improve our chance of finding the correct answer and answering more quickly.  Please note:  the optional parameters especially bounds and countrycode. our detailed guide to formatting your forward geocoding query. we do NOT support fuzzy matching. the query value must be at least two characters long. Queries that are too short will fail with status 400 missing or bad query. queries that are too long will fail with status 400 query too long. queries that contain obvious erroneous data will fail with status 400 missing or bad query. Finally, please see our best practices.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Berlin%2C%20Germany"
+            }
+          },
+          {
+            "name": "abbrv",
+            "in": "query",
+            "description": "when true we attempt to abbreviate the formatted field in the response.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "add_request",
+            "in": "query",
+            "description": "if true the request is included in the response.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "bounds",
+            "in": "query",
+            "description": "four coordinate points forming the south-west and north-east corners of a bounding box (min long, min lat, max long, max lat).",
+            "schema": {
+              "type": "string",
+              "example": "-0.563160,51.280430,0.278970,51.683979"
+            }
+          },
+          {
+            "name": "countrycode",
+            "in": "query",
+            "description": "two letter code ISO 3166-1 Alpha 2 code to limit results to that country.",
+            "schema": {
+              "type": "string",
+              "example": "de"
+            }
+          },
+          {
+            "name": "jsonp",
+            "in": "query",
+            "description": "wraps the returned JSON with a function name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "an IETF format language code (ex: 'es' or 'pt-BR').",
+            "schema": {
+              "type": "string",
+              "example": "de"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "maximum number of results to return. Default is 10. Maximum is 100.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "min_confidence",
+            "in": "query",
+            "description": "integer from 1-10. Only results with at least this confidence are returned.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "no_annotations",
+            "in": "query",
+            "description": "when true annotations are not added to results.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "no_dedupe",
+            "in": "query",
+            "description": "when true results are not deduplicated.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "no_record",
+            "in": "query",
+            "description": "when true query content is not logged.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pretty",
+            "in": "query",
+            "description": "when true results are pretty printed. Useful for debugging.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "proximity",
+            "in": "query",
+            "description": "lat,lng to bias results.",
+            "schema": {
+              "type": "string",
+              "example": "52.3877830,9.7334394"
+            }
+          },
+          {
+            "name": "roadinfo",
+            "in": "query",
+            "description": "match nearest road, include roadinfo annotation",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unable to authenticate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Valid request but quota exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid API endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Timeout; you can try again",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Request too long",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "Upgrade required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reverse/Forward geocoding",
+        "operationId": "get-geocoding",
+        "tags": [
+          "geocoding"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "geocoding"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.opencagedata.com/geocode"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Response": {
+        "properties": {
+          "documentation": {
+            "type": "string"
+          },
+          "rate": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer"
+              },
+              "remaining": {
+                "type": "integer"
+              },
+              "reset": {
+                "type": "integer"
+              }
+            }
+          },
+          "licenses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "annotations": {
+                  "type": "object"
+                },
+                "bounds": {
+                  "type": "object",
+                  "properties": {
+                    "northeast": {
+                      "$ref": "#/components/schemas/LatLng"
+                    },
+                    "southwest": {
+                      "$ref": "#/components/schemas/LatLng"
+                    }
+                  }
+                },
+                "components": {
+                  "type": "object"
+                },
+                "confidence": {
+                  "type": "integer"
+                },
+                "formatted": {
+                  "type": "string"
+                },
+                "geometry": {
+                  "$ref": "#/components/schemas/LatLng"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "code": {
+                "type": "integer"
+              }
+            }
+          },
+          "stay_informed": {
+            "type": "object",
+            "properties": {
+              "blog": {
+                "type": "string"
+              },
+              "twitter": {
+                "type": "string"
+              }
+            }
+          },
+          "thanks": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "object",
+            "properties": {
+              "created_http": {
+                "type": "string"
+              },
+              "created_unix": {
+                "type": "integer"
+              }
+            }
+          },
+          "total_results": {
+            "type": "integer"
+          }
+        }
+      },
+      "LatLng": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "format": "float"
+          },
+          "lng": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "key": {
+        "name": "key",
+        "type": "apiKey",
+        "in": "query",
+        "description": "30 character long, alphanumeric application key"
+      }
+    }
+  },
+  "security": [
+    {
+      "key": []
+    }
+  ]
+}

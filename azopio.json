@@ -1,0 +1,991 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Azopio Public API v1",
+    "version": "1.1.1",
+    "description": "List your documents, transactions and accounting settings, get a document details, update the recorded status of a document.<br><br><h3>General information</h3>You must prefix the endpoint urls with either :<br><ul><li>https://app.azopio.com/public_api/v1 for the PRODUCTION environnement</li></ul><p>You must authenticate your requests by setting the \"Authorization\" header to the value \"Token <YOUR_API_KEY>\". Click the green button \"Authorize\" to try it out on this page.</p><p>For example you can use the testing customer by setting \"Authorization\" header to the value \"Token 022742bf568c479519189a34944f5b1cc8d26736\". This key is pre-authorized on this page.</p><p>You can list and generate your api keys <a href=\"/admin_customer#api-tab-content\" target=\"_blank\">on this page</a> (login and subscription required).</p><h3>Pagination</h3><p>All list results are paginated, with a page size of 50.<br>Results are returned alongside of 3 other information : \"count\" (total number of results), \"next\" and \"previous\" (hyperlinks to next and previous page if applicable, else \"null\").</p><h3>Throttling</h3><p>Requests are limited to a quota of 30000/day.<br>Throttled requests will receive a \"429 Too Many Requests\" response, with a body like : \"detail\": \"Request was throttled. Expected available in X seconds.\"<br></p><h3>Changelog</h3><h4>1.1.1 - 2020/01/25</h4><ul><li><h4>Updates :</h4><ul><li>New \"exp_category\" format containing tags (semicolon separated values) on /document endpoints</li></ul></li></ul><h4>1.1.0 - 2020/11/27</h4><ul><li><h4>Breaking changes :</h4><ul><li>/transactions endpoint returns a list of linked accounting_accounts, instead of a single accounting_account information</li></ul></li><li><h4>Updates :</h4><ul><li>New \"due_date\" and \"last_modified\" fields and filters on /documents and /document endpoints</li></ul></li></ul>"
+  },
+  "servers": [
+    {
+      "url": "https://app.azopio.com/public_api/v1",
+      "description": "PRODUCTION environnement"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "DocumentList": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "state_checked": {
+            "type": "string"
+          },
+          "state_approved": {
+            "type": "string"
+          },
+          "state_paid": {
+            "type": "string"
+          },
+          "state_recorded": {
+            "type": "string"
+          },
+          "checking": {
+            "type": "string"
+          },
+          "inserted": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "details_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "uuid",
+          "date",
+          "due_date",
+          "type",
+          "issuer",
+          "state_checked",
+          "state_approved",
+          "state_paid",
+          "state_recorded",
+          "checking",
+          "inserted",
+          "last_modified"
+        ]
+      },
+      "DocumentDetail": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string"
+          },
+          "state_checked": {
+            "type": "string"
+          },
+          "state_approved": {
+            "type": "string"
+          },
+          "state_paid": {
+            "type": "string"
+          },
+          "state_recorded": {
+            "type": "string"
+          },
+          "inserted": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "total_amount": {
+            "type": "string"
+          },
+          "untaxed_amount": {
+            "type": "string"
+          },
+          "vat_amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "accounting_account_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "accounting_account_details_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "ventilation": {
+            "type": "array",
+            "items": {}
+          },
+          "vat_ventilation": {
+            "type": "array",
+            "items": {}
+          },
+          "payment_method": {
+            "type": "string"
+          },
+          "expense_category": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string"
+          },
+          "autoliquidation_vat": {
+            "type": "boolean"
+          },
+          "autoliquidation_amount": {
+            "type": "string"
+          },
+          "autoliquidation_rate": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "checking": {
+            "type": "string"
+          },
+          "download_url": {
+            "type": "string",
+            "readOnly": true
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^(?:[a-z0-9.+-]*)://(?:[^\\s:@/]+(?::[^\\s:@/]*)?@)?(?:(?:0|25[0-5]|2[0-4]\\d|1\\d?\\d?|[1-9]\\d?)(?:\\.(?:0|25[0-5]|2[0-4]\\d|1\\d?\\d?|[1-9]\\d?)){3}|\\[[0-9a-f:.]+\\]|([a-z¡-￿0-9](?:[a-z¡-￿0-9-]{0,61}[a-z¡-￿0-9])?(?:\\.(?!-)[a-z¡-￿0-9-]{1,63}(?<!-))*\\.(?!-)(?:[a-z¡-￿-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\\.?|localhost))(?::\\d{2,5})?(?:[/?#][^\\s]*)?\\z"
+          }
+        },
+        "required": [
+          "uuid",
+          "date",
+          "type",
+          "state_checked",
+          "state_approved",
+          "state_paid",
+          "state_recorded",
+          "inserted",
+          "last_modified",
+          "issuer",
+          "reference",
+          "total_amount",
+          "untaxed_amount",
+          "vat_amount",
+          "currency",
+          "accounting_account_number",
+          "ventilation",
+          "vat_ventilation",
+          "payment_method",
+          "expense_category",
+          "due_date",
+          "autoliquidation_vat",
+          "autoliquidation_amount",
+          "autoliquidation_rate",
+          "comment",
+          "checking",
+          "web_url"
+        ]
+      },
+      "DocumentFile": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "AccountingAccountList": {
+        "type": "object",
+        "properties": {
+          "account_type": {
+            "type": "string"
+          },
+          "account_name": {
+            "type": "string"
+          },
+          "details_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "account_type",
+          "account_name"
+        ]
+      },
+      "AccountingAccountDetail": {
+        "type": "object",
+        "properties": {
+          "account_type": {
+            "type": "string"
+          },
+          "account_name": {
+            "type": "string"
+          },
+          "account_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "analytic_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "assigned_to": {
+            "type": "string",
+            "nullable": true
+          },
+          "vat_account": {
+            "type": "string",
+            "nullable": true
+          },
+          "documents_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "account_type",
+          "account_name",
+          "account_number",
+          "analytic_code",
+          "assigned_to",
+          "vat_account"
+        ]
+      },
+      "BankAccountList": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "details_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "account_id"
+        ]
+      },
+      "BankAccountDetail": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "account_name": {
+            "type": "string"
+          },
+          "account_full_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_iban": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactions_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "account_id",
+          "account_name",
+          "account_full_name",
+          "account_iban",
+          "account_number"
+        ]
+      },
+      "TransactionList": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "debit": {
+            "type": "string"
+          },
+          "credit": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "accounting_accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accounting_account_name": {
+                  "type": "string"
+                },
+                "accounting_account_type": {
+                  "type": "string"
+                },
+                "accounting_account_details_url": {
+                  "type": "string",
+                  "readOnly": true,
+                  "nullable": true
+                },
+                "associated_documents_url": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "accounting_account_name",
+                "accounting_account_type"
+              ]
+            }
+          },
+          "checking": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "transaction_id",
+          "account_id",
+          "value",
+          "debit",
+          "credit",
+          "date",
+          "currency",
+          "description",
+          "accounting_accounts",
+          "checking"
+        ]
+      },
+      "DocumentUpdate": {
+        "type": "object",
+        "properties": {
+          "state_recorded": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "state_recorded"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Key format : Token <apikey>"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/documents/": {
+      "get": {
+        "operationId": "listDocumentLists",
+        "description": "List documents according to filters.",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this type will be returned.<br>Must be in \"supplier\", \"client\", \"bank\", \"other\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_start",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a date on or after this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a date on or before this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "due_date_start",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a due date on or after this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "due_date_end",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a due date on or before this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_modified_start",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a last modified datetime on or after this datetime will be returned.<br>Format : \"YYYY-MM-DDTHH:MM-SS\" or \"%Y-%m-%dT%H:%M:%S\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_modified_end",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have a last modified datetime on or before this datetime will be returned.<br>Format : \"YYYY-MM-DDTHH:MM-SS\" or \"%Y-%m-%dT%H:%M:%S\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "issuer",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this issuer will be returned.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state_checked",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this state will be returned.<br>Must be in \"checked\", \"not-checked\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state_approved",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this state will be returned.<br>Must be in \"approved\", \"validation-pending\", \"refused\", \"not-validated\", \"not-in-validation-process\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state_paid",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this state will be returned.<br>Must be in \"paid\", \"payment-pending\", \"to-pay\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state_recorded",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this state will be returned.<br>Must be in \"recorded\", \"not-recorded\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checking",
+            "required": false,
+            "in": "query",
+            "description": "All documents which have this checking will be returned.<br>Must be used in conjunction with \"type\" and \"issuer\".",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DocumentList"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "documents"
+        ]
+      }
+    },
+    "/document/{uuid}/": {
+      "get": {
+        "operationId": "retrieveDocumentDetail",
+        "description": "Get a document details.\n<br>\n<br>\n\"ventilation\" format : [\n    {\n        \"account\": \"\",\n        \"analytic_code\": \"\",\n        \"amount\": \"\"\n    }, ...\n]\n<br>\n<br>\n\"vat_ventilation\" format : [\n    {\n        \"account\": \"\",\n        \"amount\": \"\",\n        \"rate\": \"\"\n    }, ...\n]\n<br>\n<br>\n\"payment_method\" values : \"credit card\", \"wire\", \"direct debit\", \"check\", \"cash\", \"notes\", \"netting\", \"other\".<br><br>To get associated transactions from a bank account call \"accounting_account_details_url\" then use the details to call : /transactions/<bank_account_id>/?accounting_account_type={account_type}&accounting_account_name={account_name}&checking={checking}.<br><br>",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "document"
+        ]
+      }
+    },
+    "/document-file/{uuid}/": {
+      "get": {
+        "operationId": "retrieveDocumentFile",
+        "description": "Get a document file.\n<br>\n<br>\n\"file\" is the content of the file, base64 encoded.\n<br>\n<br>",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentFile"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "document-file"
+        ]
+      }
+    },
+    "/accounting_accounts/": {
+      "get": {
+        "operationId": "listAccountingAccountLists",
+        "description": "List accounting accounts according to type filter.\n<br>\n<br>\n\"vat_accounts\" values : \"purchase\", \"asset-purchase\", \"revenue\", \"autoliquidation\".<br><br>",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "account_type",
+            "required": true,
+            "in": "query",
+            "description": "All accounts which have this type will be returned.<br>Must be in \"payable\", \"receivable\", \"other\".",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AccountingAccountList"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "accounting-accounts"
+        ]
+      }
+    },
+    "/accounting_account/{account_type}/{account_name}/": {
+      "get": {
+        "operationId": "retrieveAccountingAccountDetail",
+        "description": "Get an accounting account details.\n<br>\n<br>\n\"account_type\" must be in \"payable\", \"receivable\", \"other\".<br><br>To get associated transactions from a bank account call : /transactions/<bank_account_id>/?accounting_account_type={account_type}&accounting_account_name={account_name}&checking={checking}.<br><br>",
+        "parameters": [
+          {
+            "name": "account_type",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "account_name",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingAccountDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "accounting-account"
+        ]
+      }
+    },
+    "/bank_accounts/": {
+      "get": {
+        "operationId": "listBankAccountLists",
+        "description": "List bank accounts.\n<br>\n<br>",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 123
+                    },
+                    "next": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri",
+                      "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BankAccountList"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "bank-accounts"
+        ]
+      }
+    },
+    "/bank_account/{account_id}/": {
+      "get": {
+        "operationId": "retrieveBankAccountDetail",
+        "description": "Get a bank account details.\n<br>\n<br>",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankAccountDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "bank-account"
+        ]
+      }
+    },
+    "/transactions/{account_id}/": {
+      "get": {
+        "operationId": "retrieveTransactionList",
+        "description": "List transactions from a specific bank account.\n<br>\n<br>",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accounting_account_type",
+            "required": false,
+            "in": "query",
+            "description": "All transactions associated to this accounting account will be returned.<br>Must be used in conjunction with \"accounting_account_name\".<br>Must be in \"payable\", \"receivable\", \"other\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accounting_account_name",
+            "required": false,
+            "in": "query",
+            "description": "All transactions associated to this accounting account will be returned.<br>Must be used in conjunction with \"accounting_account_type\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checking",
+            "required": false,
+            "in": "query",
+            "description": "All transactions associated to this checking will be returned.<br>Must be used in conjunction with \"accounting_account_type\" and \"accounting_account_name\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_start",
+            "required": false,
+            "in": "query",
+            "description": "All transactions which have a date on or after this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "All transactions which have a date on or before this date will be returned.<br>Format : \"YYYY-MM-DD\" or \"%Y-%m-%d\" in 1989 C standard.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      }
+    },
+    "/document-state/{uuid}/": {
+      "patch": {
+        "operationId": "partialUpdateDocumentUpdate",
+        "description": "Update a document's \"recorded\" state.\n<br>\n<br>\n\"state_recorded\" must be in \"recorded\", \"not-recorded\".<br><br>",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUpdate"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "document-state"
+        ]
+      }
+    }
+  }
+}

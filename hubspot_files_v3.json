@@ -1,0 +1,146 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hubspot Files v3",
+    "version": "1.0",
+    "description": "Use HubSpot’s files tool to manage and store files in HubSpot. Files hosted in HubSpot can be uploaded and used in both HubSpot and external content."
+  },
+  "servers": [
+    {
+      "url": "https://api.hubapi.com"
+    }
+  ],
+  "paths": {
+    "/files/v3/files/import-from-url/async": {
+      "post": {
+        "summary": "Import a file from a URL into the file manager",
+        "operationId": "post-files-v3-files-import-from-url-async",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Asynchronously imports the file at the given URL into the file manager.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access": {
+                    "type": "string",
+                    "description": "PUBLIC_INDEXABLE: File is publicly accessible by anyone who has the URL. Search engines can index the file. PUBLIC_NOT_INDEXABLE: File is publicly accessible by anyone who has the URL. Search engines can't index the file. PRIVATE: File is NOT publicly accessible. Requires a signed URL to see content. Search engines can't index the file.",
+                    "enum": [
+                      "PUBLIC_INDEXABLE",
+                      "PUBLIC_NOT_INDEXABLE",
+                      "HIDDEN_INDEXABLE",
+                      "HIDDEN_NOT_INDEXABLE",
+                      "HIDDEN_PRIVATE",
+                      "PRIVATE"
+                    ]
+                  },
+                  "ttl": {
+                    "type": "string",
+                    "description": "Time to live. If specified the file will be deleted after the given time frame."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name to give the resulting file in the file manager."
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "URL to download the new file from."
+                  },
+                  "folderId": {
+                    "type": "string",
+                    "description": "One of folderId or folderPath is required. Destination folder ID for the uploaded file."
+                  },
+                  "folderPath": {
+                    "type": "string",
+                    "description": "One of folderPath or folderId is required. Destination folder path for the uploaded file. If the folder path does not exist, there will be an attempt to create the folder path."
+                  },
+                  "duplicateValidationStrategy": {
+                    "type": "string",
+                    "description": "NONE: Do not run any duplicate validation. REJECT: Reject the upload if a duplicate is found. RETURN_EXISTING: If a duplicate file is found, do not upload a new file and return the found duplicate instead.",
+                    "enum": [
+                      "NONE",
+                      "REJECT",
+                      "RETURN_EXISTING"
+                    ]
+                  },
+                  "duplicateValidationScope": {
+                    "type": "string",
+                    "description": "ENTIRE_PORTAL: Look for a duplicate file in the entire account. EXACT_FOLDER: Look for a duplicate file in the provided folder.",
+                    "enum": [
+                      "ENTIRE_PORTAL",
+                      "EXACT_FOLDER"
+                    ]
+                  },
+                  "overwrite": {
+                    "type": "boolean",
+                    "description": "If true, it will overwrite existing files if a file with the same name exists in the given folder."
+                  }
+                },
+                "required": [
+                  "access",
+                  "url",
+                  "duplicateValidationStrategy",
+                  "duplicateValidationScope",
+                  "overwrite"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/v3/files/import-from-url/async/tasks/{taskId}/status": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true,
+          "description": "Import by URL task ID"
+        }
+      ],
+      "get": {
+        "summary": "Check import status",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-files-v3-files-import-from-url-async-tasks-taskId-status",
+        "description": "Check the status of requested import."
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://app.hubspot.com/oauth/authorize",
+            "tokenUrl": "https://api.hubapi.com/oauth/v1/token",
+            "refreshUrl": "https://api.hubapi.com/oauth/v1/token",
+            "scopes": {
+              "files": "Manage files"
+            },
+            "X-Refresh-Settings": {
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": [
+        "files"
+      ]
+    }
+  ]
+}

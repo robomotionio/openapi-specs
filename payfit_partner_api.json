@@ -1,0 +1,2552 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Partner API",
+    "description": "A Semi-Private API to let third parties communicate with PayFit",
+    "version": "1.0.0",
+    "x-logo": {
+      "url": "https://payfit.com/icons/icon-512x512.png?v=d7f1da3d64a7a802a9c7b2b353cd9bf2"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://partner-api.payfit.com",
+      "description": "The Partner API production server"
+    }
+  ],
+  "paths": {
+    "/companies/{companyId}": {
+      "get": {
+        "operationId": "GET_company",
+        "summary": "Get Company",
+        "tags": [
+          "Company"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the company to fetch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The fetched company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "company",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Id of the company."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the company."
+                    },
+                    "country": {
+                      "type": "string",
+                      "enum": [
+                        "FR",
+                        "ES",
+                        "DE",
+                        "GB",
+                        "IT"
+                      ],
+                      "description": "Country of the company."
+                    },
+                    "nbActiveContracts": {
+                      "type": "integer",
+                      "description": "Number of current active contracts within the company."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "country",
+                    "nbActiveContracts"
+                  ]
+                },
+                "examples": {
+                  "company": {
+                    "summary": "An example of company",
+                    "value": {
+                      "id": "123456789",
+                      "name": "Awesome company",
+                      "country": "GB",
+                      "nbActiveContracts": 12
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": []
+          }
+        ]
+      }
+    },
+    "/companies-fr/{companyId}": {
+      "get": {
+        "operationId": "GET_company_fr",
+        "summary": "Get French Company",
+        "tags": [
+          "French Company"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the company to fetch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The french fetched company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "company-fr",
+                  "allOf": [
+                    {
+                      "title": "company",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Id of the company."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the company."
+                        },
+                        "country": {
+                          "type": "string",
+                          "enum": [
+                            "FR",
+                            "ES",
+                            "DE",
+                            "GB",
+                            "IT"
+                          ],
+                          "description": "Country of the company."
+                        },
+                        "nbActiveContracts": {
+                          "type": "integer",
+                          "description": "Number of current active contracts within the company."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "country",
+                        "nbActiveContracts"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "siren": {
+                          "type": "string",
+                          "description": "\"Système Identification Répertoire Entreprises\" of the company."
+                        },
+                        "siret": {
+                          "type": "string",
+                          "description": "\"Système Identification Répertoire Etablissements\" of the company."
+                        }
+                      },
+                      "required": [
+                        "siren",
+                        "siret"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "companyFr": {
+                    "summary": "An example of french company",
+                    "value": {
+                      "id": "123456789",
+                      "name": "Awesome company",
+                      "country": "FR",
+                      "nbActiveContracts": 12,
+                      "siret": "362 521 879 00034",
+                      "siren": "362 521 879"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": []
+          }
+        ]
+      }
+    },
+    "/companies/{companyId}/contracts": {
+      "get": {
+        "operationId": "GET_contracts",
+        "summary": "Get Contracts of a company",
+        "tags": [
+          "Contract"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the company in which the contracts are fetched"
+          },
+          {
+            "in": "query",
+            "name": "nextPageToken",
+            "required": false,
+            "schema": {
+              "title": "nextPageToken",
+              "type": "string",
+              "additionalProperties": false,
+              "nullable": true
+            },
+            "description": "The encoded pagination token"
+          },
+          {
+            "in": "query",
+            "name": "maxResults",
+            "required": false,
+            "schema": {
+              "title": "maxResults",
+              "type": "integer",
+              "additionalProperties": false,
+              "minimum": 1,
+              "default": 10,
+              "maximum": 50
+            },
+            "description": "Allows to define the maximum number of contracts to fetch at once. (Max: 50, Default: 10)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All active, pending and last year archived contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "contracts",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "contracts": {
+                      "type": "array",
+                      "items": {
+                        "title": "contract",
+                        "type": "object",
+                        "properties": {
+                          "contractId": {
+                            "type": "string",
+                            "description": "Id of the contract."
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "description": "Id of the contract's company."
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "description": "Firstname of the employee."
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "description": "Lastname of the employee."
+                          },
+                          "birthName": {
+                            "type": "string",
+                            "description": "Name given to the employee upon their birth."
+                          },
+                          "birthDate": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "Birth date of the employee."
+                          },
+                          "startDate": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "Contract start date."
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "format": "date",
+                            "nullable": true,
+                            "description": "Contract end date."
+                          },
+                          "jobName": {
+                            "type": "string",
+                            "description": "Job name of the employee."
+                          },
+                          "status": {
+                            "description": "Status of the contrat.",
+                            "type": "string",
+                            "enum": [
+                              "ACTIVE",
+                              "ARCHIVED",
+                              "PENDING"
+                            ]
+                          },
+                          "managerContractId": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "The manager contract's id of the contract. If the contract does not have a manager this field will be null."
+                          },
+                          "contactEmail": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "The contact email of the contract. This email is not guaranteed to be a real email or to belong to a real employee since it is not validated by PayFit."
+                          }
+                        },
+                        "required": [
+                          "contractId",
+                          "companyId",
+                          "firstName",
+                          "lastName",
+                          "birthName",
+                          "birthDate",
+                          "startDate",
+                          "jobName",
+                          "status",
+                          "managerContractId"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "title": "meta",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "nextPageToken": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "count": {
+                          "type": "integer",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "contracts": {
+                    "summary": "An example of contracts",
+                    "value": {
+                      "meta": {
+                        "nextPageToken": "eyJsaW1pdCI6NTAsIm9mZnNldCI6NTB9",
+                        "count": 2
+                      },
+                      "contracts": [
+                        {
+                          "contractId": "5b59e7b282ddef55f860d322",
+                          "companyId": "5b59e7b182ddef55f860d311",
+                          "firstName": "Alice",
+                          "lastName": "Dupond",
+                          "birthName": "Martin",
+                          "jobName": "Designer",
+                          "birthDate": "1987-04-14",
+                          "startDate": "2018-07-12",
+                          "endDate": null,
+                          "status": "ACTIVE",
+                          "managerContractId": "5b59e7b282ddef55f860d324"
+                        },
+                        {
+                          "contractId": "5b59e7b282ddef55f860d325",
+                          "companyId": "5b59e7b182ddef55f860d311",
+                          "firstName": "Bob",
+                          "lastName": "Martin",
+                          "birthName": "Dupond",
+                          "jobName": "Architect",
+                          "birthDate": "1990-01-01",
+                          "startDate": "2017-12-21",
+                          "status": "ACTIVE",
+                          "endDate": "2020-07-06",
+                          "managerContractId": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": [
+              "contracts:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/companies/{companyId}/contracts-fr": {
+      "get": {
+        "operationId": "GET_contracts_fr",
+        "summary": "Get Contracts of a company with French specific information",
+        "tags": [
+          "Contract"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the company in which the contracts are fetched"
+          },
+          {
+            "in": "query",
+            "name": "nextPageToken",
+            "required": false,
+            "schema": {
+              "title": "nextPageToken",
+              "type": "string",
+              "additionalProperties": false,
+              "nullable": true
+            },
+            "description": "The encoded pagination token"
+          },
+          {
+            "in": "query",
+            "name": "maxResults",
+            "required": false,
+            "schema": {
+              "title": "maxResults",
+              "type": "integer",
+              "additionalProperties": false,
+              "minimum": 1,
+              "default": 10,
+              "maximum": 50
+            },
+            "description": "Allows to define the maximum number of contracts to fetch at once. (Max: 50, Default: 10)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All active, pending and last year archived contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "contracts-fr",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "contracts": {
+                      "type": "array",
+                      "items": {
+                        "title": "contract-fr",
+                        "allOf": [
+                          {
+                            "title": "contract",
+                            "type": "object",
+                            "properties": {
+                              "contractId": {
+                                "type": "string",
+                                "description": "Id of the contract."
+                              },
+                              "companyId": {
+                                "type": "string",
+                                "description": "Id of the contract's company."
+                              },
+                              "firstName": {
+                                "type": "string",
+                                "description": "Firstname of the employee."
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "description": "Lastname of the employee."
+                              },
+                              "birthName": {
+                                "type": "string",
+                                "description": "Name given to the employee upon their birth."
+                              },
+                              "birthDate": {
+                                "type": "string",
+                                "format": "date",
+                                "description": "Birth date of the employee."
+                              },
+                              "startDate": {
+                                "type": "string",
+                                "format": "date",
+                                "description": "Contract start date."
+                              },
+                              "endDate": {
+                                "type": "string",
+                                "format": "date",
+                                "nullable": true,
+                                "description": "Contract end date."
+                              },
+                              "jobName": {
+                                "type": "string",
+                                "description": "Job name of the employee."
+                              },
+                              "status": {
+                                "description": "Status of the contrat.",
+                                "type": "string",
+                                "enum": [
+                                  "ACTIVE",
+                                  "ARCHIVED",
+                                  "PENDING"
+                                ]
+                              },
+                              "managerContractId": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "The manager contract's id of the contract. If the contract does not have a manager this field will be null."
+                              },
+                              "contactEmail": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "The contact email of the contract. This email is not guaranteed to be a real email or to belong to a real employee since it is not validated by PayFit."
+                              }
+                            },
+                            "required": [
+                              "contractId",
+                              "companyId",
+                              "firstName",
+                              "lastName",
+                              "birthName",
+                              "birthDate",
+                              "startDate",
+                              "jobName",
+                              "status",
+                              "managerContractId"
+                            ]
+                          },
+                          {
+                            "properties": {
+                              "natureContratDsn": {
+                                "description": "The nature of the contract. Correspond to the variable DSN \"S21.G00.40.007\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel)",
+                                "type": "string",
+                                "enum": [
+                                  "01",
+                                  "02",
+                                  "03",
+                                  "07",
+                                  "08",
+                                  "09",
+                                  "10",
+                                  "20",
+                                  "21",
+                                  "29",
+                                  "32",
+                                  "50",
+                                  "51",
+                                  "52",
+                                  "53",
+                                  "60",
+                                  "70",
+                                  "80",
+                                  "81",
+                                  "82",
+                                  "89",
+                                  "90",
+                                  "91",
+                                  "92",
+                                  "93"
+                                ]
+                              },
+                              "motifRuptureDeContratDsn": {
+                                "type": "string",
+                                "description": "The reason of contract termination. Correspond to the variable DSN \"S21.G00.62.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                                "nullable": true,
+                                "enum": [
+                                  "011",
+                                  "012",
+                                  "014",
+                                  "015",
+                                  "020",
+                                  "025",
+                                  "026",
+                                  "031",
+                                  "032",
+                                  "033",
+                                  "034",
+                                  "035",
+                                  "036",
+                                  "037",
+                                  "038",
+                                  "039",
+                                  "043",
+                                  "058",
+                                  "059",
+                                  "065",
+                                  "066",
+                                  "070",
+                                  "071",
+                                  "081",
+                                  "082",
+                                  "083",
+                                  "084",
+                                  "085",
+                                  "086",
+                                  "087",
+                                  "088",
+                                  "089",
+                                  "091",
+                                  "092",
+                                  "093",
+                                  "094",
+                                  "095",
+                                  "096",
+                                  "097",
+                                  "098",
+                                  "099",
+                                  "100",
+                                  "110",
+                                  "111",
+                                  "112",
+                                  "113",
+                                  "114",
+                                  "115",
+                                  "116",
+                                  "998",
+                                  "999",
+                                  null
+                                ]
+                              },
+                              "statutConventionnelDsn": {
+                                "type": "string",
+                                "description": "The status of the contract. Correspond to the variable DSN \"S21.G00.40.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                                "enum": [
+                                  "01",
+                                  "02",
+                                  "03",
+                                  "04",
+                                  "05",
+                                  "06",
+                                  "07",
+                                  "08",
+                                  "09",
+                                  "10"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "statutConventionnelDsn",
+                              "natureContratDsn",
+                              "motifRuptureDeContratDsn"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "title": "meta",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "nextPageToken": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "count": {
+                          "type": "integer",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "contracts": {
+                    "summary": "An example of french contracts",
+                    "value": {
+                      "meta": {
+                        "nextPageToken": "eyJsaW1pdCI6NTAsIm9mZnNldCI6NTB9",
+                        "count": 2
+                      },
+                      "contracts": [
+                        {
+                          "statutConventionnelDsn": "04",
+                          "natureContratDsn": "08",
+                          "motifRuptureDeContratDsn": null,
+                          "contractId": "5b59e7b282ddef55f860d322",
+                          "companyId": "5b59e7b182ddef55f860d311",
+                          "firstName": "Alice",
+                          "lastName": "Dupond",
+                          "birthName": "Martin",
+                          "jobName": "Designer",
+                          "birthDate": "1987-04-14",
+                          "startDate": "2018-07-12",
+                          "endDate": null,
+                          "status": "ACTIVE",
+                          "managerContractId": "5b59e7b282ddef55f860d324"
+                        },
+                        {
+                          "statutConventionnelDsn": "01",
+                          "natureContratDsn": "10",
+                          "motifRuptureDeContratDsn": "998",
+                          "contractId": "5b59e7b282ddef55f860d325",
+                          "companyId": "5b59e7b182ddef55f860d311",
+                          "firstName": "Bob",
+                          "lastName": "Martin",
+                          "birthName": "Dupond",
+                          "jobName": "Architect",
+                          "birthDate": "1990-01-01",
+                          "startDate": "2017-12-21",
+                          "status": "ACTIVE",
+                          "endDate": "2020-07-06",
+                          "managerContractId": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": [
+              "contracts:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/contracts-fr/{contractId}": {
+      "get": {
+        "operationId": "GET_contract_fr",
+        "summary": "Get a Contract with French specific information",
+        "tags": [
+          "Contract"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contractId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the contract to fetch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The fetched contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "contract-fr",
+                  "allOf": [
+                    {
+                      "title": "contract",
+                      "type": "object",
+                      "properties": {
+                        "contractId": {
+                          "type": "string",
+                          "description": "Id of the contract."
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "description": "Id of the contract's company."
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "description": "Firstname of the employee."
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "description": "Lastname of the employee."
+                        },
+                        "birthName": {
+                          "type": "string",
+                          "description": "Name given to the employee upon their birth."
+                        },
+                        "birthDate": {
+                          "type": "string",
+                          "format": "date",
+                          "description": "Birth date of the employee."
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "format": "date",
+                          "description": "Contract start date."
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "format": "date",
+                          "nullable": true,
+                          "description": "Contract end date."
+                        },
+                        "jobName": {
+                          "type": "string",
+                          "description": "Job name of the employee."
+                        },
+                        "status": {
+                          "description": "Status of the contrat.",
+                          "type": "string",
+                          "enum": [
+                            "ACTIVE",
+                            "ARCHIVED",
+                            "PENDING"
+                          ]
+                        },
+                        "managerContractId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "The manager contract's id of the contract. If the contract does not have a manager this field will be null."
+                        },
+                        "contactEmail": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "The contact email of the contract. This email is not guaranteed to be a real email or to belong to a real employee since it is not validated by PayFit."
+                        }
+                      },
+                      "required": [
+                        "contractId",
+                        "companyId",
+                        "firstName",
+                        "lastName",
+                        "birthName",
+                        "birthDate",
+                        "startDate",
+                        "jobName",
+                        "status",
+                        "managerContractId"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "natureContratDsn": {
+                          "description": "The nature of the contract. Correspond to the variable DSN \"S21.G00.40.007\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel)",
+                          "type": "string",
+                          "enum": [
+                            "01",
+                            "02",
+                            "03",
+                            "07",
+                            "08",
+                            "09",
+                            "10",
+                            "20",
+                            "21",
+                            "29",
+                            "32",
+                            "50",
+                            "51",
+                            "52",
+                            "53",
+                            "60",
+                            "70",
+                            "80",
+                            "81",
+                            "82",
+                            "89",
+                            "90",
+                            "91",
+                            "92",
+                            "93"
+                          ]
+                        },
+                        "motifRuptureDeContratDsn": {
+                          "type": "string",
+                          "description": "The reason of contract termination. Correspond to the variable DSN \"S21.G00.62.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                          "nullable": true,
+                          "enum": [
+                            "011",
+                            "012",
+                            "014",
+                            "015",
+                            "020",
+                            "025",
+                            "026",
+                            "031",
+                            "032",
+                            "033",
+                            "034",
+                            "035",
+                            "036",
+                            "037",
+                            "038",
+                            "039",
+                            "043",
+                            "058",
+                            "059",
+                            "065",
+                            "066",
+                            "070",
+                            "071",
+                            "081",
+                            "082",
+                            "083",
+                            "084",
+                            "085",
+                            "086",
+                            "087",
+                            "088",
+                            "089",
+                            "091",
+                            "092",
+                            "093",
+                            "094",
+                            "095",
+                            "096",
+                            "097",
+                            "098",
+                            "099",
+                            "100",
+                            "110",
+                            "111",
+                            "112",
+                            "113",
+                            "114",
+                            "115",
+                            "116",
+                            "998",
+                            "999",
+                            null
+                          ]
+                        },
+                        "statutConventionnelDsn": {
+                          "type": "string",
+                          "description": "The status of the contract. Correspond to the variable DSN \"S21.G00.40.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                          "enum": [
+                            "01",
+                            "02",
+                            "03",
+                            "04",
+                            "05",
+                            "06",
+                            "07",
+                            "08",
+                            "09",
+                            "10"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "statutConventionnelDsn",
+                        "natureContratDsn",
+                        "motifRuptureDeContratDsn"
+                      ]
+                    }
+                  ],
+                  "type": "object"
+                },
+                "examples": {
+                  "contract": {
+                    "summary": "An example of french contract",
+                    "value": {
+                      "statutConventionnelDsn": "04",
+                      "natureContratDsn": "08",
+                      "motifRuptureDeContratDsn": null,
+                      "contractId": "5b59e7b282ddef55f860d322",
+                      "companyId": "5b59e7b182ddef55f860d311",
+                      "firstName": "Alice",
+                      "lastName": "Dupond",
+                      "birthName": "Martin",
+                      "jobName": "Designer",
+                      "birthDate": "1987-04-14",
+                      "startDate": "2018-07-12",
+                      "endDate": null,
+                      "status": "ACTIVE",
+                      "managerContractId": "5b59e7b282ddef55f860d324"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": [
+              "contracts:read"
+            ]
+          }
+        ]
+      }
+    },
+    "/contracts-fr/{contractId}/securite-sociale": {
+      "get": {
+        "operationId": "GET_securite-social_contract",
+        "summary": "Get the social security of a contract",
+        "tags": [
+          "French Contract"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contractId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the contract from which we want the social security information"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The social security information of the contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "securiteSociale",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "This is an endpoint reserved to french contracts. It will contain every information related to the french social security",
+                  "properties": {
+                    "numeroTechniqueTemporaire": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "\"Numéro technique temporaire\" of the contract"
+                    },
+                    "numeroSecuriteSociale": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "\"Numéro de sécurité sociale\" of the contract"
+                    }
+                  },
+                  "required": [
+                    "numeroTechniqueTemporaire",
+                    "numeroSecuriteSociale"
+                  ]
+                },
+                "examples": {
+                  "numeroSecuriteSociale": {
+                    "summary": "An example of \"Numéro de sécurité sociale\"",
+                    "value": {
+                      "numeroSecuriteSociale": "285057800608436",
+                      "numeroTechniqueTemporaire": null
+                    }
+                  },
+                  "numeroTechniqueTemporaire": {
+                    "summary": "An example of \"Numéro technique temporaire\"",
+                    "value": {
+                      "numeroSecuriteSociale": null,
+                      "numeroTechniqueTemporaire": "12156516515161561"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 400,
+                      "error": "Bad request",
+                      "details": "Field \"id\" is required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 401,
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 403,
+                      "error": "Forbidden action",
+                      "details": "Missing scope \"contracts:read\"."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "error",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "description": "The error code"
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "A human readable error"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "The error details"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "error": {
+                    "summary": "An example of an error message",
+                    "value": {
+                      "code": 404,
+                      "error": "Employee not found",
+                      "details": "The provided id is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "partner-api-oauth": [
+              "employees:securite-sociales:read"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "partner-api-oauth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://oauth.payfit.com/authorize",
+            "tokenUrl": "https://oauth.payfit.com/token",
+            "scopes": {
+              "contracts:read": "Allow to read contracts information"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "nextPageToken": {
+        "in": "query",
+        "name": "nextPageToken",
+        "required": false,
+        "schema": {
+          "title": "nextPageToken",
+          "type": "string",
+          "additionalProperties": false,
+          "nullable": true
+        },
+        "description": "The encoded pagination token"
+      },
+      "maxResults": {
+        "in": "query",
+        "name": "maxResults",
+        "required": false,
+        "schema": {
+          "title": "maxResults",
+          "type": "integer",
+          "additionalProperties": false,
+          "minimum": 1,
+          "default": 10,
+          "maximum": 50
+        },
+        "description": "Allows to define the maximum number of contracts to fetch at once. (Max: 50, Default: 10)"
+      }
+    },
+    "responses": {
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "title": "error",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "description": "The error code"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "A human readable error"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "The error details"
+                }
+              },
+              "required": [
+                "code",
+                "error"
+              ]
+            },
+            "examples": {
+              "error": {
+                "summary": "An example of an error message",
+                "value": {
+                  "code": 404,
+                  "error": "Employee not found",
+                  "details": "The provided id is wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Company": {
+        "title": "company",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the company."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the company."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "FR",
+              "ES",
+              "DE",
+              "GB",
+              "IT"
+            ],
+            "description": "Country of the company."
+          },
+          "nbActiveContracts": {
+            "type": "integer",
+            "description": "Number of current active contracts within the company."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "country",
+          "nbActiveContracts"
+        ]
+      },
+      "CompanyFr": {
+        "title": "company-fr",
+        "allOf": [
+          {
+            "title": "company",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id of the company."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the company."
+              },
+              "country": {
+                "type": "string",
+                "enum": [
+                  "FR",
+                  "ES",
+                  "DE",
+                  "GB",
+                  "IT"
+                ],
+                "description": "Country of the company."
+              },
+              "nbActiveContracts": {
+                "type": "integer",
+                "description": "Number of current active contracts within the company."
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "country",
+              "nbActiveContracts"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "siren": {
+                "type": "string",
+                "description": "\"Système Identification Répertoire Entreprises\" of the company."
+              },
+              "siret": {
+                "type": "string",
+                "description": "\"Système Identification Répertoire Etablissements\" of the company."
+              }
+            },
+            "required": [
+              "siren",
+              "siret"
+            ]
+          }
+        ]
+      },
+      "Contract": {
+        "title": "contract",
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Id of the contract."
+          },
+          "companyId": {
+            "type": "string",
+            "description": "Id of the contract's company."
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Firstname of the employee."
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Lastname of the employee."
+          },
+          "birthName": {
+            "type": "string",
+            "description": "Name given to the employee upon their birth."
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Birth date of the employee."
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Contract start date."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Contract end date."
+          },
+          "jobName": {
+            "type": "string",
+            "description": "Job name of the employee."
+          },
+          "status": {
+            "description": "Status of the contrat.",
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED",
+              "PENDING"
+            ]
+          },
+          "managerContractId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The manager contract's id of the contract. If the contract does not have a manager this field will be null."
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true,
+            "description": "The contact email of the contract. This email is not guaranteed to be a real email or to belong to a real employee since it is not validated by PayFit."
+          }
+        },
+        "required": [
+          "contractId",
+          "companyId",
+          "firstName",
+          "lastName",
+          "birthName",
+          "birthDate",
+          "startDate",
+          "jobName",
+          "status",
+          "managerContractId"
+        ]
+      },
+      "ContractFr": {
+        "title": "contract-fr",
+        "allOf": [
+          {
+            "title": "contract",
+            "type": "object",
+            "properties": {
+              "contractId": {
+                "type": "string",
+                "description": "Id of the contract."
+              },
+              "companyId": {
+                "type": "string",
+                "description": "Id of the contract's company."
+              },
+              "firstName": {
+                "type": "string",
+                "description": "Firstname of the employee."
+              },
+              "lastName": {
+                "type": "string",
+                "description": "Lastname of the employee."
+              },
+              "birthName": {
+                "type": "string",
+                "description": "Name given to the employee upon their birth."
+              },
+              "birthDate": {
+                "type": "string",
+                "format": "date",
+                "description": "Birth date of the employee."
+              },
+              "startDate": {
+                "type": "string",
+                "format": "date",
+                "description": "Contract start date."
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": true,
+                "description": "Contract end date."
+              },
+              "jobName": {
+                "type": "string",
+                "description": "Job name of the employee."
+              },
+              "status": {
+                "description": "Status of the contrat.",
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "ARCHIVED",
+                  "PENDING"
+                ]
+              },
+              "managerContractId": {
+                "type": "string",
+                "nullable": true,
+                "description": "The manager contract's id of the contract. If the contract does not have a manager this field will be null."
+              },
+              "contactEmail": {
+                "type": "string",
+                "nullable": true,
+                "description": "The contact email of the contract. This email is not guaranteed to be a real email or to belong to a real employee since it is not validated by PayFit."
+              }
+            },
+            "required": [
+              "contractId",
+              "companyId",
+              "firstName",
+              "lastName",
+              "birthName",
+              "birthDate",
+              "startDate",
+              "jobName",
+              "status",
+              "managerContractId"
+            ]
+          },
+          {
+            "properties": {
+              "natureContratDsn": {
+                "description": "The nature of the contract. Correspond to the variable DSN \"S21.G00.40.007\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel)",
+                "type": "string",
+                "enum": [
+                  "01",
+                  "02",
+                  "03",
+                  "07",
+                  "08",
+                  "09",
+                  "10",
+                  "20",
+                  "21",
+                  "29",
+                  "32",
+                  "50",
+                  "51",
+                  "52",
+                  "53",
+                  "60",
+                  "70",
+                  "80",
+                  "81",
+                  "82",
+                  "89",
+                  "90",
+                  "91",
+                  "92",
+                  "93"
+                ]
+              },
+              "motifRuptureDeContratDsn": {
+                "type": "string",
+                "description": "The reason of contract termination. Correspond to the variable DSN \"S21.G00.62.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                "nullable": true,
+                "enum": [
+                  "011",
+                  "012",
+                  "014",
+                  "015",
+                  "020",
+                  "025",
+                  "026",
+                  "031",
+                  "032",
+                  "033",
+                  "034",
+                  "035",
+                  "036",
+                  "037",
+                  "038",
+                  "039",
+                  "043",
+                  "058",
+                  "059",
+                  "065",
+                  "066",
+                  "070",
+                  "071",
+                  "081",
+                  "082",
+                  "083",
+                  "084",
+                  "085",
+                  "086",
+                  "087",
+                  "088",
+                  "089",
+                  "091",
+                  "092",
+                  "093",
+                  "094",
+                  "095",
+                  "096",
+                  "097",
+                  "098",
+                  "099",
+                  "100",
+                  "110",
+                  "111",
+                  "112",
+                  "113",
+                  "114",
+                  "115",
+                  "116",
+                  "998",
+                  "999",
+                  null
+                ]
+              },
+              "statutConventionnelDsn": {
+                "type": "string",
+                "description": "The status of the contract. Correspond to the variable DSN \"S21.G00.40.002\" as described in the [\"Cahier technique DSN\"](https://www.net-entreprises.fr/media/documentation/dsn-cahier-technique-2022.1.pdf#ChangementsContrat.StatutConventionnel).",
+                "enum": [
+                  "01",
+                  "02",
+                  "03",
+                  "04",
+                  "05",
+                  "06",
+                  "07",
+                  "08",
+                  "09",
+                  "10"
+                ]
+              }
+            },
+            "required": [
+              "statutConventionnelDsn",
+              "natureContratDsn",
+              "motifRuptureDeContratDsn"
+            ]
+          }
+        ]
+      },
+      "SecuriteSociale": {
+        "title": "securiteSociale",
+        "type": "object",
+        "additionalProperties": false,
+        "description": "This is an endpoint reserved to french contracts. It will contain every information related to the french social security",
+        "properties": {
+          "numeroTechniqueTemporaire": {
+            "type": "string",
+            "nullable": true,
+            "description": "\"Numéro technique temporaire\" of the contract"
+          },
+          "numeroSecuriteSociale": {
+            "type": "string",
+            "nullable": true,
+            "description": "\"Numéro de sécurité sociale\" of the contract"
+          }
+        },
+        "required": [
+          "numeroTechniqueTemporaire",
+          "numeroSecuriteSociale"
+        ]
+      },
+      "Error": {
+        "title": "error",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "number",
+            "description": "The error code"
+          },
+          "error": {
+            "type": "string",
+            "description": "A human readable error"
+          },
+          "details": {
+            "type": "string",
+            "description": "The error details"
+          }
+        },
+        "required": [
+          "code",
+          "error"
+        ]
+      },
+      "Pagination": {
+        "title": "pagination",
+        "type": "object",
+        "properties": {
+          "nextPageToken": {
+            "title": "nextPageToken",
+            "type": "string",
+            "additionalProperties": false,
+            "nullable": true
+          },
+          "maxResults": {
+            "title": "maxResults",
+            "type": "integer",
+            "additionalProperties": false,
+            "minimum": 1,
+            "default": 10,
+            "maximum": 50
+          }
+        }
+      },
+      "Meta": {
+        "title": "meta",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "nextPageToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}

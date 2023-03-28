@@ -1,0 +1,6712 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "//api",
+      "description": "Local Server"
+    }
+  ],
+  "info": {
+    "description": "This is the Rasa X HTTP API\n",
+    "version": "1.0.0",
+    "title": "Rasa X HTTP API"
+  },
+  "tags": [
+    {
+      "name": "Models",
+      "description": "Your combined NLU and Core models"
+    },
+    {
+      "name": "Model config",
+      "description": "Your combined NLU and Core model config"
+    },
+    {
+      "name": "Conversations",
+      "description": "Conversations between your assistant and end users"
+    },
+    {
+      "name": "Messages",
+      "description": "Individual user messages with NLU predictions"
+    },
+    {
+      "name": "Users",
+      "description": "Users of this Rasa Enterprise instance"
+    },
+    {
+      "name": "NLU Data",
+      "description": "Your NLU training data"
+    },
+    {
+      "name": "Stories",
+      "description": "Your Core training stories"
+    },
+    {
+      "name": "Templates",
+      "description": "Your assistant's response templates"
+    },
+    {
+      "name": "Analytics",
+      "description": "End-user engagement with your assistant"
+    },
+    {
+      "name": "Roles",
+      "description": "Permissions associated with Rasa Enterprise users"
+    },
+    {
+      "name": "Environments",
+      "description": "Separate environments where models can be deployed and tested by users"
+    },
+    {
+      "name": "Runtime config",
+      "description": "Runtime config containing the channel credentials and endpoint settings"
+    },
+    {
+      "name": "Chat Token",
+      "description": "Token used for sharing your assistant with testers"
+    },
+    {
+      "name": "Feature Flags",
+      "description": "Experimental Rasa X features"
+    },
+    {
+      "name": "Status",
+      "description": "API status information"
+    },
+    {
+      "name": "Authentication",
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Logs",
+      "description": "Zipped Rasa X logs"
+    },
+    {
+      "name": "Domain",
+      "description": "Rasa domain endpoints"
+    },
+    {
+      "name": "Intents",
+      "description": "Information about used intents"
+    },
+    {
+      "name": "Evaluation",
+      "description": "Evaluates conversations with a model"
+    },
+    {
+      "name": "Git",
+      "description": "Information about connected Git repositories"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Administration",
+      "tags": [
+        "Authentication",
+        "Status",
+        "Feature Flags",
+        "Chat Token",
+        "Runtime config",
+        "Git",
+        "Telemetry"
+      ]
+    },
+    {
+      "name": "Conversations",
+      "tags": [
+        "Conversations"
+      ]
+    },
+    {
+      "name": "Training",
+      "tags": [
+        "NLU Data",
+        "Messages",
+        "Stories",
+        "Templates",
+        "Model config",
+        "Intents",
+        "Domain"
+      ]
+    },
+    {
+      "name": "Models",
+      "tags": [
+        "Models",
+        "Environments",
+        "Evaluation"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "tags": [
+        "Analytics",
+        "Roles",
+        "User"
+      ]
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Fetch status of Rasa services",
+        "operationId": "status",
+        "responses": {
+          "200": {
+            "description": "Status of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "production": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        },
+                        "minimum_compatible_version": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "worker": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        },
+                        "minimum_compatible_version": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "keys": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JWT"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Fetch versions of services",
+        "operationId": "versions",
+        "responses": {
+          "200": {
+            "description": "Versions of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stack": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        },
+                        "minimum_compatible_version": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "platform": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Perform authentication",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong schema",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "wrong schema",
+                    "unauthorized"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/jwt": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "issue signed JWT",
+        "operationId": "issueJWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "conversation_id",
+                  "chat_token"
+                ],
+                "properties": {
+                  "conversation_id": {
+                    "type": "string"
+                  },
+                  "chat_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Encoded token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jwt_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong input schema"
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Get the logs of the Rasa X service",
+        "operationId": "getLogs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs as a zip file"
+          },
+          "400": {
+            "description": "Error collecting logs",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get information about this user",
+        "operationId": "getUserMe",
+        "responses": {
+          "200": {
+            "description": "Current user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update username",
+        "operationId": "updateUsername",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong schema"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List all users",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{username}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update a user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "data"
+                ],
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/AnyValue"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The user was updated successfully"
+          },
+          "403": {
+            "description": "Users can only update their own properties"
+          },
+          "404": {
+            "description": "The user doesn't exist"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Change password",
+        "operationId": "changePassword",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "old_password",
+                  "new_password",
+                  "new_password_confirm"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "old_password": {
+                    "type": "string"
+                  },
+                  "new_password": {
+                    "type": "string"
+                  },
+                  "new_password_confirm": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User whose password was just changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found, wrong password"
+          },
+          "401": {
+            "description": "Wrong schema"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Create a project",
+        "description": "Not recommended to be used. The frontend only supports a single project.",
+        "operationId": "postProject",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newly created project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Project already exists"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/models": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Get a list of Rasa models",
+        "operationId": "getModels",
+        "description": "Returns a list of metadata on Rasa models. A Rasa model is a model combining a trained dialogue model with an NLU model.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Model"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Upload a zipped Rasa model",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/gzip": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Upload OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No model found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/models/jobs": {
+      "post": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Train a Rasa model",
+        "operationId": "trainModel",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmation of model training",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelTrainingConfirmation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An unexpected error happened when the request was processed"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/models/tags/{tag}": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Get a Rasa Core model with tag",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/tag"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zipped Rasa Core model",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No model found for tag"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/models/{model}": {
+      "delete": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Delete a Rasa Core model",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/model"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Model could not be deleted"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/models/{model}/tags/{tag}": {
+      "put": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Tag a Rasa model",
+        "description": "This endpoint can be used to assign a tag to a Rasa model. The tag will be removed from any other model that might have it. The endpoint returns the assigned tag with status code 200.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/model"
+          },
+          {
+            "$ref": "#/components/parameters/tag"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag created on model",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Model was not found or is not compatible."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Delete a tag of a Rasa model",
+        "description": "Rasa model tags can be deleted at this endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/model"
+          },
+          {
+            "$ref": "#/components/parameters/tag"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/logs": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Get suggestions",
+        "operationId": "getSuggestions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/intent"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suggestions for project",
+            "headers": {
+              "X-Total-Count": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Total responses ignoring limit and offset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Suggestion"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Parse text and create a new log entry",
+        "operationId": "parseText",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created log entry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/logs/{log_id}": {
+      "delete": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Archive log",
+        "operationId": "archiveLog",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "in": "path",
+            "name": "log_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully archived log",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "Log {log_id} archived"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Archiving of logs unsuccessful"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/logs/{hash}": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Fetch log by its hash",
+        "operationId": "getLogByHash",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/hash"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched log log",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Suggestion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fetching of log unsuccessful"
+          }
+        }
+      }
+    },
+    "/conversations": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch list of conversations",
+        "operationId": "getConversations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/environment"
+          },
+          {
+            "$ref": "#/components/parameters/intent"
+          },
+          {
+            "in": "query",
+            "name": "entity",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "required": false,
+            "description": "Comma-separated entities to filter on"
+          },
+          {
+            "in": "query",
+            "name": "action",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "required": false,
+            "description": "Comma-separated actions to filter on"
+          },
+          {
+            "in": "query",
+            "name": "text",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "required": false,
+            "description": "User utterance text to filter on"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "number",
+              "default": null
+            },
+            "required": false,
+            "description": "Minimum timestamp of latest user event"
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "schema": {
+              "type": "number",
+              "default": null
+            },
+            "required": false,
+            "description": "Maximum timestamp of latest user event"
+          },
+          {
+            "in": "query",
+            "name": "policies",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "required": false,
+            "description": "Comma-separated list of policies used for prediction"
+          },
+          {
+            "in": "query",
+            "name": "maximumConfidence",
+            "schema": {
+              "type": "number",
+              "default": null
+            },
+            "required": false,
+            "description": "Maximum value of the minimum action confidence"
+          },
+          {
+            "in": "query",
+            "name": "minimumUserMessages",
+            "schema": {
+              "type": "number",
+              "default": null
+            },
+            "required": false,
+            "description": "Minimum number of user messages per conversation"
+          },
+          {
+            "in": "query",
+            "name": "in_training_data",
+            "schema": {
+              "type": "boolean",
+              "default": null
+            },
+            "required": false,
+            "description": "Only show conversations that appear in the training data. If false, only show conversations not appearing in training data . If unset, show all conversations."
+          },
+          {
+            "in": "query",
+            "name": "sort_by_confidence",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "required": false,
+            "description": "Sort conversations that are not found in the training data by their minimum action confidence from high to low. Has no effect if `in_training_data` is anything other than false."
+          },
+          {
+            "in": "query",
+            "name": "sort_by_latest_event_time",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "required": false,
+            "description": "Sort conversations by their latest activity from most recent to least recent."
+          },
+          {
+            "in": "query",
+            "name": "is_flagged",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "required": false,
+            "description": "Filter for conversations which contain flagged messages."
+          },
+          {
+            "in": "query",
+            "name": "exclude_self",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "required": false,
+            "description": "Exclude currently authenticated user from conversations."
+          },
+          {
+            "in": "query",
+            "name": "tags_any",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "required": false,
+            "description": "Comma-separated list of tag IDs. Only conversations that have ANY of these tag IDs assigned to them will be included in the response."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of conversations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConversationMetadata"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch tracker for a conversation ID.",
+        "description": "By default, returns the serialised tracker in its JSON representation. Returns a JSON dump as a file attachment if the `Accept: application/json` request header is specified, or a story dump for that conversation in markdown format if the `Accept: text/markdown` request header is specified.",
+        "operationId": "getConversation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/environment"
+          },
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/until"
+          },
+          {
+            "$ref": "#/components/parameters/since"
+          },
+          {
+            "$ref": "#/components/parameters/history"
+          },
+          {
+            "$ref": "#/components/parameters/exclude_leading_action_session_start"
+          },
+          {
+            "$ref": "#/components/parameters/accept"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracker for {conversation_id} as JSON or debug dump as file attachment",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string",
+                  "description": "Indicates if the content is expected to be displayed inline in the browser, that is, as a Web page or as part of a Web page, or as an attachment, that is downloaded and saved locally. `inline` if the JSON representation is requested, or `attachment;filename=<FILENAME>` if the JSON file dump or story dump is requested."
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Conversation"
+                      },
+                      "description": "Tracker for {conversation_id} as JSON. Returned if the `Accept` header remains unspecified, or its value is not one of `application/json` or `text/markdown`."
+                    },
+                    {
+                      "type": "object",
+                      "description": "Attachment of tracker debug dump in JSON format. Returned if the the `Accept: application/json` request header is specified."
+                    }
+                  ]
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string",
+                  "description": "Attachment of tracker debug dump in markdown format. Returned if the `Accept: text/markdown` request header is specified."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversationActions": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch a list of unique actions from all conversations",
+        "operationId": "getUniqueActions",
+        "responses": {
+          "200": {
+            "description": "List of actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Action"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversationEntities": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch a list of unique entities from all conversations",
+        "operationId": "getUniqueEntities",
+        "responses": {
+          "200": {
+            "description": "List of entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Entity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversationIntents": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch a list of unique intents from all conversations",
+        "operationId": "getUniqueIntents",
+        "responses": {
+          "200": {
+            "description": "List of intents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Intent"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversationPolicies": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch a list of unique Rasa Core policies in all conversations",
+        "operationId": "getUniquePolicies",
+        "responses": {
+          "200": {
+            "description": "List of policies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Policy"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/messages": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Fetch messages in conversation",
+        "operationId": "getMessages",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/environment"
+          },
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/until"
+          },
+          {
+            "$ref": "#/components/parameters/history"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages in conversation with conversation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Post a message to a conversation",
+        "operationId": "sendMessage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/environment"
+          },
+          {
+            "$ref": "#/components/parameters/conversationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Message"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Messages in conversation with conversation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Failed to send message"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/messages/{message_timestamp}/flag": {
+      "put": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Flags this message",
+        "operationId": "flagMessage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/messageTimestamp"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Flag was added successfully"
+          },
+          "400": {
+            "description": "Message_timestamp was not a float"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Remove a flag from a message",
+        "operationId": "deleteFlagFromConversation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/messageTimestamp"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flag was removed successfully"
+          },
+          "400": {
+            "description": "Message_timestamp was not a float"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/messages/{message_timestamp}/intent": {
+      "put": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Correct message intent",
+        "description": "Corrects the intent of the message and possible adds it to the training data",
+        "operationId": "correctMessage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/messageTimestamp"
+          },
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/environment"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "intent": {
+                    "type": "string",
+                    "description": "Name of the correct intent"
+                  },
+                  "mapped_to": {
+                    "type": "string",
+                    "description": "Maps temporary intents to existing ones."
+                  }
+                },
+                "required": [
+                  "intent"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message was corrected successfully"
+          },
+          "400": {
+            "description": "An error happened while correcting the message intent"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Undo the correction of message",
+        "operationId": "removeMessageCorrection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/messageTimestamp"
+          },
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Correction was successfully removed from message"
+          },
+          "400": {
+            "description": "An error happened while undoing the correction"
+          }
+        }
+      }
+    },
+    "/conversations/tags": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Return all existing conversations tags",
+        "operationId": "getTags",
+        "responses": {
+          "200": {
+            "description": "All tags were successfully retrieved (including empty result)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConversationTag"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error happened while retrieving the tags"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/tags": {
+      "post": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Assign tags to a conversation",
+        "description": "Assign all tags from the body of the request to the conversation. If tags don’t exist yet, they will be created.",
+        "operationId": "postTags",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ConversationTagRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All tags were successfully assigned to a conversation"
+          },
+          "400": {
+            "description": "An error happened while assigning the tags"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/tags/{tag_id}": {
+      "delete": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Remove tag from a conversation",
+        "description": "Remove a tag from a conversation.",
+        "operationId": "deleteTags",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/conversationTagId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tag was successfully removed from a conversation"
+          },
+          "400": {
+            "description": "An error happened while removing the tag from the conversation"
+          },
+          "404": {
+            "description": "Conversation or tag were not found"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/events": {
+      "put": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Update events in the tracker of a conversation",
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request body was invalid or an unexpected error happened when the request was processed"
+          },
+          "401": {
+            "description": "The authentication failed"
+          },
+          "403": {
+            "description": "User has insufficient permission."
+          },
+          "409": {
+            "description": "Tracker store for sender could not be found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Create a new event in the tracker of a conversation",
+        "operationId": "createEvent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request body was invalid or an unexpected error happened when the request was processed"
+          },
+          "401": {
+            "description": "The authentication failed"
+          },
+          "403": {
+            "description": "User has insufficient permission."
+          },
+          "409": {
+            "description": "Tracker store for sender could not be found"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/execute": {
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Run an action in a conversation.",
+        "operationId": "runAction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventVerbosity"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Name of the action to be executed.",
+                    "type": "string"
+                  },
+                  "policy": {
+                    "description": "Name of the policy that predicted the action (optional).",
+                    "type": "string"
+                  },
+                  "confidence": {
+                    "description": "Confidence of the prediction (optional).",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conversation tracker after executed action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tracker": {
+                      "$ref": "#/components/schemas/Conversation"
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BotMessage"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request body was invalid or an unexpected error happened when the request was processed"
+          },
+          "401": {
+            "description": "The authentication failed"
+          },
+          "403": {
+            "description": "User has insufficient permission."
+          },
+          "409": {
+            "description": "Tracker store for sender could not be found"
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/predict": {
+      "post": {
+        "tags": [
+          "Evaluation"
+        ],
+        "summary": "Predicts the next action in the conversation.",
+        "operationId": "predictNextAction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/conversationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventVerbosity"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prediction of the next action was a success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Action Exception"
+          },
+          "403": {
+            "description": "User has insufficient permission."
+          }
+        }
+      }
+    },
+    "/analytics": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Fetch analytics",
+        "operationId": "userAnalytics",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/end"
+          },
+          {
+            "$ref": "#/components/parameters/window"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/AnalyticsNotFound"
+          }
+        }
+      }
+    },
+    "/statistics": {
+      "get": {
+        "tags": [
+          "Analyics"
+        ],
+        "summary": "Fetch conversation statistics",
+        "operationId": "getConversationStatistics",
+        "responses": {
+          "200": {
+            "description": "Conversation statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationStatistics"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/data": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Get training examples",
+        "operationId": "getData",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "intent",
+            "description": "Intents to filter on",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "in": "query",
+            "name": "sorted",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Training examples for project",
+            "headers": {
+              "X-Total-Count": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Total responses ignoring limit and offset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TrainingExample"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Add new training example",
+        "operationId": "addData",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainingExample"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New training example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingExample"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong schema"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Example could not be saved"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Replace training data in bulk",
+        "operationId": "replaceBulkData",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rasa_nlu_data": {
+                    "type": "object",
+                    "properties": {
+                      "common_examples": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/TrainingExample"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "string",
+                      "enum": [
+                        "data uploaded"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong schema, training data could not be uploaded"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/regexes": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Get all regular expression training data",
+        "operationId": "getRegexes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Regex features for the given project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegexFeature"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Create regular expression training data",
+        "operationId": "createRegex",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegexFeature"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created regular expression including id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegexFeature"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Regex with same pattern already exists or invalid body."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/regexes/{regex_id}": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Get a regular expression by its id",
+        "operationId": "getRegexById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/regexId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Regexes for the given id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegexFeature"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Regex for id was not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Update an existing regular expression using its id",
+        "operationId": "updateRegexById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/regexId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegexFeature"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Regex was updated successfully"
+          },
+          "400": {
+            "description": "The request body was invalid"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Regex for id was not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Delete a regular expression by its id",
+        "operationId": "deleteRegexById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/regexId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Regex was deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Regex for id was not found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/lookupTables": {
+      "get": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Get a list of lookup tables.",
+        "operationId": "getLookupTables",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of lookup tables",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LookupTable"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Create a lookup table from an uploaded file",
+        "operationId": "createLookupTable",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupTableFile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lookup table was created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupTable"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid uploaded file."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/lookupTables/{lookup_table_id}": {
+      "get": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Get the content of a lookup table",
+        "operationId": "getLookupTableContent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/lookupTableId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Elements of lookup table with items separated by newlines.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Delete a lookup table",
+        "operationId": "deleteLookupTable",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/lookupTableId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Lookup table was successfully deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/synonyms": {
+      "get": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Get all entity synonyms",
+        "operationId": "getEntitySynonyms",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/mappedValue"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of entity synonyms.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EntitySynonym"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Create a new entity synonym with mapped values",
+        "operationId": "createEntitySynonym",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "synonym_reference": {
+                    "type": "string",
+                    "description": "The new text value for the entity synonym"
+                  },
+                  "mapped_values": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created entity synonym.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySynonym"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/synonyms/{entity_synonym_id}": {
+      "get": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Get an entity synonym",
+        "operationId": "getEntitySynonym",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An entity synonym.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySynonym"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "The entity synonym could not be found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Map new values to an entity synonym",
+        "operationId": "createEntitySynonymValues",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mapped_values": {
+                    "type": "array",
+                    "description": "List of entity synonym values to map",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new values mapped to the entity synonym.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EntitySynonymValue"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "One or more of the mapped values specified were repeated, or the mapped values array was empty, or one or more of the mapped values already existed, or the entity synonym could not be found"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Update an entity synonym's text value",
+        "operationId": "updateEntitySynonym",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "synonym_reference": {
+                    "type": "string",
+                    "description": "The new text value for the entity synonym"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The entity synonym was updated successfully"
+          },
+          "400": {
+            "description": "An entity synonym with that value already exists"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "The entity synonym could not be found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Delete an entity synonym and all of its mapped values",
+        "operationId": "deleteEntitySynonym",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The entity synonym was deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "The entity synonym could not be found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/synonyms/{entity_synonym_id}/{entity_synonym_value_id}": {
+      "put": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Update a value mapped to an entity synonym",
+        "operationId": "updateEntitySynonymValue",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymValueId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "description": "The new text value of the mapped value"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The mapped value was updated successfully"
+          },
+          "400": {
+            "description": "A mapped value with that value already exists, or the entity synonym could not be found, or the mapped value does not exist"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NLU data"
+        ],
+        "summary": "Delete a value mapped to an entity synonym",
+        "operationId": "deleteEntitySynonymValue",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymId"
+          },
+          {
+            "$ref": "#/components/parameters/entitySynonymValueId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The mapped value was deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "The entity synonym could not be found, or the mapped value does not exist"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/data.json": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Download training examples in JSON format",
+        "operationId": "getDataJson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment of training examples in JSON",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/data.md": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Download training examples in markdown format",
+        "operationId": "getDataMarkdown",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment of training examples in markdown",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/data/{example_id}": {
+      "put": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Update a training example by id",
+        "operationId": "updateExample",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/exampleId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainingExample"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated training example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingExample"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Training example could not be updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Delete a training example by id",
+        "operationId": "deleteData",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/exampleId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmation of example being deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "string",
+                      "description": "Example {example_id} deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Training data could not be deleted"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/data/{hash}": {
+      "put": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Update a training example by id",
+        "operationId": "updateExampleById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/hash"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Training example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingExample"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Training example could not be found"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/dataWarnings": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Get warnings about training data.",
+        "operationId": "getDataWarnings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Warnings about training data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataWarning"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/entities": {
+      "get": {
+        "tags": [
+          "NLU Data"
+        ],
+        "summary": "Available entities",
+        "description": "Unique entity types present in the training data.",
+        "operationId": "getEntities",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unique entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Entity"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/intents": {
+      "get": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "List intents",
+        "description": "Intents used in training examples, domain, or temporary intents",
+        "operationId": "getIntents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/is_temporary"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Intents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IntentInformation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/settings": {
+      "get": {
+        "tags": [
+          "Model config"
+        ],
+        "summary": "Fetch model config",
+        "operationId": "getModelConfig",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ModelConfig"
+          },
+          "400": {
+            "description": "could not find settings"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Model config"
+        ],
+        "summary": "Save model config",
+        "operationId": "saveModelConfig",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/plain": {
+              "schema": {
+                "description": "Model config as YAML string",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ModelConfig"
+          },
+          "400": {
+            "description": "Could not parse/save config file"
+          },
+          "422": {
+            "description": "Config missing mandatory keys"
+          }
+        }
+      }
+    },
+    "/templates": {
+      "get": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Get bot response templates",
+        "operationId": "getTemplates",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Template text search string"
+          },
+          {
+            "in": "query",
+            "name": "template",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Templates to filter on (comma-separated)"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bot response templates",
+            "headers": {
+              "X-Total-Count": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Total responses ignoring limit and offset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BotResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Add to templates collection",
+        "operationId": "postTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotResponse"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not add the specified template"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Replace templates",
+        "operationId": "replaceTemplates",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Templates were successfully replaced"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/templates/{template_id}": {
+      "put": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Modify response template",
+        "operationId": "modifyTemplate",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/templateId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotResponse"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Modified response template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Delete a response template",
+        "operationId": "deleteTemplate",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/templateId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    },
+    "/responseGroups": {
+      "get": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Get responses grouped by template name.",
+        "operationId": "getResponseGroups",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/template"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Grouped templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "template": {
+                        "type": "string"
+                      },
+                      "responses": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/BotResponse"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/responseGroups/{template_name}": {
+      "put": {
+        "tags": [
+          "Templates"
+        ],
+        "summary": "Bulk rename a response group.",
+        "operationId": "renameTemplates",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/templateName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response group was succesfully renamed."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/stories": {
+      "get": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Get saved stories",
+        "operationId": "getStories",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rasa Core stories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RasaCoreStoryObject"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Upload stories",
+        "operationId": "uploadStories",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uploaded stories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RasaCoreStoryObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stories could not be uploaded"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Replace stories",
+        "operationId": "replaceStories",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uploaded stories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RasaCoreStoryObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stories could not be uploaded"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/stories.md": {
+      "get": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Get stories as markdown file",
+        "operationId": "getStoriesAsMarkdown",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rasa Core stories as markdown file",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/stories/{story_id}": {
+      "put": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Modify Rasa Core story",
+        "operationId": "modifyStory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/storyId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Modified Rasa Core story",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RasaCoreStoryObject"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Delete a Rasa Core Story",
+        "operationId": "deleteStory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/storyId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "List user roles",
+        "operationId": "listRoles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username_query"
+          },
+          {
+            "$ref": "#/components/parameters/role_query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Create new role",
+        "operationId": "createRole",
+        "requestBody": {
+          "description": "Role object to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created role"
+          }
+        }
+      }
+    },
+    "/roles/{role}": {
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Update role",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Role object to be updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "grants": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string"
+                      },
+                      "actions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "is_default": {
+                    "description": "Whether this role is the default role assigned to new enterprise users",
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "description": "Role description",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated role object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Failed to validate schema for update_role"
+          },
+          "404": {
+            "description": "Role does not exist"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Delete role",
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted role"
+          },
+          "404": {
+            "description": "Role does not exist"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Return role",
+        "operationId": "getRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role does not exist"
+          }
+        }
+      }
+    },
+    "/roles/{role}/users": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get list of users for specified role",
+        "operationId": "listRoleUsers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Update users associated with {role}",
+        "operationId": "updateRoleUsers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "List of usernames to be be associated with role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "Username"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of users for {role}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role does not exist"
+          }
+        }
+      }
+    },
+    "/users/{username}/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get user roles",
+        "operationId": "getUserRoles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Update user roles",
+        "operationId": "updateUserRoles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "List of roles to be be associated with {username}",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "Role"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "One or more roles do not exist"
+          }
+        }
+      }
+    },
+    "/users/{username}/roles/{role}": {
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Delete user role",
+        "operationId": "deleteUserRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/username"
+          },
+          {
+            "$ref": "#/components/parameters/role"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted user role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat": {
+      "post": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Endpoint to have a conversation with the assistant",
+        "operationId": "putChat",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bot response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Message send failed"
+          }
+        }
+      }
+    },
+    "/chatToken": {
+      "put": {
+        "tags": [
+          "Chat Token"
+        ],
+        "summary": "Update a bot's name and description for token",
+        "operationId": "updateChatToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bot_name, description and token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatToken"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong schema for request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Chat Token"
+        ],
+        "summary": "Get chat_token, bot_name and description",
+        "operationId": "getChatToken",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/access_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bot_name, description and token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatToken"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid jwt token or key"
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": [
+          "Runtime config"
+        ],
+        "summary": "Retrieve Rasa runtime configuration",
+        "operationId": "getRuntimeConfig",
+        "responses": {
+          "200": {
+            "description": "Rasa runtime configuration. This configuration contains the channel credentials and the endpoint configuration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "credentials": {
+                      "description": "Runtime credentials config as YAML string",
+                      "type": "string"
+                    },
+                    "endpoints": {
+                      "description": "Runtime endpoints config as YAML string",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not fetch runtime configs from files"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/environments": {
+      "get": {
+        "tags": [
+          "Environments"
+        ],
+        "summary": "Retrieve Platform deployment environment metadata",
+        "operationId": "getEnvironmentsConfig",
+        "responses": {
+          "200": {
+            "description": "Deployment environment configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "environments": {
+                      "description": "YAML string",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not find environment settings"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Environments"
+        ],
+        "summary": "Save Platform deployment environment config",
+        "operationId": "saveEnvironmentsConfig",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "environments": {
+                    "description": "YAML string",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved configuration of Platform deployment environments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "environments": {
+                      "description": "YAML string",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not find settings"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/features": {
+      "get": {
+        "tags": [
+          "Feature Flags"
+        ],
+        "summary": "Retrieve all features flags",
+        "operationId": "getFeatureFlags",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureFlag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Feature Flags"
+        ],
+        "summary": "Update or create a feature flag",
+        "operationId": "updateFeatureFlag",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureFlag"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlag"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "401": {
+            "description": "Wrong schema"
+          }
+        }
+      }
+    },
+    "/domain": {
+      "get": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Retrieve Rasa domain",
+        "operationId": "getDomain",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RasaDomain"
+          },
+          "400": {
+            "description": "Could not find domain"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Update Rasa domain",
+        "operationId": "updateDomain",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "store_templates",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "required": false,
+            "description": "Specifies whether to store the templates from the uploaded domain."
+          },
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/plain": {
+              "schema": {
+                "description": "Domain as YAML string",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RasaDomain"
+          },
+          "400": {
+            "description": "Could not find domain"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/actions": {
+      "get": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Retrieve Rasa domain actions",
+        "operationId": "getDomainActions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rasa domain actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "action name"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not find domain"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Create new action",
+        "operationId": "createAction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Action"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Action"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Action already exists"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/actions/{action_id}": {
+      "put": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Update action",
+        "operationId": "updateAction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/actionId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Action"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Action updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Action"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Action for id was not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Delete action",
+        "operationId": "deleteAction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/actionId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Action deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Action for id was not found"
+          }
+        }
+      }
+    },
+    "/domainWarnings": {
+      "get": {
+        "tags": [
+          "Domain"
+        ],
+        "summary": "Retrieve Rasa domain warnings",
+        "operationId": "getDomainWarnings",
+        "responses": {
+          "200": {
+            "description": "Rasa domain warnings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainWarnings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not find domain"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/git_repositories": {
+      "get": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "List connected Git repositories",
+        "operationId": "listGitRepositories",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored Git repository credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GitRepository"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Store credentials for a Git repository",
+        "operationId": "createGitRepository",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          }
+        ],
+        "requestBody": {
+          "description": "Credentials for the repository",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitRepository"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created Git repository",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitRepository"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "422": {
+            "description": "Repository creation failed due to invalid credentials"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/git_repositories/{repository_id}": {
+      "get": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Get information about a connected Git repository",
+        "operationId": "getGitRepository",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored Git repository credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitRepository"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Repository with given id was not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Update information for a connected Git repository",
+        "operationId": "updateGitRepository",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          }
+        ],
+        "requestBody": {
+          "description": "Updated values for the repository",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitRepository"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Update was successful",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Repository with given id was not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Delete repository",
+        "operationId": "deleteGitRepository",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion was successful",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Repository with given id was not found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/git_repositories/{repository_id}/status": {
+      "get": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Get the status of the Git repository",
+        "operationId": "getRepositoryStatus",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status of the repository",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Repository with given id was not found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/git_repositories/{repository_id}/branches/{branch_name}": {
+      "put": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Checkout a different branch",
+        "operationId": "checkoutBranch",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          },
+          {
+            "$ref": "#/components/parameters/branchName"
+          },
+          {
+            "$ref": "#/components/parameters/forceCheckout"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Branch was checked out successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Branch for repository with given id was not found"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/git_repositories/{repository_id}/branches/{branch_name}/commits": {
+      "post": {
+        "tags": [
+          "Git"
+        ],
+        "summary": "Stages, commits and pushes changes.",
+        "operationId": "createCommit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/projectId"
+          },
+          {
+            "$ref": "#/components/parameters/repositoryId"
+          },
+          {
+            "$ref": "#/components/parameters/branchName"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Changes were successfully committed and pushed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Commit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Branch for repository with given id was not found"
+          }
+        }
+      }
+    },
+    "/telemetry": {
+      "get": {
+        "tags": [
+          "Telemetry"
+        ],
+        "summary": "Access the current telemetry configuration.",
+        "operationId": "getTelemetry",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current telemetry configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "telemetry_enabled": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Telemetry"
+        ],
+        "summary": "Disable telemetry in server mode.",
+        "description": "Disable telemetry if Rasa X is running in server mode. After calling this endpoint, the Rasa X server must be restarted in order for the changes to take effect.",
+        "operationId": "disableTelemetry",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/api_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemetry configuration was updated, or was already disabled"
+          },
+          "400": {
+            "description": "If Rasa X is running in local mode."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "parameters": {
+      "conversationId": {
+        "in": "path",
+        "name": "conversation_id",
+        "example": "conversation_id",
+        "description": "Sender ID",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "conversationTagId": {
+        "in": "path",
+        "name": "tag_id",
+        "example": "conversation_id",
+        "description": "Conversation tag id",
+        "schema": {
+          "type": "number"
+        },
+        "required": true
+      },
+      "projectId": {
+        "in": "path",
+        "name": "project_id",
+        "example": "default",
+        "description": "Project ID",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "messageTimestamp": {
+        "in": "path",
+        "name": "message_timestamp",
+        "schema": {
+          "type": "number"
+        },
+        "required": true
+      },
+      "username": {
+        "in": "path",
+        "name": "username",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "environment": {
+        "in": "query",
+        "name": "environment",
+        "schema": {
+          "type": "string"
+        },
+        "required": false,
+        "description": "Deployment environment to be used in query"
+      },
+      "role": {
+        "in": "path",
+        "name": "role",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "model": {
+        "in": "path",
+        "name": "model",
+        "description": "Model name",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "tag": {
+        "in": "path",
+        "name": "tag",
+        "description": "Model tag",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "offset": {
+        "in": "query",
+        "name": "offset",
+        "schema": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "limit": {
+        "in": "query",
+        "name": "limit",
+        "schema": {
+          "default": null,
+          "type": "number"
+        }
+      },
+      "start": {
+        "in": "path",
+        "name": "start",
+        "example": "2018-01-01T11:03:01.141",
+        "description": "Start time. Accepts ISO-8601 format (as in the example) or Unix time.",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "end": {
+        "in": "path",
+        "name": "end",
+        "example": "2018-11-02T13:44:09.932",
+        "description": "End time. Accepts ISO-8601 format (as in the example) or Unix time.",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "window": {
+        "in": "path",
+        "name": "window",
+        "example": "1d",
+        "description": "Bin size used in the accumulation of the requested analytics result. If not specified, 10 bins are returned by default. Multiple formats are supported. A full list is available at https://pypi.org/project/pytimeparse/1.1.8/.",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "templateId": {
+        "in": "path",
+        "name": "template_id",
+        "example": "5bb89a7e3b18fb3d95495f2e",
+        "description": "Template ID",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "exampleId": {
+        "in": "path",
+        "name": "example_id",
+        "example": "5bb89a7f3b18fb3d95495f30",
+        "description": "Example ID",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "storyId": {
+        "in": "path",
+        "name": "story_id",
+        "example": "5bb89a7f3b18fb3d95495f31",
+        "description": "Story ID",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "hash": {
+        "in": "path",
+        "name": "hash",
+        "example": "b10a8db164e0754105b7a99be72e3fe5",
+        "description": "MD5 hash of an NLU example's text field",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "actionId": {
+        "name": "action_id",
+        "in": "path",
+        "description": "Unique ID of an action",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "regexId": {
+        "name": "regex_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "lookupTableId": {
+        "name": "lookup_table_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "entitySynonymId": {
+        "name": "entity_synonym_id",
+        "in": "path",
+        "description": "ID of an entity synonym",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "entitySynonymValueId": {
+        "name": "entity_synonym_value_id",
+        "in": "path",
+        "description": "ID of a value mapped to the entity synonym",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "templateName": {
+        "name": "template_name",
+        "description": "Current template name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "repositoryId": {
+        "name": "repository_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      },
+      "branchName": {
+        "name": "branch_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "q": {
+        "in": "query",
+        "name": "q",
+        "description": "Query string",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "template": {
+        "in": "query",
+        "name": "template",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Templates to filter on (comma-separated)"
+      },
+      "eventVerbosity": {
+        "in": "query",
+        "name": "include_events",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "ALL",
+            "AFTER_RESTART",
+            "NONE"
+          ],
+          "default": "ALL"
+        },
+        "required": false
+      },
+      "intent": {
+        "in": "query",
+        "name": "intent",
+        "schema": {
+          "type": "string",
+          "default": null
+        },
+        "required": false,
+        "description": "Comma-separated intents to filter on"
+      },
+      "username_query": {
+        "in": "query",
+        "name": "username",
+        "schema": {
+          "type": "string"
+        },
+        "required": false,
+        "description": "Username pattern to search"
+      },
+      "role_query": {
+        "in": "query",
+        "name": "role",
+        "schema": {
+          "type": "string"
+        },
+        "required": false,
+        "description": "Comma-separated roles to filter on"
+      },
+      "is_temporary": {
+        "in": "query",
+        "name": "temporary",
+        "description": "If `True` the query will also include temporary intents",
+        "schema": {
+          "type": "boolean"
+        },
+        "required": false
+      },
+      "access_token": {
+        "name": "access_token",
+        "in": "header",
+        "description": "A user's jwt token",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "api_token": {
+        "name": "api_token",
+        "in": "query",
+        "description": "A user's api token",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "until": {
+        "in": "query",
+        "name": "until",
+        "schema": {
+          "type": "number",
+          "default": null
+        },
+        "required": false,
+        "description": "Include only events with a timestamp before `until`"
+      },
+      "since": {
+        "in": "query",
+        "name": "since",
+        "schema": {
+          "type": "number",
+          "default": null
+        },
+        "required": false,
+        "description": "Include only events with a timestamp after `since`"
+      },
+      "history": {
+        "in": "query",
+        "required": false,
+        "name": "history",
+        "description": "Whether to include data before the last restart event",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "forceCheckout": {
+        "in": "query",
+        "required": false,
+        "name": "force",
+        "description": "Whether to discard potential local changes or not",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "rasa_environment": {
+        "in": "query",
+        "required": false,
+        "name": "rasa_environment",
+        "description": "Origin Rasa host from which messages were sent",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "mappedValue": {
+        "in": "query",
+        "required": false,
+        "name": "mapped_value",
+        "description": "Query for synonyms which have the mapped value mapped to them.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "exclude_leading_action_session_start": {
+        "in": "query",
+        "required": false,
+        "name": "exclude_leading_action_session_start",
+        "description": "Whether to exclude a leading event of type action_session_start",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "accept": {
+        "in": "header",
+        "required": false,
+        "name": "Accept",
+        "description": "Specifies which content types, expressed as MIME types, the client is able to understand. Typically used in this API to specify the requested data format: `application/json` for json and `text/markdown` for markdown.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "AnalyticsNotFound": {
+        "description": "Analytics not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exception": {
+                  "type": "string"
+                },
+                "reasons": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exception": {
+                  "type": "string"
+                },
+                "reasons": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "RasaDomain": {
+        "description": "Rasa domain",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "description": "Domain as yaml",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ModelConfig": {
+        "description": "Rasa model config",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "description": "Model config as yaml",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AnalyticsResult": {
+        "type": "object",
+        "properties": {
+          "bin_centers": {
+            "type": "array",
+            "description": "Timestamps of bin_centers",
+            "items": {
+              "type": "number"
+            }
+          },
+          "bin_width": {
+            "type": "number",
+            "description": "Width of each bin in seconds"
+          },
+          "new_users": {
+            "type": "array",
+            "description": "Number of new users",
+            "items": {
+              "type": "number"
+            }
+          },
+          "conversations": {
+            "type": "array",
+            "description": "Number of active conversations",
+            "items": {
+              "type": "number"
+            }
+          },
+          "user_messages": {
+            "type": "array",
+            "description": "Number of user messages",
+            "items": {
+              "type": "number"
+            }
+          },
+          "bot_messages": {
+            "type": "array",
+            "description": "Number of bot messages",
+            "items": {
+              "type": "number"
+            }
+          },
+          "total_messages": {
+            "type": "array",
+            "description": "Total number of user and bot messages",
+            "items": {
+              "type": "number"
+            }
+          },
+          "sessions_per_user": {
+            "type": "array",
+            "description": "Average number of sessions per user",
+            "items": {
+              "type": "number"
+            }
+          },
+          "conversation_length": {
+            "type": "array",
+            "description": "Average conversation length",
+            "items": {
+              "type": "number"
+            }
+          },
+          "conversation_steps": {
+            "type": "array",
+            "description": "Average number of conversation steps",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "Intent": {
+        "type": "object",
+        "properties": {
+          "confidence": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ParseData": {
+        "type": "object",
+        "properties": {
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "intent": {
+            "$ref": "#/components/schemas/Intent"
+          },
+          "intent_ranking": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Intent"
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "ActionEvent": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": [
+              "action"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        }
+      },
+      "UserEvent": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": [
+              "user"
+            ]
+          },
+          "parse_data": {
+            "$ref": "#/components/schemas/ParseData"
+          },
+          "text": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if message was flagged."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        }
+      },
+      "BotEvent": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": [
+              "bot"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "text": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if message was flagged."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        }
+      },
+      "RestartEvent": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": [
+              "restart"
+            ]
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        }
+      },
+      "FormEvent": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": [
+              "form"
+            ]
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        }
+      },
+      "Event": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/UserEvent"
+          },
+          {
+            "$ref": "#/components/schemas/BotEvent"
+          },
+          {
+            "$ref": "#/components/schemas/ActionEvent"
+          },
+          {
+            "$ref": "#/components/schemas/RestartEvent"
+          },
+          {
+            "$ref": "#/components/schemas/FormEvent"
+          }
+        ]
+      },
+      "EventMetadata": {
+        "type": "object",
+        "description": "Metadata attached to this event. Any keys and values are accepted."
+      },
+      "Conversation": {
+        "type": "object",
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "description": "Id of conversation"
+          },
+          "latest_event_time": {
+            "type": "integer",
+            "description": "Timestamp of most recent event (in seconds)"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          },
+          "latest_message": {
+            "type": "string",
+            "description": "Latest user message"
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "Conversation paused"
+          },
+          "followup_action": {
+            "type": "string",
+            "description": "Name of the followup action"
+          },
+          "slots": {
+            "type": "array",
+            "description": "Filled slots",
+            "items": {
+              "type": "object"
+            }
+          },
+          "latest_input_channel": {
+            "type": "string",
+            "description": "Name of the input channel last used"
+          },
+          "latest_action_name": {
+            "type": "string",
+            "description": "Name of last bot action"
+          },
+          "active_form": {
+            "type": "string",
+            "description": "Name of the active form"
+          }
+        }
+      },
+      "ConversationMetadata": {
+        "type": "object",
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "description": "Id of this conversation"
+          },
+          "latest_event_time": {
+            "type": "number",
+            "description": "Timestamp of most recent event (in seconds)"
+          },
+          "latest_input_channel": {
+            "type": "string",
+            "description": "Name of the input channel last used"
+          },
+          "intents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Set of intents in the conversation"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Set of actions in the conversation"
+          },
+          "minimum_action_confidence": {
+            "type": "number",
+            "description": "Minimum action confidence in the conversation"
+          },
+          "in_training_data": {
+            "type": "boolean",
+            "description": "Whether the entire conversation appear in training data"
+          },
+          "policies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Set of policies used in the action predictions"
+          },
+          "n_user_messages": {
+            "type": "number",
+            "description": "Number of user messages in the conversation"
+          },
+          "has_flagged_messages": {
+            "type": "boolean",
+            "description": "Whether the conversation contains flagged messages"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "List of conversation tags ids assigned to this conversation"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Model": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trained_at": {
+            "type": "number"
+          },
+          "version": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "TemplateButtons": {
+        "type": "array",
+        "description": "Quick reply buttons",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Button caption"
+            },
+            "payload": {
+              "type": "string",
+              "description": "Payload to be sent if button is clicked"
+            }
+          }
+        }
+      },
+      "BotResponse": {
+        "type": "object",
+        "description": "Bot response with filled template",
+        "properties": {
+          "template": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "buttons": {
+            "$ref": "#/components/schemas/TemplateButtons"
+          },
+          "image": {
+            "type": "string"
+          },
+          "attachment": {
+            "type": "object"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "custom": {
+            "oneOf": [
+              {
+                "type": "array"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "edited_since_last_training": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Template": {
+        "type": "object",
+        "description": "Template for a group of bot responses.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the template"
+          }
+        }
+      },
+      "RasaCoreStory": {
+        "type": "string",
+        "description": "Rasa Core story in Markdown format"
+      },
+      "RasaCoreStoryObject": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "$ref": "#/components/schemas/RasaCoreStory"
+          },
+          "id": {
+            "type": "string"
+          },
+          "annotation": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "string"
+              },
+              "time": {
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "TrainingExample": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "intent": {
+            "type": "string"
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "start",
+                "end",
+                "value",
+                "entity"
+              ],
+              "properties": {
+                "start": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "end": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "entity": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "value": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "entity_synonym": {
+                  "type": "integer",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "hash": {
+            "type": "string"
+          },
+          "intent_mapped_to": {
+            "type": "string",
+            "description": "Name of the intent which the intent is mapped to. If the intent is a temporary one, it has to be mapped to an existing one to be part of the training. If its value is `null` it deletes existing mappings."
+          }
+        }
+      },
+      "DataWarning": {
+        "type": "object",
+        "description": "A warning tells you there are too few or too many of something. The warning will also return the `min` or `max` number that is acceptable, and the current count. For example, if you have <2 examples for one of your intents, you will receive a warning about the `dataPerIntent` with a `min` of 2 and a `count` of 1.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "data",
+              "blankIntent",
+              "intent",
+              "dataPerIntent"
+            ],
+            "description": "Entity being warned about * `data` - Training data. * `blankIntent` - Training data with blank intent values. * `intent` - Intents to which your training data are classified. * `dataPerIntent` - Training data classified to the intent specified in `meta`.\n"
+          },
+          "min": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Either `min` or `max` will always be present"
+          },
+          "max": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Either `min` or `max` will always be present"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "meta": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "description": "Rasa NLU entity object",
+        "properties": {
+          "entity": {
+            "type": "string",
+            "description": "Entity type",
+            "example": "cuisine"
+          }
+        }
+      },
+      "MessageWithPrediction": {
+        "type": "object",
+        "description": "Message with Rasa NLU prediction",
+        "properties": {
+          "user_input": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "intent": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "confidence": {
+                    "type": "number"
+                  }
+                }
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          },
+          "team": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "$ref": "#/components/schemas/AnyValue"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "roles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "authentication_mechanism": {
+            "type": "string"
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "grants": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "description": {
+            "description": "Role description",
+            "type": "string"
+          },
+          "is_default": {
+            "description": "Whether this role is the default role assigned to new enterprise users",
+            "type": "boolean"
+          }
+        }
+      },
+      "ChatToken": {
+        "type": "object",
+        "properties": {
+          "bot_name": {
+            "description": "Name of the bot to be displayed to the receiver of a shared bot",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description of the bot",
+            "type": "string"
+          },
+          "expires": {
+            "description": "expiration timestamp",
+            "type": "number"
+          },
+          "chat_token": {
+            "description": "chat token",
+            "type": "string"
+          }
+        }
+      },
+      "FeatureFlag": {
+        "type": "object",
+        "description": "Information about a toggable feature",
+        "properties": {
+          "name": {
+            "description": "Name of the feature",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "Is the feature activated",
+            "type": "boolean"
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      },
+      "BotMessage": {
+        "type": "object",
+        "properties": {
+          "recipient_id": {
+            "type": "string",
+            "description": "Id of the message receiver"
+          },
+          "text": {
+            "type": "string",
+            "description": "Message"
+          },
+          "image": {
+            "type": "string",
+            "description": "Image URL"
+          },
+          "buttons": {
+            "$ref": "#/components/schemas/TemplateButtons"
+          },
+          "attachement": {
+            "type": "array",
+            "description": "Additional information",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Attachement caption"
+                },
+                "payload": {
+                  "type": "string",
+                  "description": "Attachement payload"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PredictResult": {
+        "type": "object",
+        "properties": {
+          "scores": {
+            "type": "array",
+            "description": "Prediction results",
+            "items": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "description": "Action name"
+                },
+                "score": {
+                  "type": "number",
+                  "description": "Assigned score"
+                }
+              }
+            }
+          },
+          "policy": {
+            "type": "string",
+            "description": "Policy which predicted the most likely action"
+          },
+          "tracker": {
+            "$ref": "#/components/schemas/Conversation"
+          }
+        }
+      },
+      "ConversationStatistics": {
+        "type": "object",
+        "properties": {
+          "user_messages": {
+            "type": "integer"
+          },
+          "bot_messages": {
+            "type": "integer"
+          },
+          "top_intents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "top_entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "top_actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "top_policies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Suggestion": {
+        "type": "object",
+        "description": "Rasa NLU training example suggestion",
+        "properties": {
+          "user_input": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "intent": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "confidence": {
+                    "type": "number"
+                  }
+                }
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          },
+          "team": {
+            "type": "string"
+          }
+        }
+      },
+      "NlgResponse": {
+        "type": "object",
+        "description": "Generated bot response",
+        "required": [
+          "text",
+          "template"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "buttons": {
+            "$ref": "#/components/schemas/TemplateButtons"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attachment": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "NlgRequest": {
+        "type": "object",
+        "description": "Request object for NLG",
+        "properties": {
+          "tracker": {
+            "type": "object"
+          },
+          "arguments": {
+            "type": "object"
+          },
+          "template": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "object"
+          }
+        }
+      },
+      "MismatchWarning": {
+        "type": "object",
+        "description": "Mismatch warning of domain items that are either found in the domain or in training data, but not in both",
+        "properties": {
+          "in_training_data": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Item mismatches that are found in training data but not in the domain"
+            }
+          },
+          "in_domain": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Item mismatches that are found in the domain but not in training data"
+            }
+          }
+        }
+      },
+      "DomainWarnings": {
+        "type": "object",
+        "description": "Mismatches between training data and domain actions, intents and entities",
+        "properties": {
+          "action_warnings": {
+            "$ref": "#/components/schemas/MismatchWarning"
+          },
+          "intent_warnings": {
+            "$ref": "#/components/schemas/MismatchWarning"
+          },
+          "entity_warnings": {
+            "$ref": "#/components/schemas/MismatchWarning"
+          },
+          "slot_warnings": {
+            "$ref": "#/components/schemas/MismatchWarning"
+          }
+        }
+      },
+      "IntentInformation": {
+        "type": "object",
+        "required": [
+          "intent"
+        ],
+        "properties": {
+          "intent": {
+            "type": "string",
+            "description": "Name of the intent"
+          },
+          "example_hashes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Hashes of examples with this intent"
+            }
+          },
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Hashes of suggestions from the conversation logs with this intent"
+            }
+          },
+          "is_temporaray": {
+            "type": "boolean",
+            "description": "If `True` the intent is a temporary intent"
+          },
+          "mapped_to": {
+            "type": "string",
+            "description": "In case this is a temporary intent it describes whether this intent is currently mapped to another one in the training data"
+          },
+          "user_goal": {
+            "type": "string",
+            "description": "User goal the intent is mapped to"
+          }
+        }
+      },
+      "Action": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of action"
+          },
+          "domain_id": {
+            "type": "integer",
+            "description": "Id of domain which action belongs to"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of action"
+          },
+          "is_form": {
+            "type": "boolean",
+            "description": "Indicates if action is a form"
+          }
+        }
+      },
+      "RegexFeature": {
+        "type": "object",
+        "required": [
+          "name",
+          "pattern"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of regex"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the regex feature"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern of the regex feature"
+          }
+        }
+      },
+      "JWT": {
+        "type": "object",
+        "required": [
+          "key",
+          "alg"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "JWT public key"
+          },
+          "alg": {
+            "type": "string",
+            "description": "JWT algorithm used in signing the key"
+          }
+        }
+      },
+      "LookupTable": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of lookup table"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the lookup table"
+          },
+          "number_of_elements": {
+            "type": "integer",
+            "description": "Number of elements in the lookup table"
+          }
+        }
+      },
+      "LookupTableFile": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Name of the file"
+          },
+          "content": {
+            "type": "string",
+            "description": "Base64-encoded content of the lookup table file"
+          }
+        }
+      },
+      "EntitySynonym": {
+        "type": "object",
+        "description": "\"Represents a particular value of an entity (like `New York` for entity `city`), to which different text values can be mapped to (like `NY` or `Manhattan`), creating synonyms.\"",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of entity synonym"
+          },
+          "synonym_reference": {
+            "type": "string",
+            "description": "Text value of the entity synonym"
+          },
+          "mapped_values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntitySynonymValue"
+            }
+          }
+        }
+      },
+      "EntitySynonymValue": {
+        "type": "object",
+        "description": "Represents a text value mapped to an EntitySynonym.",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Text value mapped to this entity synonym"
+          },
+          "id": {
+            "type": "integer",
+            "description": "ID of the value mapped to this entity synonym"
+          },
+          "nlu_examples_count": {
+            "type": "integer",
+            "description": "Number of times this mapped value is used in NLU training examples"
+          }
+        }
+      },
+      "AnyValue": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "object"
+          },
+          {
+            "type": "array"
+          },
+          {
+            "type": "boolean"
+          }
+        ],
+        "nullable": true
+      },
+      "GitRepository": {
+        "type": "object",
+        "description": "Information about a connected Git repository",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of the repository"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the repository"
+          },
+          "repository_url": {
+            "type": "string",
+            "description": "URL to clone repository"
+          },
+          "ssh_key": {
+            "type": "string",
+            "description": "SSH key which should be used to access a private repository"
+          },
+          "git_service": {
+            "type": "string",
+            "description": "Name of the Git service which is used",
+            "example": "github"
+          },
+          "git_service_access_token": {
+            "type": "string",
+            "description": "Access token which might be used to access the API of the Git service (e.g. to create pull requests)"
+          },
+          "target_branch": {
+            "type": "string",
+            "description": "Name of the branch which should be pulled"
+          }
+        }
+      },
+      "GitStatus": {
+        "type": "object",
+        "description": "Current status of the connected Git repository",
+        "properties": {
+          "is_committing_to_target_branch_allowed": {
+            "type": "boolean",
+            "description": "True if committing to target branch is allowed / possible"
+          },
+          "is_remote_ahead": {
+            "type": "boolean",
+            "description": "True if there are new commits on the target branch available on the remote"
+          },
+          "are_there_local_changes": {
+            "type": "boolean",
+            "description": "True if there are some local changes which can be committed"
+          },
+          "current_branch": {
+            "type": "string",
+            "description": "Branch which is currently checked out"
+          },
+          "time_of_last_pull": {
+            "type": "number",
+            "description": "Time when the target branch was synced for the last time as unix timestamp"
+          }
+        }
+      },
+      "Commit": {
+        "type": "object",
+        "description": "Describes the created Git commit",
+        "properties": {
+          "remote_branch": {
+            "type": "string",
+            "description": "Describes which branch the changes were added to"
+          },
+          "committed_to_target_branch": {
+            "type": "boolean",
+            "description": "Whether the changes were committed to the target branch"
+          }
+        }
+      },
+      "ModelTrainingConfirmation": {
+        "type": "object",
+        "description": "Confirmation that model training was successful",
+        "properties": {
+          "info": {
+            "type": "string",
+            "description": "Confirmation message"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name of the newly trained model"
+          }
+        }
+      },
+      "ConversationTagRequest": {
+        "type": "object",
+        "description": "Describes conversation tag",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of an already existing tag. If this property is present, then all other properties will be ignored, and this ID will be the one assigned to the conversation"
+          },
+          "value": {
+            "type": "string",
+            "description": "Name of the tag (new or already existing one). If a tag with this name already exists, the existing tag will be assigned to the conversation. If this property is present, then \"color\" is also required"
+          },
+          "color": {
+            "type": "string",
+            "description": "Hex value of the tag's color (without \"#\"). If this property is present, then \"value\" is also required"
+          }
+        }
+      },
+      "ConversationTag": {
+        "type": "object",
+        "description": "Describes conversation tag",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of an already existing tag."
+          },
+          "value": {
+            "type": "string",
+            "description": "Name of the tag."
+          },
+          "color": {
+            "type": "string",
+            "description": "Hex value of the tag's color (without \"#\")."
+          },
+          "conversations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "IDs of conversations the tag is assigned to"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1690 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "apaleo Availability API",
+    "description": "Control over availability",
+    "contact": {
+      "url": "https://apaleo.dev/",
+      "name": "Apaleo"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.apaleo.com",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/availability/v1/units": {
+      "get": {
+        "tags": [
+          "Availability"
+        ],
+        "summary": "AvailabilityUnitsGet",
+        "description": "Get the list of available units for a specific property and time period.<br>You must have this scope: 'availability.read'.",
+        "operationId": "AvailabilityUnitsGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "The property id",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupId",
+            "in": "query",
+            "description": "The unit group id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The from date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "The to date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "includeOutOfService",
+            "in": "query",
+            "description": "Should units that are set OutOfService in the defined time period be returned as available.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "unitCondition",
+            "in": "query",
+            "description": "The unit condition",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/unitCondition"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all available units.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailableUnitListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no available units matching your criteria.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "availability.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/availability/v1/unit-groups": {
+      "get": {
+        "tags": [
+          "Availability"
+        ],
+        "summary": "AvailabilityUnit-groupsGet",
+        "description": "Get the list of available unit groups for a specific property and time period.<br>You must have this scope: 'availability.read'.",
+        "operationId": "AvailabilityUnit-groupsGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "The property id",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "First day of the requested time period. The given day will be included in the response.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Last day of the requested time period. The given day will be included in the response.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "timeSliceTemplate",
+            "in": "query",
+            "description": "The time slice template, defaults to 'over night'",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/timeSliceTemplate"
+            }
+          },
+          {
+            "name": "unitGroupTypes",
+            "in": "query",
+            "description": "Filter result by requested unit group types",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/unitGroupType"
+              }
+            }
+          },
+          {
+            "name": "timeSliceDefinitionIds",
+            "in": "query",
+            "description": "The time slice definition ids",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "unitGroupIds",
+            "in": "query",
+            "description": "The unit group ids",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "adults",
+            "in": "query",
+            "description": "The number of adults you want availability for, defaults to 1",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "childrenAges",
+            "in": "query",
+            "description": "The ages of the children you want availability for",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "onlySellable",
+            "in": "query",
+            "description": "When set to 'true', only the unit groups sold by the specified time slice template and time slice definition ids are returned,\r\notherwise all unit groups are returned",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all available unit groups.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailableUnitGroupListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no available unit groups matching your criteria.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "availability.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/availability/v1/unit-groups/{id}": {
+      "patch": {
+        "tags": [
+          "Availability"
+        ],
+        "summary": "AvailabilityUnit-groupsByIdPatch",
+        "description": "You can replace AllowedOverbooking for a unit group<br>You must have this scope: 'availability.manage'.",
+        "operationId": "AvailabilityUnit-groupsByIdPatch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the unit group to be modified.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "First day of the time period from which availability will be modified",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Last day of the time period until which availability will be modified",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "timeSliceTemplate",
+            "in": "query",
+            "description": "The time slice template",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/timeSliceTemplate"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                },
+                "description": "Define the list of operations to be applied to the resource. Learn more about JSON Patch here: http://jsonpatch.com/."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Success",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "415": {
+            "description": "Unsupported media type.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "availability.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/availability/v1/services": {
+      "get": {
+        "tags": [
+          "Availability"
+        ],
+        "summary": "AvailabilityServicesGet",
+        "description": "Get the list of available services for a specific property and time period.<br>You must have this scope: 'availability.read'.",
+        "operationId": "AvailabilityServicesGet",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "in": "query",
+            "description": "The property id",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "First day of the requested time period. The given day will be included in the response.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Last day of the requested time period. The given day will be included in the response.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "timeSliceTemplate",
+            "in": "query",
+            "description": "The time slice template, defaults to 'over night'",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/timeSliceTemplate"
+            }
+          },
+          {
+            "name": "timeSliceDefinitionIds",
+            "in": "query",
+            "description": "The time slice definition ids",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "channelCodes",
+            "in": "query",
+            "description": "The channel code used to filter the services",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/channelCode"
+              }
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all available services.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailableServiceListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no available services matching your criteria.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "availability.read",
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/availability/v1/reservations/{id}/units": {
+      "get": {
+        "tags": [
+          "ReservationAvailability"
+        ],
+        "summary": "AvailabilityReservationsByIdUnitsGet",
+        "description": "Get the list of available units for a specific reservation and time period.<br>You must have at least one of these scopes: 'availability.read, reservations.manage'.",
+        "operationId": "AvailabilityReservationsByIdUnitsGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the reservation",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unitGroupId",
+            "in": "query",
+            "description": "The unit group id",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The from date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "The to date and time<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "includeOutOfService",
+            "in": "query",
+            "description": "Should units that are set OutOfService in the defined time period be returned as available.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "unitCondition",
+            "in": "query",
+            "description": "The unit condition",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/unitCondition"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number, starting from 1 and defaulting to 1. Results in 204 if there are no items on that page.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. If this is not set, the pageNumber will be ignored and all values returned.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all available units for the reservation.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailableUnitListModel"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "There are no available units matching your criteria.",
+            "headers": {},
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request.",
+            "headers": {},
+            "content": {}
+          },
+          "401": {
+            "description": "You are unauthorized.",
+            "headers": {},
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden.",
+            "headers": {},
+            "content": {}
+          },
+          "404": {
+            "description": "The Request-URI could not be found.",
+            "headers": {},
+            "content": {}
+          },
+          "422": {
+            "description": "Validation errors in the request body or query params.",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageItemCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "headers": {},
+            "content": {}
+          },
+          "503": {
+            "description": "The server is currently unavailable. Please try later.",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "Client credentials grant flow": [
+              "availability.read",
+              "reservations.manage",
+              "admin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AvailableServiceListModel": {
+        "title": "AvailableServiceListModel",
+        "required": [
+          "timeSlices",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "timeSlices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAvailabilityTimeSliceItemModel"
+            },
+            "description": "List of time slices"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        }
+      },
+      "AvailableUnitGroupListModel": {
+        "title": "AvailableUnitGroupListModel",
+        "required": [
+          "timeSlices",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "timeSlices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitGroupAvailabilityTimeSliceItemModel"
+            },
+            "description": "List of time slices"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        }
+      },
+      "AvailableUnitItemModel": {
+        "title": "AvailableUnitItemModel",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "property",
+          "status",
+          "maxPersons"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit"
+          },
+          "property": {
+            "$ref": "#/components/schemas/EmbeddedPropertyModel"
+          },
+          "unitGroup": {
+            "$ref": "#/components/schemas/EmbeddedUnitGroupModel"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AvailableUnitItemStatusModel"
+          },
+          "maxPersons": {
+            "type": "integer",
+            "description": "Maximum number of persons for the unit",
+            "format": "int32"
+          }
+        }
+      },
+      "AvailableUnitItemStatusModel": {
+        "title": "AvailableUnitItemStatusModel",
+        "required": [
+          "isOccupied",
+          "condition"
+        ],
+        "type": "object",
+        "properties": {
+          "isOccupied": {
+            "type": "boolean"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/Condition"
+          },
+          "maintenanceType": {
+            "$ref": "#/components/schemas/MaintenanceType"
+          }
+        }
+      },
+      "AvailableUnitListModel": {
+        "title": "AvailableUnitListModel",
+        "required": [
+          "units",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailableUnitItemModel"
+            },
+            "description": "List of units"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total count of items",
+            "format": "int64"
+          }
+        },
+        "example": {
+          "units": [
+            {
+              "id": "MUC-JQI",
+              "name": "A.101",
+              "description": "Room 101",
+              "property": {
+                "id": "MUC",
+                "code": "MUC",
+                "name": "Demo Hotel Munich",
+                "description": "This is the demo hotel Munich"
+              },
+              "unitGroup": {
+                "id": "MUC-DBL",
+                "code": "DBL",
+                "name": "Double",
+                "description": "Double",
+                "type": "BedRoom"
+              },
+              "status": {
+                "isOccupied": true,
+                "condition": "Dirty",
+                "maintenanceType": "OutOfService"
+              },
+              "maxPersons": 4
+            },
+            {
+              "id": "MUC-ELG",
+              "name": "A.102",
+              "description": "Room 102",
+              "property": {
+                "id": "MUC",
+                "code": "MUC",
+                "name": "Demo Hotel Munich",
+                "description": "This is the demo hotel Munich"
+              },
+              "unitGroup": {
+                "id": "MUC-SGL",
+                "code": "SGL",
+                "name": "Standard",
+                "description": "Standard",
+                "type": "BedRoom"
+              },
+              "status": {
+                "isOccupied": false,
+                "condition": "Clean"
+              },
+              "maxPersons": 1
+            }
+          ],
+          "count": 2
+        }
+      },
+      "BlockServicesModel": {
+        "title": "BlockServicesModel",
+        "required": [
+          "definite",
+          "tentative",
+          "picked",
+          "remaining"
+        ],
+        "type": "object",
+        "properties": {
+          "definite": {
+            "type": "integer",
+            "description": "The number of services which are definitely blocked",
+            "format": "int32"
+          },
+          "tentative": {
+            "type": "integer",
+            "description": "The number of services which are tentatively blocked",
+            "format": "int32"
+          },
+          "picked": {
+            "type": "integer",
+            "description": "The number of services which are picked from blocked",
+            "format": "int32"
+          },
+          "remaining": {
+            "type": "integer",
+            "description": "The number of services which are not yet picked",
+            "format": "int32"
+          }
+        }
+      },
+      "BlockUnitsModel": {
+        "title": "BlockUnitsModel",
+        "required": [
+          "definite",
+          "tentative",
+          "picked",
+          "remaining"
+        ],
+        "type": "object",
+        "properties": {
+          "definite": {
+            "type": "integer",
+            "description": "The number of units which are definitely blocked",
+            "format": "int32"
+          },
+          "tentative": {
+            "type": "integer",
+            "description": "The number of units which are tentatively blocked",
+            "format": "int32"
+          },
+          "picked": {
+            "type": "integer",
+            "description": "The number of units which are picked from blocked",
+            "format": "int32"
+          },
+          "remaining": {
+            "type": "integer",
+            "description": "The number of units which are not yet picked",
+            "format": "int32"
+          }
+        }
+      },
+      "EmbeddedPropertyModel": {
+        "title": "EmbeddedPropertyModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The property id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the property that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the property"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the property"
+          }
+        }
+      },
+      "EmbeddedServiceModel": {
+        "title": "EmbeddedServiceModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The service id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the service"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the service"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the service"
+          }
+        }
+      },
+      "EmbeddedUnitGroupModel": {
+        "title": "EmbeddedUnitGroupModel",
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unit group id"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code for the unit group that can be shown in reports and table views"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the unit group"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description for the unit group"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          }
+        }
+      },
+      "MaintenanceModel": {
+        "title": "MaintenanceModel",
+        "required": [
+          "outOfService",
+          "outOfOrder",
+          "outOfInventory"
+        ],
+        "type": "object",
+        "properties": {
+          "outOfService": {
+            "type": "integer",
+            "description": "The number of units which are out of service",
+            "format": "int32"
+          },
+          "outOfOrder": {
+            "type": "integer",
+            "description": "The number of units which are out of order",
+            "format": "int32"
+          },
+          "outOfInventory": {
+            "type": "integer",
+            "description": "The number of units which are out of inventory",
+            "format": "int32"
+          }
+        }
+      },
+      "MessageItemCollection": {
+        "title": "MessageItemCollection",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": ""
+          }
+        }
+      },
+      "Operation": {
+        "title": "Operation",
+        "type": "object",
+        "properties": {
+          "value": {},
+          "path": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          }
+        }
+      },
+      "PropertyAvailabilityModel": {
+        "title": "PropertyAvailabilityModel",
+        "required": [
+          "physicalCount",
+          "houseCount",
+          "soldCount",
+          "occupancy",
+          "sellableCount",
+          "allowedOverbookingCount",
+          "maintenance",
+          "block"
+        ],
+        "type": "object",
+        "properties": {
+          "physicalCount": {
+            "type": "integer",
+            "description": "The number of units physically existing on the property",
+            "format": "int32"
+          },
+          "houseCount": {
+            "type": "integer",
+            "description": "The number of units physically existing excluding the ones which are out of inventory",
+            "format": "int32"
+          },
+          "soldCount": {
+            "type": "integer",
+            "description": "The number of sold units including units picked up from blocks",
+            "format": "int32"
+          },
+          "occupancy": {
+            "type": "number",
+            "description": "The percent value indicating the occupancy"
+          },
+          "sellableCount": {
+            "type": "integer",
+            "description": "The number of units available for selling. This is the house count excluding the out of order and the already sold units.\r\nAny defined overbooking limits are also already considered",
+            "format": "int32"
+          },
+          "allowedOverbookingCount": {
+            "type": "integer",
+            "description": "The number of units which are allowed for overbooking",
+            "format": "int32"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/MaintenanceModel"
+          },
+          "block": {
+            "$ref": "#/components/schemas/BlockUnitsModel"
+          }
+        }
+      },
+      "ServiceAvailabilityItemModel": {
+        "title": "ServiceAvailabilityItemModel",
+        "required": [
+          "service",
+          "quantity",
+          "soldCount",
+          "availableCount",
+          "serviceDate",
+          "block"
+        ],
+        "type": "object",
+        "properties": {
+          "service": {
+            "$ref": "#/components/schemas/EmbeddedServiceModel"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The total number of services available.",
+            "format": "int32"
+          },
+          "soldCount": {
+            "type": "integer",
+            "description": "The number of sold services including included services picked up from blocks",
+            "format": "int32"
+          },
+          "availableCount": {
+            "type": "integer",
+            "description": "The number of services still available. This is the total quantity excluding the already sold services.",
+            "format": "int32"
+          },
+          "serviceDate": {
+            "type": "string",
+            "description": "The date this service is delivered",
+            "format": "date",
+            "example": "2020-10-10"
+          },
+          "block": {
+            "$ref": "#/components/schemas/BlockServicesModel"
+          }
+        }
+      },
+      "ServiceAvailabilityTimeSliceItemModel": {
+        "title": "ServiceAvailabilityTimeSliceItemModel",
+        "required": [
+          "from",
+          "to",
+          "services"
+        ],
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Date and time the time slice begins<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the time slice ends<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAvailabilityItemModel"
+            },
+            "description": "List of services availabilities for this time slice"
+          }
+        }
+      },
+      "UnitGroupAvailabilityItemModel": {
+        "title": "UnitGroupAvailabilityItemModel",
+        "required": [
+          "unitGroup",
+          "physicalCount",
+          "houseCount",
+          "soldCount",
+          "occupancy",
+          "availableCount",
+          "sellableCount",
+          "allowedOverbookingCount",
+          "maintenance",
+          "block"
+        ],
+        "type": "object",
+        "properties": {
+          "unitGroup": {
+            "$ref": "#/components/schemas/EmbeddedUnitGroupModel"
+          },
+          "physicalCount": {
+            "type": "integer",
+            "description": "The number of units physically existing on the property",
+            "format": "int32"
+          },
+          "houseCount": {
+            "type": "integer",
+            "description": "The number of units physically existing excluding the ones which are out of inventory",
+            "format": "int32"
+          },
+          "soldCount": {
+            "type": "integer",
+            "description": "The number of sold units including units picked up from blocks",
+            "format": "int32"
+          },
+          "occupancy": {
+            "type": "number",
+            "description": "The percent value indicating the occupancy"
+          },
+          "availableCount": {
+            "type": "integer",
+            "description": "The number of units still available. This is the house count excluding the out of order units minus\r\nthe already sold units.",
+            "format": "int32"
+          },
+          "sellableCount": {
+            "type": "integer",
+            "description": "The number of units available for selling already considering any defined overbooking limits.\r\nThis number is the minimum of sellable units for the whole property and the sellable units of\r\nthis unit group. If there are only 3 units sellable on the property, but 5 units sellable for\r\nthis unit group, the sellable count will be 3. This situation can occur if another unit group\r\nor the whole house is overbooked.",
+            "format": "int32"
+          },
+          "allowedOverbookingCount": {
+            "type": "integer",
+            "description": "The number of units allowed for overbooking.",
+            "format": "int32"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/MaintenanceModel"
+          },
+          "block": {
+            "$ref": "#/components/schemas/BlockUnitsModel"
+          }
+        }
+      },
+      "UnitGroupAvailabilityTimeSliceItemModel": {
+        "title": "UnitGroupAvailabilityTimeSliceItemModel",
+        "required": [
+          "from",
+          "to",
+          "property",
+          "unitGroups"
+        ],
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Date and time the time slice begins<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "description": "Date and time the time slice ends<br />A date and time (without fractional second part) in UTC or with UTC offset as defined in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO8601:2004</a>",
+            "format": "date-time"
+          },
+          "property": {
+            "$ref": "#/components/schemas/PropertyAvailabilityModel"
+          },
+          "unitGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitGroupAvailabilityItemModel"
+            },
+            "description": "List of unit group availabilities for this time slice"
+          }
+        }
+      },
+      "channelCode": {
+        "title": "channelCode",
+        "enum": [
+          "Direct",
+          "BookingCom",
+          "Ibe",
+          "ChannelManager",
+          "Expedia",
+          "Homelike",
+          "Hrs"
+        ],
+        "type": "string",
+        "example": "Direct"
+      },
+      "Condition": {
+        "title": "Condition",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "example": "Clean"
+      },
+      "MaintenanceType": {
+        "title": "MaintenanceType",
+        "enum": [
+          "OutOfService",
+          "OutOfOrder",
+          "OutOfInventory"
+        ],
+        "type": "string",
+        "example": "OutOfService"
+      },
+      "timeSliceTemplate": {
+        "title": "timeSliceTemplate",
+        "enum": [
+          "DayUse",
+          "OverNight"
+        ],
+        "type": "string",
+        "example": "DayUse"
+      },
+      "Type": {
+        "title": "Type",
+        "enum": [
+          "BedRoom",
+          "MeetingRoom",
+          "EventSpace",
+          "ParkingLot",
+          "Other"
+        ],
+        "type": "string",
+        "description": "The unit group type",
+        "example": "BedRoom"
+      },
+      "unitCondition": {
+        "title": "unitCondition",
+        "enum": [
+          "Clean",
+          "CleanToBeInspected",
+          "Dirty"
+        ],
+        "type": "string",
+        "example": "Clean"
+      },
+      "unitGroupType": {
+        "title": "unitGroupType",
+        "enum": [
+          "BedRoom",
+          "MeetingRoom",
+          "EventSpace",
+          "ParkingLot",
+          "Other"
+        ],
+        "type": "string",
+        "example": "BedRoom"
+      }
+    },
+    "securitySchemes": {
+      "Client credentials grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "",
+            "scopes": {
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      },
+      "Authorization code grant flow": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://identity.apaleo.com/connect/authorize",
+            "tokenUrl": "https://identity.apaleo.com/connect/token",
+            "refreshUrl": "https://identity.apaleo.com/connect/token",
+            "scopes": {
+              "offline_access": "This scope is active by default for connect clients.",
+              "openid": "OpenID",
+              "profile": "Profile",
+              "account.manage": "Update the current account",
+              "account.suspend": "Suspend the current account",
+              "accounting.read": "Read accounting details",
+              "availability.manage": "This scope allows to modify the availability",
+              "availability.read": "Retrieve availabiltiy information",
+              "companies.manage": "Modify companies",
+              "companies.read": "Read companies",
+              "folios.manage": "Perform actions on folios",
+              "folios.payment-with-charges": "Requires you to provide a list of charges being covered by the payment",
+              "folios.read": "Read folios, including charges and payments",
+              "invoices.manage": "Mark invoices as paid",
+              "invoices.read": "Retrieve invoices and preview invoices as data or PDF",
+              "logs.read": "Read logs",
+              "maintenances.manage": "Change maintenacne windows",
+              "maintenances.read": "Read maintenance information",
+              "offer-index.read": "Request offer index",
+              "offers.read": "Request offers",
+              "operations.change-room-state": "Change room state",
+              "operations.trigger-night-audit": "Trigger night audit",
+              "prepayment-notices.read": "Creates prepayment notices as PDF",
+              "rateplans.read-corporate": "Read corporate rate plans",
+              "rateplans.read-negotiated": "Read negotiated rate plans",
+              "rates.manage": "Update rates and restrictions",
+              "rates.read": "Read rates and restrictions",
+              "reports.read": "Retrieve report data",
+              "reservations.force-manage": "Modify stay dates regardless of availability or restrictions",
+              "reservations.manage": "Modify, check in/out, cancel reservations",
+              "reservations.read": "Read reservations",
+              "routings.create": "Create routings",
+              "routings.manage": "Modify routings",
+              "routings.read": "Read routings",
+              "setup.manage": "This scope allows the app to modify settings and configurations for the whole account and all properties, including creating, modifying and deleting units, unit groups, rate plans and properties.",
+              "setup.read": "This scope allows the app to read settings and configurations for the whole account and all properties, including reading units, unit groups, and rate plans.",
+              "payment:configuration.read": "Read payment configuration",
+              "payment:invoices.read": "Read invoices",
+              "payment:reports.read": "Read settlement reports",
+              "payment:transactions.read": "Read payment transactions",
+              "distribution:reservations.manage": "Create and modify bookings and reservations",
+              "distribution:subscriptions.manage": "Manage ARI notification configuration",
+              "identity:account-users.manage": "Manage users",
+              "identity:account-users.read": "Read users",
+              "integration:ui-integrations.manage": "Include apaleo One content",
+              "profile:manage": "Manage profiles",
+              "profile:read": "Read profiles"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Client credentials grant flow": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Availability",
+      "description": ""
+    },
+    {
+      "name": "ReservationAvailability",
+      "description": ""
+    }
+  ]
+}
